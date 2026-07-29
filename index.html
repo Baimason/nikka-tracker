@@ -1,0 +1,395 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="日課">
+<meta name="theme-color" content="#e4ddcc">
+<title>日課 — Japanese Daily Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#e4ddcc;
+    --card:#f1ece0;
+    --ink:#23201a;
+    --ink-soft:#6b6456;
+    --ink-faint:#a99f89;
+    --shu:#b23726;
+    --shu-deep:#8f2a1d;
+    --grid:#d3cab6;
+    --line:#d8d0bf;
+    --gold:#8a7233;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:
+      linear-gradient(var(--grid) 1px, transparent 1px) 0 0/100% 34px,
+      var(--paper);
+    color:var(--ink);
+    font-family:"Zen Kaku Gothic New",system-ui,sans-serif;
+    line-height:1.5;
+    padding:28px 18px 60px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:640px;margin:0 auto}
+  .mincho{font-family:"Shippori Mincho",Georgia,serif}
+
+  /* ---- header ---- */
+  header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;
+    border-bottom:2px solid var(--ink);padding-bottom:14px;margin-bottom:26px;flex-wrap:wrap}
+  .title{display:flex;flex-direction:column;gap:2px}
+  .title .kanji{font-family:"Shippori Mincho",serif;font-weight:800;font-size:44px;line-height:.95;letter-spacing:2px}
+  .title .rom{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink-soft);margin-top:4px}
+  .streak-seal{display:flex;align-items:center;gap:12px}
+  .streak-num{font-family:"Shippori Mincho",serif;font-weight:800;font-size:52px;line-height:1;color:var(--shu)}
+  .streak-meta{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);max-width:78px}
+  .streak-meta b{color:var(--ink);display:block;font-size:13px;letter-spacing:.05em}
+
+  /* ---- phase eyebrow ---- */
+  .phase{display:flex;align-items:baseline;gap:10px;margin-bottom:8px}
+  .phase .wk{font-family:"Shippori Mincho",serif;font-weight:700;font-size:13px;letter-spacing:.2em;color:var(--shu);
+    border:1.5px solid var(--shu);border-radius:2px;padding:2px 8px}
+  .phase .focus{font-size:14px;color:var(--ink-soft)}
+  .phase .focus b{color:var(--ink);font-weight:700}
+
+  /* ---- today card ---- */
+  .card{position:relative;background:var(--card);border:1.5px solid var(--ink);
+    box-shadow:5px 5px 0 rgba(35,32,26,.16);padding:20px 20px 8px;margin-bottom:30px}
+  .card h2{font-family:"Shippori Mincho",serif;font-weight:700;font-size:18px;margin:0 0 2px;letter-spacing:.02em}
+  .card .date{font-size:12px;color:var(--ink-soft);margin-bottom:14px}
+
+  .task{display:flex;align-items:flex-start;gap:13px;padding:13px 2px;border-top:1px solid var(--line)}
+  .task:first-of-type{border-top:none}
+  .box{flex:none;width:26px;height:26px;margin-top:1px;border:1.8px solid var(--ink);border-radius:3px;
+    background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;
+    transition:background .15s;font-family:"Shippori Mincho",serif;color:#fff;font-size:17px}
+  .box:hover{background:rgba(35,32,26,.06)}
+  .box.on{background:var(--ink)}
+  .box.sacred{border-color:var(--shu)}
+  .box.sacred.on{background:var(--shu)}
+  .t-body{flex:1;min-width:0}
+  .t-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .t-label{font-weight:700;font-size:15px}
+  .task.done .t-label{color:var(--ink-faint);text-decoration:line-through;text-decoration-color:var(--shu)}
+  .badge{font-family:"Shippori Mincho",serif;font-size:10px;letter-spacing:.12em;color:var(--shu);
+    border:1px solid var(--shu);border-radius:2px;padding:1px 5px;white-space:nowrap}
+  .t-sub{font-size:12.5px;color:var(--ink-soft);margin-top:2px}
+  .chip{display:inline-flex;align-items:center;gap:5px;margin-top:7px;margin-right:6px;
+    font-size:12px;font-weight:500;color:var(--ink);text-decoration:none;
+    border:1.3px solid var(--ink);border-radius:2px;padding:3px 9px;background:var(--paper);transition:transform .1s,background .15s}
+  .chip:hover{background:var(--ink);color:var(--card);transform:translateY(-1px)}
+  .chip .arr{font-size:11px}
+
+  .note{font-size:12.5px;color:var(--ink-soft);padding:12px 2px 16px;border-top:1px dashed var(--line);margin-top:4px}
+  .note b{color:var(--shu)}
+
+  /* ---- hanko seal ---- */
+  .seal{position:absolute;top:-14px;right:-12px;width:66px;height:66px;
+    display:flex;align-items:center;justify-content:center;pointer-events:none;
+    opacity:0;transform:scale(.4) rotate(-18deg)}
+  .seal.show{opacity:1;transform:scale(1) rotate(-9deg);
+    transition:opacity .18s, transform .28s cubic-bezier(.2,1.5,.4,1)}
+  .seal svg{width:100%;height:100%;filter:drop-shadow(1px 1px 0 rgba(143,42,29,.25))}
+  .seal .ch{font-family:"Shippori Mincho",serif;font-weight:800}
+
+  /* ---- roadmap ---- */
+  .sec-h{font-family:"Shippori Mincho",serif;font-weight:700;font-size:13px;letter-spacing:.24em;
+    text-transform:uppercase;color:var(--ink-soft);margin:0 0 14px;display:flex;align-items:center;gap:10px}
+  .sec-h::after{content:"";flex:1;height:1px;background:var(--line)}
+  .road{display:flex;flex-direction:column;gap:0;margin-bottom:32px}
+  .stop{display:flex;gap:14px;align-items:flex-start}
+  .stop .rail{display:flex;flex-direction:column;align-items:center;flex:none;width:22px}
+  .stop .dot{width:13px;height:13px;border:2px solid var(--ink-faint);background:var(--paper);border-radius:50%;margin-top:4px}
+  .stop .bar{width:2px;flex:1;background:var(--line);min-height:26px}
+  .stop:last-child .bar{display:none}
+  .stop .rt{padding-bottom:20px}
+  .stop .rt .lbl{font-weight:700;font-size:14.5px}
+  .stop .rt .ds{font-size:12.5px;color:var(--ink-soft)}
+  .stop.on .dot{border-color:var(--shu);background:var(--shu);box-shadow:0 0 0 4px rgba(178,55,38,.15)}
+  .stop.on .rt .lbl{color:var(--shu)}
+  .stop.done .dot{border-color:var(--ink);background:var(--ink)}
+
+  /* ---- calendar ---- */
+  .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:10px}
+  .cell{aspect-ratio:1;border:1px solid var(--grid);background:var(--card);
+    display:flex;align-items:center;justify-content:center;position:relative;border-radius:2px}
+  .cell.pre{background:transparent;border-color:transparent}
+  .cell.today{border:1.8px solid var(--ink)}
+  .cell .mini{font-family:"Shippori Mincho",serif;font-weight:800;color:var(--shu);font-size:15px;
+    line-height:1;transform:rotate(-8deg)}
+  .cell .num{position:absolute;top:2px;left:3px;font-size:8px;color:var(--ink-faint)}
+  .cal-cap{font-size:11.5px;color:var(--ink-soft);text-align:center;margin-bottom:30px}
+
+  /* ---- resources ---- */
+  .res{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px}
+  .res a{font-size:12.5px;color:var(--ink);text-decoration:none;border:1.3px solid var(--line);
+    border-radius:2px;padding:6px 11px;background:var(--card);transition:border-color .15s,transform .1s}
+  .res a:hover{border-color:var(--ink);transform:translateY(-1px)}
+  .res a span{color:var(--ink-soft)}
+
+  footer{border-top:1px solid var(--line);padding-top:14px;display:flex;justify-content:space-between;
+    align-items:center;font-size:11.5px;color:var(--ink-faint);flex-wrap:wrap;gap:8px}
+  .reset{background:none;border:none;color:var(--ink-faint);font:inherit;font-size:11.5px;cursor:pointer;
+    text-decoration:underline;padding:0}
+  .reset:hover{color:var(--shu)}
+  .loading{text-align:center;color:var(--ink-soft);padding:40px 0;font-size:14px}
+  .saveerr{display:none;background:var(--shu);color:#fff;font-size:12px;padding:6px 12px;border-radius:2px;margin-bottom:16px}
+
+  @media (max-width:460px){
+    .title .kanji{font-size:36px}
+    .streak-num{font-size:42px}
+    .card{box-shadow:4px 4px 0 rgba(35,32,26,.16)}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .seal,.seal.show{transition:none}
+    .chip{transition:none}
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="title">
+      <div class="kanji mincho">日課</div>
+      <div class="rom">Nikka · daily practice</div>
+    </div>
+    <div class="streak-seal">
+      <div class="streak-num mincho" id="streakNum">0</div>
+      <div class="streak-meta"><b id="streakWord">days</b>連続 in a row · <span id="totalDays">0</span> total</div>
+    </div>
+  </header>
+
+  <div id="app"><div class="loading">Loading your progress…</div></div>
+
+  <footer>
+    <span id="startedLabel"></span>
+    <button class="reset" id="resetBtn">Reset all progress</button>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var KEY = "nikka-tracker:v1";
+  var app = document.getElementById("app");
+  var state = null;
+
+  var LINKS = {
+    hira:  {url:"https://www.tofugu.com/japanese/learn-hiragana/", name:"Tofugu"},
+    kata:  {url:"https://www.tofugu.com/japanese/learn-katakana/", name:"Tofugu"},
+    anki:  {url:"https://apps.ankiweb.net/",                       name:"Get Anki"},
+    ankiweb:{url:"https://ankiweb.net/",                           name:"AnkiWeb"},
+    kaishi:{url:"https://github.com/donkuri/kaishi/releases",      name:"Kaishi 1.5k"},
+    taekim:{url:"https://guidetojapanese.org/learn/",              name:"Tae Kim"},
+    hello: {url:"https://www.hellotalk.com/",                      name:"HelloTalk"}
+  };
+
+  // ---- date helpers ----
+  function fmt(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+  function today(){ return fmt(new Date()); }
+  function parse(s){ return new Date(s+"T00:00:00"); }
+  function daysBetween(a,b){ return Math.round((parse(b)-parse(a))/86400000); }
+  function weekOf(startStr){ var d=daysBetween(startStr, today()); if(d<0)d=0; return Math.floor(d/7)+1; }
+
+  // core = the "sacred" task done: kana (early) OR anki (later)
+  function coreDone(day){ return !!(day && (day.anki || day.kana)); }
+
+  function computeStreak(days){
+    var s=0, d=new Date(), t=today();
+    if(!(days[t] && coreDone(days[t]))) d.setDate(d.getDate()-1); // today still pending
+    while(days[fmt(d)] && coreDone(days[fmt(d)])){ s++; d.setDate(d.getDate()-1); }
+    return s;
+  }
+  function computeTotal(days){ var n=0; for(var k in days) if(coreDone(days[k])) n++; return n; }
+
+  // ---- storage (localStorage: persists on THIS device / browser) ----
+  var mem = {}; // fallback if localStorage is blocked (e.g. inside a preview sandbox)
+  function rawGet(k){ try{ return window.localStorage.getItem(k); }catch(e){ return (k in mem)?mem[k]:null; } }
+  function rawSet(k,v){ try{ window.localStorage.setItem(k,v); return true; }catch(e){ mem[k]=v; return false; } }
+  function load(){
+    var v = rawGet(KEY);
+    if(v){ try{ return JSON.parse(v); }catch(e){} }
+    return null;
+  }
+  function save(){
+    var ok = rawSet(KEY, JSON.stringify(state));
+    var el = document.getElementById("saveErr"); if(el) el.style.display = ok ? "none" : "block";
+  }
+
+  // ---- task definitions per week ----
+  function tasksFor(wk){
+    if(wk<=1) return [
+      {id:"kana",  sacred:true,  label:"Hiragana practice", sub:"Tofugu guide + drills until it's automatic", link:LINKS.hira}
+    ];
+    if(wk===2) return [
+      {id:"kana",  sacred:false, label:"Finish katakana", sub:"Same method — feels easier the second time", link:LINKS.kata},
+      {id:"anki",  sacred:true,  label:"Anki — 10 new words", sub:"Set up the Kaishi 1.5k deck first", link:LINKS.ankiweb, extra:LINKS.kaishi}
+    ];
+    var base = [
+      {id:"anki",     sacred:true,  label:"Anki — reviews + 10 new", sub:"The engine. Never skip this one.", link:LINKS.ankiweb},
+      {id:"grammar",  sacred:false, label:"Grammar — 1 point", sub:"Tae Kim's guide, one point per day", link:LINKS.taekim},
+      {id:"immersion",sacred:false, label:"Immersion — 10 min", sub:"Read cards aloud, or spot words in something you watch"}
+    ];
+    if(wk>=7) base.push({id:"speaking", sacred:false, label:"Speak / exchange", sub:"Try a message or short call", link:LINKS.hello});
+    return base;
+  }
+
+  var ROAD = [
+    {wk:1,  lbl:"Week 1 · Hiragana",       ds:"Read hiragana without stalling"},
+    {wk:2,  lbl:"Week 2 · Katakana + Anki",ds:"Finish kana, start Kaishi 1.5k"},
+    {wk:3,  lbl:"Weeks 3–6 · The routine", ds:"Anki + grammar + immersion, daily"},
+    {wk:7,  lbl:"Beyond · Speaking",       ds:"Add HelloTalk or iTalki"}
+  ];
+  function roadState(node, wk){
+    if(wk>=7) return node.wk===7?"on":"done";
+    if(node.wk===7) return "";
+    if(wk>=3){ return node.wk===3?"on":(node.wk<3?"done":""); }
+    return node.wk===wk?"on":(node.wk<wk?"done":"");
+  }
+
+  function chip(link, sub){
+    return '<a class="chip" href="'+link.url+'" target="_blank" rel="noopener">'+(sub||link.name)+' <span class="arr">↗</span></a>';
+  }
+
+  function render(){
+    var t = today();
+    if(!state.days[t]) state.days[t] = {};
+    var day = state.days[t];
+    var wk = weekOf(state.startDate);
+    var tasks = tasksFor(wk);
+
+    // header numbers
+    var streak = computeStreak(state.days);
+    document.getElementById("streakNum").textContent = streak;
+    document.getElementById("streakWord").textContent = streak===1 ? "day" : "days";
+    document.getElementById("totalDays").textContent = computeTotal(state.days);
+    document.getElementById("startedLabel").textContent = "Started " + state.startDate + " · week " + wk;
+
+    var focus = wk<=1 ? "<b>Hiragana</b> — nothing else yet"
+             : wk===2 ? "<b>Katakana</b> + start the Anki engine"
+             : wk<=6  ? "<b>The routine</b> — keep the streak alive"
+             :          "<b>Keep going</b> — add speaking practice";
+
+    var sacredDone = coreDone(day);
+
+    var html = '';
+    html += '<div class="saveerr" id="saveErr">This is a preview — progress won\'t stick here. Download the file and open it in your browser (or Add to Home Screen) to keep your streak.</div>';
+
+    html += '<div class="phase"><span class="wk mincho">週 '+wk+'</span><span class="focus">'+focus+'</span></div>';
+
+    // today card
+    html += '<div class="card">';
+    html +=   '<div class="seal'+(sacredDone?' show':'')+'" id="seal">'+sealSVG()+'</div>';
+    html +=   '<h2>Today\'s practice</h2>';
+    html +=   '<div class="date">'+prettyDate(t)+'</div>';
+
+    tasks.forEach(function(task){
+      var on = !!day[task.id];
+      html += '<div class="task'+(on?' done':'')+'">';
+      html +=   '<div class="box'+(task.sacred?' sacred':'')+(on?' on':'')+'" data-id="'+task.id+'" role="checkbox" tabindex="0" aria-checked="'+on+'">'+(on?'✓':'')+'</div>';
+      html +=   '<div class="t-body"><div class="t-top"><span class="t-label">'+task.label+'</span>';
+      if(task.sacred) html += '<span class="badge mincho">毎日 · every day</span>';
+      html +=   '</div><div class="t-sub">'+task.sub+'</div>';
+      var chips='';
+      if(task.link)  chips += chip(task.link, task.link.name);
+      if(task.extra) chips += chip(task.extra, task.extra.name);
+      if(chips) html += '<div>'+chips+'</div>';
+      html +=   '</div></div>';
+    });
+
+    html +=   '<div class="note">Chaotic day? Just tick the <b>毎日</b> task and you\'re covered — the streak stays alive. Consistency beats hours.</div>';
+    html += '</div>';
+
+    // roadmap
+    html += '<div class="sec-h mincho">The path</div><div class="road">';
+    ROAD.forEach(function(n){
+      var st = roadState(n, wk);
+      html += '<div class="stop '+st+'"><div class="rail"><div class="dot"></div><div class="bar"></div></div>'+
+              '<div class="rt"><div class="lbl">'+n.lbl+'</div><div class="ds">'+n.ds+'</div></div></div>';
+    });
+    html += '</div>';
+
+    // calendar
+    html += '<div class="sec-h mincho">Last 4 weeks</div>'+ calendarHTML();
+
+    // resources
+    html += '<div class="sec-h mincho">All resources</div><div class="res">'+
+      resLink(LINKS.hira,"Hiragana")+resLink(LINKS.kata,"Katakana")+
+      resLink(LINKS.anki,"Install Anki")+resLink(LINKS.ankiweb,"AnkiWeb")+
+      resLink(LINKS.kaishi,"Kaishi deck")+resLink(LINKS.taekim,"Grammar (Tae Kim)")+
+      resLink(LINKS.hello,"HelloTalk")+'</div>';
+
+    app.innerHTML = html;
+    bind();
+  }
+
+  function resLink(l,label){ return '<a href="'+l.url+'" target="_blank" rel="noopener">'+label+' <span>↗</span></a>'; }
+
+  function calendarHTML(){
+    var cells='', now=new Date();
+    var start = new Date(); start.setDate(now.getDate()-27); // 28 days ending today
+    // pad so today aligns; we just render 28 in order
+    for(var i=0;i<28;i++){
+      var d=new Date(start); d.setDate(start.getDate()+i);
+      var s=fmt(d);
+      var pre = daysBetween(state.startDate, s) < 0;
+      var isToday = s===today();
+      var done = coreDone(state.days[s]);
+      var cls = "cell"+(pre?" pre":"")+(isToday?" today":"");
+      cells += '<div class="'+cls+'">'+
+               (pre?'':'<span class="num">'+d.getDate()+'</span>')+
+               (done?'<span class="mini mincho">済</span>':'')+
+               '</div>';
+    }
+    return '<div class="cal">'+cells+'</div><div class="cal-cap">済 marks a day the daily task was done</div>';
+  }
+
+  function sealSVG(){
+    return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">'+
+      '<rect x="6" y="6" width="88" height="88" rx="6" fill="none" stroke="#b23726" stroke-width="5"/>'+
+      '<rect x="14" y="14" width="72" height="72" rx="3" fill="none" stroke="#b23726" stroke-width="2"/>'+
+      '<text class="ch" x="50" y="50" text-anchor="middle" dominant-baseline="central" '+
+      'font-size="52" fill="#b23726" font-family="Shippori Mincho, serif" font-weight="800">済</text>'+
+      '</svg>';
+  }
+
+  function prettyDate(s){
+    var d=parse(s);
+    return d.toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"});
+  }
+
+  function toggle(id){
+    var t=today();
+    if(!state.days[t]) state.days[t]={};
+    state.days[t][id] = !state.days[t][id];
+    save();
+    render();
+  }
+
+  function bind(){
+    var boxes = app.querySelectorAll(".box");
+    boxes.forEach(function(b){
+      b.addEventListener("click", function(){ toggle(b.getAttribute("data-id")); });
+      b.addEventListener("keydown", function(e){
+        if(e.key===" "||e.key==="Enter"){ e.preventDefault(); toggle(b.getAttribute("data-id")); }
+      });
+    });
+  }
+
+  document.getElementById("resetBtn").addEventListener("click", function(){
+    if(!confirm("Reset everything — streak, days, and today's checklist? This can't be undone.")) return;
+    state = { startDate: today(), days:{} };
+    save();
+    render();
+  });
+
+  (function init(){
+    state = load();
+    if(!state || !state.startDate){
+      state = { startDate: today(), days:{} };
+      save();
+    }
+    render();
+  })();
+})();
+</script>
