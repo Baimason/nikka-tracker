@@ -126,14 +126,40 @@
   .stop.on .rt .lbl{color:var(--shu)}
   .stop.done .dot{border-color:var(--ink);background:var(--ink)}
 
+  /* Estilos base para el calendario */
   .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:10px}
   .cell{aspect-ratio:1;border:1px solid var(--grid);background:var(--card);
     display:flex;align-items:center;justify-content:center;position:relative;border-radius:2px}
   .cell.pre{background:transparent;border-color:transparent}
   .cell.today{border:1.8px solid var(--ink)}
-  .cell .mini{font-family: var(--display-font);font-weight:800;color:var(--shu);font-size:15px;line-height:1;transform:rotate(-8deg)}
+  .cell .num{position:absolute;top:2px;left:3px;font-size:8px;color:var(--ink-faint)}
+  
+  /* Niveles de recompensa (Sellos) */
+  .cell .mini{font-family: var(--display-font);font-weight:800;color:var(--shu);line-height:1;}
+  
+  /* Nivel Básico (1-29) */
+  .cell .mini.lvl-1{font-size:15px; transform:rotate(-8deg)}
+  
+  /* Nivel Intermedio (30-49) */
+  .cell .mini.lvl-2{font-size:22px; transform:rotate(-5deg)}
+  
+  /* Nivel Avanzado (50-99) */
+  .cell .mini.lvl-3{width: 75%; height: 75%; display: flex; align-items: center; justify-content: center;}
+  .cell .mini.lvl-3 svg{width:100%; height:100%;}
+  
+  /* Nivel Épico (100+) */
+  .cell .mini.lvl-4{width: 95%; height: 95%; display: flex; align-items: center; justify-content: center; transform:rotate(-12deg); z-index: 2;}
+  .cell .mini.lvl-4 svg{width:100%; height:100%; filter:drop-shadow(2px 2px 0 rgba(143,42,29,.3))}
+
   .cell .num{position:absolute;top:2px;left:3px;font-size:8px;color:var(--ink-faint)}
   .cal-cap{font-size:11.5px;color:var(--ink-soft);text-align:center;margin-bottom:30px}
+
+  /* Comportamiento dinámico del sello principal de la tarjeta */
+  .seal.show.lvl-1 { font-size: 32px; color: var(--shu); font-weight: 800; transform: scale(1) rotate(-8deg); }
+  .seal.show.lvl-2 { font-size: 46px; color: var(--shu); font-weight: 800; transform: scale(1) rotate(-5deg); }
+  .seal.show.lvl-3 { transform: scale(1) rotate(-9deg); }
+  .seal.show.lvl-4 { transform: scale(1.15) rotate(-15deg); }
+  .seal.show.lvl-4 svg { filter: drop-shadow(2px 2px 0 rgba(143,42,29,.3)); }
 
   .res{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px}
   .res a{font-size:12.5px;color:var(--ink);text-decoration:none;border:1.3px solid var(--line);
@@ -554,14 +580,40 @@
     '<rect x="14" y="14" width="72" height="72" rx="3" fill="none" stroke="#b23726" stroke-width="2"/>'+
     '<text x="50" y="50" text-anchor="middle" dominant-baseline="central" font-size="52" fill="#b23726" '+
     'font-family="Shippori Mincho, serif" font-weight="800">済</text></svg>';}
+
   function calendarHTML(){
     var cells="",start=new Date();start.setDate(start.getDate()-27);
-    for(var i=0;i<28;i++){var d=new Date(start);d.setDate(start.getDate()+i);var s=fmt(d);
+    var k = ensureKana(); // Obtenemos el registro de prácticas
+    
+    for(var i=0;i<28;i++){
+      var d=new Date(start);d.setDate(start.getDate()+i);var s=fmt(d);
       var pre=daysBetween(state.startDate,s)<0,isToday=s===today(),done=coreDone(state.days[s]);
+      
+      var contentHTML = "";
+      if (done) {
+        // Leemos cuántos ejercicios hizo este día específico
+        var drillData = k.daily[s];
+        var count = drillData ? drillData.done : 0;
+        
+        // Asignamos el nivel visual según la cantidad
+        if (count >= 100) {
+          contentHTML = '<span class="mini lvl-4">' + sealSVG() + '</span>';
+        } else if (count >= 50) {
+          contentHTML = '<span class="mini lvl-3">' + sealSVG() + '</span>';
+        } else if (count >= 30) {
+          contentHTML = '<span class="mini mincho lvl-2">済</span>';
+        } else {
+          // Básico o si marcó la tarea manualmente sin usar la práctica
+          contentHTML = '<span class="mini mincho lvl-1">済</span>';
+        }
+      }
+
       cells+='<div class="cell'+(pre?" pre":"")+(isToday?" today":"")+'">'+
-        (pre?"":'<span class="num">'+d.getDate()+'</span>')+(done?'<span class="mini mincho">済</span>':"")+'</div>';}
+        (pre?"":'<span class="num">'+d.getDate()+'</span>') + contentHTML + '</div>';
+    }
     return '<div class="cal">'+cells+'</div><div class="cal-cap">'+t("済 marks a day the daily task was done")+'</div>';
   }
+
   function roadState(node,wk){
     if(wk>=7)return node.wk===7?"on":"done";
     if(node.wk===7)return "";
@@ -659,7 +711,22 @@
 
     html+='<div class="saveerr" id="saveErr">'+t("This is a preview — progress won't stick here. Open the hosted page in your browser to keep your streak.")+'</div>';
     html+='<div class="phase"><span class="wk mincho">週 '+wk+'</span><span class="focus">'+focus+'</span></div>';
-    html+='<div class="card"><div class="seal'+(coreDone(day)?" show":"")+'">'+sealSVG()+'</div>';
+    
+    var mainSeal = '<div class="seal"></div>';
+    if (coreDone(day)) {
+      var count = dt ? dt.done : 0;
+      if (count >= 100) {
+        mainSeal = '<div class="seal show lvl-4">' + sealSVG() + '</div>';
+      } else if (count >= 50) {
+        mainSeal = '<div class="seal show lvl-3">' + sealSVG() + '</div>';
+      } else if (count >= 30) {
+        mainSeal = '<div class="seal show lvl-2 mincho">済</div>';
+      } else {
+        mainSeal = '<div class="seal show lvl-1 mincho">済</div>';
+      }
+    }
+    html += '<div class="card">' + mainSeal;
+    
     html+='<h2>'+t("Today's practice")+'</h2><div class="date">'+prettyDate(todayStr)+'</div>';
     tasks.forEach(function(task){
       var on=!!day[task.id];
