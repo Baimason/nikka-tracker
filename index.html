@@ -224,6 +224,11 @@
   .info-btn:hover{color:var(--shu)}
   .opt-help{font-size:12px;color:var(--ink-soft);line-height:1.55;margin-top:10px;padding:9px 11px;background:var(--paper);border:1px dashed var(--line);border-radius:3px}
   .opt-help b{color:var(--ink)}
+  .lang-switch{display:flex;justify-content:flex-end;margin:-4px 0 12px}
+  .lseg{font:inherit;font-size:11px;font-weight:700;letter-spacing:.08em;border:1.3px solid var(--line);background:var(--card);color:var(--ink-soft);padding:4px 12px;cursor:pointer}
+  .lseg:first-child{border-radius:3px 0 0 3px;border-right:none}
+  .lseg:last-child{border-radius:0 3px 3px 0}
+  .lseg.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
   .mastery-card{background:var(--card);border:1.5px solid var(--ink);box-shadow:5px 5px 0 rgba(35,32,26,.16);padding:18px 20px;margin-bottom:30px}
   .mastery-card .mc-top{display:flex;justify-content:space-between;align-items:baseline}
   .mastery-card h3{font-family:"Shippori Mincho",serif;font-weight:700;font-size:17px;margin:0}
@@ -259,11 +264,11 @@
   <header>
     <div class="title">
       <div class="kanji mincho">日課</div>
-      <div class="rom">Nikka · daily practice</div>
+      <div class="rom" id="romSub">Nikka · daily practice</div>
     </div>
     <div class="streak-seal">
       <div class="streak-num mincho" id="streakNum">0</div>
-      <div class="streak-meta"><b id="streakWord">days</b>連続 in a row · <span id="totalDays">0</span> total</div>
+      <div class="streak-meta" id="streakMeta"></div>
     </div>
   </header>
   <div id="app"><div class="loading">Loading your progress…</div></div>
@@ -278,6 +283,12 @@
 <script>
 (function(){
   "use strict";
+  var TR = {"day": "día", "days": "días", "total": "total", "daily practice": "práctica diaria", "Started": "Empezó", "week": "semana", "Today's practice": "Práctica de hoy", "every day": "cada día", "drill": "práctica", "<b>Hiragana</b> — nothing else yet": "<b>Hiragana</b> — nada más por ahora", "<b>Katakana</b> + start the Anki engine": "<b>Katakana</b> + arrancá el motor de Anki", "<b>The routine</b> — keep the streak alive": "<b>La rutina</b> — mantené la racha viva", "<b>Keep going</b> — add speaking practice": "<b>Seguí</b> — sumá práctica de habla", "Hiragana practice": "Práctica de hiragana", "Tofugu guide + drills until it's automatic": "Guía de Tofugu + práctica hasta que salga solo", "Kana drill": "Práctica de kana", "Finish katakana; drill both scripts": "Terminá katakana; practicá los dos silabarios", "Anki — 10 new words": "Anki — 10 palabras nuevas", "Set up the Kaishi 1.5k deck first": "Primero configurá el mazo Kaishi 1.5k", "Anki — reviews + 10 new": "Anki — repasos + 10 nuevas", "The engine. Never skip this one.": "El motor. Nunca te la saltes.", "Grammar — 1 point": "Gramática — 1 punto", "Tae Kim's guide, one point per day": "Guía de Tae Kim, un punto por día", "Immersion — 10 min": "Inmersión — 10 min", "Read cards aloud, or spot words in something you watch": "Leé las tarjetas en voz alta, o cazá palabras en algo que veas", "Speak / exchange": "Hablar / intercambio", "Try a message or short call": "Probá un mensaje o una llamada corta", "Chaotic day? Just tick the <b>毎日</b> task and you're covered — the streak stays alive. Consistency beats hours.": "¿Día caótico? Con marcar la tarea <b>毎日</b> ya estás — la racha sigue viva. La constancia le gana a las horas.", "The path": "El camino", "Week 1 · Hiragana": "Semana 1 · Hiragana", "Read hiragana without stalling": "Leer hiragana sin trabarte", "Week 2 · Katakana + Anki": "Semana 2 · Katakana + Anki", "Finish kana, start Kaishi 1.5k": "Terminar kana, arrancar Kaishi 1.5k", "Weeks 3–6 · The routine": "Semanas 3–6 · La rutina", "Anki + grammar + immersion, daily": "Anki + gramática + inmersión, a diario", "Beyond · Speaking": "Más allá · Hablar", "Add HelloTalk or iTalki": "Sumá HelloTalk o iTalki", "Last 4 weeks": "Últimas 4 semanas", "済 marks a day the daily task was done": "済 marca un día con la tarea diaria hecha", "All resources": "Todos los recursos", "Install Anki": "Instalar Anki", "Kaishi deck": "Mazo Kaishi", "Grammar (Tae Kim)": "Gramática (Tae Kim)", "済 Done for today — the seal is yours. Keep going if you like.": "済 Listo por hoy — el sello es tuyo. Seguí si querés.", "Recognition + spaced repetition. Hit the goal to stamp today.": "Reconocimiento + repetición espaciada. Llegá a la meta para sellar el día.", "Start drill": "Empezar", "Continue drill": "Continuar", "Practice more": "Practicar más", "Options": "Opciones", "Script": "Escritura", "Goal": "Meta", "<b>Hiragana</b> (あ) and <b>Katakana</b> (ア) are the two kana alphabets — same sounds, different look (katakana is mostly for foreign / loan words). <b>Dakuten</b> are the small ゛/゜ marks that voice a sound: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).": "<b>Hiragana</b> (あ) y <b>Katakana</b> (ア) son los dos silabarios — mismos sonidos, distinta forma (katakana es sobre todo para palabras extranjeras). El <b>Dakuten</b> son las marquitas ゛/゜ que sonorizan un sonido: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).", "Kana mastery": "Dominio del kana", "characters mastered": "caracteres dominados", "Focus on": "Enfocate en", "more": "más", "Do a few drills and your mastery shows up here.": "Hacé unas cuantas y acá verás tu dominio.", "済 You've got your kana. It's logical to move on — make grammar + Anki your main focus and keep drills as warm-ups.": "済 Ya dominás el kana. Es lógico avanzar — pasá el foco a gramática + Anki y dejá la práctica como calentamiento.", "Almost there — a few more sessions and kana will feel automatic.": "Casi — unas sesiones más y el kana te saldrá solo.", "Building your foundation — keep the daily drill going.": "Construyendo la base — seguí con la práctica diaria.", "Backup &amp; sync": "Respaldo y sync", "Your backup code": "Tu código de respaldo", "Copy this and paste it on another device to carry your streak over.": "Copialo y pegalo en otro dispositivo para llevarte la racha.", "Copy code": "Copiar código", "Restore from a code": "Restaurar desde un código", "Paste a code here — it merges with what's on this device (nothing is lost).": "Pegá un código acá — se fusiona con lo que ya tenés (no se pierde nada).", "Import code": "Importar código", "Sign in to sync": "Iniciar sesión para sync", "Automatic sync across devices — no passwords, no data of yours to guard.": "Sync automático entre dispositivos — sin contraseñas, sin datos tuyos que cuidar.", "COMING SOON": "PRÓXIMAMENTE", "Copied ✓": "Copiado ✓", "Select the text above and copy manually.": "Seleccioná el texto de arriba y copialo a mano.", "Imported and merged ✓": "Importado y fusionado ✓", "Couldn't read that code.": "No pude leer ese código.", "That's not a Nikka backup code.": "Ese no es un código de Nikka.", "The code looks corrupted or incomplete.": "El código parece corrupto o incompleto.", "Reset everything — streak, days, drill progress, and today's checklist? This can't be undone.": "¿Reiniciar todo — racha, días, progreso de práctica y la lista de hoy? No se puede deshacer.", "Reset all progress": "Reiniciar todo el progreso", "This is a preview — progress won't stick here. Open the hosted page in your browser to keep your streak.": "Esto es una vista previa — el progreso no se guarda acá. Abrí la página publicada en tu navegador para mantener la racha.", "Close": "Cerrar", "Done": "Hechas", "Wrong": "Erradas", "Correct": "Aciertos", "Correct!": "¡Correcto!", "It was": "Era", "Which sound is this?": "¿Qué sonido es este?", "Tap the": "Toca el", "Daily goal": "Meta diaria", "済 Goal reached!": "済 ¡Meta alcanzada!", "Today is stamped and your streak is safe. Keep going or close.": "El día quedó sellado y tu racha a salvo. Seguí o cerrá.", "hear it": "escuchar", "Next →": "Siguiente →", "Skip": "Saltar"};
+  function detectLang(){var n=((navigator.language||navigator.userLanguage||"en")+"").toLowerCase();return n.indexOf("es")===0?"es":"en";}
+  function getLang(){return (state&&state.lang)?state.lang:detectLang();}
+  function t(x){return getLang()==="es"?(TR[x]||x):x;}
+  function tm(m){return getLang()==="es"?(MEANINGS_ES[m]||m):m;}
+  function setLang(l){if(l!=="en"&&l!=="es")return;state.lang=l;Persistence.save(state);render();}
 
   /* =========================================================================
      1. PLAN CONTENT
@@ -408,6 +419,7 @@
     po:[{w:"ポスト",r:"posuto",m:"mailbox"},{w:"ポケット",r:"poketto",m:"pocket"},{w:"さんぽ",r:"sanpo",m:"a walk / stroll"}]
   };
   /* DATA_END */
+  var MEANINGS_ES = {"English (language)": "inglés (idioma)", "I / me": "yo / me", "I / me (male)": "yo (masculino)", "Japan": "Japón", "a little": "un poco", "a walk / stroll": "un paseo", "afternoon": "tarde", "apple": "manzana", "bag": "bolso", "bath": "baño", "below": "abajo", "bicycle": "bicicleta", "big": "grande", "bird": "pájaro", "black": "negro", "blood": "sangre", "blue": "azul", "boat": "barco", "body": "cuerpo", "book": "libro", "bread": "pan", "building": "edificio", "car": "carro", "cat": "gato", "cheap": "barato", "cherry blossom": "flor de cerezo", "child": "niño", "chopsticks / bridge": "palillos / puente", "clock / watch": "reloj", "cloth": "tela", "clothes": "ropa", "cloud": "nube", "cold": "frío", "computer": "computadora", "cooked rice / meal": "arroz cocido / comida", "copy": "copia", "cow": "vaca", "dangerous": "peligroso", "desk": "escritorio", "dog": "perro", "dream": "sueño", "ear": "oreja", "east": "este", "egg": "huevo", "electricity": "electricidad", "elephant": "elefante", "exit": "salida", "eye": "ojo", "face": "cara", "family": "familia", "father": "padre", "finger": "dedo", "fish": "pez / pescado", "flower / nose": "flor / nariz", "forest": "bosque", "four": "cuatro", "friend": "amigo", "from / empty": "desde / vacío", "front / before": "frente / antes", "furniture": "muebles", "garden": "jardín", "glasses": "anteojos", "hand": "mano", "hat": "sombrero", "head": "cabeza", "healthy / lively": "sano / con energía", "here": "aquí", "history": "historia", "home": "hogar", "house / home": "casa / hogar", "insect": "insecto", "island": "isla", "kanji / character": "kanji / carácter", "key": "llave", "letter": "carta", "long": "largo", "magazine": "revista", "mailbox": "buzón", "map": "mapa", "meat": "carne", "money": "dinero", "moon": "luna", "morning": "mañana", "mother": "madre", "mountain": "montaña", "mouth": "boca", "name": "nombre", "newspaper": "periódico", "next": "siguiente", "night": "noche", "noon": "mediodía", "north": "norte", "now": "ahora", "object particle": "partícula de objeto", "older brother": "hermano mayor", "one": "uno", "other": "otro", "outside": "afuera", "pen": "lapicero", "pencil": "lápiz", "person": "persona", "pet": "mascota", "piano": "piano", "picture": "dibujo", "pig": "cerdo", "pocket": "bolsillo", "pond": "estanque", "pool": "piscina", "pot / hot pot": "olla", "present / gift": "regalo", "quiet": "tranquilo", "rain": "lluvia", "rain / candy": "lluvia / dulce", "rice (grain)": "arroz (grano)", "right": "derecha", "river": "río", "room": "habitación", "school": "escuela", "sea": "mar", "seaweed": "alga", "shadow": "sombra", "shoes": "zapatos", "shop": "tienda", "shrimp": "camarón", "side": "lado", "six": "seis", "sky": "cielo", "small": "pequeño", "smoke": "humo", "snake": "serpiente", "snow": "nieve", "soba noodles": "fideos soba", "soba noodles / nearby": "fideos soba / cerca", "son": "hijo", "song": "canción", "soon / right away": "pronto / enseguida", "sound": "sonido", "spring": "primavera", "star": "estrella", "station": "estación", "study": "estudio", "summer": "verano", "sun / fire / day": "sol / fuego / día", "supermarket": "supermercado", "sushi": "sushi", "tall / expensive": "alto / caro", "tea": "té", "teacher": "profesor", "telephone": "teléfono", "tempura": "tempura", "that": "eso", "thing": "cosa", "this": "esto", "three": "tres", "time": "tiempo", "to come": "venir", "to drink": "beber", "to eat": "comer", "to hold": "sostener", "to like": "gustar", "to read": "leer", "to ride": "montar", "to see": "ver", "to sleep": "dormir", "today": "hoy", "town": "pueblo", "tree": "árbol", "trip": "viaje", "udon noodles": "fideos udon", "umbrella": "paraguas", "university": "universidad", "unskilled / bad at": "torpe / malo en algo", "vegetable": "verdura", "village": "aldea", "voice": "voz", "water": "agua", "weather": "clima", "what": "qué", "white": "blanco", "wind / a cold": "viento / resfriado", "window": "ventana", "winter": "invierno", "word / language": "palabra / idioma", "work / job": "trabajo", "world": "mundo", "year / age": "año / edad", "yen": "yen", "zero": "cero"};
   var BASE_KEYS = Object.keys(KANA_BASE);
   var DAK_KEYS = Object.keys(KANA_DAKUTEN);
   var ALL = {}; BASE_KEYS.forEach(function(k){ALL[k]=KANA_BASE[k];}); DAK_KEYS.forEach(function(k){ALL[k]=KANA_DAKUTEN[k];});
@@ -424,17 +436,17 @@
   function nowISO(){return new Date().toISOString();}
   function parse(s){return new Date(s+"T00:00:00");}
   function daysBetween(a,b){return Math.round((parse(b)-parse(a))/86400000);}
-  function emptyState(){return {schema:SCHEMA,startDate:today(),days:{},exercises:{},meta:{updatedAt:nowISO()}};}
+  function emptyState(){return {schema:SCHEMA,lang:detectLang(),startDate:today(),days:{},exercises:{},meta:{updatedAt:nowISO()}};}
   function migrate(s){
     if(!s||typeof s!=="object") return null;
-    return {schema:SCHEMA,startDate:s.startDate||today(),
+    return {schema:SCHEMA,lang:s.lang,startDate:s.startDate||today(),
       days:(s.days&&typeof s.days==="object")?s.days:{},
       exercises:(s.exercises&&typeof s.exercises==="object")?s.exercises:{},
       meta:(s.meta&&typeof s.meta==="object")?s.meta:{updatedAt:nowISO()}};
   }
   function mergeStates(a,b){
     a=migrate(a);b=migrate(b); if(!a)return b; if(!b)return a;
-    var out={schema:SCHEMA,startDate:(daysBetween(a.startDate,b.startDate)<0?b.startDate:a.startDate),
+    var out={schema:SCHEMA,lang:a.lang||b.lang,startDate:(daysBetween(a.startDate,b.startDate)<0?b.startDate:a.startDate),
       days:{},exercises:Object.assign({},a.exercises,b.exercises),
       meta:{updatedAt:(a.meta.updatedAt>b.meta.updatedAt?a.meta.updatedAt:b.meta.updatedAt)}};
     var keys={}; Object.keys(a.days).forEach(function(k){keys[k]=1;}); Object.keys(b.days).forEach(function(k){keys[k]=1;});
@@ -486,9 +498,9 @@
   function encodeState(s){return CODEC_PREFIX+b64e(JSON.stringify(migrate(s)));}
   function decodeCode(code){
     code=(code||"").trim();
-    if(code.indexOf(CODEC_PREFIX)!==0) throw new Error("That's not a Nikka backup code.");
+    if(code.indexOf(CODEC_PREFIX)!==0) throw new Error(t("That's not a Nikka backup code."));
     var obj=JSON.parse(b64d(code.slice(CODEC_PREFIX.length)));
-    if(!obj||typeof obj!=="object"||typeof obj.days!=="object") throw new Error("The code looks corrupted or incomplete.");
+    if(!obj||typeof obj!=="object"||typeof obj.days!=="object") throw new Error(t("The code looks corrupted or incomplete."));
     return migrate(obj);
   }
 
@@ -515,7 +527,7 @@
   var app=document.getElementById("app");
   function chip(link,label){return '<a class="chip" href="'+link.url+'" target="_blank" rel="noopener">'+(label||link.name)+' <span class="arr">↗</span></a>';}
   function resLink(l,label){return '<a href="'+l.url+'" target="_blank" rel="noopener">'+label+' <span>↗</span></a>';}
-  function prettyDate(s){return parse(s).toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"});}
+  function prettyDate(s){return parse(s).toLocaleDateString(getLang()==="es"?"es-ES":"en-US",{weekday:"long",month:"long",day:"numeric"});}
   function sealSVG(){return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">'+
     '<rect x="6" y="6" width="88" height="88" rx="6" fill="none" stroke="#b23726" stroke-width="5"/>'+
     '<rect x="14" y="14" width="72" height="72" rx="3" fill="none" stroke="#b23726" stroke-width="2"/>'+
@@ -527,7 +539,7 @@
       var pre=daysBetween(state.startDate,s)<0,isToday=s===today(),done=coreDone(state.days[s]);
       cells+='<div class="cell'+(pre?" pre":"")+(isToday?" today":"")+'">'+
         (pre?"":'<span class="num">'+d.getDate()+'</span>')+(done?'<span class="mini mincho">済</span>':"")+'</div>';}
-    return '<div class="cal">'+cells+'</div><div class="cal-cap">済 marks a day the daily task was done</div>';
+    return '<div class="cal">'+cells+'</div><div class="cal-cap">'+t("済 marks a day the daily task was done")+'</div>';
   }
   function roadState(node,wk){
     if(wk>=7)return node.wk===7?"on":"done";
@@ -540,93 +552,95 @@
     var doneToday=dt.done>=goal;
     function seg(kind,val,label,on){return '<button class="seg'+(on?" on":"")+'" data-seg="'+kind+'" data-val="'+val+'">'+label+'</button>';}
     return '<div class="drill-card">'+
-      '<div class="dc-top"><h3>Kana drill</h3><div class="dc-count">'+dt.done+' / '+goal+'</div></div>'+
+      '<div class="dc-top"><h3>'+t("Kana drill")+'</h3><div class="dc-count">'+dt.done+' / '+goal+'</div></div>'+
       '<div class="prog"><i style="width:'+pct+'%"></i></div>'+
-      '<div class="dc-sub">'+(doneToday?'済 Done for today — the seal is yours. Keep going if you like.':'Recognition + spaced repetition. Hit the goal to stamp today.')+'</div>'+
-      '<button class="start-btn'+(doneToday?" done-today":"")+'" id="startDrill">'+(dt.done>0?(doneToday?"Practice more":"Continue drill"):"Start drill")+'</button>'+
-      '<details class="opts"><summary>Options</summary>'+
-        '<div class="opt-row"><span class="k">Script</span>'+
+      '<div class="dc-sub">'+(doneToday?t("済 Done for today — the seal is yours. Keep going if you like."):t("Recognition + spaced repetition. Hit the goal to stamp today."))+'</div>'+
+      '<button class="start-btn'+(doneToday?" done-today":"")+'" id="startDrill">'+(dt.done>0?(doneToday?t("Practice more"):t("Continue drill")):t("Start drill"))+'</button>'+
+      '<details class="opts"><summary>'+t("Options")+'</summary>'+
+        '<div class="opt-row"><span class="k">'+t("Script")+'</span>'+
           seg("hira",1,"Hiragana",k.scope.hira)+seg("kata",1,"Katakana",k.scope.kata)+seg("dakuten",1,"+ Dakuten",k.scope.dakuten)+
           '<button class="info-btn" id="scriptInfo" aria-label="Explain the scripts">ⓘ</button></div>'+
-        '<div class="opt-help" id="scriptHelp" hidden><b>Hiragana</b> (あ) and <b>Katakana</b> (ア) are the two kana alphabets — same sounds, different look (katakana is mostly for foreign / loan words). <b>Dakuten</b> are the small ゛/゜ marks that voice a sound: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).</div>'+
-        '<div class="opt-row"><span class="k">Goal</span>'+
+        '<div class="opt-help" id="scriptHelp" hidden>'+t("<b>Hiragana</b> (あ) and <b>Katakana</b> (ア) are the two kana alphabets — same sounds, different look (katakana is mostly for foreign / loan words). <b>Dakuten</b> are the small ゛/゜ marks that voice a sound: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).")+'</div>'+
+        '<div class="opt-row"><span class="k">'+t("Goal")+'</span>'+
           seg("goal",20,"20",goal===20)+seg("goal",30,"30",goal===30)+seg("goal",50,"50",goal===50)+seg("goal",100,"100",goal===100)+'</div>'+
       '</details></div>';
   }
   function masteryCardHTML(){
     var m=kanaMastery(),ratio=m.total?m.solid/m.total:0,ready=ratio>=0.9,close=ratio>=0.55;
     var verdict,vcls="";
-    if(!m.solid){verdict="Do a few drills and your mastery shows up here.";}
-    else if(ready){verdict="済 You've got your kana. It's logical to move on — make grammar + Anki your main focus and keep drills as warm-ups.";vcls="ok";}
-    else if(close){verdict="Almost there — a few more sessions and kana will feel automatic.";}
-    else{verdict="Building your foundation — keep the daily drill going.";}
+    if(!m.solid){verdict=t("Do a few drills and your mastery shows up here.");}
+    else if(ready){verdict=t("済 You've got your kana. It's logical to move on — make grammar + Anki your main focus and keep drills as warm-ups.");vcls="ok";}
+    else if(close){verdict=t("Almost there — a few more sessions and kana will feel automatic.");}
+    else{verdict=t("Building your foundation — keep the daily drill going.");}
     var weak="";
-    if(m.weak.length){ weak='<div class="weak-row"><span class="wl">Focus on</span>'+
+    if(m.weak.length){ weak='<div class="weak-row"><span class="wl">'+t("Focus on")+'</span>'+
       m.weak.slice(0,8).map(function(x){return '<span class="wk-g mincho">'+glyph(x.r,"hira")+'</span>';}).join("")+
-      (m.weak.length>8?'<span class="wl">+'+(m.weak.length-8)+' more</span>':'')+'</div>'; }
-    return '<div class="mastery-card"><div class="mc-top"><h3>Kana mastery</h3>'+
+      (m.weak.length>8?'<span class="wl">+'+(m.weak.length-8)+' '+t("more")+'</span>':'')+'</div>'; }
+    return '<div class="mastery-card"><div class="mc-top"><h3>'+t("Kana mastery")+'</h3>'+
       '<div class="mc-pct'+(ready?" ok":"")+'">'+m.pct+'%</div></div>'+
       '<div class="prog"><i class="'+(ready?"g":"")+'" style="width:'+m.pct+'%"></i></div>'+
-      '<div class="mc-sub">'+m.solid+' of '+m.total+' characters solid (mastered)</div>'+
+      '<div class="mc-sub">'+m.solid+' / '+m.total+' '+t("characters mastered")+'</div>'+
       '<div class="mc-verdict '+vcls+'">'+verdict+'</div>'+weak+'</div>';
   }
   function dataPanelHTML(){
     var code=encodeState(state);
-    return '<details class="panel"><summary>Backup &amp; sync <span class="caret">›</span></summary>'+
-      '<div class="row"><label>Your backup code</label>'+
-        '<div class="hint">Copy this and paste it on another device to carry your streak over.</div>'+
+    return '<details class="panel"><summary>'+t("Backup &amp; sync")+' <span class="caret">›</span></summary>'+
+      '<div class="row"><label>'+t("Your backup code")+'</label>'+
+        '<div class="hint">'+t("Copy this and paste it on another device to carry your streak over.")+'</div>'+
         '<textarea class="code" id="exportBox" readonly rows="3">'+code+'</textarea>'+
-        '<button class="btn" id="copyBtn">Copy code</button><div class="status ok" id="copyStatus"></div></div>'+
-      '<div class="row"><label>Restore from a code</label>'+
-        '<div class="hint">Paste a code here — it merges with what\'s on this device (nothing is lost).</div>'+
+        '<button class="btn" id="copyBtn">'+t("Copy code")+'</button><div class="status ok" id="copyStatus"></div></div>'+
+      '<div class="row"><label>'+t("Restore from a code")+'</label>'+
+        '<div class="hint">'+t("Paste a code here — it merges with what's on this device (nothing is lost).")+'</div>'+
         '<textarea class="code" id="importBox" rows="3" placeholder="NIKKA1.…"></textarea>'+
-        '<button class="btn alt" id="importBtn">Import code</button><div class="status" id="importStatus"></div></div>'+
-      '<div class="row soon"><div><div class="st">Sign in to sync</div>'+
-        '<div class="sub">Automatic sync across devices — no passwords, no data of yours to guard.</div></div>'+
-        '<span class="tag">COMING SOON</span></div></details>';
+        '<button class="btn alt" id="importBtn">'+t("Import code")+'</button><div class="status" id="importStatus"></div></div>'+
+      '<div class="row soon"><div><div class="st">'+t("Sign in to sync")+'</div>'+
+        '<div class="sub">'+t("Automatic sync across devices — no passwords, no data of yours to guard.")+'</div></div>'+
+        '<span class="tag">'+t("COMING SOON")+'</span></div></details>';
   }
   function render(){
     var t=today(); if(!state.days[t])state.days[t]={};
     var day=state.days[t],wk=weekOf(state.startDate),tasks=tasksFor(wk),dt=drillToday();
     var strk=computeStreak(state.days);
     document.getElementById("streakNum").textContent=strk;
-    document.getElementById("streakWord").textContent=strk===1?"day":"days";
-    document.getElementById("totalDays").textContent=computeTotal(state.days);
-    document.getElementById("startedLabel").textContent="Started "+state.startDate+" · week "+wk;
-    var focus=wk<=1?"<b>Hiragana</b> — nothing else yet":wk===2?"<b>Katakana</b> + start the Anki engine":
-      wk<=6?"<b>The routine</b> — keep the streak alive":"<b>Keep going</b> — add speaking practice";
+    document.getElementById("streakMeta").innerHTML='<b>'+(strk===1?t("day"):t("days"))+'</b> 連続 · '+computeTotal(state.days)+' '+t("total");
+    document.getElementById("romSub").textContent="Nikka · "+t("daily practice");
+    document.getElementById("startedLabel").textContent=t("Started")+" "+state.startDate+" · "+t("week")+" "+wk;
+    document.getElementById("resetBtn").textContent=t("Reset all progress");
+    var focus=t(wk<=1?"<b>Hiragana</b> — nothing else yet":wk===2?"<b>Katakana</b> + start the Anki engine":wk<=6?"<b>The routine</b> — keep the streak alive":"<b>Keep going</b> — add speaking practice");
 
     var html="";
-    html+='<div class="saveerr" id="saveErr">This is a preview — progress won\'t stick here. Open the hosted page in your browser to keep your streak.</div>';
+    var lang=getLang();
+    html+='<div class="lang-switch"><button class="lseg'+(lang==="en"?" on":"")+'" data-lang="en">EN</button><button class="lseg'+(lang==="es"?" on":"")+'" data-lang="es">ES</button></div>';
+    html+='<div class="saveerr" id="saveErr">'+t("This is a preview — progress won't stick here. Open the hosted page in your browser to keep your streak.")+'</div>';
     html+='<div class="phase"><span class="wk mincho">週 '+wk+'</span><span class="focus">'+focus+'</span></div>';
     html+='<div class="card"><div class="seal'+(coreDone(day)?" show":"")+'">'+sealSVG()+'</div>';
-    html+='<h2>Today\'s practice</h2><div class="date">'+prettyDate(t)+'</div>';
+    html+='<h2>'+t("Today's practice")+'</h2><div class="date">'+prettyDate(t)+'</div>';
     tasks.forEach(function(task){
       var on=!!day[task.id];
       html+='<div class="task'+(on?" done":"")+'">';
       html+='<div class="box'+(task.sacred?" sacred":"")+(on?" on":"")+'" data-id="'+task.id+'" role="checkbox" tabindex="0" aria-checked="'+on+'">'+(on?"✓":"")+'</div>';
-      html+='<div class="t-body"><div class="t-top"><span class="t-label">'+task.label+'</span>';
-      if(task.sacred)html+='<span class="badge mincho">毎日 · every day</span>';
-      html+='</div><div class="t-sub">'+task.sub+(task.drill?' · drill '+dt.done+'/'+ensureKana().goal:'')+'</div>';
+      html+='<div class="t-body"><div class="t-top"><span class="t-label">'+t(task.label)+'</span>';
+      if(task.sacred)html+='<span class="badge mincho">毎日 · '+t("every day")+'</span>';
+      html+='</div><div class="t-sub">'+t(task.sub)+(task.drill?' · '+t("drill")+' '+dt.done+'/'+ensureKana().goal:'')+'</div>';
       var c=""; if(task.link)c+=chip(task.link,task.link.name); if(task.extra)c+=chip(task.extra,task.extra.name);
       if(c)html+='<div>'+c+'</div>';
       html+='</div></div>';
     });
-    html+='<div class="note">Chaotic day? Just tick the <b>毎日</b> task and you\'re covered — the streak stays alive. Consistency beats hours.</div></div>';
+    html+='<div class="note">'+t("Chaotic day? Just tick the <b>毎日</b> task and you're covered — the streak stays alive. Consistency beats hours.")+'</div></div>';
 
     /* exercises slot */
     html+=drillCardHTML();
     html+=masteryCardHTML();
 
-    html+='<div class="sec-h mincho">The path</div><div class="road">';
+    html+='<div class="sec-h mincho">'+t("The path")+'</div><div class="road">';
     ROAD.forEach(function(n){var st=roadState(n,wk);
       html+='<div class="stop '+st+'"><div class="rail"><div class="dot"></div><div class="bar"></div></div>'+
-        '<div class="rt"><div class="lbl">'+n.lbl+'</div><div class="ds">'+n.ds+'</div></div></div>';});
+        '<div class="rt"><div class="lbl">'+t(n.lbl)+'</div><div class="ds">'+t(n.ds)+'</div></div></div>';});
     html+='</div>';
-    html+='<div class="sec-h mincho">Last 4 weeks</div>'+calendarHTML();
-    html+='<div class="sec-h mincho">All resources</div><div class="res">'+
-      resLink(LINKS.hira,"Hiragana")+resLink(LINKS.kata,"Katakana")+resLink(LINKS.anki,"Install Anki")+
-      resLink(LINKS.ankiweb,"AnkiWeb")+resLink(LINKS.kaishi,"Kaishi deck")+resLink(LINKS.taekim,"Grammar (Tae Kim)")+
+    html+='<div class="sec-h mincho">'+t("Last 4 weeks")+'</div>'+calendarHTML();
+    html+='<div class="sec-h mincho">'+t("All resources")+'</div><div class="res">'+
+      resLink(LINKS.hira,"Hiragana")+resLink(LINKS.kata,"Katakana")+resLink(LINKS.anki,t("Install Anki"))+
+      resLink(LINKS.ankiweb,"AnkiWeb")+resLink(LINKS.kaishi,t("Kaishi deck"))+resLink(LINKS.taekim,t("Grammar (Tae Kim)"))+
       resLink(LINKS.hello,"HelloTalk")+'</div>';
     html+=dataPanelHTML();
     app.innerHTML=html;
@@ -718,22 +732,22 @@
     var gpct=Math.min(100,Math.round(dt.done/goal*100));
     var h="";
     h+='<div class="d-sticky">';
-    h+='<div class="d-head"><button class="d-close" id="dClose">✕ Close</button>'+
+    h+='<div class="d-head"><button class="d-close" id="dClose">✕ '+t("Close")+'</button>'+
        '<div class="d-stats">'+
-       '<div class="d-stat"><div class="n">'+sess.done+'</div><div class="l">Done</div></div>'+
-       '<div class="d-stat wrong"><div class="n">'+sess.wrong+'</div><div class="l">Wrong</div></div>'+
-       '<div class="d-stat right"><div class="n">'+sess.correct+'</div><div class="l">Correct</div></div>'+
+       '<div class="d-stat"><div class="n">'+sess.done+'</div><div class="l">'+t("Done")+'</div></div>'+
+       '<div class="d-stat wrong"><div class="n">'+sess.wrong+'</div><div class="l">'+t("Wrong")+'</div></div>'+
+       '<div class="d-stat right"><div class="n">'+sess.correct+'</div><div class="l">'+t("Correct")+'</div></div>'+
        '</div></div>';
-    h+='<div class="d-goal"><div class="lab"><span>Daily goal</span><span>'+dt.done+' / '+goal+'</span></div>'+
+    h+='<div class="d-goal"><div class="lab"><span>'+t("Daily goal")+'</span><span>'+dt.done+' / '+goal+'</span></div>'+
        '<div class="prog"><i style="width:'+gpct+'%"></i></div></div>';
     h+='</div>';
 
     // prompt
     h+='<div class="d-prompt">';
     if(q.dir==="toRomaji"){
-      h+='<div class="d-kind">Which sound is this?</div><div class="d-glyph mincho">'+glyph(q.target,q.script)+'</div>';
+      h+='<div class="d-kind">'+t("Which sound is this?")+'</div><div class="d-glyph mincho">'+glyph(q.target,q.script)+'</div>';
     }else{
-      h+='<div class="d-kind">Tap the '+(q.script==="kata"?"katakana":"hiragana")+'</div><div class="d-romaji mincho">'+q.target+'</div>'+
+      h+='<div class="d-kind">'+t("Tap the")+' '+(q.script==="kata"?"katakana":"hiragana")+'</div><div class="d-romaji mincho">'+q.target+'</div>'+
          '<button class="d-spk" id="dSpk" aria-label="Play sound">🔊</button>';
     }
     h+='</div>';
@@ -756,21 +770,21 @@
     if(q.answered){
       var correct=q.picked===q.target;
       if(sess.justHitGoal){
-        h+='<div class="d-celebrate"><div class="big">済 Goal reached!</div><div class="sm">Today is stamped and your streak is safe. Keep going or close.</div></div>';
+        h+='<div class="d-celebrate"><div class="big">'+t("済 Goal reached!")+'</div><div class="sm">'+t("Today is stamped and your streak is safe. Keep going or close.")+'</div></div>';
       }else{
         var tgl=glyph(q.target,q.script==="kata"?"kata":"hira");
-        h+='<div class="msg '+(correct?"ok":"no")+'">'+(correct?"Correct":"It was")+' <span class="gl mincho">'+tgl+'</span> <span class="rm">'+q.target+'</span></div>';
+        h+='<div class="msg '+(correct?"ok":"no")+'">'+(correct?t("Correct!"):t("It was"))+' <span class="gl mincho">'+tgl+'</span> <span class="rm">'+q.target+'</span></div>';
         var word=sess.q.word;
-        if(word) h+='<div class="reward-card"><div class="rw-word mincho">'+word.w+'</div><div class="rw-sub">'+word.r+' — <span class="mean">'+word.m+'</span></div><button class="d-spk-word" id="dSpkWord" aria-label="Play word">🔊 <span>hear it</span></button></div>';
+        if(word) h+='<div class="reward-card"><div class="rw-word mincho">'+word.w+'</div><div class="rw-sub">'+word.r+' — <span class="mean">'+tm(word.m)+'</span></div><button class="d-spk-word" id="dSpkWord" aria-label="Play word">🔊 <span>'+t("hear it")+'</span></button></div>';
       }
     }
     h+='</div>';
 
     // actions
     if(q.answered){
-      h+='<div class="d-actions"><button class="d-next" id="dNext">Next →</button></div>';
+      h+='<div class="d-actions"><button class="d-next" id="dNext">'+t("Next →")+'</button></div>';
     }else{
-      h+='<div class="d-actions"><button class="d-skip" id="dSkip">Skip</button></div>';
+      h+='<div class="d-actions"><button class="d-skip" id="dSkip">'+t("Skip")+'</button></div>';
     }
     drillInner.innerHTML=h;
     bindDrill();
@@ -783,9 +797,9 @@
     state.days[t][id]=!state.days[t][id];Persistence.save(state);render();}
   function flash(el,msg,cls){if(!el)return;el.textContent=msg;el.className="status "+(cls||"ok");}
   function copyText(str,statusEl){
-    function ok(){flash(statusEl,"Copied ✓","ok");}
+    function ok(){flash(statusEl,t("Copied ✓"),"ok");}
     function fb(){var ta=document.getElementById("exportBox");ta.focus();ta.select();ta.setSelectionRange(0,99999);
-      try{document.execCommand("copy");ok();}catch(e){flash(statusEl,"Select the text above and copy manually.","err");}}
+      try{document.execCommand("copy");ok();}catch(e){flash(statusEl,t("Select the text above and copy manually."),"err");}}
     if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(str).then(ok).catch(fb);}else fb();
   }
   function setSeg(kind,val){
@@ -804,13 +818,14 @@
     app.querySelectorAll(".seg").forEach(function(s){
       s.addEventListener("click",function(){setSeg(s.getAttribute("data-seg"),parseInt(s.getAttribute("data-val"),10));});
     });
+    app.querySelectorAll(".lseg").forEach(function(b){b.addEventListener("click",function(){setLang(b.getAttribute("data-lang"));});});
     var si=document.getElementById("scriptInfo");
     if(si)si.addEventListener("click",function(){var hp=document.getElementById("scriptHelp");if(hp)hp.hidden=!hp.hidden;});
     var cb=document.getElementById("copyBtn"); if(cb)cb.addEventListener("click",function(){copyText(encodeState(state),document.getElementById("copyStatus"));});
     var ib=document.getElementById("importBtn"); if(ib)ib.addEventListener("click",function(){
       var st=document.getElementById("importStatus"),raw=document.getElementById("importBox").value;
-      try{state=mergeStates(state,decodeCode(raw));Persistence.save(state);render();flash(document.getElementById("importStatus"),"Imported and merged ✓","ok");}
-      catch(err){flash(st,err.message||"Couldn't read that code.","err");}
+      try{state=mergeStates(state,decodeCode(raw));Persistence.save(state);render();flash(document.getElementById("importStatus"),t("Imported and merged ✓"),"ok");}
+      catch(err){flash(st,err.message||t("Couldn't read that code."),"err");}
     });
   }
   function bindDrill(){
@@ -827,7 +842,7 @@
   }
 
   document.getElementById("resetBtn").addEventListener("click",function(){
-    if(!confirm("Reset everything — streak, days, drill progress, and today's checklist? This can't be undone.")) return;
+    if(!confirm(t("Reset everything — streak, days, drill progress, and today's checklist? This can't be undone."))) return;
     state=emptyState();Persistence.save(state);render();
   });
 
@@ -835,6 +850,7 @@
     var loaded=Persistence.boot();
     state=loaded||emptyState();
     if(!loaded)Persistence.save(state);
+    if(!state.lang){state.lang=detectLang();Persistence.save(state);}
     render();
   })();
 })();
