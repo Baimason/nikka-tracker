@@ -8,11 +8,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Noto+Sans+JP:wght@500;700;800&display=swap" rel="stylesheet"> <!-- Font con mejor lectura para los novatos del japones -->
 <style>
   :root{
     --paper:#e4ddcc; --card:#f1ece0; --ink:#23201a; --ink-soft:#6b6456;
     --ink-faint:#a99f89; --shu:#b23726; --shu-deep:#8f2a1d; --green:#4f7a52;
     --grid:#d3cab6; --line:#d8d0bf; --gold:#8a7233;
+    --display-font: "Shippori Mincho", Georgia, serif;
   }
   *{box-sizing:border-box}
   html,body{margin:0}
@@ -22,34 +24,38 @@
     line-height:1.5; padding:28px 18px 60px; -webkit-font-smoothing:antialiased;
   }
   .wrap{max-width:640px;margin:0 auto}
-  .mincho{font-family:"Shippori Mincho",Georgia,serif}
+  .mincho { font-family: var(--display-font); }
+
+  body.font-gothic {
+    --display-font: "Noto Sans JP", system-ui, sans-serif;
+  }
 
   header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;position:sticky;top:0;z-index:30;
     background:var(--paper);border-bottom:2px solid var(--ink);padding:10px 0 14px;margin-bottom:22px;flex-wrap:wrap}
   .title{display:flex;flex-direction:column;gap:2px}
-  .title .kanji{font-family:"Shippori Mincho",serif;font-weight:800;font-size:44px;line-height:.95;letter-spacing:2px}
+  .title .kanji{font-family: var(--display-font);font-weight:800;font-size:44px;line-height:.95;letter-spacing:2px}
   .title .rom{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink-soft);margin-top:4px}
   .streak-seal{display:flex;align-items:center;gap:12px}
-  .streak-num{font-family:"Shippori Mincho",serif;font-weight:800;font-size:52px;line-height:1;color:var(--shu)}
+  .streak-num{font-family: var(--display-font);font-weight:800;font-size:52px;line-height:1;color:var(--shu)}
   .streak-meta{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);max-width:78px}
   .streak-meta b{color:var(--ink);display:block;font-size:13px;letter-spacing:.05em}
 
   .phase{display:flex;align-items:baseline;gap:10px;margin-bottom:8px}
-  .phase .wk{font-family:"Shippori Mincho",serif;font-weight:700;font-size:13px;letter-spacing:.2em;color:var(--shu);
+  .phase .wk{font-family: var(--display-font);font-weight:700;font-size:13px;letter-spacing:.2em;color:var(--shu);
     border:1.5px solid var(--shu);border-radius:2px;padding:2px 8px}
   .phase .focus{font-size:14px;color:var(--ink-soft)}
   .phase .focus b{color:var(--ink);font-weight:700}
 
   .card{position:relative;background:var(--card);border:1.5px solid var(--ink);
     box-shadow:5px 5px 0 rgba(35,32,26,.16);padding:20px 20px 8px;margin-bottom:30px}
-  .card h2{font-family:"Shippori Mincho",serif;font-weight:700;font-size:18px;margin:0 0 2px;letter-spacing:.02em}
+  .card h2{font-family: var(--display-font);font-weight:700;font-size:18px;margin:0 0 2px;letter-spacing:.02em}
   .card .date{font-size:12px;color:var(--ink-soft);margin-bottom:14px}
 
   .task{display:flex;align-items:flex-start;gap:13px;padding:13px 2px;border-top:1px solid var(--line)}
   .task:first-of-type{border-top:none}
   .box{flex:none;width:26px;height:26px;margin-top:1px;border:1.8px solid var(--ink);border-radius:3px;
     background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;
-    transition:background .15s;font-family:"Shippori Mincho",serif;color:#fff;font-size:17px}
+    transition:background .15s;font-family: var(--display-font);color:#fff;font-size:17px}
   .box:hover{background:rgba(35,32,26,.06)}
   .box.on{background:var(--ink)}
   .box.sacred{border-color:var(--shu)}
@@ -58,7 +64,7 @@
   .t-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
   .t-label{font-weight:700;font-size:15px}
   .task.done .t-label{color:var(--ink-faint);text-decoration:line-through;text-decoration-color:var(--shu)}
-  .badge{font-family:"Shippori Mincho",serif;font-size:10px;letter-spacing:.12em;color:var(--shu);
+  .badge{font-family: var(--display-font);font-size:10px;letter-spacing:.12em;color:var(--shu);
     border:1px solid var(--shu);border-radius:2px;padding:1px 5px;white-space:nowrap}
   .t-sub{font-size:12.5px;color:var(--ink-soft);margin-top:2px}
   .chip{display:inline-flex;align-items:center;gap:5px;margin-top:7px;margin-right:6px;
@@ -77,7 +83,7 @@
     transition:opacity .18s, transform .28s cubic-bezier(.2,1.5,.4,1)}
   .seal svg{width:100%;height:100%;filter:drop-shadow(1px 1px 0 rgba(143,42,29,.25))}
 
-  .sec-h{font-family:"Shippori Mincho",serif;font-weight:700;font-size:13px;letter-spacing:.24em;
+  .sec-h{font-family: var(--display-font);font-weight:700;font-size:13px;letter-spacing:.24em;
     text-transform:uppercase;color:var(--ink-soft);margin:0 0 14px;display:flex;align-items:center;gap:10px}
   .sec-h::after{content:"";flex:1;height:1px;background:var(--line)}
 
@@ -85,8 +91,8 @@
   .drill-card{position:relative;background:var(--card);border:1.5px solid var(--ink);
     box-shadow:5px 5px 0 rgba(35,32,26,.16);padding:18px 20px;margin-bottom:30px}
   .drill-card .dc-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
-  .drill-card h3{font-family:"Shippori Mincho",serif;font-weight:700;font-size:17px;margin:0}
-  .drill-card .dc-count{font-family:"Shippori Mincho",serif;font-size:15px;color:var(--shu);font-weight:700}
+  .drill-card h3{font-family: var(--display-font);font-weight:700;font-size:17px;margin:0}
+  .drill-card .dc-count{font-family: var(--display-font);font-size:15px;color:var(--shu);font-weight:700}
   .prog{height:9px;background:var(--paper);border:1px solid var(--line);border-radius:20px;overflow:hidden;margin:12px 0 6px}
   .prog > i{display:block;height:100%;background:var(--shu);width:0;transition:width .3s}
   .prog > i.g{background:var(--green)}
@@ -123,7 +129,7 @@
     display:flex;align-items:center;justify-content:center;position:relative;border-radius:2px}
   .cell.pre{background:transparent;border-color:transparent}
   .cell.today{border:1.8px solid var(--ink)}
-  .cell .mini{font-family:"Shippori Mincho",serif;font-weight:800;color:var(--shu);font-size:15px;line-height:1;transform:rotate(-8deg)}
+  .cell .mini{font-family: var(--display-font);font-weight:800;color:var(--shu);font-size:15px;line-height:1;transform:rotate(-8deg)}
   .cell .num{position:absolute;top:2px;left:3px;font-size:8px;color:var(--ink-faint)}
   .cal-cap{font-size:11.5px;color:var(--ink-soft);text-align:center;margin-bottom:30px}
 
@@ -134,7 +140,7 @@
   .res a span{color:var(--ink-soft)}
 
   details.panel{border:1.5px dashed var(--line);background:var(--card);padding:0 16px;margin-bottom:26px}
-  details.panel summary{list-style:none;cursor:pointer;padding:14px 0;font-family:"Shippori Mincho",serif;
+  details.panel summary{list-style:none;cursor:pointer;padding:14px 0;font-family: var(--display-font);
     font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);
     display:flex;align-items:center;justify-content:space-between}
   details.panel summary::-webkit-details-marker{display:none}
@@ -154,7 +160,7 @@
   .status.ok{color:var(--gold)} .status.err{color:var(--shu)}
   .soon{display:flex;align-items:center;justify-content:space-between;opacity:.6}
   .soon .st{font-weight:700;font-size:13.5px}
-  .soon .tag{font-family:"Shippori Mincho",serif;font-size:10px;letter-spacing:.12em;border:1px solid var(--ink-faint);
+  .soon .tag{font-family: var(--display-font);font-size:10px;letter-spacing:.12em;border:1px solid var(--ink-faint);
     color:var(--ink-soft);border-radius:2px;padding:2px 7px;white-space:nowrap}
   .soon .sub{font-size:12px;color:var(--ink-soft);margin-top:2px}
 
@@ -177,7 +183,7 @@
     text-transform:uppercase;letter-spacing:.1em;font-weight:700}
   .d-stats{display:flex;gap:22px}
   .d-stat{text-align:center}
-  .d-stat .n{font-family:"Shippori Mincho",serif;font-weight:800;font-size:26px;line-height:1}
+  .d-stat .n{font-family: var(--display-font);font-weight:800;font-size:26px;line-height:1}
   .d-stat .l{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);margin-top:2px}
   .d-stat.wrong .n{color:var(--shu)} .d-stat.right .n{color:var(--green)}
   .d-goal{margin:12px 0 4px}
@@ -186,22 +192,24 @@
   .d-prompt{display:flex;flex-direction:column;align-items:center;justify-content:center;
     text-align:center;padding:20px 0 14px;min-height:150px}
   .d-kind{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:10px}
-  .d-glyph{font-family:"Shippori Mincho",serif;font-weight:700;font-size:118px;line-height:1;color:var(--ink)}
-  .d-romaji{font-family:"Shippori Mincho",serif;font-weight:800;font-size:70px;line-height:1;color:var(--ink)}
+  .d-glyph{font-family: var(--display-font);font-weight:700;font-size:118px;line-height:1;color:var(--ink)}
+.d-romaji{font-family: var(--display-font);font-weight:800;font-size:70px;line-height:1;color:var(--ink)}
   .d-spk{margin-top:14px;background:none;border:1.5px solid var(--ink);border-radius:50%;width:44px;height:44px;
     font-size:20px;cursor:pointer;color:var(--ink)}
   .d-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:8px}
+
   .opt{aspect-ratio:1.5;border:1.6px solid var(--ink);background:var(--card);border-radius:3px;
     display:flex;align-items:center;justify-content:center;cursor:pointer;
-    font-family:"Shippori Mincho",serif;font-weight:700;font-size:30px;color:var(--ink);
+    font-family: var(--display-font);font-weight:700;font-size:30px;color:var(--ink);
     transition:transform .08s,background .12s}
+
   .opt.rom{font-size:22px;text-transform:none}
   .opt:active{transform:scale(.97)}
   .opt.correct{background:var(--green);border-color:var(--green);color:#fff}
   .opt.bad{background:#e7d3ce;border-color:var(--shu);color:var(--shu)}
   .opt.dim{opacity:.4}
   .d-fb{min-height:120px;margin-top:16px;text-align:center;display:flex;flex-direction:column;justify-content:flex-start;align-items:center}
-  .d-fb .msg{font-family:"Shippori Mincho",serif;font-weight:800;font-size:26px;letter-spacing:.02em}
+  .d-fb .msg{font-family: var(--display-font);font-weight:800;font-size:26px;letter-spacing:.02em}
   .d-fb .msg.ok{color:var(--green)} .d-fb .msg.no{color:var(--shu)}
   .d-fb .msg .gl{font-size:1.4em;vertical-align:-.06em}
   .d-fb .msg .rm{font-weight:700;font-size:.72em;opacity:.85;font-family:"Zen Kaku Gothic New",sans-serif}
@@ -216,7 +224,7 @@
   .d-next{background:var(--ink);color:var(--card)}
   .d-skip{background:var(--paper);color:var(--ink-soft);border-color:var(--line)}
   .d-celebrate{text-align:center;padding:10px 0 4px}
-  .d-celebrate .big{font-family:"Shippori Mincho",serif;font-weight:800;color:var(--shu);font-size:20px}
+  .d-celebrate .big{font-family: var(--display-font);font-weight:800;color:var(--shu);font-size:20px}
   .d-celebrate .sm{font-size:13px;color:var(--ink-soft);margin-top:2px}
 
   .d-sticky{position:sticky;top:0;z-index:6;background:var(--paper);padding:6px 0 8px;border-bottom:1px solid var(--line);margin-bottom:8px}
@@ -231,8 +239,8 @@
   .lseg.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
   .mastery-card{background:var(--card);border:1.5px solid var(--ink);box-shadow:5px 5px 0 rgba(35,32,26,.16);padding:18px 20px;margin-bottom:30px}
   .mastery-card .mc-top{display:flex;justify-content:space-between;align-items:baseline}
-  .mastery-card h3{font-family:"Shippori Mincho",serif;font-weight:700;font-size:17px;margin:0}
-  .mc-pct{font-family:"Shippori Mincho",serif;font-weight:800;font-size:28px;color:var(--shu);line-height:1}
+  .mastery-card h3{font-family: var(--display-font);font-weight:700;font-size:17px;margin:0}
+  .mc-pct{font-family: var(--display-font);font-weight:800;font-size:28px;color:var(--shu);line-height:1}
   .mc-pct.ok{color:var(--green)}
   .mc-sub{font-size:12px;color:var(--ink-soft);margin:8px 0 4px}
   .mc-verdict{font-size:13px;color:var(--ink);line-height:1.5;margin-top:8px}
@@ -283,12 +291,15 @@
 <script>
 (function(){
   "use strict";
-  var TR = {"day": "día", "days": "días", "total": "total", "daily practice": "práctica diaria", "Started": "Empezó", "week": "semana", "Today's practice": "Práctica de hoy", "every day": "cada día", "drill": "práctica", "<b>Hiragana</b> — nothing else yet": "<b>Hiragana</b> — nada más por ahora", "<b>Katakana</b> + start the Anki engine": "<b>Katakana</b> + arrancá el motor de Anki", "<b>The routine</b> — keep the streak alive": "<b>La rutina</b> — mantené la racha viva", "<b>Keep going</b> — add speaking practice": "<b>Seguí</b> — sumá práctica de habla", "Hiragana practice": "Práctica de hiragana", "Tofugu guide + drills until it's automatic": "Guía de Tofugu + práctica hasta que salga solo", "Kana drill": "Práctica de kana", "Finish katakana; drill both scripts": "Terminá katakana; practicá los dos silabarios", "Anki — 10 new words": "Anki — 10 palabras nuevas", "Set up the Kaishi 1.5k deck first": "Primero configurá el mazo Kaishi 1.5k", "Anki — reviews + 10 new": "Anki — repasos + 10 nuevas", "The engine. Never skip this one.": "El motor. Nunca te la saltes.", "Grammar — 1 point": "Gramática — 1 punto", "Tae Kim's guide, one point per day": "Guía de Tae Kim, un punto por día", "Immersion — 10 min": "Inmersión — 10 min", "Read cards aloud, or spot words in something you watch": "Leé las tarjetas en voz alta, o cazá palabras en algo que veas", "Speak / exchange": "Hablar / intercambio", "Try a message or short call": "Probá un mensaje o una llamada corta", "Chaotic day? Just tick the <b>毎日</b> task and you're covered — the streak stays alive. Consistency beats hours.": "¿Día caótico? Con marcar la tarea <b>毎日</b> ya estás — la racha sigue viva. La constancia le gana a las horas.", "The path": "El camino", "Week 1 · Hiragana": "Semana 1 · Hiragana", "Read hiragana without stalling": "Leer hiragana sin trabarte", "Week 2 · Katakana + Anki": "Semana 2 · Katakana + Anki", "Finish kana, start Kaishi 1.5k": "Terminar kana, arrancar Kaishi 1.5k", "Weeks 3–6 · The routine": "Semanas 3–6 · La rutina", "Anki + grammar + immersion, daily": "Anki + gramática + inmersión, a diario", "Beyond · Speaking": "Más allá · Hablar", "Add HelloTalk or iTalki": "Sumá HelloTalk o iTalki", "Last 4 weeks": "Últimas 4 semanas", "済 marks a day the daily task was done": "済 marca un día con la tarea diaria hecha", "All resources": "Todos los recursos", "Install Anki": "Instalar Anki", "Kaishi deck": "Mazo Kaishi", "Grammar (Tae Kim)": "Gramática (Tae Kim)", "済 Done for today — the seal is yours. Keep going if you like.": "済 Listo por hoy — el sello es tuyo. Seguí si querés.", "Recognition + spaced repetition. Hit the goal to stamp today.": "Reconocimiento + repetición espaciada. Llegá a la meta para sellar el día.", "Start drill": "Empezar", "Continue drill": "Continuar", "Practice more": "Practicar más", "Options": "Opciones", "Script": "Escritura", "Goal": "Meta", "<b>Hiragana</b> (あ) and <b>Katakana</b> (ア) are the two kana alphabets — same sounds, different look (katakana is mostly for foreign / loan words). <b>Dakuten</b> are the small ゛/゜ marks that voice a sound: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).": "<b>Hiragana</b> (あ) y <b>Katakana</b> (ア) son los dos silabarios — mismos sonidos, distinta forma (katakana es sobre todo para palabras extranjeras). El <b>Dakuten</b> son las marquitas ゛/゜ que sonorizan un sonido: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).", "Kana mastery": "Dominio del kana", "characters mastered": "caracteres dominados", "Focus on": "Enfocate en", "more": "más", "Do a few drills and your mastery shows up here.": "Hacé unas cuantas y acá verás tu dominio.", "済 You've got your kana. It's logical to move on — make grammar + Anki your main focus and keep drills as warm-ups.": "済 Ya dominás el kana. Es lógico avanzar — pasá el foco a gramática + Anki y dejá la práctica como calentamiento.", "Almost there — a few more sessions and kana will feel automatic.": "Casi — unas sesiones más y el kana te saldrá solo.", "Building your foundation — keep the daily drill going.": "Construyendo la base — seguí con la práctica diaria.", "Backup &amp; sync": "Respaldo y sync", "Your backup code": "Tu código de respaldo", "Copy this and paste it on another device to carry your streak over.": "Copialo y pegalo en otro dispositivo para llevarte la racha.", "Copy code": "Copiar código", "Restore from a code": "Restaurar desde un código", "Paste a code here — it merges with what's on this device (nothing is lost).": "Pegá un código acá — se fusiona con lo que ya tenés (no se pierde nada).", "Import code": "Importar código", "Sign in to sync": "Iniciar sesión para sync", "Automatic sync across devices — no passwords, no data of yours to guard.": "Sync automático entre dispositivos — sin contraseñas, sin datos tuyos que cuidar.", "COMING SOON": "PRÓXIMAMENTE", "Copied ✓": "Copiado ✓", "Select the text above and copy manually.": "Seleccioná el texto de arriba y copialo a mano.", "Imported and merged ✓": "Importado y fusionado ✓", "Couldn't read that code.": "No pude leer ese código.", "That's not a Nikka backup code.": "Ese no es un código de Nikka.", "The code looks corrupted or incomplete.": "El código parece corrupto o incompleto.", "Reset everything — streak, days, drill progress, and today's checklist? This can't be undone.": "¿Reiniciar todo — racha, días, progreso de práctica y la lista de hoy? No se puede deshacer.", "Reset all progress": "Reiniciar todo el progreso", "This is a preview — progress won't stick here. Open the hosted page in your browser to keep your streak.": "Esto es una vista previa — el progreso no se guarda acá. Abrí la página publicada en tu navegador para mantener la racha.", "Close": "Cerrar", "Done": "Hechas", "Wrong": "Erradas", "Correct": "Aciertos", "Correct!": "¡Correcto!", "It was": "Era", "Which sound is this?": "¿Qué sonido es este?", "Tap the": "Toca el", "Daily goal": "Meta diaria", "済 Goal reached!": "済 ¡Meta alcanzada!", "Today is stamped and your streak is safe. Keep going or close.": "El día quedó sellado y tu racha a salvo. Seguí o cerrá.", "hear it": "escuchar", "Next →": "Siguiente →", "Skip": "Saltar"};
+  var TR = {"day": "día", "days": "días", "total": "total", "daily practice": "práctica diaria", "Started": "Empezó", "week": "semana", "Today's practice": "Práctica de hoy", "every day": "cada día", "drill": "práctica", "<b>Hiragana</b> — nothing else yet": "<b>Hiragana</b> — nada más por ahora", "<b>Katakana</b> + start the Anki engine": "<b>Katakana</b> + arrancá el motor de Anki", "<b>The routine</b> — keep the streak alive": "<b>La rutina</b> — mantené la racha viva", "<b>Keep going</b> — add speaking practice": "<b>Seguí</b> — sumá práctica de habla", "Hiragana practice": "Práctica de hiragana", "Tofugu guide + drills until it's automatic": "Guía de Tofugu + práctica hasta que salga solo", "Kana drill": "Práctica de kana", "Finish katakana; drill both scripts": "Terminá katakana; practicá los dos silabarios", "Anki — 10 new words": "Anki — 10 palabras nuevas", "Set up the Kaishi 1.5k deck first": "Primero configurá el mazo Kaishi 1.5k", "Anki — reviews + 10 new": "Anki — repasos + 10 nuevas", "The engine. Never skip this one.": "El motor. Nunca te la saltes.", "Grammar — 1 point": "Gramática — 1 punto", "Tae Kim's guide, one point per day": "Guía de Tae Kim, un punto por día", "Immersion — 10 min": "Inmersión — 10 min", "Read cards aloud, or spot words in something you watch": "Leé las tarjetas en voz alta, o cazá palabras en algo que veas", "Speak / exchange": "Hablar / intercambio", "Try a message or short call": "Probá un mensaje o una llamada corta", "Chaotic day? Just tick the <b>毎日</b> task and you're covered — the streak stays alive. Consistency beats hours.": "¿Día caótico? Con marcar la tarea <b>毎日</b> ya estás — la racha sigue viva. La constancia le gana a las horas.", "The path": "El camino", "Week 1 · Hiragana": "Semana 1 · Hiragana", "Read hiragana without stalling": "Leer hiragana sin trabarte", "Week 2 · Katakana + Anki": "Semana 2 · Katakana + Anki", "Finish kana, start Kaishi 1.5k": "Terminar kana, arrancar Kaishi 1.5k", "Weeks 3–6 · The routine": "Semanas 3–6 · La rutina", "Anki + grammar + immersion, daily": "Anki + gramática + inmersión, a diario", "Beyond · Speaking": "Más allá · Hablar", "Add HelloTalk or iTalki": "Sumá HelloTalk o iTalki", "Last 4 weeks": "Últimas 4 semanas", "済 marks a day the daily task was done": "済 marca un día con la tarea diaria hecha", "All resources": "Todos los recursos", "Install Anki": "Instalar Anki", "Kaishi deck": "Mazo Kaishi", "Grammar (Tae Kim)": "Gramática (Tae Kim)", "済 Done for today — the seal is yours. Keep going if you like.": "済 Listo por hoy — el sello es tuyo. Seguí si querés.", "Recognition + spaced repetition. Hit the goal to stamp today.": "Reconocimiento + repetición espaciada. Llegá a la meta para sellar el día.", "Start drill": "Empezar", "Continue drill": "Continuar", "Practice more": "Practicar más", "Options": "Opciones", "Script": "Escritura", "Goal": "Meta", "<b>Hiragana</b> (あ) and <b>Katakana</b> (ア) are the two kana alphabets — same sounds, different look (katakana is mostly for foreign / loan words). <b>Dakuten</b> are the small ゛/゜ marks that voice a sound: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).": "<b>Hiragana</b> (あ) y <b>Katakana</b> (ア) son los dos silabarios — mismos sonidos, distinta forma (katakana es sobre todo para palabras extranjeras). El <b>Dakuten</b> son las marquitas ゛/゜ que sonorizan un sonido: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).", "Kana mastery": "Dominio del kana", "characters mastered": "caracteres dominados", "Focus on": "Enfocate en", "more": "más", "Do a few drills and your mastery shows up here.": "Hacé unas cuantas y acá verás tu dominio.", "済 You've got your kana. It's logical to move on — make grammar + Anki your main focus and keep drills as warm-ups.": "済 Ya dominás el kana. Es lógico avanzar — pasá el foco a gramática + Anki y dejá la práctica como calentamiento.", "Almost there — a few more sessions and kana will feel automatic.": "Casi — unas sesiones más y el kana te saldrá solo.", "Building your foundation — keep the daily drill going.": "Construyendo la base — seguí con la práctica diaria.", "Backup &amp; sync": "Respaldo y sync", "Your backup code": "Tu código de respaldo", "Copy this and paste it on another device to carry your streak over.": "Copialo y pegalo en otro dispositivo para llevarte la racha.", "Copy code": "Copiar código", "Restore from a code": "Restaurar desde un código", "Paste a code here — it merges with what's on this device (nothing is lost).": "Pegá un código acá — se fusiona con lo que ya tenés (no se pierde nada).", "Import code": "Importar código", "Sign in to sync": "Iniciar sesión para sync", "Automatic sync across devices — no passwords, no data of yours to guard.": "Sync automático entre dispositivos — sin contraseñas, sin datos tuyos que cuidar.", "COMING SOON": "PRÓXIMAMENTE", "Copied ✓": "Copiado ✓", "Select the text above and copy manually.": "Seleccioná el texto de arriba y copialo a mano.", "Imported and merged ✓": "Importado y fusionado ✓", "Couldn't read that code.": "No pude leer ese código.", "That's not a Nikka backup code.": "Ese no es un código de Nikka.", "The code looks corrupted or incomplete.": "El código parece corrupto o incompleto.", "Reset everything — streak, days, drill progress, and today's checklist? This can't be undone.": "¿Reiniciar todo — racha, días, progreso de práctica y la lista de hoy? No se puede deshacer.", "Reset all progress": "Reiniciar todo el progreso", "This is a preview — progress won't stick here. Open the hosted page in your browser to keep your streak.": "Esto es una vista previa — el progreso no se guarda acá. Abrí la página publicada en tu navegador para mantener la racha.", "Close": "Cerrar", "Done": "Hechas", "Wrong": "Erradas", "Correct": "Aciertos", "Correct!": "¡Correcto!", "It was": "Era", "Which sound is this?": "¿Qué sonido es este?", "Tap the": "Toca el", "Daily goal": "Meta diaria", "済 Goal reached!": "済 ¡Meta alcanzada!", "Today is stamped and your streak is safe. Keep going or close.": "El día quedó sellado y tu racha está a salvo. Puedes continuar o cerrar.", "hear it": "escuchar", "Next →": "Siguiente →", "Skip": "Saltar", "Traditional style (serif)": "Estilo tradicional (con serifas)",
+    "Modern style (sans-serif)": "Estilo moderno (sin serifas)"};
   function detectLang(){var n=((navigator.language||navigator.userLanguage||"en")+"").toLowerCase();return n.indexOf("es")===0?"es":"en";}
   function getLang(){return (state&&state.lang)?state.lang:detectLang();}
   function t(x){return getLang()==="es"?(TR[x]||x):x;}
   function tm(m){return getLang()==="es"?(MEANINGS_ES[m]||m):m;}
   function setLang(l){if(l!=="en"&&l!=="es")return;state.lang=l;Persistence.save(state);render();}
+  function getFont(){return (state&&state.font)?state.font:"mincho";}
+  function setFont(f){if(f!=="mincho"&&f!=="gothic")return;state.font=f;Persistence.save(state);render();}
 
   /* =========================================================================
      1. PLAN CONTENT
@@ -436,19 +447,27 @@
   function nowISO(){return new Date().toISOString();}
   function parse(s){return new Date(s+"T00:00:00");}
   function daysBetween(a,b){return Math.round((parse(b)-parse(a))/86400000);}
-  function emptyState(){return {schema:SCHEMA,lang:detectLang(),startDate:today(),days:{},exercises:{},meta:{updatedAt:nowISO()}};}
+  function emptyState(){return {schema:SCHEMA,lang:detectLang(),font:"mincho",startDate:today(),days:{},exercises:{},meta:{updatedAt:nowISO()}};}
   function migrate(s){
     if(!s||typeof s!=="object") return null;
-    return {schema:SCHEMA,lang:s.lang,startDate:s.startDate||today(),
+    return {schema:SCHEMA,lang:s.lang,font:s.font||"mincho",startDate:s.startDate||today(),
       days:(s.days&&typeof s.days==="object")?s.days:{},
       exercises:(s.exercises&&typeof s.exercises==="object")?s.exercises:{},
       meta:(s.meta&&typeof s.meta==="object")?s.meta:{updatedAt:nowISO()}};
   }
   function mergeStates(a,b){
     a=migrate(a);b=migrate(b); if(!a)return b; if(!b)return a;
-    var out={schema:SCHEMA,lang:a.lang||b.lang,startDate:(daysBetween(a.startDate,b.startDate)<0?b.startDate:a.startDate),
-      days:{},exercises:Object.assign({},a.exercises,b.exercises),
-      meta:{updatedAt:(a.meta.updatedAt>b.meta.updatedAt?a.meta.updatedAt:b.meta.updatedAt)}};
+
+    var out={
+      schema:SCHEMA,
+      lang:a.lang||b.lang,
+      font:a.font||b.font||"mincho", 
+      startDate:(daysBetween(a.startDate,b.startDate)<0?b.startDate:a.startDate),
+      days:{},
+      exercises:Object.assign({},a.exercises,b.exercises),
+      meta:{updatedAt:(a.meta.updatedAt>b.meta.updatedAt?a.meta.updatedAt:b.meta.updatedAt)}
+    };
+
     var keys={}; Object.keys(a.days).forEach(function(k){keys[k]=1;}); Object.keys(b.days).forEach(function(k){keys[k]=1;});
     Object.keys(keys).forEach(function(d){
       var da=a.days[d]||{},db=b.days[d]||{},m={},kk={};
@@ -610,7 +629,32 @@
 
     var html="";
     var lang=getLang();
-    html+='<div class="lang-switch"><button class="lseg'+(lang==="en"?" on":"")+'" data-lang="en">EN</button><button class="lseg'+(lang==="es"?" on":"")+'" data-lang="es">ES</button></div>';
+    var font=getFont();
+
+    // Aplicar la fuente al cuerpo del documento
+    if(font==="gothic"){
+      document.body.classList.add("font-gothic");
+    } else {
+      document.body.classList.remove("font-gothic");
+    }
+
+    // Nuevo bloque con los botones de Idioma y Fuente
+    html+='<div class="lang-switch" style="gap:4px;">';
+
+    //Botones de Font
+    html+='<button class="fseg lseg'+(font==="mincho"?" on":"")+'" data-font="mincho" title="'+t("Traditional style (serif)")+'" style="font-family: \'Shippori Mincho\', serif; font-size: 14px;">あ</button>';
+    html+='<button class="fseg lseg'+(font==="gothic"?" on":"")+'" data-font="gothic" title="'+t("Modern style (sans-serif)")+'" style="font-family: \'Noto Sans JP\', sans-serif; font-size: 14px;">あ</button>';
+
+    html+='<div style="width:8px;"></div>'; /* Separador visual */
+
+    html+='<button class="lseg'+(lang==="en"?" on":"")+'" data-lang="en">EN</button>';
+    html+='<button class="lseg'+(lang==="es"?" on":"")+'" data-lang="es">ES</button>';
+
+    //Botones de idioma
+
+
+    html+='</div>';
+
     html+='<div class="saveerr" id="saveErr">'+t("This is a preview — progress won't stick here. Open the hosted page in your browser to keep your streak.")+'</div>';
     html+='<div class="phase"><span class="wk mincho">週 '+wk+'</span><span class="focus">'+focus+'</span></div>';
     html+='<div class="card"><div class="seal'+(coreDone(day)?" show":"")+'">'+sealSVG()+'</div>';
@@ -819,6 +863,9 @@
       s.addEventListener("click",function(){setSeg(s.getAttribute("data-seg"),parseInt(s.getAttribute("data-val"),10));});
     });
     app.querySelectorAll(".lseg").forEach(function(b){b.addEventListener("click",function(){setLang(b.getAttribute("data-lang"));});});
+
+    app.querySelectorAll(".fseg").forEach(function(b){b.addEventListener("click",function(){setFont(b.getAttribute("data-font"));});});
+
     var si=document.getElementById("scriptInfo");
     if(si)si.addEventListener("click",function(){var hp=document.getElementById("scriptHelp");if(hp)hp.hidden=!hp.hidden;});
     var cb=document.getElementById("copyBtn"); if(cb)cb.addEventListener("click",function(){copyText(encodeState(state),document.getElementById("copyStatus"));});
