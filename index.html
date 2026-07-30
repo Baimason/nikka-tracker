@@ -89,6 +89,7 @@
   .drill-card .dc-count{font-family:"Shippori Mincho",serif;font-size:15px;color:var(--shu);font-weight:700}
   .prog{height:9px;background:var(--paper);border:1px solid var(--line);border-radius:20px;overflow:hidden;margin:12px 0 6px}
   .prog > i{display:block;height:100%;background:var(--shu);width:0;transition:width .3s}
+  .prog > i.g{background:var(--green)}
   .dc-sub{font-size:12px;color:var(--ink-soft);margin-bottom:12px}
   .start-btn{width:100%;font:inherit;font-weight:700;font-size:15px;color:var(--card);background:var(--ink);
     border:none;border-radius:3px;padding:13px;cursor:pointer}
@@ -190,7 +191,7 @@
   .d-spk{margin-top:14px;background:none;border:1.5px solid var(--ink);border-radius:50%;width:44px;height:44px;
     font-size:20px;cursor:pointer;color:var(--ink)}
   .d-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:8px}
-  .opt{aspect-ratio:1.35;border:1.6px solid var(--ink);background:var(--card);border-radius:3px;
+  .opt{aspect-ratio:1.5;border:1.6px solid var(--ink);background:var(--card);border-radius:3px;
     display:flex;align-items:center;justify-content:center;cursor:pointer;
     font-family:"Shippori Mincho",serif;font-weight:700;font-size:30px;color:var(--ink);
     transition:transform .08s,background .12s}
@@ -202,6 +203,8 @@
   .d-fb{min-height:120px;margin-top:16px;text-align:center;display:flex;flex-direction:column;justify-content:flex-start;align-items:center}
   .d-fb .msg{font-family:"Shippori Mincho",serif;font-weight:800;font-size:26px;letter-spacing:.02em}
   .d-fb .msg.ok{color:var(--green)} .d-fb .msg.no{color:var(--shu)}
+  .d-fb .msg .gl{font-size:1.4em;vertical-align:-.06em}
+  .d-fb .msg .rm{font-weight:700;font-size:.72em;opacity:.85;font-family:"Zen Kaku Gothic New",sans-serif}
   .reward-card{display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:10px}
   .reward-card .d-spk-word{display:inline-flex;align-items:center;gap:6px;background:none;border:1.5px solid var(--ink);border-radius:20px;padding:6px 14px;font-size:15px;cursor:pointer;color:var(--ink);margin-top:12px}
   .reward-card .d-spk-word span{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em}
@@ -221,15 +224,33 @@
   .info-btn:hover{color:var(--shu)}
   .opt-help{font-size:12px;color:var(--ink-soft);line-height:1.55;margin-top:10px;padding:9px 11px;background:var(--paper);border:1px dashed var(--line);border-radius:3px}
   .opt-help b{color:var(--ink)}
+  .mastery-card{background:var(--card);border:1.5px solid var(--ink);box-shadow:5px 5px 0 rgba(35,32,26,.16);padding:18px 20px;margin-bottom:30px}
+  .mastery-card .mc-top{display:flex;justify-content:space-between;align-items:baseline}
+  .mastery-card h3{font-family:"Shippori Mincho",serif;font-weight:700;font-size:17px;margin:0}
+  .mc-pct{font-family:"Shippori Mincho",serif;font-weight:800;font-size:28px;color:var(--shu);line-height:1}
+  .mc-pct.ok{color:var(--green)}
+  .mc-sub{font-size:12px;color:var(--ink-soft);margin:8px 0 4px}
+  .mc-verdict{font-size:13px;color:var(--ink);line-height:1.5;margin-top:8px}
+  .mc-verdict.ok{color:var(--green);font-weight:600}
+  .weak-row{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-top:12px}
+  .weak-row .wl{font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em}
+  .weak-row .wk-g{font-size:19px;color:var(--ink);border:1px solid var(--line);border-radius:3px;padding:1px 8px;background:var(--paper)}
   @media (max-width:460px){
     body{padding:16px 13px 46px}
     .title .kanji{font-size:33px} .streak-num{font-size:40px}
     header{padding:8px 0 12px;margin-bottom:18px}
-    .card,.drill-card{box-shadow:4px 4px 0 rgba(35,32,26,.16);padding:16px 15px 6px}
-    .drill{padding:14px 13px 26px}
-    .d-glyph{font-size:84px} .d-romaji{font-size:54px} .opt{font-size:24px}
-    .d-stat .n{font-size:22px} .d-stat{}
-    .d-fb .msg{font-size:22px} .reward-card .rw-word{font-size:30px}
+    .card,.drill-card,.mastery-card{box-shadow:4px 4px 0 rgba(35,32,26,.16);padding:16px 15px 6px}
+    .drill{padding:10px 12px 18px}
+    .d-sticky{padding:2px 0 6px;margin-bottom:6px}
+    .d-stat .n{font-size:20px} .d-stat .l{font-size:8px}
+    .d-prompt{min-height:78px;padding:8px 0 6px}
+    .d-glyph{font-size:62px} .d-romaji{font-size:40px}
+    .d-spk{width:36px;height:36px;font-size:16px;margin-top:6px}
+    .d-grid{gap:7px} .opt{font-size:23px;aspect-ratio:1.7}
+    .d-fb{min-height:92px;margin-top:8px} .d-fb .msg{font-size:20px}
+    .reward-card{margin-top:6px} .reward-card .rw-word{font-size:26px} .reward-card .rw-sub{font-size:13px}
+    .reward-card .d-spk-word{margin-top:8px;padding:5px 12px}
+    .d-actions button{padding:11px}
   }
   @media (prefers-reduced-motion:reduce){ .seal,.seal.show,.chip,.opt,.prog>i{transition:none} }
 </style>
@@ -481,6 +502,12 @@
     while(days[fmt(d)]&&coreDone(days[fmt(d)])){s++;d.setDate(d.getDate()-1);} return s;}
   function computeTotal(days){var n=0;for(var k in days)if(coreDone(days[k]))n++;return n;}
   function drillToday(){var k=ensureKana();return k.daily[today()]||{done:0,correct:0};}
+  function kanaMastery(){
+    var k=ensureKana(),pool=activePool(),total=pool.length,sum=0,solid=0,weak=[];
+    pool.forEach(function(r){var b=Math.min(5,k.box[r]||0);sum+=b;if(b>=4)solid++;else weak.push({r:r,b:b});});
+    weak.sort(function(a,b){return a.b-b.b;});
+    return {pct:total?Math.round(sum/(total*5)*100):0,solid:solid,total:total,weak:weak};
+  }
 
   /* =========================================================================
      6. RENDER (main page)
@@ -525,6 +552,23 @@
         '<div class="opt-row"><span class="k">Goal</span>'+
           seg("goal",20,"20",goal===20)+seg("goal",30,"30",goal===30)+seg("goal",50,"50",goal===50)+seg("goal",100,"100",goal===100)+'</div>'+
       '</details></div>';
+  }
+  function masteryCardHTML(){
+    var m=kanaMastery(),ratio=m.total?m.solid/m.total:0,ready=ratio>=0.9,close=ratio>=0.55;
+    var verdict,vcls="";
+    if(!m.solid){verdict="Do a few drills and your mastery shows up here.";}
+    else if(ready){verdict="済 You've got your kana. It's logical to move on — make grammar + Anki your main focus and keep drills as warm-ups.";vcls="ok";}
+    else if(close){verdict="Almost there — a few more sessions and kana will feel automatic.";}
+    else{verdict="Building your foundation — keep the daily drill going.";}
+    var weak="";
+    if(m.weak.length){ weak='<div class="weak-row"><span class="wl">Focus on</span>'+
+      m.weak.slice(0,8).map(function(x){return '<span class="wk-g mincho">'+glyph(x.r,"hira")+'</span>';}).join("")+
+      (m.weak.length>8?'<span class="wl">+'+(m.weak.length-8)+' more</span>':'')+'</div>'; }
+    return '<div class="mastery-card"><div class="mc-top"><h3>Kana mastery</h3>'+
+      '<div class="mc-pct'+(ready?" ok":"")+'">'+m.pct+'%</div></div>'+
+      '<div class="prog"><i class="'+(ready?"g":"")+'" style="width:'+m.pct+'%"></i></div>'+
+      '<div class="mc-sub">'+m.solid+' of '+m.total+' characters solid (mastered)</div>'+
+      '<div class="mc-verdict '+vcls+'">'+verdict+'</div>'+weak+'</div>';
   }
   function dataPanelHTML(){
     var code=encodeState(state);
@@ -572,6 +616,7 @@
 
     /* exercises slot */
     html+=drillCardHTML();
+    html+=masteryCardHTML();
 
     html+='<div class="sec-h mincho">The path</div><div class="road">';
     ROAD.forEach(function(n){var st=roadState(n,wk);
@@ -713,7 +758,8 @@
       if(sess.justHitGoal){
         h+='<div class="d-celebrate"><div class="big">済 Goal reached!</div><div class="sm">Today is stamped and your streak is safe. Keep going or close.</div></div>';
       }else{
-        h+='<div class="msg '+(correct?"ok":"no")+'">'+(correct?"Correct":("It was "+glyph(q.target,q.script==="kata"?"kata":"hira")+" · "+q.target))+'</div>';
+        var tgl=glyph(q.target,q.script==="kata"?"kata":"hira");
+        h+='<div class="msg '+(correct?"ok":"no")+'">'+(correct?"Correct":"It was")+' <span class="gl mincho">'+tgl+'</span> <span class="rm">'+q.target+'</span></div>';
         var word=sess.q.word;
         if(word) h+='<div class="reward-card"><div class="rw-word mincho">'+word.w+'</div><div class="rw-sub">'+word.r+' — <span class="mean">'+word.m+'</span></div><button class="d-spk-word" id="dSpkWord" aria-label="Play word">🔊 <span>hear it</span></button></div>';
       }
