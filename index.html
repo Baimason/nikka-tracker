@@ -10,33 +10,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#e4ddcc;
-    --card:#f1ece0;
-    --ink:#23201a;
-    --ink-soft:#6b6456;
-    --ink-faint:#a99f89;
-    --shu:#b23726;
-    --shu-deep:#8f2a1d;
-    --grid:#d3cab6;
-    --line:#d8d0bf;
-    --gold:#8a7233;
+    --paper:#e4ddcc; --card:#f1ece0; --ink:#23201a; --ink-soft:#6b6456;
+    --ink-faint:#a99f89; --shu:#b23726; --shu-deep:#8f2a1d; --green:#4f7a52;
+    --grid:#d3cab6; --line:#d8d0bf; --gold:#8a7233;
   }
   *{box-sizing:border-box}
   html,body{margin:0}
   body{
-    background:
-      linear-gradient(var(--grid) 1px, transparent 1px) 0 0/100% 34px,
-      var(--paper);
-    color:var(--ink);
-    font-family:"Zen Kaku Gothic New",system-ui,sans-serif;
-    line-height:1.5;
-    padding:28px 18px 60px;
-    -webkit-font-smoothing:antialiased;
+    background:linear-gradient(var(--grid) 1px, transparent 1px) 0 0/100% 34px, var(--paper);
+    color:var(--ink); font-family:"Zen Kaku Gothic New",system-ui,sans-serif;
+    line-height:1.5; padding:28px 18px 60px; -webkit-font-smoothing:antialiased;
   }
   .wrap{max-width:640px;margin:0 auto}
   .mincho{font-family:"Shippori Mincho",Georgia,serif}
 
-  /* ---- header ---- */
   header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;
     border-bottom:2px solid var(--ink);padding-bottom:14px;margin-bottom:26px;flex-wrap:wrap}
   .title{display:flex;flex-direction:column;gap:2px}
@@ -47,14 +34,12 @@
   .streak-meta{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);max-width:78px}
   .streak-meta b{color:var(--ink);display:block;font-size:13px;letter-spacing:.05em}
 
-  /* ---- phase eyebrow ---- */
   .phase{display:flex;align-items:baseline;gap:10px;margin-bottom:8px}
   .phase .wk{font-family:"Shippori Mincho",serif;font-weight:700;font-size:13px;letter-spacing:.2em;color:var(--shu);
     border:1.5px solid var(--shu);border-radius:2px;padding:2px 8px}
   .phase .focus{font-size:14px;color:var(--ink-soft)}
   .phase .focus b{color:var(--ink);font-weight:700}
 
-  /* ---- today card ---- */
   .card{position:relative;background:var(--card);border:1.5px solid var(--ink);
     box-shadow:5px 5px 0 rgba(35,32,26,.16);padding:20px 20px 8px;margin-bottom:30px}
   .card h2{font-family:"Shippori Mincho",serif;font-weight:700;font-size:18px;margin:0 0 2px;letter-spacing:.02em}
@@ -78,26 +63,47 @@
   .t-sub{font-size:12.5px;color:var(--ink-soft);margin-top:2px}
   .chip{display:inline-flex;align-items:center;gap:5px;margin-top:7px;margin-right:6px;
     font-size:12px;font-weight:500;color:var(--ink);text-decoration:none;
-    border:1.3px solid var(--ink);border-radius:2px;padding:3px 9px;background:var(--paper);transition:transform .1s,background .15s}
+    border:1.3px solid var(--ink);border-radius:2px;padding:3px 9px;background:var(--paper);transition:transform .1s,background .15s;cursor:pointer}
   .chip:hover{background:var(--ink);color:var(--card);transform:translateY(-1px)}
   .chip .arr{font-size:11px}
 
   .note{font-size:12.5px;color:var(--ink-soft);padding:12px 2px 16px;border-top:1px dashed var(--line);margin-top:4px}
   .note b{color:var(--shu)}
 
-  /* ---- hanko seal ---- */
   .seal{position:absolute;top:-14px;right:-12px;width:66px;height:66px;
     display:flex;align-items:center;justify-content:center;pointer-events:none;
     opacity:0;transform:scale(.4) rotate(-18deg)}
   .seal.show{opacity:1;transform:scale(1) rotate(-9deg);
     transition:opacity .18s, transform .28s cubic-bezier(.2,1.5,.4,1)}
   .seal svg{width:100%;height:100%;filter:drop-shadow(1px 1px 0 rgba(143,42,29,.25))}
-  .seal .ch{font-family:"Shippori Mincho",serif;font-weight:800}
 
-  /* ---- roadmap ---- */
   .sec-h{font-family:"Shippori Mincho",serif;font-weight:700;font-size:13px;letter-spacing:.24em;
     text-transform:uppercase;color:var(--ink-soft);margin:0 0 14px;display:flex;align-items:center;gap:10px}
   .sec-h::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  /* drill entry card */
+  .drill-card{position:relative;background:var(--card);border:1.5px solid var(--ink);
+    box-shadow:5px 5px 0 rgba(35,32,26,.16);padding:18px 20px;margin-bottom:30px}
+  .drill-card .dc-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+  .drill-card h3{font-family:"Shippori Mincho",serif;font-weight:700;font-size:17px;margin:0}
+  .drill-card .dc-count{font-family:"Shippori Mincho",serif;font-size:15px;color:var(--shu);font-weight:700}
+  .prog{height:9px;background:var(--paper);border:1px solid var(--line);border-radius:20px;overflow:hidden;margin:12px 0 6px}
+  .prog > i{display:block;height:100%;background:var(--shu);width:0;transition:width .3s}
+  .dc-sub{font-size:12px;color:var(--ink-soft);margin-bottom:12px}
+  .start-btn{width:100%;font:inherit;font-weight:700;font-size:15px;color:var(--card);background:var(--ink);
+    border:none;border-radius:3px;padding:13px;cursor:pointer}
+  .start-btn:active{transform:translateY(1px)}
+  .start-btn.done-today{background:var(--green)}
+  details.opts{margin-top:12px}
+  details.opts summary{list-style:none;cursor:pointer;font-size:12px;color:var(--ink-soft);
+    text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+  details.opts summary::-webkit-details-marker{display:none}
+  .opt-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px}
+  .opt-row .k{font-size:11px;color:var(--ink-soft);width:44px;text-transform:uppercase;letter-spacing:.08em}
+  .seg{font:inherit;font-size:12px;font-weight:600;border:1.3px solid var(--line);background:var(--paper);
+    color:var(--ink-soft);border-radius:2px;padding:4px 10px;cursor:pointer}
+  .seg.on{border-color:var(--ink);color:var(--ink);background:var(--card)}
+
   .road{display:flex;flex-direction:column;gap:0;margin-bottom:32px}
   .stop{display:flex;gap:14px;align-items:flex-start}
   .stop .rail{display:flex;flex-direction:column;align-items:center;flex:none;width:22px}
@@ -111,23 +117,45 @@
   .stop.on .rt .lbl{color:var(--shu)}
   .stop.done .dot{border-color:var(--ink);background:var(--ink)}
 
-  /* ---- calendar ---- */
   .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:10px}
   .cell{aspect-ratio:1;border:1px solid var(--grid);background:var(--card);
     display:flex;align-items:center;justify-content:center;position:relative;border-radius:2px}
   .cell.pre{background:transparent;border-color:transparent}
   .cell.today{border:1.8px solid var(--ink)}
-  .cell .mini{font-family:"Shippori Mincho",serif;font-weight:800;color:var(--shu);font-size:15px;
-    line-height:1;transform:rotate(-8deg)}
+  .cell .mini{font-family:"Shippori Mincho",serif;font-weight:800;color:var(--shu);font-size:15px;line-height:1;transform:rotate(-8deg)}
   .cell .num{position:absolute;top:2px;left:3px;font-size:8px;color:var(--ink-faint)}
   .cal-cap{font-size:11.5px;color:var(--ink-soft);text-align:center;margin-bottom:30px}
 
-  /* ---- resources ---- */
   .res{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px}
   .res a{font-size:12.5px;color:var(--ink);text-decoration:none;border:1.3px solid var(--line);
     border-radius:2px;padding:6px 11px;background:var(--card);transition:border-color .15s,transform .1s}
   .res a:hover{border-color:var(--ink);transform:translateY(-1px)}
   .res a span{color:var(--ink-soft)}
+
+  details.panel{border:1.5px dashed var(--line);background:var(--card);padding:0 16px;margin-bottom:26px}
+  details.panel summary{list-style:none;cursor:pointer;padding:14px 0;font-family:"Shippori Mincho",serif;
+    font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);
+    display:flex;align-items:center;justify-content:space-between}
+  details.panel summary::-webkit-details-marker{display:none}
+  details.panel summary .caret{transition:transform .2s}
+  details.panel[open] summary .caret{transform:rotate(90deg)}
+  .row{padding:14px 0;border-top:1px solid var(--line)}
+  .row label{display:block;font-weight:700;font-size:13.5px;margin-bottom:4px;color:var(--ink)}
+  .row .hint{font-size:12px;color:var(--ink-soft);margin-bottom:8px}
+  textarea.code{width:100%;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;color:var(--ink);
+    background:var(--paper);border:1px solid var(--line);border-radius:2px;padding:8px;resize:vertical;
+    min-height:54px;word-break:break-all;line-height:1.4}
+  .btn{font:inherit;font-size:12.5px;font-weight:600;color:var(--card);background:var(--ink);border:none;
+    border-radius:2px;padding:8px 15px;cursor:pointer;margin-top:9px}
+  .btn.alt{background:var(--paper);color:var(--ink);border:1.3px solid var(--ink)}
+  .btn:active{transform:translateY(1px)}
+  .status{font-size:12px;margin-top:8px;min-height:15px}
+  .status.ok{color:var(--gold)} .status.err{color:var(--shu)}
+  .soon{display:flex;align-items:center;justify-content:space-between;opacity:.6}
+  .soon .st{font-weight:700;font-size:13.5px}
+  .soon .tag{font-family:"Shippori Mincho",serif;font-size:10px;letter-spacing:.12em;border:1px solid var(--ink-faint);
+    color:var(--ink-soft);border-radius:2px;padding:2px 7px;white-space:nowrap}
+  .soon .sub{font-size:12px;color:var(--ink-soft);margin-top:2px}
 
   footer{border-top:1px solid var(--line);padding-top:14px;display:flex;justify-content:space-between;
     align-items:center;font-size:11.5px;color:var(--ink-faint);flex-wrap:wrap;gap:8px}
@@ -137,15 +165,60 @@
   .loading{text-align:center;color:var(--ink-soft);padding:40px 0;font-size:14px}
   .saveerr{display:none;background:var(--shu);color:#fff;font-size:12px;padding:6px 12px;border-radius:2px;margin-bottom:16px}
 
+  /* ---- drill overlay ---- */
+  .drill{position:fixed;inset:0;z-index:60;overflow-y:auto;
+    background:linear-gradient(var(--grid) 1px, transparent 1px) 0 0/100% 34px, var(--paper);
+    padding:20px 18px 30px;display:flex;flex-direction:column}
+  .drill.hidden{display:none}
+  .drill-inner{max-width:520px;margin:0 auto;width:100%;display:flex;flex-direction:column;flex:1}
+  .d-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+  .d-close{background:none;border:none;font:inherit;font-size:13px;color:var(--ink-soft);cursor:pointer;
+    text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+  .d-stats{display:flex;gap:22px}
+  .d-stat{text-align:center}
+  .d-stat .n{font-family:"Shippori Mincho",serif;font-weight:800;font-size:26px;line-height:1}
+  .d-stat .l{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);margin-top:2px}
+  .d-stat.wrong .n{color:var(--shu)} .d-stat.right .n{color:var(--green)}
+  .d-goal{margin:12px 0 4px}
+  .d-goal .lab{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-soft);
+    text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
+  .d-prompt{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:18px 0;min-height:180px}
+  .d-kind{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:10px}
+  .d-glyph{font-family:"Shippori Mincho",serif;font-weight:700;font-size:118px;line-height:1;color:var(--ink)}
+  .d-romaji{font-family:"Shippori Mincho",serif;font-weight:800;font-size:70px;line-height:1;color:var(--ink)}
+  .d-spk{margin-top:14px;background:none;border:1.5px solid var(--ink);border-radius:50%;width:44px;height:44px;
+    font-size:20px;cursor:pointer;color:var(--ink)}
+  .d-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:8px}
+  .opt{aspect-ratio:1.35;border:1.6px solid var(--ink);background:var(--card);border-radius:3px;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+    font-family:"Shippori Mincho",serif;font-weight:700;font-size:30px;color:var(--ink);
+    transition:transform .08s,background .12s}
+  .opt.rom{font-size:22px;text-transform:none}
+  .opt:active{transform:scale(.97)}
+  .opt.correct{background:var(--green);border-color:var(--green);color:#fff}
+  .opt.bad{background:#e7d3ce;border-color:var(--shu);color:var(--shu)}
+  .opt.dim{opacity:.4}
+  .d-fb{min-height:74px;margin-top:12px;text-align:center;display:flex;flex-direction:column;justify-content:center}
+  .d-fb .msg{font-family:"Shippori Mincho",serif;font-weight:700;font-size:15px}
+  .d-fb .msg.ok{color:var(--green)} .d-fb .msg.no{color:var(--shu)}
+  .d-fb .reward{font-size:14px;color:var(--ink);margin-top:5px}
+  .d-fb .reward b{font-family:"Shippori Mincho",serif;font-size:17px}
+  .d-fb .reward .mean{color:var(--ink-soft)}
+  .d-actions{display:flex;gap:10px;margin-top:6px}
+  .d-actions button{flex:1;font:inherit;font-weight:700;font-size:14px;border-radius:3px;padding:12px;cursor:pointer;border:1.5px solid var(--ink)}
+  .d-next{background:var(--ink);color:var(--card)}
+  .d-skip{background:var(--paper);color:var(--ink-soft);border-color:var(--line)}
+  .d-celebrate{text-align:center;padding:10px 0 4px}
+  .d-celebrate .big{font-family:"Shippori Mincho",serif;font-weight:800;color:var(--shu);font-size:20px}
+  .d-celebrate .sm{font-size:13px;color:var(--ink-soft);margin-top:2px}
+
   @media (max-width:460px){
-    .title .kanji{font-size:36px}
-    .streak-num{font-size:42px}
-    .card{box-shadow:4px 4px 0 rgba(35,32,26,.16)}
+    .title .kanji{font-size:36px} .streak-num{font-size:42px}
+    .card,.drill-card{box-shadow:4px 4px 0 rgba(35,32,26,.16)}
+    .d-glyph{font-size:96px} .opt{font-size:26px}
   }
-  @media (prefers-reduced-motion:reduce){
-    .seal,.seal.show{transition:none}
-    .chip{transition:none}
-  }
+  @media (prefers-reduced-motion:reduce){ .seal,.seal.show,.chip,.opt,.prog>i{transition:none} }
 </style>
 
 <div class="wrap">
@@ -159,236 +232,499 @@
       <div class="streak-meta"><b id="streakWord">days</b>連続 in a row · <span id="totalDays">0</span> total</div>
     </div>
   </header>
-
   <div id="app"><div class="loading">Loading your progress…</div></div>
-
   <footer>
     <span id="startedLabel"></span>
     <button class="reset" id="resetBtn">Reset all progress</button>
   </footer>
 </div>
 
+<div class="drill hidden" id="drill"><div class="drill-inner" id="drillInner"></div></div>
+
 <script>
 (function(){
-  var KEY = "nikka-tracker:v1";
-  var app = document.getElementById("app");
-  var state = null;
+  "use strict";
 
+  /* =========================================================================
+     1. PLAN CONTENT
+     ========================================================================= */
   var LINKS = {
-    hira:  {url:"https://www.tofugu.com/japanese/learn-hiragana/", name:"Tofugu"},
-    kata:  {url:"https://www.tofugu.com/japanese/learn-katakana/", name:"Tofugu"},
-    anki:  {url:"https://apps.ankiweb.net/",                       name:"Get Anki"},
-    ankiweb:{url:"https://ankiweb.net/",                           name:"AnkiWeb"},
-    kaishi:{url:"https://github.com/donkuri/kaishi/releases",      name:"Kaishi 1.5k"},
-    taekim:{url:"https://guidetojapanese.org/learn/",              name:"Tae Kim"},
-    hello: {url:"https://www.hellotalk.com/",                      name:"HelloTalk"}
+    hira:{url:"https://www.tofugu.com/japanese/learn-hiragana/",name:"Tofugu"},
+    kata:{url:"https://www.tofugu.com/japanese/learn-katakana/",name:"Tofugu"},
+    anki:{url:"https://apps.ankiweb.net/",name:"Get Anki"},
+    ankiweb:{url:"https://ankiweb.net/",name:"AnkiWeb"},
+    kaishi:{url:"https://github.com/donkuri/kaishi/releases",name:"Kaishi 1.5k"},
+    taekim:{url:"https://guidetojapanese.org/learn/",name:"Tae Kim"},
+    hello:{url:"https://www.hellotalk.com/",name:"HelloTalk"}
   };
-
-  // ---- date helpers ----
-  function fmt(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
-  function today(){ return fmt(new Date()); }
-  function parse(s){ return new Date(s+"T00:00:00"); }
-  function daysBetween(a,b){ return Math.round((parse(b)-parse(a))/86400000); }
-  function weekOf(startStr){ var d=daysBetween(startStr, today()); if(d<0)d=0; return Math.floor(d/7)+1; }
-
-  // core = the "sacred" task done: kana (early) OR anki (later)
-  function coreDone(day){ return !!(day && (day.anki || day.kana)); }
-
-  function computeStreak(days){
-    var s=0, d=new Date(), t=today();
-    if(!(days[t] && coreDone(days[t]))) d.setDate(d.getDate()-1); // today still pending
-    while(days[fmt(d)] && coreDone(days[fmt(d)])){ s++; d.setDate(d.getDate()-1); }
-    return s;
-  }
-  function computeTotal(days){ var n=0; for(var k in days) if(coreDone(days[k])) n++; return n; }
-
-  // ---- storage (localStorage: persists on THIS device / browser) ----
-  var mem = {}; // fallback if localStorage is blocked (e.g. inside a preview sandbox)
-  function rawGet(k){ try{ return window.localStorage.getItem(k); }catch(e){ return (k in mem)?mem[k]:null; } }
-  function rawSet(k,v){ try{ window.localStorage.setItem(k,v); return true; }catch(e){ mem[k]=v; return false; } }
-  function load(){
-    var v = rawGet(KEY);
-    if(v){ try{ return JSON.parse(v); }catch(e){} }
-    return null;
-  }
-  function save(){
-    var ok = rawSet(KEY, JSON.stringify(state));
-    var el = document.getElementById("saveErr"); if(el) el.style.display = ok ? "none" : "block";
-  }
-
-  // ---- task definitions per week ----
   function tasksFor(wk){
-    if(wk<=1) return [
-      {id:"kana",  sacred:true,  label:"Hiragana practice", sub:"Tofugu guide + drills until it's automatic", link:LINKS.hira}
-    ];
+    if(wk<=1) return [{id:"kana",sacred:true,label:"Hiragana practice",sub:"Tofugu guide + drills until it's automatic",link:LINKS.hira,drill:true}];
     if(wk===2) return [
-      {id:"kana",  sacred:false, label:"Finish katakana", sub:"Same method — feels easier the second time", link:LINKS.kata},
-      {id:"anki",  sacred:true,  label:"Anki — 10 new words", sub:"Set up the Kaishi 1.5k deck first", link:LINKS.ankiweb, extra:LINKS.kaishi}
+      {id:"kana",sacred:false,label:"Kana drill",sub:"Finish katakana; drill both scripts",link:LINKS.kata,drill:true},
+      {id:"anki",sacred:true,label:"Anki — 10 new words",sub:"Set up the Kaishi 1.5k deck first",link:LINKS.ankiweb,extra:LINKS.kaishi}
     ];
-    var base = [
-      {id:"anki",     sacred:true,  label:"Anki — reviews + 10 new", sub:"The engine. Never skip this one.", link:LINKS.ankiweb},
-      {id:"grammar",  sacred:false, label:"Grammar — 1 point", sub:"Tae Kim's guide, one point per day", link:LINKS.taekim},
-      {id:"immersion",sacred:false, label:"Immersion — 10 min", sub:"Read cards aloud, or spot words in something you watch"}
+    var base=[
+      {id:"anki",sacred:true,label:"Anki — reviews + 10 new",sub:"The engine. Never skip this one.",link:LINKS.ankiweb},
+      {id:"grammar",sacred:false,label:"Grammar — 1 point",sub:"Tae Kim's guide, one point per day",link:LINKS.taekim},
+      {id:"immersion",sacred:false,label:"Immersion — 10 min",sub:"Read cards aloud, or spot words in something you watch"}
     ];
-    if(wk>=7) base.push({id:"speaking", sacred:false, label:"Speak / exchange", sub:"Try a message or short call", link:LINKS.hello});
+    if(wk>=7) base.push({id:"speaking",sacred:false,label:"Speak / exchange",sub:"Try a message or short call",link:LINKS.hello});
     return base;
   }
-
-  var ROAD = [
-    {wk:1,  lbl:"Week 1 · Hiragana",       ds:"Read hiragana without stalling"},
-    {wk:2,  lbl:"Week 2 · Katakana + Anki",ds:"Finish kana, start Kaishi 1.5k"},
-    {wk:3,  lbl:"Weeks 3–6 · The routine", ds:"Anki + grammar + immersion, daily"},
-    {wk:7,  lbl:"Beyond · Speaking",       ds:"Add HelloTalk or iTalki"}
+  var ROAD=[
+    {wk:1,lbl:"Week 1 · Hiragana",ds:"Read hiragana without stalling"},
+    {wk:2,lbl:"Week 2 · Katakana + Anki",ds:"Finish kana, start Kaishi 1.5k"},
+    {wk:3,lbl:"Weeks 3–6 · The routine",ds:"Anki + grammar + immersion, daily"},
+    {wk:7,lbl:"Beyond · Speaking",ds:"Add HelloTalk or iTalki"}
   ];
-  function roadState(node, wk){
-    if(wk>=7) return node.wk===7?"on":"done";
-    if(node.wk===7) return "";
-    if(wk>=3){ return node.wk===3?"on":(node.wk<3?"done":""); }
-    return node.wk===wk?"on":(node.wk<wk?"done":"");
+
+  /* =========================================================================
+     1b. KANA DATA  (romaji -> [hiragana, katakana]) + reward words
+     ========================================================================= */
+  /* DATA_START */
+  var KANA_BASE = {
+    a:["あ","ア"],i:["い","イ"],u:["う","ウ"],e:["え","エ"],o:["お","オ"],
+    ka:["か","カ"],ki:["き","キ"],ku:["く","ク"],ke:["け","ケ"],ko:["こ","コ"],
+    sa:["さ","サ"],shi:["し","シ"],su:["す","ス"],se:["せ","セ"],so:["そ","ソ"],
+    ta:["た","タ"],chi:["ち","チ"],tsu:["つ","ツ"],te:["て","テ"],to:["と","ト"],
+    na:["な","ナ"],ni:["に","ニ"],nu:["ぬ","ヌ"],ne:["ね","ネ"],no:["の","ノ"],
+    ha:["は","ハ"],hi:["ひ","ヒ"],fu:["ふ","フ"],he:["へ","ヘ"],ho:["ほ","ホ"],
+    ma:["ま","マ"],mi:["み","ミ"],mu:["む","ム"],me:["め","メ"],mo:["も","モ"],
+    ya:["や","ヤ"],yu:["ゆ","ユ"],yo:["よ","ヨ"],
+    ra:["ら","ラ"],ri:["り","リ"],ru:["る","ル"],re:["れ","レ"],ro:["ろ","ロ"],
+    wa:["わ","ワ"],wo:["を","ヲ"],n:["ん","ン"]
+  };
+  var KANA_DAKUTEN = {
+    ga:["が","ガ"],gi:["ぎ","ギ"],gu:["ぐ","グ"],ge:["げ","ゲ"],go:["ご","ゴ"],
+    za:["ざ","ザ"],ji:["じ","ジ"],zu:["ず","ズ"],ze:["ぜ","ゼ"],zo:["ぞ","ゾ"],
+    da:["だ","ダ"],de:["で","デ"],do:["ど","ド"],
+    ba:["ば","バ"],bi:["び","ビ"],bu:["ぶ","ブ"],be:["べ","ベ"],bo:["ぼ","ボ"],
+    pa:["ぱ","パ"],pi:["ぴ","ピ"],pu:["ぷ","プ"],pe:["ぺ","ペ"],po:["ぽ","ポ"]
+  };
+  // reward word (contains the target kana) -> reading + meaning
+  var WORDS = {
+    a:{w:"あめ",r:"ame",m:"rain"},i:{w:"いぬ",r:"inu",m:"dog"},u:{w:"うみ",r:"umi",m:"sea"},
+    e:{w:"えき",r:"eki",m:"station"},o:{w:"おと",r:"oto",m:"sound"},
+    ka:{w:"かさ",r:"kasa",m:"umbrella"},ki:{w:"き",r:"ki",m:"tree"},ku:{w:"くつ",r:"kutsu",m:"shoes"},
+    ke:{w:"けむり",r:"kemuri",m:"smoke"},ko:{w:"こえ",r:"koe",m:"voice"},
+    sa:{w:"さかな",r:"sakana",m:"fish"},shi:{w:"しま",r:"shima",m:"island"},su:{w:"すし",r:"sushi",m:"sushi"},
+    se:{w:"せかい",r:"sekai",m:"world"},so:{w:"そら",r:"sora",m:"sky"},
+    ta:{w:"たまご",r:"tamago",m:"egg"},chi:{w:"ちち",r:"chichi",m:"father"},tsu:{w:"つき",r:"tsuki",m:"moon"},
+    te:{w:"て",r:"te",m:"hand"},to:{w:"とり",r:"tori",m:"bird"},
+    na:{w:"なつ",r:"natsu",m:"summer"},ni:{w:"にく",r:"niku",m:"meat"},nu:{w:"ぬの",r:"nuno",m:"cloth"},
+    ne:{w:"ねこ",r:"neko",m:"cat"},no:{w:"のり",r:"nori",m:"seaweed"},
+    ha:{w:"はな",r:"hana",m:"flower"},hi:{w:"ひ",r:"hi",m:"sun / fire"},fu:{w:"ふゆ",r:"fuyu",m:"winter"},
+    he:{w:"へや",r:"heya",m:"room"},ho:{w:"ほし",r:"hoshi",m:"star"},
+    ma:{w:"まど",r:"mado",m:"window"},mi:{w:"みず",r:"mizu",m:"water"},mu:{w:"むし",r:"mushi",m:"insect"},
+    me:{w:"め",r:"me",m:"eye"},mo:{w:"もり",r:"mori",m:"forest"},
+    ya:{w:"やま",r:"yama",m:"mountain"},yu:{w:"ゆき",r:"yuki",m:"snow"},yo:{w:"よる",r:"yoru",m:"night"},
+    ra:{w:"さくら",r:"sakura",m:"cherry blossom"},ri:{w:"りんご",r:"ringo",m:"apple"},ru:{w:"よる",r:"yoru",m:"night"},
+    re:{w:"れきし",r:"rekishi",m:"history"},ro:{w:"ろく",r:"roku",m:"six"},
+    wa:{w:"わたし",r:"watashi",m:"I / me"},wo:{w:"を",r:"wo",m:"object particle"},n:{w:"ほん",r:"hon",m:"book"},
+    ga:{w:"がっこう",r:"gakkou",m:"school"},gi:{w:"かぎ",r:"kagi",m:"key"},gu:{w:"かぐ",r:"kagu",m:"furniture"},
+    ge:{w:"げんき",r:"genki",m:"healthy / lively"},go:{w:"ごはん",r:"gohan",m:"cooked rice / meal"},
+    za:{w:"ざっし",r:"zasshi",m:"magazine"},ji:{w:"じかん",r:"jikan",m:"time"},zu:{w:"みず",r:"mizu",m:"water"},
+    ze:{w:"ぜろ",r:"zero",m:"zero"},zo:{w:"ぞう",r:"zou",m:"elephant"},
+    da:{w:"だいがく",r:"daigaku",m:"university"},de:{w:"でんわ",r:"denwa",m:"telephone"},do:{w:"どうぶつ",r:"doubutsu",m:"animal"},
+    ba:{w:"かばん",r:"kaban",m:"bag"},bi:{w:"えび",r:"ebi",m:"shrimp"},bu:{w:"ぶた",r:"buta",m:"pig"},
+    be:{w:"べんとう",r:"bentou",m:"boxed lunch"},bo:{w:"ぼうし",r:"boushi",m:"hat"},
+    pa:{w:"パン",r:"pan",m:"bread"},pi:{w:"ピアノ",r:"piano",m:"piano"},pu:{w:"プール",r:"puuru",m:"pool"},
+    pe:{w:"ペン",r:"pen",m:"pen"},po:{w:"ポスト",r:"posuto",m:"mailbox"}
+  };
+  /* DATA_END */
+  var BASE_KEYS = Object.keys(KANA_BASE);
+  var DAK_KEYS = Object.keys(KANA_DAKUTEN);
+  var ALL = {}; BASE_KEYS.forEach(function(k){ALL[k]=KANA_BASE[k];}); DAK_KEYS.forEach(function(k){ALL[k]=KANA_DAKUTEN[k];});
+  function glyph(romaji,script){ var p=ALL[romaji]; return p?p[script==="kata"?1:0]:romaji; }
+
+  /* =========================================================================
+     2. STATE + SCHEMA
+     ========================================================================= */
+  var SCHEMA=2, state=null, lastSaveOk=true;
+  function pad(n){return String(n).padStart(2,"0");}
+  function fmt(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());}
+  function today(){return fmt(new Date());}
+  function nowISO(){return new Date().toISOString();}
+  function parse(s){return new Date(s+"T00:00:00");}
+  function daysBetween(a,b){return Math.round((parse(b)-parse(a))/86400000);}
+  function emptyState(){return {schema:SCHEMA,startDate:today(),days:{},exercises:{},meta:{updatedAt:nowISO()}};}
+  function migrate(s){
+    if(!s||typeof s!=="object") return null;
+    return {schema:SCHEMA,startDate:s.startDate||today(),
+      days:(s.days&&typeof s.days==="object")?s.days:{},
+      exercises:(s.exercises&&typeof s.exercises==="object")?s.exercises:{},
+      meta:(s.meta&&typeof s.meta==="object")?s.meta:{updatedAt:nowISO()}};
   }
-
-  function chip(link, sub){
-    return '<a class="chip" href="'+link.url+'" target="_blank" rel="noopener">'+(sub||link.name)+' <span class="arr">↗</span></a>';
-  }
-
-  function render(){
-    var t = today();
-    if(!state.days[t]) state.days[t] = {};
-    var day = state.days[t];
-    var wk = weekOf(state.startDate);
-    var tasks = tasksFor(wk);
-
-    // header numbers
-    var streak = computeStreak(state.days);
-    document.getElementById("streakNum").textContent = streak;
-    document.getElementById("streakWord").textContent = streak===1 ? "day" : "days";
-    document.getElementById("totalDays").textContent = computeTotal(state.days);
-    document.getElementById("startedLabel").textContent = "Started " + state.startDate + " · week " + wk;
-
-    var focus = wk<=1 ? "<b>Hiragana</b> — nothing else yet"
-             : wk===2 ? "<b>Katakana</b> + start the Anki engine"
-             : wk<=6  ? "<b>The routine</b> — keep the streak alive"
-             :          "<b>Keep going</b> — add speaking practice";
-
-    var sacredDone = coreDone(day);
-
-    var html = '';
-    html += '<div class="saveerr" id="saveErr">This is a preview — progress won\'t stick here. Download the file and open it in your browser (or Add to Home Screen) to keep your streak.</div>';
-
-    html += '<div class="phase"><span class="wk mincho">週 '+wk+'</span><span class="focus">'+focus+'</span></div>';
-
-    // today card
-    html += '<div class="card">';
-    html +=   '<div class="seal'+(sacredDone?' show':'')+'" id="seal">'+sealSVG()+'</div>';
-    html +=   '<h2>Today\'s practice</h2>';
-    html +=   '<div class="date">'+prettyDate(t)+'</div>';
-
-    tasks.forEach(function(task){
-      var on = !!day[task.id];
-      html += '<div class="task'+(on?' done':'')+'">';
-      html +=   '<div class="box'+(task.sacred?' sacred':'')+(on?' on':'')+'" data-id="'+task.id+'" role="checkbox" tabindex="0" aria-checked="'+on+'">'+(on?'✓':'')+'</div>';
-      html +=   '<div class="t-body"><div class="t-top"><span class="t-label">'+task.label+'</span>';
-      if(task.sacred) html += '<span class="badge mincho">毎日 · every day</span>';
-      html +=   '</div><div class="t-sub">'+task.sub+'</div>';
-      var chips='';
-      if(task.link)  chips += chip(task.link, task.link.name);
-      if(task.extra) chips += chip(task.extra, task.extra.name);
-      if(chips) html += '<div>'+chips+'</div>';
-      html +=   '</div></div>';
+  function mergeStates(a,b){
+    a=migrate(a);b=migrate(b); if(!a)return b; if(!b)return a;
+    var out={schema:SCHEMA,startDate:(daysBetween(a.startDate,b.startDate)<0?b.startDate:a.startDate),
+      days:{},exercises:Object.assign({},a.exercises,b.exercises),
+      meta:{updatedAt:(a.meta.updatedAt>b.meta.updatedAt?a.meta.updatedAt:b.meta.updatedAt)}};
+    var keys={}; Object.keys(a.days).forEach(function(k){keys[k]=1;}); Object.keys(b.days).forEach(function(k){keys[k]=1;});
+    Object.keys(keys).forEach(function(d){
+      var da=a.days[d]||{},db=b.days[d]||{},m={},kk={};
+      Object.keys(da).forEach(function(k){kk[k]=1;}); Object.keys(db).forEach(function(k){kk[k]=1;});
+      Object.keys(kk).forEach(function(k){m[k]=!!(da[k]||db[k]);});
+      out.days[d]=m;
     });
-
-    html +=   '<div class="note">Chaotic day? Just tick the <b>毎日</b> task and you\'re covered — the streak stays alive. Consistency beats hours.</div>';
-    html += '</div>';
-
-    // roadmap
-    html += '<div class="sec-h mincho">The path</div><div class="road">';
-    ROAD.forEach(function(n){
-      var st = roadState(n, wk);
-      html += '<div class="stop '+st+'"><div class="rail"><div class="dot"></div><div class="bar"></div></div>'+
-              '<div class="rt"><div class="lbl">'+n.lbl+'</div><div class="ds">'+n.ds+'</div></div></div>';
-    });
-    html += '</div>';
-
-    // calendar
-    html += '<div class="sec-h mincho">Last 4 weeks</div>'+ calendarHTML();
-
-    // resources
-    html += '<div class="sec-h mincho">All resources</div><div class="res">'+
-      resLink(LINKS.hira,"Hiragana")+resLink(LINKS.kata,"Katakana")+
-      resLink(LINKS.anki,"Install Anki")+resLink(LINKS.ankiweb,"AnkiWeb")+
-      resLink(LINKS.kaishi,"Kaishi deck")+resLink(LINKS.taekim,"Grammar (Tae Kim)")+
-      resLink(LINKS.hello,"HelloTalk")+'</div>';
-
-    app.innerHTML = html;
-    bind();
+    return out;
+  }
+  // lazy-init the kana drill bucket inside exercises
+  function ensureKana(){
+    if(!state.exercises||typeof state.exercises!=="object") state.exercises={};
+    var e=state.exercises;
+    if(!e.kana) e.kana={box:{},daily:{},goal:30,scope:{hira:true,kata:true,dakuten:false}};
+    var k=e.kana;
+    if(!k.box)k.box={}; if(!k.daily)k.daily={}; if(!k.goal)k.goal=30;
+    if(!k.scope)k.scope={hira:true,kata:true,dakuten:false};
+    if(!k.scope.hira&&!k.scope.kata)k.scope.hira=true;
+    return k;
   }
 
-  function resLink(l,label){ return '<a href="'+l.url+'" target="_blank" rel="noopener">'+label+' <span>↗</span></a>'; }
+  /* =========================================================================
+     3. STORAGE ADAPTERS
+     ========================================================================= */
+  var LocalStore={
+    id:"local",label:"This device",KEY:"nikka-tracker:v1",mem:{},
+    load:function(){var v;try{v=window.localStorage.getItem(this.KEY);}catch(e){v=this.mem[this.KEY]||null;}
+      if(v){try{return JSON.parse(v);}catch(e){}} return null;},
+    save:function(s){var str=JSON.stringify(s);
+      try{window.localStorage.setItem(this.KEY,str);return true;}catch(e){this.mem[this.KEY]=str;return false;}}
+  };
+  /* EXTENSION POINT: CloudStore with the same interface + login => cross-device sync */
+  var Persistence={
+    provider:LocalStore,
+    boot:function(){return migrate(this.provider.load());},
+    save:function(s){s.meta=s.meta||{};s.meta.updatedAt=nowISO();
+      lastSaveOk=this.provider.save(s);
+      var el=document.getElementById("saveErr");if(el)el.style.display=lastSaveOk?"none":"block";}
+  };
 
+  /* =========================================================================
+     4. EXPORT / IMPORT CODEC
+     ========================================================================= */
+  var CODEC_PREFIX="NIKKA1.";
+  function b64e(str){return btoa(unescape(encodeURIComponent(str)));}
+  function b64d(str){return decodeURIComponent(escape(atob(str)));}
+  function encodeState(s){return CODEC_PREFIX+b64e(JSON.stringify(migrate(s)));}
+  function decodeCode(code){
+    code=(code||"").trim();
+    if(code.indexOf(CODEC_PREFIX)!==0) throw new Error("That's not a Nikka backup code.");
+    var obj=JSON.parse(b64d(code.slice(CODEC_PREFIX.length)));
+    if(!obj||typeof obj!=="object"||typeof obj.days!=="object") throw new Error("The code looks corrupted or incomplete.");
+    return migrate(obj);
+  }
+
+  /* =========================================================================
+     5. DERIVED
+     ========================================================================= */
+  function weekOf(startStr){var d=daysBetween(startStr,today());if(d<0)d=0;return Math.floor(d/7)+1;}
+  function coreDone(day){return !!(day&&(day.anki||day.kana));}
+  function computeStreak(days){var s=0,d=new Date(),t=today();
+    if(!(days[t]&&coreDone(days[t])))d.setDate(d.getDate()-1);
+    while(days[fmt(d)]&&coreDone(days[fmt(d)])){s++;d.setDate(d.getDate()-1);} return s;}
+  function computeTotal(days){var n=0;for(var k in days)if(coreDone(days[k]))n++;return n;}
+  function drillToday(){var k=ensureKana();return k.daily[today()]||{done:0,correct:0};}
+
+  /* =========================================================================
+     6. RENDER (main page)
+     ========================================================================= */
+  var app=document.getElementById("app");
+  function chip(link,label){return '<a class="chip" href="'+link.url+'" target="_blank" rel="noopener">'+(label||link.name)+' <span class="arr">↗</span></a>';}
+  function resLink(l,label){return '<a href="'+l.url+'" target="_blank" rel="noopener">'+label+' <span>↗</span></a>';}
+  function prettyDate(s){return parse(s).toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"});}
+  function sealSVG(){return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">'+
+    '<rect x="6" y="6" width="88" height="88" rx="6" fill="none" stroke="#b23726" stroke-width="5"/>'+
+    '<rect x="14" y="14" width="72" height="72" rx="3" fill="none" stroke="#b23726" stroke-width="2"/>'+
+    '<text x="50" y="50" text-anchor="middle" dominant-baseline="central" font-size="52" fill="#b23726" '+
+    'font-family="Shippori Mincho, serif" font-weight="800">済</text></svg>';}
   function calendarHTML(){
-    var cells='', now=new Date();
-    var start = new Date(); start.setDate(now.getDate()-27); // 28 days ending today
-    // pad so today aligns; we just render 28 in order
-    for(var i=0;i<28;i++){
-      var d=new Date(start); d.setDate(start.getDate()+i);
-      var s=fmt(d);
-      var pre = daysBetween(state.startDate, s) < 0;
-      var isToday = s===today();
-      var done = coreDone(state.days[s]);
-      var cls = "cell"+(pre?" pre":"")+(isToday?" today":"");
-      cells += '<div class="'+cls+'">'+
-               (pre?'':'<span class="num">'+d.getDate()+'</span>')+
-               (done?'<span class="mini mincho">済</span>':'')+
-               '</div>';
-    }
+    var cells="",start=new Date();start.setDate(start.getDate()-27);
+    for(var i=0;i<28;i++){var d=new Date(start);d.setDate(start.getDate()+i);var s=fmt(d);
+      var pre=daysBetween(state.startDate,s)<0,isToday=s===today(),done=coreDone(state.days[s]);
+      cells+='<div class="cell'+(pre?" pre":"")+(isToday?" today":"")+'">'+
+        (pre?"":'<span class="num">'+d.getDate()+'</span>')+(done?'<span class="mini mincho">済</span>':"")+'</div>';}
     return '<div class="cal">'+cells+'</div><div class="cal-cap">済 marks a day the daily task was done</div>';
   }
+  function roadState(node,wk){
+    if(wk>=7)return node.wk===7?"on":"done";
+    if(node.wk===7)return "";
+    if(wk>=3)return node.wk===3?"on":(node.wk<3?"done":"");
+    return node.wk===wk?"on":(node.wk<wk?"done":"");
+  }
+  function drillCardHTML(){
+    var k=ensureKana(),dt=drillToday(),goal=k.goal,pct=Math.min(100,Math.round(dt.done/goal*100));
+    var doneToday=dt.done>=goal;
+    function seg(kind,val,label,on){return '<button class="seg'+(on?" on":"")+'" data-seg="'+kind+'" data-val="'+val+'">'+label+'</button>';}
+    return '<div class="drill-card">'+
+      '<div class="dc-top"><h3>Kana drill</h3><div class="dc-count">'+dt.done+' / '+goal+'</div></div>'+
+      '<div class="prog"><i style="width:'+pct+'%"></i></div>'+
+      '<div class="dc-sub">'+(doneToday?'済 Done for today — the seal is yours. Keep going if you like.':'Recognition + spaced repetition. Hit the goal to stamp today.')+'</div>'+
+      '<button class="start-btn'+(doneToday?" done-today":"")+'" id="startDrill">'+(dt.done>0?(doneToday?"Practice more":"Continue drill"):"Start drill")+'</button>'+
+      '<details class="opts"><summary>Options</summary>'+
+        '<div class="opt-row"><span class="k">Script</span>'+
+          seg("hira",1,"Hiragana",k.scope.hira)+seg("kata",1,"Katakana",k.scope.kata)+seg("dakuten",1,"+ Dakuten",k.scope.dakuten)+'</div>'+
+        '<div class="opt-row"><span class="k">Goal</span>'+
+          seg("goal",20,"20",goal===20)+seg("goal",30,"30",goal===30)+seg("goal",50,"50",goal===50)+seg("goal",100,"100",goal===100)+'</div>'+
+      '</details></div>';
+  }
+  function dataPanelHTML(){
+    var code=encodeState(state);
+    return '<details class="panel"><summary>Backup &amp; sync <span class="caret">›</span></summary>'+
+      '<div class="row"><label>Your backup code</label>'+
+        '<div class="hint">Copy this and paste it on another device to carry your streak over.</div>'+
+        '<textarea class="code" id="exportBox" readonly rows="3">'+code+'</textarea>'+
+        '<button class="btn" id="copyBtn">Copy code</button><div class="status ok" id="copyStatus"></div></div>'+
+      '<div class="row"><label>Restore from a code</label>'+
+        '<div class="hint">Paste a code here — it merges with what\'s on this device (nothing is lost).</div>'+
+        '<textarea class="code" id="importBox" rows="3" placeholder="NIKKA1.…"></textarea>'+
+        '<button class="btn alt" id="importBtn">Import code</button><div class="status" id="importStatus"></div></div>'+
+      '<div class="row soon"><div><div class="st">Sign in to sync</div>'+
+        '<div class="sub">Automatic sync across devices — no passwords, no data of yours to guard.</div></div>'+
+        '<span class="tag">COMING SOON</span></div></details>';
+  }
+  function render(){
+    var t=today(); if(!state.days[t])state.days[t]={};
+    var day=state.days[t],wk=weekOf(state.startDate),tasks=tasksFor(wk),dt=drillToday();
+    var strk=computeStreak(state.days);
+    document.getElementById("streakNum").textContent=strk;
+    document.getElementById("streakWord").textContent=strk===1?"day":"days";
+    document.getElementById("totalDays").textContent=computeTotal(state.days);
+    document.getElementById("startedLabel").textContent="Started "+state.startDate+" · week "+wk;
+    var focus=wk<=1?"<b>Hiragana</b> — nothing else yet":wk===2?"<b>Katakana</b> + start the Anki engine":
+      wk<=6?"<b>The routine</b> — keep the streak alive":"<b>Keep going</b> — add speaking practice";
 
-  function sealSVG(){
-    return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">'+
-      '<rect x="6" y="6" width="88" height="88" rx="6" fill="none" stroke="#b23726" stroke-width="5"/>'+
-      '<rect x="14" y="14" width="72" height="72" rx="3" fill="none" stroke="#b23726" stroke-width="2"/>'+
-      '<text class="ch" x="50" y="50" text-anchor="middle" dominant-baseline="central" '+
-      'font-size="52" fill="#b23726" font-family="Shippori Mincho, serif" font-weight="800">済</text>'+
-      '</svg>';
+    var html="";
+    html+='<div class="saveerr" id="saveErr">This is a preview — progress won\'t stick here. Open the hosted page in your browser to keep your streak.</div>';
+    html+='<div class="phase"><span class="wk mincho">週 '+wk+'</span><span class="focus">'+focus+'</span></div>';
+    html+='<div class="card"><div class="seal'+(coreDone(day)?" show":"")+'">'+sealSVG()+'</div>';
+    html+='<h2>Today\'s practice</h2><div class="date">'+prettyDate(t)+'</div>';
+    tasks.forEach(function(task){
+      var on=!!day[task.id];
+      html+='<div class="task'+(on?" done":"")+'">';
+      html+='<div class="box'+(task.sacred?" sacred":"")+(on?" on":"")+'" data-id="'+task.id+'" role="checkbox" tabindex="0" aria-checked="'+on+'">'+(on?"✓":"")+'</div>';
+      html+='<div class="t-body"><div class="t-top"><span class="t-label">'+task.label+'</span>';
+      if(task.sacred)html+='<span class="badge mincho">毎日 · every day</span>';
+      html+='</div><div class="t-sub">'+task.sub+(task.drill?' · drill '+dt.done+'/'+ensureKana().goal:'')+'</div>';
+      var c=""; if(task.link)c+=chip(task.link,task.link.name); if(task.extra)c+=chip(task.extra,task.extra.name);
+      if(c)html+='<div>'+c+'</div>';
+      html+='</div></div>';
+    });
+    html+='<div class="note">Chaotic day? Just tick the <b>毎日</b> task and you\'re covered — the streak stays alive. Consistency beats hours.</div></div>';
+
+    /* exercises slot */
+    html+=drillCardHTML();
+
+    html+='<div class="sec-h mincho">The path</div><div class="road">';
+    ROAD.forEach(function(n){var st=roadState(n,wk);
+      html+='<div class="stop '+st+'"><div class="rail"><div class="dot"></div><div class="bar"></div></div>'+
+        '<div class="rt"><div class="lbl">'+n.lbl+'</div><div class="ds">'+n.ds+'</div></div></div>';});
+    html+='</div>';
+    html+='<div class="sec-h mincho">Last 4 weeks</div>'+calendarHTML();
+    html+='<div class="sec-h mincho">All resources</div><div class="res">'+
+      resLink(LINKS.hira,"Hiragana")+resLink(LINKS.kata,"Katakana")+resLink(LINKS.anki,"Install Anki")+
+      resLink(LINKS.ankiweb,"AnkiWeb")+resLink(LINKS.kaishi,"Kaishi deck")+resLink(LINKS.taekim,"Grammar (Tae Kim)")+
+      resLink(LINKS.hello,"HelloTalk")+'</div>';
+    html+=dataPanelHTML();
+    app.innerHTML=html;
+    bindMain();
   }
 
-  function prettyDate(s){
-    var d=parse(s);
-    return d.toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"});
-  }
+  /* =========================================================================
+     7. KANA DRILL ENGINE
+     ========================================================================= */
+  var drillEl=document.getElementById("drill"), drillInner=document.getElementById("drillInner");
+  var sess=null; // in-memory session: {done,correct,wrong,q,hitGoalShown}
 
-  function toggle(id){
-    var t=today();
-    if(!state.days[t]) state.days[t]={};
-    state.days[t][id] = !state.days[t][id];
-    save();
+  function activePool(){
+    var k=ensureKana(),keys=BASE_KEYS.slice();
+    if(k.scope.dakuten)keys=keys.concat(DAK_KEYS);
+    return keys;
+  }
+  function activeScripts(){var k=ensureKana();var a=[];if(k.scope.hira)a.push("hira");if(k.scope.kata)a.push("kata");if(!a.length)a.push("hira");return a;}
+  function pickTarget(pool,exclude){
+    var k=ensureKana(),ent=pool.filter(function(r){return r!==exclude;});
+    var w=ent.map(function(r){return Math.max(1,6-(k.box[r]||0));});
+    var sum=w.reduce(function(a,b){return a+b;},0),x=Math.random()*sum;
+    for(var i=0;i<ent.length;i++){x-=w[i];if(x<=0)return ent[i];}
+    return ent[ent.length-1];
+  }
+  function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+  function sample(pool,n,exclude){
+    var c=pool.filter(function(r){return r!==exclude;}); shuffle(c); return c.slice(0,n);
+  }
+  function buildQuestion(){
+    var pool=activePool(),scripts=activeScripts();
+    var target=pickTarget(pool, sess.q?sess.q.target:null);
+    var dir=Math.random()<0.5?"toRomaji":"toKana";   // see glyph->pick sound, or see sound->pick glyph
+    var script=scripts[Math.floor(Math.random()*scripts.length)];
+    var opts;
+    if(dir==="toRomaji"){
+      opts=sample(pool,8,target).concat([target]);
+      opts=shuffle(opts).map(function(r){return {label:r,romaji:r,rom:true};});
+    }else{
+      opts=sample(pool,8,target).concat([target]);
+      opts=shuffle(opts).map(function(r){return {label:glyph(r,script),romaji:r,rom:false};});
+    }
+    sess.q={target:target,dir:dir,script:script,opts:opts,answered:false,picked:null};
+    if(dir==="toKana") setTimeout(function(){speak(glyph(target,script));},250);
+  }
+  function speak(text){
+    try{
+      if(!window.speechSynthesis)return;
+      var u=new SpeechSynthesisUtterance(text); u.lang="ja-JP"; u.rate=.8;
+      var vs=window.speechSynthesis.getVoices(); var jp=vs.filter(function(v){return /ja(-|_)?JP/i.test(v.lang);})[0];
+      if(jp)u.voice=jp; window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
+    }catch(e){}
+  }
+  function startDrill(){
+    ensureKana();
+    sess={done:0,correct:0,wrong:0,q:null,hitGoalShown:false};
+    buildQuestion();
+    drillEl.classList.remove("hidden");
+    renderDrill();
+  }
+  function closeDrill(){
+    drillEl.classList.add("hidden");
+    try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){}
     render();
   }
+  function answer(pickRomaji){
+    var q=sess.q; if(!q||q.answered)return;
+    q.answered=true; q.picked=pickRomaji;
+    var k=ensureKana(),correct=pickRomaji===q.target;
+    // SRS box update (per sound)
+    var cur=k.box[q.target]||0;
+    k.box[q.target]=correct?Math.min(5,cur+1):0;
+    // session + daily counters (goal counts attempts, right or wrong)
+    sess.done++; if(correct)sess.correct++; else sess.wrong++;
+    var t=today(); if(!k.daily[t])k.daily[t]={done:0,correct:0};
+    k.daily[t].done++; if(correct)k.daily[t].correct++;
+    // hitting the goal stamps today's kana task
+    if(k.daily[t].done>=k.goal && !state.days[t].kana){
+      state.days[t]=state.days[t]||{}; state.days[t].kana=true; sess.justHitGoal=true;
+    }
+    Persistence.save(state);
+    renderDrill();
+  }
+  function nextQuestion(){ if(sess.justHitGoal)sess.hitGoalShown=true; sess.justHitGoal=false; buildQuestion(); renderDrill(); }
 
-  function bind(){
-    var boxes = app.querySelectorAll(".box");
-    boxes.forEach(function(b){
-      b.addEventListener("click", function(){ toggle(b.getAttribute("data-id")); });
-      b.addEventListener("keydown", function(e){
-        if(e.key===" "||e.key==="Enter"){ e.preventDefault(); toggle(b.getAttribute("data-id")); }
-      });
+  function renderDrill(){
+    var q=sess.q,k=ensureKana(),dt=k.daily[today()]||{done:0},goal=k.goal;
+    var gpct=Math.min(100,Math.round(dt.done/goal*100));
+    var h="";
+    h+='<div class="d-head"><button class="d-close" id="dClose">✕ Close</button>'+
+       '<div class="d-stats">'+
+       '<div class="d-stat"><div class="n">'+sess.done+'</div><div class="l">Done</div></div>'+
+       '<div class="d-stat wrong"><div class="n">'+sess.wrong+'</div><div class="l">Wrong</div></div>'+
+       '<div class="d-stat right"><div class="n">'+sess.correct+'</div><div class="l">Correct</div></div>'+
+       '</div></div>';
+    h+='<div class="d-goal"><div class="lab"><span>Daily goal</span><span>'+dt.done+' / '+goal+'</span></div>'+
+       '<div class="prog"><i style="width:'+gpct+'%"></i></div></div>';
+
+    // prompt
+    h+='<div class="d-prompt">';
+    if(q.dir==="toRomaji"){
+      h+='<div class="d-kind">Which sound is this?</div><div class="d-glyph mincho">'+glyph(q.target,q.script)+'</div>';
+    }else{
+      h+='<div class="d-kind">Tap the '+(q.script==="kata"?"katakana":"hiragana")+'</div><div class="d-romaji mincho">'+q.target+'</div>'+
+         '<button class="d-spk" id="dSpk" aria-label="Play sound">🔊</button>';
+    }
+    h+='</div>';
+
+    // options
+    h+='<div class="d-grid">';
+    q.opts.forEach(function(o,idx){
+      var cls="opt"+(o.rom?" rom":"");
+      if(q.answered){
+        if(o.romaji===q.target)cls+=" correct";
+        else if(o.romaji===q.picked)cls+=" bad";
+        else cls+=" dim";
+      }
+      h+='<div class="'+cls+'" data-r="'+o.romaji+'">'+o.label+'</div>';
+    });
+    h+='</div>';
+
+    // feedback
+    h+='<div class="d-fb">';
+    if(q.answered){
+      var correct=q.picked===q.target;
+      if(sess.justHitGoal){
+        h+='<div class="d-celebrate"><div class="big">済 Goal reached!</div><div class="sm">Today is stamped and your streak is safe. Keep going or close.</div></div>';
+      }else{
+        h+='<div class="msg '+(correct?"ok":"no")+'">'+(correct?"Correct":("It was  "+q.target+"  =  "+glyph(q.target,q.script==="kata"?"kata":"hira")))+'</div>';
+        var word=WORDS[q.target];
+        if(word) h+='<div class="reward">as in <b>'+word.w+'</b> ('+word.r+') — <span class="mean">'+word.m+'</span></div>';
+      }
+    }
+    h+='</div>';
+
+    // actions
+    if(q.answered){
+      h+='<div class="d-actions"><button class="d-next" id="dNext">Next →</button></div>';
+    }else{
+      h+='<div class="d-actions"><button class="d-skip" id="dSkip">Skip</button></div>';
+    }
+    drillInner.innerHTML=h;
+    bindDrill();
+  }
+
+  /* =========================================================================
+     8. EVENTS
+     ========================================================================= */
+  function toggle(id){var t=today();if(!state.days[t])state.days[t]={};
+    state.days[t][id]=!state.days[t][id];Persistence.save(state);render();}
+  function flash(el,msg,cls){if(!el)return;el.textContent=msg;el.className="status "+(cls||"ok");}
+  function copyText(str,statusEl){
+    function ok(){flash(statusEl,"Copied ✓","ok");}
+    function fb(){var ta=document.getElementById("exportBox");ta.focus();ta.select();ta.setSelectionRange(0,99999);
+      try{document.execCommand("copy");ok();}catch(e){flash(statusEl,"Select the text above and copy manually.","err");}}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(str).then(ok).catch(fb);}else fb();
+  }
+  function setSeg(kind,val){
+    var k=ensureKana();
+    if(kind==="goal"){k.goal=val;}
+    else{ k.scope[kind]=!k.scope[kind]; if(!k.scope.hira&&!k.scope.kata)k.scope.hira=true; }
+    Persistence.save(state); render();
+    var d=document.querySelector("details.opts"); if(d)d.open=true;
+  }
+  function bindMain(){
+    app.querySelectorAll(".box").forEach(function(b){
+      b.addEventListener("click",function(){toggle(b.getAttribute("data-id"));});
+      b.addEventListener("keydown",function(e){if(e.key===" "||e.key==="Enter"){e.preventDefault();toggle(b.getAttribute("data-id"));}});
+    });
+    var sd=document.getElementById("startDrill"); if(sd)sd.addEventListener("click",startDrill);
+    app.querySelectorAll(".seg").forEach(function(s){
+      s.addEventListener("click",function(){setSeg(s.getAttribute("data-seg"),parseInt(s.getAttribute("data-val"),10));});
+    });
+    var cb=document.getElementById("copyBtn"); if(cb)cb.addEventListener("click",function(){copyText(encodeState(state),document.getElementById("copyStatus"));});
+    var ib=document.getElementById("importBtn"); if(ib)ib.addEventListener("click",function(){
+      var st=document.getElementById("importStatus"),raw=document.getElementById("importBox").value;
+      try{state=mergeStates(state,decodeCode(raw));Persistence.save(state);render();flash(document.getElementById("importStatus"),"Imported and merged ✓","ok");}
+      catch(err){flash(st,err.message||"Couldn't read that code.","err");}
     });
   }
+  function bindDrill(){
+    var c=document.getElementById("dClose"); if(c)c.addEventListener("click",closeDrill);
+    var n=document.getElementById("dNext"); if(n)n.addEventListener("click",nextQuestion);
+    var s=document.getElementById("dSkip"); if(s)s.addEventListener("click",function(){buildQuestion();renderDrill();});
+    var sp=document.getElementById("dSpk"); if(sp)sp.addEventListener("click",function(){speak(glyph(sess.q.target,sess.q.script));});
+    if(!sess.q.answered){
+      drillInner.querySelectorAll(".opt").forEach(function(o){
+        o.addEventListener("click",function(){answer(o.getAttribute("data-r"));});
+      });
+    }
+  }
 
-  document.getElementById("resetBtn").addEventListener("click", function(){
-    if(!confirm("Reset everything — streak, days, and today's checklist? This can't be undone.")) return;
-    state = { startDate: today(), days:{} };
-    save();
-    render();
+  document.getElementById("resetBtn").addEventListener("click",function(){
+    if(!confirm("Reset everything — streak, days, drill progress, and today's checklist? This can't be undone.")) return;
+    state=emptyState();Persistence.save(state);render();
   });
 
-  (function init(){
-    state = load();
-    if(!state || !state.startDate){
-      state = { startDate: today(), days:{} };
-      save();
-    }
+  (function boot(){
+    var loaded=Persistence.boot();
+    state=loaded||emptyState();
+    if(!loaded)Persistence.save(state);
     render();
   })();
 })();
