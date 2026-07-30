@@ -598,8 +598,8 @@
         '<span class="tag">'+t("COMING SOON")+'</span></div></details>';
   }
   function render(){
-    var t=today(); if(!state.days[t])state.days[t]={};
-    var day=state.days[t],wk=weekOf(state.startDate),tasks=tasksFor(wk),dt=drillToday();
+    var todayStr=today(); if(!state.days[todayStr])state.days[todayStr]={};
+    var day=state.days[todayStr],wk=weekOf(state.startDate),tasks=tasksFor(wk),dt=drillToday();
     var strk=computeStreak(state.days);
     document.getElementById("streakNum").textContent=strk;
     document.getElementById("streakMeta").innerHTML='<b>'+(strk===1?t("day"):t("days"))+'</b> 連続 · '+computeTotal(state.days)+' '+t("total");
@@ -614,7 +614,7 @@
     html+='<div class="saveerr" id="saveErr">'+t("This is a preview — progress won't stick here. Open the hosted page in your browser to keep your streak.")+'</div>';
     html+='<div class="phase"><span class="wk mincho">週 '+wk+'</span><span class="focus">'+focus+'</span></div>';
     html+='<div class="card"><div class="seal'+(coreDone(day)?" show":"")+'">'+sealSVG()+'</div>';
-    html+='<h2>'+t("Today's practice")+'</h2><div class="date">'+prettyDate(t)+'</div>';
+    html+='<h2>'+t("Today's practice")+'</h2><div class="date">'+prettyDate(todayStr)+'</div>';
     tasks.forEach(function(task){
       var on=!!day[task.id];
       html+='<div class="task'+(on?" done":"")+'">';
