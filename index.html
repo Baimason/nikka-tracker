@@ -24,8 +24,8 @@
   .wrap{max-width:640px;margin:0 auto}
   .mincho{font-family:"Shippori Mincho",Georgia,serif}
 
-  header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;
-    border-bottom:2px solid var(--ink);padding-bottom:14px;margin-bottom:26px;flex-wrap:wrap}
+  header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;position:sticky;top:0;z-index:30;
+    background:var(--paper);border-bottom:2px solid var(--ink);padding:10px 0 14px;margin-bottom:22px;flex-wrap:wrap}
   .title{display:flex;flex-direction:column;gap:2px}
   .title .kanji{font-family:"Shippori Mincho",serif;font-weight:800;font-size:44px;line-height:.95;letter-spacing:2px}
   .title .rom{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink-soft);margin-top:4px}
@@ -182,8 +182,8 @@
   .d-goal{margin:12px 0 4px}
   .d-goal .lab{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-soft);
     text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
-  .d-prompt{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    text-align:center;padding:18px 0;min-height:180px}
+  .d-prompt{display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:20px 0 14px;min-height:150px}
   .d-kind{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:10px}
   .d-glyph{font-family:"Shippori Mincho",serif;font-weight:700;font-size:118px;line-height:1;color:var(--ink)}
   .d-romaji{font-family:"Shippori Mincho",serif;font-weight:800;font-size:70px;line-height:1;color:var(--ink)}
@@ -199,12 +199,15 @@
   .opt.correct{background:var(--green);border-color:var(--green);color:#fff}
   .opt.bad{background:#e7d3ce;border-color:var(--shu);color:var(--shu)}
   .opt.dim{opacity:.4}
-  .d-fb{min-height:74px;margin-top:12px;text-align:center;display:flex;flex-direction:column;justify-content:center}
-  .d-fb .msg{font-family:"Shippori Mincho",serif;font-weight:700;font-size:15px}
+  .d-fb{min-height:120px;margin-top:16px;text-align:center;display:flex;flex-direction:column;justify-content:flex-start;align-items:center}
+  .d-fb .msg{font-family:"Shippori Mincho",serif;font-weight:800;font-size:26px;letter-spacing:.02em}
   .d-fb .msg.ok{color:var(--green)} .d-fb .msg.no{color:var(--shu)}
-  .d-fb .reward{font-size:14px;color:var(--ink);margin-top:5px}
-  .d-fb .reward b{font-family:"Shippori Mincho",serif;font-size:17px}
-  .d-fb .reward .mean{color:var(--ink-soft)}
+  .reward-card{display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:10px}
+  .reward-card .d-spk-word{display:inline-flex;align-items:center;gap:6px;background:none;border:1.5px solid var(--ink);border-radius:20px;padding:6px 14px;font-size:15px;cursor:pointer;color:var(--ink);margin-top:12px}
+  .reward-card .d-spk-word span{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em}
+  .reward-card .rw-word{font-size:34px;color:var(--ink);line-height:1.1}
+  .reward-card .rw-sub{font-size:15px;color:var(--ink)}
+  .reward-card .rw-sub .mean{color:var(--ink-soft)}
   .d-actions{display:flex;gap:10px;margin-top:6px}
   .d-actions button{flex:1;font:inherit;font-weight:700;font-size:14px;border-radius:3px;padding:12px;cursor:pointer;border:1.5px solid var(--ink)}
   .d-next{background:var(--ink);color:var(--card)}
@@ -213,10 +216,20 @@
   .d-celebrate .big{font-family:"Shippori Mincho",serif;font-weight:800;color:var(--shu);font-size:20px}
   .d-celebrate .sm{font-size:13px;color:var(--ink-soft);margin-top:2px}
 
+  .d-sticky{position:sticky;top:0;z-index:6;background:var(--paper);padding:6px 0 8px;border-bottom:1px solid var(--line);margin-bottom:8px}
+  .info-btn{background:none;border:none;color:var(--ink-soft);font-size:16px;cursor:pointer;padding:0 2px 0 6px;line-height:1}
+  .info-btn:hover{color:var(--shu)}
+  .opt-help{font-size:12px;color:var(--ink-soft);line-height:1.55;margin-top:10px;padding:9px 11px;background:var(--paper);border:1px dashed var(--line);border-radius:3px}
+  .opt-help b{color:var(--ink)}
   @media (max-width:460px){
-    .title .kanji{font-size:36px} .streak-num{font-size:42px}
-    .card,.drill-card{box-shadow:4px 4px 0 rgba(35,32,26,.16)}
-    .d-glyph{font-size:96px} .opt{font-size:26px}
+    body{padding:16px 13px 46px}
+    .title .kanji{font-size:33px} .streak-num{font-size:40px}
+    header{padding:8px 0 12px;margin-bottom:18px}
+    .card,.drill-card{box-shadow:4px 4px 0 rgba(35,32,26,.16);padding:16px 15px 6px}
+    .drill{padding:14px 13px 26px}
+    .d-glyph{font-size:84px} .d-romaji{font-size:54px} .opt{font-size:24px}
+    .d-stat .n{font-size:22px} .d-stat{}
+    .d-fb .msg{font-size:22px} .reward-card .rw-word{font-size:30px}
   }
   @media (prefers-reduced-motion:reduce){ .seal,.seal.show,.chip,.opt,.prog>i{transition:none} }
 </style>
@@ -301,41 +314,84 @@
     ba:["ば","バ"],bi:["び","ビ"],bu:["ぶ","ブ"],be:["べ","ベ"],bo:["ぼ","ボ"],
     pa:["ぱ","パ"],pi:["ぴ","ピ"],pu:["ぷ","プ"],pe:["ぺ","ペ"],po:["ぽ","ポ"]
   };
-  // reward word (contains the target kana) -> reading + meaning
+  // reward words (each contains the target kana) — curated for everyday frequency + reading
   var WORDS = {
-    a:{w:"あめ",r:"ame",m:"rain"},i:{w:"いぬ",r:"inu",m:"dog"},u:{w:"うみ",r:"umi",m:"sea"},
-    e:{w:"えき",r:"eki",m:"station"},o:{w:"おと",r:"oto",m:"sound"},
-    ka:{w:"かさ",r:"kasa",m:"umbrella"},ki:{w:"き",r:"ki",m:"tree"},ku:{w:"くつ",r:"kutsu",m:"shoes"},
-    ke:{w:"けむり",r:"kemuri",m:"smoke"},ko:{w:"こえ",r:"koe",m:"voice"},
-    sa:{w:"さかな",r:"sakana",m:"fish"},shi:{w:"しま",r:"shima",m:"island"},su:{w:"すし",r:"sushi",m:"sushi"},
-    se:{w:"せかい",r:"sekai",m:"world"},so:{w:"そら",r:"sora",m:"sky"},
-    ta:{w:"たまご",r:"tamago",m:"egg"},chi:{w:"ちち",r:"chichi",m:"father"},tsu:{w:"つき",r:"tsuki",m:"moon"},
-    te:{w:"て",r:"te",m:"hand"},to:{w:"とり",r:"tori",m:"bird"},
-    na:{w:"なつ",r:"natsu",m:"summer"},ni:{w:"にく",r:"niku",m:"meat"},nu:{w:"ぬの",r:"nuno",m:"cloth"},
-    ne:{w:"ねこ",r:"neko",m:"cat"},no:{w:"のり",r:"nori",m:"seaweed"},
-    ha:{w:"はな",r:"hana",m:"flower"},hi:{w:"ひ",r:"hi",m:"sun / fire"},fu:{w:"ふゆ",r:"fuyu",m:"winter"},
-    he:{w:"へや",r:"heya",m:"room"},ho:{w:"ほし",r:"hoshi",m:"star"},
-    ma:{w:"まど",r:"mado",m:"window"},mi:{w:"みず",r:"mizu",m:"water"},mu:{w:"むし",r:"mushi",m:"insect"},
-    me:{w:"め",r:"me",m:"eye"},mo:{w:"もり",r:"mori",m:"forest"},
-    ya:{w:"やま",r:"yama",m:"mountain"},yu:{w:"ゆき",r:"yuki",m:"snow"},yo:{w:"よる",r:"yoru",m:"night"},
-    ra:{w:"さくら",r:"sakura",m:"cherry blossom"},ri:{w:"りんご",r:"ringo",m:"apple"},ru:{w:"よる",r:"yoru",m:"night"},
-    re:{w:"れきし",r:"rekishi",m:"history"},ro:{w:"ろく",r:"roku",m:"six"},
-    wa:{w:"わたし",r:"watashi",m:"I / me"},wo:{w:"を",r:"wo",m:"object particle"},n:{w:"ほん",r:"hon",m:"book"},
-    ga:{w:"がっこう",r:"gakkou",m:"school"},gi:{w:"かぎ",r:"kagi",m:"key"},gu:{w:"かぐ",r:"kagu",m:"furniture"},
-    ge:{w:"げんき",r:"genki",m:"healthy / lively"},go:{w:"ごはん",r:"gohan",m:"cooked rice / meal"},
-    za:{w:"ざっし",r:"zasshi",m:"magazine"},ji:{w:"じかん",r:"jikan",m:"time"},zu:{w:"みず",r:"mizu",m:"water"},
-    ze:{w:"ぜろ",r:"zero",m:"zero"},zo:{w:"ぞう",r:"zou",m:"elephant"},
-    da:{w:"だいがく",r:"daigaku",m:"university"},de:{w:"でんわ",r:"denwa",m:"telephone"},do:{w:"どうぶつ",r:"doubutsu",m:"animal"},
-    ba:{w:"かばん",r:"kaban",m:"bag"},bi:{w:"えび",r:"ebi",m:"shrimp"},bu:{w:"ぶた",r:"buta",m:"pig"},
-    be:{w:"べんとう",r:"bentou",m:"boxed lunch"},bo:{w:"ぼうし",r:"boushi",m:"hat"},
-    pa:{w:"パン",r:"pan",m:"bread"},pi:{w:"ピアノ",r:"piano",m:"piano"},pu:{w:"プール",r:"puuru",m:"pool"},
-    pe:{w:"ペン",r:"pen",m:"pen"},po:{w:"ポスト",r:"posuto",m:"mailbox"}
+    a:[{w:"あさ",r:"asa",m:"morning"},{w:"あたま",r:"atama",m:"head"},{w:"あお",r:"ao",m:"blue"},{w:"あめ",r:"ame",m:"rain"}],
+    i:[{w:"いえ",r:"ie",m:"house / home"},{w:"いち",r:"ichi",m:"one"},{w:"いぬ",r:"inu",m:"dog"},{w:"いま",r:"ima",m:"now"}],
+    u:[{w:"うみ",r:"umi",m:"sea"},{w:"うち",r:"uchi",m:"home"},{w:"うし",r:"ushi",m:"cow"},{w:"うた",r:"uta",m:"song"}],
+    e:[{w:"えき",r:"eki",m:"station"},{w:"え",r:"e",m:"picture"},{w:"えん",r:"en",m:"yen"}],
+    o:[{w:"おちゃ",r:"ocha",m:"tea"},{w:"おかね",r:"okane",m:"money"},{w:"おと",r:"oto",m:"sound"},{w:"おおきい",r:"ookii",m:"big"}],
+    ka:[{w:"かさ",r:"kasa",m:"umbrella"},{w:"かお",r:"kao",m:"face"},{w:"かわ",r:"kawa",m:"river"},{w:"かぞく",r:"kazoku",m:"family"}],
+    ki:[{w:"き",r:"ki",m:"tree"},{w:"きょう",r:"kyou",m:"today"},{w:"きた",r:"kita",m:"north"}],
+    ku:[{w:"くつ",r:"kutsu",m:"shoes"},{w:"くるま",r:"kuruma",m:"car"},{w:"くち",r:"kuchi",m:"mouth"},{w:"くも",r:"kumo",m:"cloud"}],
+    ke:[{w:"けむり",r:"kemuri",m:"smoke"},{w:"いけ",r:"ike",m:"pond"}],
+    ko:[{w:"こども",r:"kodomo",m:"child"},{w:"ここ",r:"koko",m:"here"},{w:"こえ",r:"koe",m:"voice"},{w:"こめ",r:"kome",m:"rice (grain)"}],
+    sa:[{w:"さかな",r:"sakana",m:"fish"},{w:"さくら",r:"sakura",m:"cherry blossom"},{w:"さむい",r:"samui",m:"cold"},{w:"さん",r:"san",m:"three"}],
+    shi:[{w:"しごと",r:"shigoto",m:"work / job"},{w:"した",r:"shita",m:"below"},{w:"しろ",r:"shiro",m:"white"},{w:"しま",r:"shima",m:"island"}],
+    su:[{w:"すし",r:"sushi",m:"sushi"},{w:"すき",r:"suki",m:"to like"},{w:"すこし",r:"sukoshi",m:"a little"}],
+    se:[{w:"せんせい",r:"sensei",m:"teacher"},{w:"せかい",r:"sekai",m:"world"},{w:"みせ",r:"mise",m:"shop"}],
+    so:[{w:"そら",r:"sora",m:"sky"},{w:"そと",r:"soto",m:"outside"},{w:"そば",r:"soba",m:"soba noodles / nearby"}],
+    ta:[{w:"たべる",r:"taberu",m:"to eat"},{w:"たまご",r:"tamago",m:"egg"},{w:"たかい",r:"takai",m:"tall / expensive"},{w:"たてもの",r:"tatemono",m:"building"}],
+    chi:[{w:"ちち",r:"chichi",m:"father"},{w:"ちいさい",r:"chiisai",m:"small"},{w:"ちず",r:"chizu",m:"map"},{w:"ち",r:"chi",m:"blood"}],
+    tsu:[{w:"つき",r:"tsuki",m:"moon"},{w:"つくえ",r:"tsukue",m:"desk"},{w:"なつ",r:"natsu",m:"summer"}],
+    te:[{w:"て",r:"te",m:"hand"},{w:"てがみ",r:"tegami",m:"letter"},{w:"てんき",r:"tenki",m:"weather"}],
+    to:[{w:"とり",r:"tori",m:"bird"},{w:"ともだち",r:"tomodachi",m:"friend"},{w:"とけい",r:"tokei",m:"clock / watch"},{w:"とし",r:"toshi",m:"year / age"}],
+    na:[{w:"なつ",r:"natsu",m:"summer"},{w:"なまえ",r:"namae",m:"name"},{w:"なに",r:"nani",m:"what"},{w:"さかな",r:"sakana",m:"fish"}],
+    ni:[{w:"にく",r:"niku",m:"meat"},{w:"にほん",r:"nihon",m:"Japan"},{w:"にわ",r:"niwa",m:"garden"},{w:"あに",r:"ani",m:"older brother"}],
+    nu:[{w:"いぬ",r:"inu",m:"dog"},{w:"ぬの",r:"nuno",m:"cloth"}],
+    ne:[{w:"ねこ",r:"neko",m:"cat"},{w:"おかね",r:"okane",m:"money"},{w:"ねる",r:"neru",m:"to sleep"}],
+    no:[{w:"のむ",r:"nomu",m:"to drink"},{w:"のり",r:"nori",m:"seaweed"},{w:"のる",r:"noru",m:"to ride"}],
+    ha:[{w:"はな",r:"hana",m:"flower / nose"},{w:"はは",r:"haha",m:"mother"},{w:"はし",r:"hashi",m:"chopsticks / bridge"},{w:"はる",r:"haru",m:"spring"}],
+    hi:[{w:"ひと",r:"hito",m:"person"},{w:"ひ",r:"hi",m:"sun / fire / day"},{w:"ひる",r:"hiru",m:"noon"},{w:"ひがし",r:"higashi",m:"east"}],
+    fu:[{w:"ふゆ",r:"fuyu",m:"winter"},{w:"ふね",r:"fune",m:"boat"},{w:"ふく",r:"fuku",m:"clothes"},{w:"ふろ",r:"furo",m:"bath"}],
+    he:[{w:"へや",r:"heya",m:"room"},{w:"へた",r:"heta",m:"unskilled / bad at"}],
+    ho:[{w:"ほし",r:"hoshi",m:"star"},{w:"ほん",r:"hon",m:"book"},{w:"ほか",r:"hoka",m:"other"}],
+    ma:[{w:"まど",r:"mado",m:"window"},{w:"まえ",r:"mae",m:"front / before"},{w:"あたま",r:"atama",m:"head"},{w:"まち",r:"machi",m:"town"}],
+    mi:[{w:"みず",r:"mizu",m:"water"},{w:"みみ",r:"mimi",m:"ear"},{w:"みる",r:"miru",m:"to see"},{w:"みせ",r:"mise",m:"shop"}],
+    mu:[{w:"むし",r:"mushi",m:"insect"},{w:"むら",r:"mura",m:"village"},{w:"むすこ",r:"musuko",m:"son"}],
+    me:[{w:"め",r:"me",m:"eye"},{w:"あめ",r:"ame",m:"rain / candy"},{w:"ゆめ",r:"yume",m:"dream"}],
+    mo:[{w:"もり",r:"mori",m:"forest"},{w:"もの",r:"mono",m:"thing"},{w:"くも",r:"kumo",m:"cloud"},{w:"もつ",r:"motsu",m:"to hold"}],
+    ya:[{w:"やま",r:"yama",m:"mountain"},{w:"へや",r:"heya",m:"room"},{w:"やさい",r:"yasai",m:"vegetable"},{w:"やすい",r:"yasui",m:"cheap"}],
+    yu:[{w:"ゆき",r:"yuki",m:"snow"},{w:"ゆめ",r:"yume",m:"dream"},{w:"ゆび",r:"yubi",m:"finger"},{w:"ふゆ",r:"fuyu",m:"winter"}],
+    yo:[{w:"よる",r:"yoru",m:"night"},{w:"よむ",r:"yomu",m:"to read"},{w:"よん",r:"yon",m:"four"},{w:"よこ",r:"yoko",m:"side"}],
+    ra:[{w:"さくら",r:"sakura",m:"cherry blossom"},{w:"そら",r:"sora",m:"sky"},{w:"から",r:"kara",m:"from / empty"}],
+    ri:[{w:"りんご",r:"ringo",m:"apple"},{w:"とり",r:"tori",m:"bird"},{w:"のり",r:"nori",m:"seaweed"}],
+    ru:[{w:"よる",r:"yoru",m:"night"},{w:"みる",r:"miru",m:"to see"},{w:"くる",r:"kuru",m:"to come"},{w:"はる",r:"haru",m:"spring"}],
+    re:[{w:"これ",r:"kore",m:"this"},{w:"それ",r:"sore",m:"that"},{w:"れきし",r:"rekishi",m:"history"}],
+    ro:[{w:"しろ",r:"shiro",m:"white"},{w:"ふろ",r:"furo",m:"bath"},{w:"ろく",r:"roku",m:"six"},{w:"くろ",r:"kuro",m:"black"}],
+    wa:[{w:"わたし",r:"watashi",m:"I / me"},{w:"かわ",r:"kawa",m:"river"},{w:"にわ",r:"niwa",m:"garden"}],
+    wo:[{w:"を",r:"wo",m:"object particle"}],
+    n:[{w:"ほん",r:"hon",m:"book"},{w:"にほん",r:"nihon",m:"Japan"},{w:"えん",r:"en",m:"yen"},{w:"せんせい",r:"sensei",m:"teacher"}],
+    ga:[{w:"がっこう",r:"gakkou",m:"school"},{w:"めがね",r:"megane",m:"glasses"},{w:"ながい",r:"nagai",m:"long"}],
+    gi:[{w:"かぎ",r:"kagi",m:"key"},{w:"つぎ",r:"tsugi",m:"next"},{w:"みぎ",r:"migi",m:"right"}],
+    gu:[{w:"かぐ",r:"kagu",m:"furniture"},{w:"すぐ",r:"sugu",m:"soon / right away"}],
+    ge:[{w:"げんき",r:"genki",m:"healthy / lively"},{w:"かげ",r:"kage",m:"shadow"}],
+    go:[{w:"ごはん",r:"gohan",m:"cooked rice / meal"},{w:"りんご",r:"ringo",m:"apple"},{w:"ごご",r:"gogo",m:"afternoon"},{w:"えいご",r:"eigo",m:"English (language)"}],
+    za:[{w:"ざっし",r:"zasshi",m:"magazine"}],
+    ji:[{w:"じかん",r:"jikan",m:"time"},{w:"かんじ",r:"kanji",m:"kanji / character"},{w:"じてんしゃ",r:"jitensha",m:"bicycle"}],
+    zu:[{w:"みず",r:"mizu",m:"water"},{w:"ちず",r:"chizu",m:"map"},{w:"しずか",r:"shizuka",m:"quiet"}],
+    ze:[{w:"ぜろ",r:"zero",m:"zero"},{w:"かぜ",r:"kaze",m:"wind / a cold"}],
+    zo:[{w:"ぞう",r:"zou",m:"elephant"},{w:"かぞく",r:"kazoku",m:"family"}],
+    da:[{w:"だいがく",r:"daigaku",m:"university"},{w:"からだ",r:"karada",m:"body"},{w:"ともだち",r:"tomodachi",m:"friend"}],
+    de:[{w:"でんわ",r:"denwa",m:"telephone"},{w:"でんき",r:"denki",m:"electricity"},{w:"でぐち",r:"deguchi",m:"exit"}],
+    do:[{w:"こども",r:"kodomo",m:"child"},{w:"まど",r:"mado",m:"window"},{w:"うどん",r:"udon",m:"udon noodles"}],
+    ba:[{w:"かばん",r:"kaban",m:"bag"},{w:"そば",r:"soba",m:"soba noodles"},{w:"ことば",r:"kotoba",m:"word / language"}],
+    bi:[{w:"えび",r:"ebi",m:"shrimp"},{w:"ゆび",r:"yubi",m:"finger"},{w:"へび",r:"hebi",m:"snake"},{w:"たび",r:"tabi",m:"trip"}],
+    bu:[{w:"ぶた",r:"buta",m:"pig"},{w:"しんぶん",r:"shinbun",m:"newspaper"},{w:"あぶない",r:"abunai",m:"dangerous"}],
+    be:[{w:"たべる",r:"taberu",m:"to eat"},{w:"べんきょう",r:"benkyou",m:"study"},{w:"なべ",r:"nabe",m:"pot / hot pot"}],
+    bo:[{w:"ぼうし",r:"boushi",m:"hat"},{w:"ぼく",r:"boku",m:"I / me (male)"}],
+    pa:[{w:"パン",r:"pan",m:"bread"},{w:"パソコン",r:"pasokon",m:"computer"},{w:"スーパー",r:"suupaa",m:"supermarket"}],
+    pi:[{w:"ピアノ",r:"piano",m:"piano"},{w:"えんぴつ",r:"enpitsu",m:"pencil"},{w:"コピー",r:"kopii",m:"copy"}],
+    pu:[{w:"プール",r:"puuru",m:"pool"},{w:"プレゼント",r:"purezento",m:"present / gift"},{w:"てんぷら",r:"tenpura",m:"tempura"}],
+    pe:[{w:"ペン",r:"pen",m:"pen"},{w:"ペット",r:"petto",m:"pet"}],
+    po:[{w:"ポスト",r:"posuto",m:"mailbox"},{w:"ポケット",r:"poketto",m:"pocket"},{w:"さんぽ",r:"sanpo",m:"a walk / stroll"}]
   };
   /* DATA_END */
   var BASE_KEYS = Object.keys(KANA_BASE);
   var DAK_KEYS = Object.keys(KANA_DAKUTEN);
   var ALL = {}; BASE_KEYS.forEach(function(k){ALL[k]=KANA_BASE[k];}); DAK_KEYS.forEach(function(k){ALL[k]=KANA_DAKUTEN[k];});
   function glyph(romaji,script){ var p=ALL[romaji]; return p?p[script==="kata"?1:0]:romaji; }
+  function pickWord(r){ var a=WORDS[r]; return (a&&a.length)?a[Math.floor(Math.random()*a.length)]:null; }
 
   /* =========================================================================
      2. STATE + SCHEMA
@@ -463,7 +519,9 @@
       '<button class="start-btn'+(doneToday?" done-today":"")+'" id="startDrill">'+(dt.done>0?(doneToday?"Practice more":"Continue drill"):"Start drill")+'</button>'+
       '<details class="opts"><summary>Options</summary>'+
         '<div class="opt-row"><span class="k">Script</span>'+
-          seg("hira",1,"Hiragana",k.scope.hira)+seg("kata",1,"Katakana",k.scope.kata)+seg("dakuten",1,"+ Dakuten",k.scope.dakuten)+'</div>'+
+          seg("hira",1,"Hiragana",k.scope.hira)+seg("kata",1,"Katakana",k.scope.kata)+seg("dakuten",1,"+ Dakuten",k.scope.dakuten)+
+          '<button class="info-btn" id="scriptInfo" aria-label="Explain the scripts">ⓘ</button></div>'+
+        '<div class="opt-help" id="scriptHelp" hidden><b>Hiragana</b> (あ) and <b>Katakana</b> (ア) are the two kana alphabets — same sounds, different look (katakana is mostly for foreign / loan words). <b>Dakuten</b> are the small ゛/゜ marks that voice a sound: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).</div>'+
         '<div class="opt-row"><span class="k">Goal</span>'+
           seg("goal",20,"20",goal===20)+seg("goal",30,"30",goal===30)+seg("goal",50,"50",goal===50)+seg("goal",100,"100",goal===100)+'</div>'+
       '</details></div>';
@@ -604,6 +662,7 @@
     if(k.daily[t].done>=k.goal && !state.days[t].kana){
       state.days[t]=state.days[t]||{}; state.days[t].kana=true; sess.justHitGoal=true;
     }
+    sess.q.word=pickWord(q.target);
     Persistence.save(state);
     renderDrill();
   }
@@ -613,6 +672,7 @@
     var q=sess.q,k=ensureKana(),dt=k.daily[today()]||{done:0},goal=k.goal;
     var gpct=Math.min(100,Math.round(dt.done/goal*100));
     var h="";
+    h+='<div class="d-sticky">';
     h+='<div class="d-head"><button class="d-close" id="dClose">✕ Close</button>'+
        '<div class="d-stats">'+
        '<div class="d-stat"><div class="n">'+sess.done+'</div><div class="l">Done</div></div>'+
@@ -621,6 +681,7 @@
        '</div></div>';
     h+='<div class="d-goal"><div class="lab"><span>Daily goal</span><span>'+dt.done+' / '+goal+'</span></div>'+
        '<div class="prog"><i style="width:'+gpct+'%"></i></div></div>';
+    h+='</div>';
 
     // prompt
     h+='<div class="d-prompt">';
@@ -652,9 +713,9 @@
       if(sess.justHitGoal){
         h+='<div class="d-celebrate"><div class="big">済 Goal reached!</div><div class="sm">Today is stamped and your streak is safe. Keep going or close.</div></div>';
       }else{
-        h+='<div class="msg '+(correct?"ok":"no")+'">'+(correct?"Correct":("It was  "+q.target+"  =  "+glyph(q.target,q.script==="kata"?"kata":"hira")))+'</div>';
-        var word=WORDS[q.target];
-        if(word) h+='<div class="reward">as in <b>'+word.w+'</b> ('+word.r+') — <span class="mean">'+word.m+'</span></div>';
+        h+='<div class="msg '+(correct?"ok":"no")+'">'+(correct?"Correct":("It was "+glyph(q.target,q.script==="kata"?"kata":"hira")+" · "+q.target))+'</div>';
+        var word=sess.q.word;
+        if(word) h+='<div class="reward-card"><div class="rw-word mincho">'+word.w+'</div><div class="rw-sub">'+word.r+' — <span class="mean">'+word.m+'</span></div><button class="d-spk-word" id="dSpkWord" aria-label="Play word">🔊 <span>hear it</span></button></div>';
       }
     }
     h+='</div>';
@@ -697,6 +758,8 @@
     app.querySelectorAll(".seg").forEach(function(s){
       s.addEventListener("click",function(){setSeg(s.getAttribute("data-seg"),parseInt(s.getAttribute("data-val"),10));});
     });
+    var si=document.getElementById("scriptInfo");
+    if(si)si.addEventListener("click",function(){var hp=document.getElementById("scriptHelp");if(hp)hp.hidden=!hp.hidden;});
     var cb=document.getElementById("copyBtn"); if(cb)cb.addEventListener("click",function(){copyText(encodeState(state),document.getElementById("copyStatus"));});
     var ib=document.getElementById("importBtn"); if(ib)ib.addEventListener("click",function(){
       var st=document.getElementById("importStatus"),raw=document.getElementById("importBox").value;
@@ -709,6 +772,7 @@
     var n=document.getElementById("dNext"); if(n)n.addEventListener("click",nextQuestion);
     var s=document.getElementById("dSkip"); if(s)s.addEventListener("click",function(){buildQuestion();renderDrill();});
     var sp=document.getElementById("dSpk"); if(sp)sp.addEventListener("click",function(){speak(glyph(sess.q.target,sess.q.script));});
+    var spw=document.getElementById("dSpkWord"); if(spw)spw.addEventListener("click",function(){ if(sess.q.word)speak(sess.q.word.w); });
     if(!sess.q.answered){
       drillInner.querySelectorAll(".opt").forEach(function(o){
         o.addEventListener("click",function(){answer(o.getAttribute("data-r"));});
