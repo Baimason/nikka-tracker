@@ -95,6 +95,10 @@
   .drill-card .dc-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
   .drill-card h3{font-family: var(--display-font);font-weight:700;font-size:17px;margin:0}
   .drill-card .dc-count{font-family: var(--display-font);font-size:15px;color:var(--shu);font-weight:700}
+  .prog.milestones{position:relative;overflow:visible}
+  .prog .tick{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink-faint);transform:translateX(-1px);opacity:.5}
+  .prog .tick.on{background:var(--ink);opacity:1}
+  .drill-card .dc-count .tier{color:var(--green)}
   .prog{height:9px;background:var(--paper);border:1px solid var(--line);border-radius:20px;overflow:hidden;margin:12px 0 6px}
   .prog > i{display:block;height:100%;background:var(--shu);width:0;transition:width .3s}
   .prog > i.g{background:var(--green)}
@@ -283,6 +287,9 @@
   .adv-no{font:inherit;font-weight:600;font-size:13.5px;color:var(--ink-soft);background:transparent;border:1.3px solid var(--line);border-radius:3px;padding:10px 16px;cursor:pointer}
   .unlock-pill{font:inherit;font-weight:700;font-size:12.5px;color:var(--shu);background:var(--paper);border:1.3px dashed var(--shu);border-radius:20px;padding:6px 14px;cursor:pointer;margin:9px 0 2px}
   .leveled{font-family:"Shippori Mincho",serif;font-weight:800;font-size:15px;color:var(--shu);margin:10px 0 2px}
+  .stage-adv{display:flex;gap:8px;align-items:center;margin:14px 0 4px;flex-wrap:wrap}
+  .stage-next{font:inherit;font-weight:700;font-size:12.5px;color:var(--card);background:var(--ink);border:none;border-radius:20px;padding:7px 14px;cursor:pointer}
+  .stage-back{font:inherit;font-weight:600;font-size:12px;color:var(--ink-soft);background:none;border:1.2px solid var(--line);border-radius:20px;padding:6px 12px;cursor:pointer}
   .teach{display:flex;flex-direction:column;align-items:center;text-align:center;padding:14px 0 6px}
   .teach-tag{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--shu);font-weight:700;margin-bottom:10px}
   .teach-glyph{font-family:"Shippori Mincho",serif;font-weight:700;font-size:clamp(72px,22vw,108px);line-height:1;color:var(--ink)}
@@ -345,7 +352,7 @@
 <script>
 (function(){
   "use strict";
-  var TR = {"day": "día", "days": "días", "total": "total", "daily practice": "práctica diaria", "Started": "Empezó", "week": "semana", "Today's practice": "Práctica de hoy", "every day": "cada día", "drill": "práctica", "<b>Hiragana</b> — nothing else yet": "<b>Hiragana</b> — nada más por ahora", "<b>Katakana</b> + start the Anki engine": "<b>Katakana</b> + arrancá el motor de Anki", "<b>The routine</b> — keep the streak alive": "<b>La rutina</b> — mantené la racha viva", "<b>Keep going</b> — add speaking practice": "<b>Seguí</b> — sumá práctica de habla", "Hiragana practice": "Práctica de hiragana", "Tofugu guide + drills until it's automatic": "Guía de Tofugu + práctica hasta que salga solo", "Kana drill": "Práctica de kana", "Finish katakana; drill both scripts": "Terminá katakana; practicá los dos silabarios", "Anki — 10 new words": "Anki — 10 palabras nuevas", "Set up the Kaishi 1.5k deck first": "Primero configurá el mazo Kaishi 1.5k", "Anki — reviews + 10 new": "Anki — repasos + 10 nuevas", "The engine. Never skip this one.": "El motor. Nunca te la saltes.", "Grammar — 1 point": "Gramática — 1 punto", "Tae Kim's guide, one point per day": "Guía de Tae Kim, un punto por día", "Immersion — 10 min": "Inmersión — 10 min", "Read cards aloud, or spot words in something you watch": "Leé las tarjetas en voz alta, o cazá palabras en algo que veas", "Speak / exchange": "Hablar / intercambio", "Try a message or short call": "Probá un mensaje o una llamada corta", "Chaotic day? Just tick the <b>毎日</b> task and you're covered — the streak stays alive. Consistency beats hours.": "¿Día caótico? Con marcar la tarea <b>毎日</b> ya estás — la racha sigue viva. La constancia le gana a las horas.", "The path": "El camino", "Week 1 · Hiragana": "Semana 1 · Hiragana", "Read hiragana without stalling": "Leer hiragana sin trabarte", "Week 2 · Katakana + Anki": "Semana 2 · Katakana + Anki", "Finish kana, start Kaishi 1.5k": "Terminar kana, arrancar Kaishi 1.5k", "Weeks 3–6 · The routine": "Semanas 3–6 · La rutina", "Anki + grammar + immersion, daily": "Anki + gramática + inmersión, a diario", "Beyond · Speaking": "Más allá · Hablar", "Add HelloTalk or iTalki": "Sumá HelloTalk o iTalki", "Last 4 weeks": "Últimas 4 semanas", "済 marks a day the daily task was done": "済 marca un día con la tarea diaria hecha", "All resources": "Todos los recursos", "Install Anki": "Instalar Anki", "Kaishi deck": "Mazo Kaishi", "Grammar (Tae Kim)": "Gramática (Tae Kim)", "済 Done for today — the seal is yours. Keep going if you like.": "済 Listo por hoy — el sello es tuyo. Seguí si querés.", "Recognition + spaced repetition. Hit the goal to stamp today.": "Reconocimiento + repetición espaciada. Llegá a la meta para sellar el día.", "Start drill": "Empezar", "Continue drill": "Continuar", "Practice more": "Practicar más", "Options": "Opciones", "Script": "Escritura", "Goal": "Meta", "<b>Hiragana</b> (あ) and <b>Katakana</b> (ア) are the two kana alphabets — same sounds, different look (katakana is mostly for foreign / loan words). <b>Dakuten</b> are the small ゛/゜ marks that voice a sound: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).": "<b>Hiragana</b> (あ) y <b>Katakana</b> (ア) son los dos silabarios — mismos sonidos, distinta forma (katakana es sobre todo para palabras extranjeras). El <b>Dakuten</b> son las marquitas ゛/゜ que sonorizan un sonido: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).", "Kana mastery": "Dominio del kana", "characters mastered": "caracteres dominados", "Focus on": "Enfocate en", "more": "más", "Do a few drills and your mastery shows up here.": "Hacé unas cuantas y acá verás tu dominio.", "済 You've got your kana. It's logical to move on — make grammar + Anki your main focus and keep drills as warm-ups.": "済 Ya dominás el kana. Es lógico avanzar — pasá el foco a gramática + Anki y dejá la práctica como calentamiento.", "Almost there — a few more sessions and kana will feel automatic.": "Casi — unas sesiones más y el kana te saldrá solo.", "Building your foundation — keep the daily drill going.": "Construyendo la base — seguí con la práctica diaria.", "Backup &amp; sync": "Respaldo y sync", "Your backup code": "Tu código de respaldo", "Copy this and paste it on another device to carry your streak over.": "Copialo y pegalo en otro dispositivo para llevarte la racha.", "Copy code": "Copiar código", "Restore from a code": "Restaurar desde un código", "Paste a code here — it merges with what's on this device (nothing is lost).": "Pegá un código acá — se fusiona con lo que ya tenés (no se pierde nada).", "Import code": "Importar código", "Sign in to sync": "Iniciar sesión para sync", "Automatic sync across devices — no passwords, no data of yours to guard.": "Sync automático entre dispositivos — sin contraseñas, sin datos tuyos que cuidar.", "COMING SOON": "PRÓXIMAMENTE", "Copied ✓": "Copiado ✓", "Select the text above and copy manually.": "Seleccioná el texto de arriba y copialo a mano.", "Imported and merged ✓": "Importado y fusionado ✓", "Couldn't read that code.": "No pude leer ese código.", "That's not a Nikka backup code.": "Ese no es un código de Nikka.", "The code looks corrupted or incomplete.": "El código parece corrupto o incompleto.", "Reset everything — streak, days, drill progress, and today's checklist? This can't be undone.": "¿Reiniciar todo — racha, días, progreso de práctica y la lista de hoy? No se puede deshacer.", "Reset all progress": "Reiniciar todo el progreso", "This is a preview — progress won't stick here. Open the hosted page in your browser to keep your streak.": "Esto es una vista previa — el progreso no se guarda acá. Abrí la página publicada en tu navegador para mantener la racha.", "Close": "Cerrar", "Done": "Hechas", "Wrong": "Erradas", "Correct": "Aciertos", "Correct!": "¡Correcto!", "It was": "Era", "Which sound is this?": "¿Qué sonido es este?", "Tap the": "Toca el", "Daily goal": "Meta diaria", "済 Goal reached!": "済 ¡Meta alcanzada!", "Today is stamped and your streak is safe. Keep going or close.": "El día quedó sellado y tu racha está a salvo. Puedes continuar o cerrar.", "hear it": "escuchar", "Next →": "Siguiente →", "Skip": "Saltar", "Level": "Nivel", "You've got hiragana down! Ready to add dakuten?": "¡Dominás el hiragana! ¿Listo para sumar el dakuten?", "Dakuten mastered! Ready for katakana?": "¡Dominaste el dakuten! ¿Listo para el katakana?", "Yes, unlock": "Sí, desbloquear", "Not yet": "Todavía no", "Unlock": "Desbloquear", "済 Unlocked!": "済 ¡Desbloqueado!", "New character": "Carácter nuevo", "Got it →": "¡Entendido! →", "Traditional style (serif)": "Estilo tradicional (con serifas)",
+  var TR = {"day": "día", "days": "días", "total": "total", "daily practice": "práctica diaria", "Started": "Empezó", "week": "semana", "Today's practice": "Práctica de hoy", "every day": "cada día", "drill": "práctica", "<b>Hiragana</b> — nothing else yet": "<b>Hiragana</b> — nada más por ahora", "<b>Katakana</b> + start the Anki engine": "<b>Katakana</b> + arrancá el motor de Anki", "<b>The routine</b> — keep the streak alive": "<b>La rutina</b> — mantené la racha viva", "<b>Keep going</b> — add speaking practice": "<b>Seguí</b> — sumá práctica de habla", "Hiragana practice": "Práctica de hiragana", "Tofugu guide + drills until it's automatic": "Guía de Tofugu + práctica hasta que salga solo", "Kana drill": "Práctica de kana", "Finish katakana; drill both scripts": "Terminá katakana; practicá los dos silabarios", "Anki — 10 new words": "Anki — 10 palabras nuevas", "Set up the Kaishi 1.5k deck first": "Primero configurá el mazo Kaishi 1.5k", "Anki — reviews + 10 new": "Anki — repasos + 10 nuevas", "The engine. Never skip this one.": "El motor. Nunca te la saltes.", "Grammar — 1 point": "Gramática — 1 punto", "Tae Kim's guide, one point per day": "Guía de Tae Kim, un punto por día", "Immersion — 10 min": "Inmersión — 10 min", "Read cards aloud, or spot words in something you watch": "Leé las tarjetas en voz alta, o cazá palabras en algo que veas", "Speak / exchange": "Hablar / intercambio", "Try a message or short call": "Probá un mensaje o una llamada corta", "Chaotic day? Just tick the <b>毎日</b> task and you're covered — the streak stays alive. Consistency beats hours.": "¿Día caótico? Con marcar la tarea <b>毎日</b> ya estás — la racha sigue viva. La constancia le gana a las horas.", "The path": "El camino", "Week 1 · Hiragana": "Semana 1 · Hiragana", "Read hiragana without stalling": "Leer hiragana sin trabarte", "Week 2 · Katakana + Anki": "Semana 2 · Katakana + Anki", "Finish kana, start Kaishi 1.5k": "Terminar kana, arrancar Kaishi 1.5k", "Weeks 3–6 · The routine": "Semanas 3–6 · La rutina", "Anki + grammar + immersion, daily": "Anki + gramática + inmersión, a diario", "Beyond · Speaking": "Más allá · Hablar", "Add HelloTalk or iTalki": "Sumá HelloTalk o iTalki", "Last 4 weeks": "Últimas 4 semanas", "済 marks a day the daily task was done": "済 marca un día con la tarea diaria hecha", "All resources": "Todos los recursos", "Install Anki": "Instalar Anki", "Kaishi deck": "Mazo Kaishi", "Grammar (Tae Kim)": "Gramática (Tae Kim)", "済 Done for today — the seal is yours. Keep going if you like.": "済 Listo por hoy — el sello es tuyo. Seguí si querés.", "Recognition + spaced repetition. Hit the goal to stamp today.": "Reconocimiento + repetición espaciada. Llegá a la meta para sellar el día.", "Start drill": "Empezar", "Continue drill": "Continuar", "Practice more": "Practicar más", "Options": "Opciones", "Script": "Escritura", "Goal": "Meta", "<b>Hiragana</b> (あ) and <b>Katakana</b> (ア) are the two kana alphabets — same sounds, different look (katakana is mostly for foreign / loan words). <b>Dakuten</b> are the small ゛/゜ marks that voice a sound: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).": "<b>Hiragana</b> (あ) y <b>Katakana</b> (ア) son los dos silabarios — mismos sonidos, distinta forma (katakana es sobre todo para palabras extranjeras). El <b>Dakuten</b> son las marquitas ゛/゜ que sonorizan un sonido: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).", "Kana mastery": "Dominio del kana", "characters mastered": "caracteres dominados", "Focus on": "Enfocate en", "more": "más", "Do a few drills and your mastery shows up here.": "Hacé unas cuantas y acá verás tu dominio.", "済 You've got your kana. It's logical to move on — make grammar + Anki your main focus and keep drills as warm-ups.": "済 Ya dominás el kana. Es lógico avanzar — pasá el foco a gramática + Anki y dejá la práctica como calentamiento.", "Almost there — a few more sessions and kana will feel automatic.": "Casi — unas sesiones más y el kana te saldrá solo.", "Building your foundation — keep the daily drill going.": "Construyendo la base — seguí con la práctica diaria.", "Backup &amp; sync": "Respaldo y sync", "Your backup code": "Tu código de respaldo", "Copy this and paste it on another device to carry your streak over.": "Copialo y pegalo en otro dispositivo para llevarte la racha.", "Copy code": "Copiar código", "Restore from a code": "Restaurar desde un código", "Paste a code here — it merges with what's on this device (nothing is lost).": "Pegá un código acá — se fusiona con lo que ya tenés (no se pierde nada).", "Import code": "Importar código", "Sign in to sync": "Iniciar sesión para sync", "Automatic sync across devices — no passwords, no data of yours to guard.": "Sync automático entre dispositivos — sin contraseñas, sin datos tuyos que cuidar.", "COMING SOON": "PRÓXIMAMENTE", "Copied ✓": "Copiado ✓", "Select the text above and copy manually.": "Seleccioná el texto de arriba y copialo a mano.", "Imported and merged ✓": "Importado y fusionado ✓", "Couldn't read that code.": "No pude leer ese código.", "That's not a Nikka backup code.": "Ese no es un código de Nikka.", "The code looks corrupted or incomplete.": "El código parece corrupto o incompleto.", "Reset everything — streak, days, drill progress, and today's checklist? This can't be undone.": "¿Reiniciar todo — racha, días, progreso de práctica y la lista de hoy? No se puede deshacer.", "Reset all progress": "Reiniciar todo el progreso", "This is a preview — progress won't stick here. Open the hosted page in your browser to keep your streak.": "Esto es una vista previa — el progreso no se guarda acá. Abrí la página publicada en tu navegador para mantener la racha.", "Close": "Cerrar", "Done": "Hechas", "Wrong": "Erradas", "Correct": "Aciertos", "Correct!": "¡Correcto!", "It was": "Era", "Which sound is this?": "¿Qué sonido es este?", "Tap the": "Toca el", "Daily goal": "Meta diaria", "済 Goal reached!": "済 ¡Meta alcanzada!", "Today is stamped and your streak is safe. Keep going or close.": "El día quedó sellado y tu racha está a salvo. Puedes continuar o cerrar.", "hear it": "escuchar", "Next →": "Siguiente →", "Skip": "Saltar", "Level": "Nivel", "You've got hiragana down! Ready to add dakuten?": "¡Dominás el hiragana! ¿Listo para sumar el dakuten?", "Dakuten mastered! Ready for katakana?": "¡Dominaste el dakuten! ¿Listo para el katakana?", "Yes, unlock": "Sí, desbloquear", "Not yet": "Todavía no", "Unlock": "Desbloquear", "済 Unlocked!": "済 ¡Desbloqueado!", "New character": "Carácter nuevo", "Got it →": "¡Entendido! →", "Streak": "Racha", "Solid": "Sólido", "Great": "Genial", "Perfect": "Perfecto", "済 Streak saved!": "済 ¡Racha salvada!", "済 Streak saved. Keep going: 30 solid · 50 great · 100 perfect.": "済 Racha salvada. Seguí: 30 sólido · 50 genial · 100 perfecto.", "15 saves your streak · 30 solid · 50 great · 100 perfect.": "15 salva la racha · 30 sólido · 50 genial · 100 perfecto.", "Short day? Just 15 saves your streak — 30 is solid, 50 great, 100 perfect.": "¿Día corto? Con 15 salvás la racha — 30 es sólido, 50 genial, 100 perfecto.", "Day": "Día", "Week": "Semana", "Reading": "Lectura", "Grammar": "Gramática", "Speaking": "Hablar", "read the base syllabary": "leer el silabario base", "the ゛゜ voiced sounds": "los sonidos con ゛゜", "the second syllabary": "el segundo silabario", "read everyday words": "leer palabras cotidianas", "build sentences (Tae Kim)": "armar frases (Tae Kim)", "the most frequent kanji": "los kanji más frecuentes", "Kana warm-up": "Calentamiento de kana", "Keep it sharp — a few reps": "Mantenelo afilado — unas pocas", "Voiced sounds — the drill knows what to show": "Sonidos con dakuten — la práctica sabe qué mostrar", "Read a few graded sentences": "Leé unas frases graduadas", "The vocab engine": "El motor de vocabulario", "Tae Kim's guide": "Guía de Tae Kim", "Kanji — a few new": "Kanji — unos nuevos", "Most frequent first": "Los más frecuentes primero", "HelloTalk or iTalki": "HelloTalk o iTalki", "Next stage": "Siguiente etapa", "Back": "Volver", "Traditional style (serif)": "Estilo tradicional (con serifas)",
     "Modern style (sans-serif)": "Estilo moderno (sin serifas)"};
   function detectLang(){var n=((navigator.language||navigator.userLanguage||"en")+"").toLowerCase();return n.indexOf("es")===0?"es":"en";}
   function getLang(){return (state&&state.lang)?state.lang:detectLang();}
@@ -650,7 +657,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
      5. DERIVED
      ========================================================================= */
   function weekOf(startStr){var d=daysBetween(startStr,today());if(d<0)d=0;return Math.floor(d/7)+1;}
-  function coreDone(day){return !!(day&&(day.anki||day.kana));}
+  function coreDone(day){return !!(day&&(day.anki||day.kana||day.reading));}
   function computeStreak(days){var s=0,d=new Date(),t=today();
     if(!(days[t]&&coreDone(days[t])))d.setDate(d.getDate()-1);
     while(days[fmt(d)]&&coreDone(days[fmt(d)])){s++;d.setDate(d.getDate()-1);} return s;}
@@ -665,6 +672,38 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
 
   var justLeveled=0;
   var LEVEL_NAMES={1:"Hiragana",2:"Hiragana + Dakuten",3:"Hiragana + Katakana"};
+  var TIER_LABEL=["Streak","Solid","Great","Perfect"];
+  function dayTier(done){ if(done>=100)return 3; if(done>=50)return 2; if(done>=30)return 1; if(done>=15)return 0; return -1; }
+  var STAGES=[
+    {lbl:"Hiragana", ds:"read the base syllabary"},
+    {lbl:"Dakuten",  ds:"the ゛゜ voiced sounds"},
+    {lbl:"Katakana", ds:"the second syllabary"},
+    {lbl:"Reading",  ds:"read everyday words"},
+    {lbl:"Grammar",  ds:"build sentences (Tae Kim)"},
+    {lbl:"Kanji",    ds:"the most frequent kanji"},
+    {lbl:"Speaking", ds:"HelloTalk / iTalki"}
+  ];
+  function curStage(){ var k=ensureKana(); return Math.max(k.level, k.stageManual||0); }
+  function stageState(i){ var n=i+1, cs=curStage(); if(n<cs)return "done"; if(n===cs)return "on"; return ""; }
+  function stageName(st){ return STAGES[st-1]?STAGES[st-1].lbl:"Hiragana"; }
+  function advanceStage(){ var k=ensureKana(),c=curStage(); if(c>=7)return; k.stageManual=c+1; Persistence.save(state); render(); }
+  function retreatStage(){ var k=ensureKana(),c=curStage(),nv=c-1; k.stageManual=nv<=3?0:nv; Persistence.save(state); render(); }
+  function tasksForStage(st){
+    var T=[];
+    if(st<=3){
+      var link=st===3?LINKS.kata:LINKS.hira;
+      var sub=st===1?"Tofugu guide + drills until it's automatic":st===2?"Voiced sounds — the drill knows what to show":"Finish katakana; drill both scripts";
+      T.push({id:"kana",sacred:true,label:"Kana drill",sub:sub,link:link,drill:true});
+    } else {
+      T.push({id:"kana",sacred:false,label:"Kana warm-up",sub:"Keep it sharp — a few reps",drill:true});
+      T.push({id:"reading",sacred:st===4,label:"Reading",sub:"Read a few graded sentences"});
+      if(st>=5){ T.push({id:"anki",sacred:true,label:"Anki — reviews + 10 new",sub:"The vocab engine",link:LINKS.ankiweb});
+                 T.push({id:"grammar",sacred:false,label:"Grammar — 1 point",sub:"Tae Kim's guide",link:LINKS.taekim}); }
+      if(st>=6) T.push({id:"kanji",sacred:false,label:"Kanji — a few new",sub:"Most frequent first"});
+      if(st>=7) T.push({id:"speaking",sacred:false,label:"Speak / exchange",sub:"HelloTalk or iTalki",link:LINKS.hello});
+    }
+    return T;
+  }
   function levelScope(l){ if(l>=3)return {hira:true,kata:true,dakuten:true}; if(l===2)return {hira:true,kata:false,dakuten:true}; return {hira:true,kata:false,dakuten:false}; }
   function nextTarget(l){ return l===1?"dakuten":(l===2?"katakana":null); }
   function masteryOf(keys){ var k=ensureKana(),solid=0; keys.forEach(function(r){ if((k.box[r]||0)>=4)solid++; }); return {solid:solid,total:keys.length,ratio:keys.length?solid/keys.length:0}; }
@@ -728,8 +767,8 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     return node.wk===wk?"on":(node.wk<wk?"done":"");
   }
   function drillCardHTML(){
-    var k=ensureKana(),dt=drillToday(),goal=k.goal,pct=Math.min(100,Math.round(dt.done/goal*100));
-    var doneToday=dt.done>=goal;
+    var k=ensureKana(),dt=drillToday(),pct=Math.min(100,dt.done),tier=dayTier(dt.done);
+    var doneToday=dt.done>=15;
     var lvl=k.level, canAdv=canAdvance(), nxt=nextTarget(lvl);
     var lvlBlock='<div class="level-row"><span class="lvl-tag">'+t("Level")+' '+lvl+'</span><span class="lvl-name">'+LEVEL_NAMES[lvl]+'</span></div>';
     if(canAdv&&nxt){
@@ -739,18 +778,16 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     if(justLeveled){ lvlBlock='<div class="leveled">'+t("済 Unlocked!")+' '+t("Level")+' '+justLeveled+' · '+LEVEL_NAMES[justLeveled]+'</div>'+lvlBlock; justLeveled=0; }
     function seg(kind,val,label,on){return '<button class="seg'+(on?" on":"")+'" data-seg="'+kind+'" data-val="'+val+'">'+label+'</button>';}
     return '<div class="drill-card">'+
-      '<div class="dc-top"><h3>'+t("Kana drill")+'</h3><div class="dc-count">'+dt.done+' / '+goal+'</div></div>'+
-      '<div class="prog"><i style="width:'+pct+'%"></i></div>'+
+      '<div class="dc-top"><h3>'+t("Kana drill")+'</h3><div class="dc-count">'+dt.done+(tier>=0?' · <span class="tier">'+t(TIER_LABEL[tier])+'</span>':'')+'</div></div>'+
+      '<div class="prog milestones"><i style="width:'+pct+'%"></i>'+[15,30,50].map(function(m){return '<span class="tick'+(dt.done>=m?" on":"")+'" style="left:'+m+'%"></span>';}).join("")+'</div>'+
       lvlBlock+
-      '<div class="dc-sub">'+(doneToday?t("済 Done for today — the seal is yours. Keep going if you like."):t("Recognition + spaced repetition. Hit the goal to stamp today."))+'</div>'+
+      '<div class="dc-sub">'+(doneToday?t("済 Streak saved. Keep going: 30 solid · 50 great · 100 perfect."):t("15 saves your streak · 30 solid · 50 great · 100 perfect."))+'</div>'+
       '<button class="start-btn'+(doneToday?" done-today":"")+'" id="startDrill">'+(dt.done>0?(doneToday?t("Practice more"):t("Continue drill")):t("Start drill"))+'</button>'+
       '<details class="opts"><summary>'+t("Options")+'</summary>'+
         '<div class="opt-row"><span class="k">'+t("Script")+'</span>'+
           seg("hira",1,"Hiragana",k.scope.hira)+seg("kata",1,"Katakana",k.scope.kata)+seg("dakuten",1,"+ Dakuten",k.scope.dakuten)+
           '<button class="info-btn" id="scriptInfo" aria-label="Explain the scripts">ⓘ</button></div>'+
         '<div class="opt-help" id="scriptHelp" hidden>'+t("<b>Hiragana</b> (あ) and <b>Katakana</b> (ア) are the two kana alphabets — same sounds, different look (katakana is mostly for foreign / loan words). <b>Dakuten</b> are the small ゛/゜ marks that voice a sound: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).")+'</div>'+
-        '<div class="opt-row"><span class="k">'+t("Goal")+'</span>'+
-          seg("goal",20,"20",goal===20)+seg("goal",30,"30",goal===30)+seg("goal",50,"50",goal===50)+seg("goal",100,"100",goal===100)+'</div>'+
       '</details></div>';
   }
   function masteryCardHTML(){
@@ -787,14 +824,14 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   }
   function render(){
     var todayStr=today(); if(!state.days[todayStr])state.days[todayStr]={};
-    var day=state.days[todayStr],wk=weekOf(state.startDate),tasks=tasksFor(wk),dt=drillToday();
+    var day=state.days[todayStr],wk=weekOf(state.startDate),tasks=tasksForStage(curStage()),dt=drillToday();
     var strk=computeStreak(state.days);
     document.getElementById("streakNum").textContent=strk;
     document.getElementById("streakMeta").innerHTML='<b>'+(strk===1?t("day"):t("days"))+'</b> 連続 · '+computeTotal(state.days)+' '+t("total");
     document.getElementById("romSub").textContent="Nikka · "+t("daily practice");
     document.getElementById("startedLabel").textContent=t("Started")+" "+state.startDate+" · "+t("week")+" "+wk;
     document.getElementById("resetBtn").textContent=t("Reset all progress");
-    var focus=t(wk<=1?"<b>Hiragana</b> — nothing else yet":wk===2?"<b>Katakana</b> + start the Anki engine":wk<=6?"<b>The routine</b> — keep the streak alive":"<b>Keep going</b> — add speaking practice");
+    var cs0=curStage(); var focus="<b>"+t(stageName(cs0))+"</b> — "+t(STAGES[cs0-1].ds);
 
     var html="";
     var lang=getLang();
@@ -825,7 +862,8 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     html+='</div>';
 
     html+='<div class="saveerr" id="saveErr">'+t("This is a preview — progress won't stick here. Open the hosted page in your browser to keep your streak.")+'</div>';
-    html+='<div class="phase"><span class="wk mincho">週 '+wk+'</span><span class="focus">'+focus+'</span></div>';
+    var dayNum=daysBetween(state.startDate,today())+1; if(dayNum<1)dayNum=1;
+    html+='<div class="phase"><span class="wk mincho">'+t("Day")+' '+dayNum+' · '+t("Week")+' '+wk+'</span><span class="focus">'+focus+'</span></div>';
     
     var mainSeal = '<div class="seal"></div>';
     if (coreDone(day)) {
@@ -849,19 +887,21 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       html+='<div class="box'+(task.sacred?" sacred":"")+(on?" on":"")+'" data-id="'+task.id+'" role="checkbox" tabindex="0" aria-checked="'+on+'">'+(on?"✓":"")+'</div>';
       html+='<div class="t-body"><div class="t-top"><span class="t-label">'+t(task.label)+'</span>';
       if(task.sacred)html+='<span class="badge mincho">毎日 · '+t("every day")+'</span>';
-      html+='</div><div class="t-sub">'+t(task.sub)+(task.drill?' · '+t("drill")+' '+dt.done+'/'+ensureKana().goal:'')+'</div>';
+      html+='</div><div class="t-sub">'+t(task.sub)+(task.drill?' · '+t("drill")+' '+dt.done:'')+'</div>';
       var c=""; if(task.link)c+=chip(task.link,task.link.name); if(task.extra)c+=chip(task.extra,task.extra.name);
       if(c)html+='<div>'+c+'</div>';
       html+='</div></div>';
     });
-    html+='<div class="note">'+t("Chaotic day? Just tick the <b>毎日</b> task and you're covered — the streak stays alive. Consistency beats hours.")+'</div></div>';
+    var csA=curStage();
+    if(csA>=3){ html+='<div class="stage-adv">'+(csA>3?'<button class="stage-back" id="stBack">← '+t("Back")+'</button>':'')+(csA<7?'<button class="stage-next" id="stNext">'+t("Next stage")+': '+t(stageName(csA+1))+' →</button>':'')+'</div>'; }
+    html+='<div class="note">'+t("Short day? Just 15 saves your streak — 30 is solid, 50 great, 100 perfect.")+'</div></div>';
 
     /* exercises slot */
     html+=drillCardHTML();
     html+=masteryCardHTML();
 
     html+='<div class="sec-h mincho">'+t("The path")+'</div><div class="road">';
-    ROAD.forEach(function(n){var st=roadState(n,wk);
+    STAGES.forEach(function(n,i){var st=stageState(i);
       html+='<div class="stop '+st+'"><div class="rail"><div class="dot"></div><div class="bar"></div></div>'+
         '<div class="rt"><div class="lbl">'+t(n.lbl)+'</div><div class="ds">'+t(n.ds)+'</div></div></div>';});
     html+='</div>';
@@ -955,7 +995,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var t=today(); if(!k.daily[t])k.daily[t]={done:0,correct:0};
     k.daily[t].done++; if(correct)k.daily[t].correct++;
     // hitting the goal stamps today's kana task
-    if(k.daily[t].done>=k.goal && !state.days[t].kana){
+    if(k.daily[t].done>=15 && !state.days[t].kana){
       state.days[t]=state.days[t]||{}; state.days[t].kana=true; sess.justHitGoal=true;
     }
     sess.q.word=pickWord(q.target);
@@ -981,8 +1021,8 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     return h;
   }
   function renderDrill(){
-    var q=sess.q,k=ensureKana(),dt=k.daily[today()]||{done:0},goal=k.goal;
-    var gpct=Math.min(100,Math.round(dt.done/goal*100));
+    var q=sess.q,k=ensureKana(),dt=k.daily[today()]||{done:0};
+    var gpct=Math.min(100,dt.done),gtier=dayTier(dt.done);
     var h="";
     h+='<div class="d-sticky">';
     h+='<div class="d-head"><button class="d-close" id="dClose">✕ '+t("Close")+'</button>'+
@@ -991,8 +1031,8 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
        '<div class="d-stat wrong"><div class="n">'+sess.wrong+'</div><div class="l">'+t("Wrong")+'</div></div>'+
        '<div class="d-stat right"><div class="n">'+sess.correct+'</div><div class="l">'+t("Correct")+'</div></div>'+
        '</div></div>';
-    h+='<div class="d-goal"><div class="lab"><span>'+t("Daily goal")+'</span><span>'+dt.done+' / '+goal+'</span></div>'+
-       '<div class="prog"><i style="width:'+gpct+'%"></i></div></div>';
+    h+='<div class="d-goal"><div class="lab"><span>'+t("Daily goal")+'</span><span>'+dt.done+(gtier>=0?' · '+t(TIER_LABEL[gtier]):'')+'</span></div>'+
+       '<div class="prog milestones"><i style="width:'+gpct+'%"></i>'+[15,30,50].map(function(m){return '<span class="tick'+(dt.done>=m?" on":"")+'" style="left:'+m+'%"></span>';}).join("")+'</div></div>';
     h+='</div>';
 
     if(sess.mode==="teach"){ h+=teachHTML(); drillInner.innerHTML=h; bindDrill(); return; }
@@ -1025,7 +1065,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     if(q.answered){
       var correct=q.picked===q.target;
       if(sess.justHitGoal){
-        h+='<div class="d-celebrate"><div class="big">'+t("済 Goal reached!")+'</div><div class="sm">'+t("Today is stamped and your streak is safe. Keep going or close.")+'</div></div>';
+        h+='<div class="d-celebrate"><div class="big">'+t("済 Streak saved!")+'</div><div class="sm">'+t("Today is stamped and your streak is safe. Keep going or close.")+'</div></div>';
       }else{
         var tgl=glyph(q.target,q.script==="kata"?"kata":"hira");
         h+='<div class="msg '+(correct?"ok":"no")+'">'+(correct?t("Correct!"):t("It was"))+' <span class="gl mincho">'+tgl+'</span> <span class="rm">'+q.target+'</span></div>';
@@ -1070,6 +1110,8 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       b.addEventListener("keydown",function(e){if(e.key===" "||e.key==="Enter"){e.preventDefault();toggle(b.getAttribute("data-id"));}});
     });
     var sd=document.getElementById("startDrill"); if(sd)sd.addEventListener("click",startDrill);
+    var stn=document.getElementById("stNext"); if(stn)stn.addEventListener("click",advanceStage);
+    var stb=document.getElementById("stBack"); if(stb)stb.addEventListener("click",retreatStage);
     app.querySelectorAll(".seg").forEach(function(s){
       s.addEventListener("click",function(){setSeg(s.getAttribute("data-seg"),parseInt(s.getAttribute("data-val"),10));});
     });
