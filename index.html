@@ -218,6 +218,44 @@
     padding:20px 18px 30px;display:flex;flex-direction:column}
   .drill.hidden{display:none}
   .drill-inner{max-width:520px;margin:0 auto;width:100%;display:flex;flex-direction:column;flex:1}
+  .reading{position:fixed;inset:0;z-index:60;overflow-y:auto;background:linear-gradient(var(--grid) 1px, transparent 1px) 0 0/100% 34px, var(--paper);padding:20px 18px 30px;display:flex;flex-direction:column}
+  .reading.hidden{display:none}
+  .reading-inner{max-width:520px;margin:0 auto;width:100%;display:flex;flex-direction:column;flex:1}
+  .r-count{font-size:13px;color:var(--ink-soft);font-weight:700}
+  .read-card{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px 0;min-height:200px}
+  .read-level{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--shu);font-weight:700;margin-bottom:16px}
+  .read-jp{font-weight:700;font-size:clamp(34px,9vw,52px);line-height:1.35;color:var(--ink);max-width:92%}
+  .read-romaji{font-size:16px;color:var(--ink-soft);margin-top:18px;font-style:italic}
+  .read-trans{font-family:"Shippori Mincho",serif;font-weight:700;font-size:22px;color:var(--green);margin-top:10px}
+  .romaji-toggle{align-self:center;margin-top:12px;font:inherit;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);background:none;border:1.2px solid var(--line);border-radius:20px;padding:5px 12px;cursor:pointer}
+  .reading-card{background:var(--card);border:1.5px solid var(--ink);box-shadow:5px 5px 0 rgba(35,32,26,.16);padding:18px 20px;margin-bottom:30px}
+  .reading-card .rc-tag{font-family:"Shippori Mincho",serif;font-size:12px;color:var(--shu);font-weight:700}
+  .rq-prompt{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px 0 14px;min-height:130px}
+  .rq-kind{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:12px}
+  .rq-jp{font-weight:700;font-size:clamp(30px,8vw,46px);line-height:1.3;color:var(--ink);max-width:92%}
+  .rq-mean{font-family:"Shippori Mincho",serif;font-weight:700;font-size:clamp(22px,6vw,30px);color:var(--ink);max-width:92%}
+  .d-spk.big{width:64px;height:64px;font-size:28px}
+  .ropts{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+  .ropt{width:100%;font:inherit;font-size:15px;color:var(--ink);background:var(--card);border:1.6px solid var(--ink);border-radius:4px;padding:13px 14px;cursor:pointer;text-align:center;transition:transform .08s,background .12s}
+  .ropt.jp{font-size:19px}
+  .ropt:active{transform:scale(.99)}
+  .ropt.correct{background:var(--green);border-color:var(--green);color:#fff}
+  .ropt.bad{background:#e7d3ce;border-color:var(--shu);color:var(--shu)}
+  .ropt.dim{opacity:.45}
+  .rq-fb{min-height:60px;margin-top:12px;text-align:center}
+  .rq-msg{font-family:"Shippori Mincho",serif;font-weight:800;font-size:20px}
+  .rq-msg.ok{color:var(--green)} .rq-msg.no{color:var(--shu)}
+  .rq-ans{font-size:15px;color:var(--ink);margin-top:6px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+  .rq-ans .mincho{font-size:19px}
+  .rq-ans .rq-rom{color:var(--ink-soft);font-style:italic;font-size:13px}
+  .rq-ans .mean{color:var(--ink-soft)}
+  .read-launch{display:flex;gap:8px}
+  .read-launch .start-btn.half{flex:1}
+  .mrow{margin-bottom:14px} .mrow:last-child{margin-bottom:0}
+  .mrow-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+  .mrow-lbl{font-weight:700;font-size:14px;color:var(--ink)}
+  .mrow-pct{font-family:"Shippori Mincho",serif;font-weight:800;font-size:18px;color:var(--shu)}
+  .mrow-pct.ok{color:var(--green)}
   .d-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
   .d-close{background:none;border:none;font:inherit;font-size:13px;color:var(--ink-soft);cursor:pointer;
     text-transform:uppercase;letter-spacing:.1em;font-weight:700}
@@ -348,11 +386,12 @@
 </div>
 
 <div class="drill hidden" id="drill"><div class="drill-inner" id="drillInner"></div></div>
+<div class="reading hidden" id="reading"><div class="reading-inner" id="readingInner"></div></div>
 
 <script>
 (function(){
   "use strict";
-  var TR = {"day": "día", "days": "días", "total": "total", "daily practice": "práctica diaria", "Started": "Empezó", "week": "semana", "Today's practice": "Práctica de hoy", "every day": "cada día", "drill": "práctica", "<b>Hiragana</b> — nothing else yet": "<b>Hiragana</b> — nada más por ahora", "<b>Katakana</b> + start the Anki engine": "<b>Katakana</b> + arrancá el motor de Anki", "<b>The routine</b> — keep the streak alive": "<b>La rutina</b> — mantené la racha viva", "<b>Keep going</b> — add speaking practice": "<b>Seguí</b> — sumá práctica de habla", "Hiragana practice": "Práctica de hiragana", "Tofugu guide + drills until it's automatic": "Guía de Tofugu + práctica hasta que salga solo", "Kana drill": "Práctica de kana", "Finish katakana; drill both scripts": "Terminá katakana; practicá los dos silabarios", "Anki — 10 new words": "Anki — 10 palabras nuevas", "Set up the Kaishi 1.5k deck first": "Primero configurá el mazo Kaishi 1.5k", "Anki — reviews + 10 new": "Anki — repasos + 10 nuevas", "The engine. Never skip this one.": "El motor. Nunca te la saltes.", "Grammar — 1 point": "Gramática — 1 punto", "Tae Kim's guide, one point per day": "Guía de Tae Kim, un punto por día", "Immersion — 10 min": "Inmersión — 10 min", "Read cards aloud, or spot words in something you watch": "Leé las tarjetas en voz alta, o cazá palabras en algo que veas", "Speak / exchange": "Hablar / intercambio", "Try a message or short call": "Probá un mensaje o una llamada corta", "Chaotic day? Just tick the <b>毎日</b> task and you're covered — the streak stays alive. Consistency beats hours.": "¿Día caótico? Con marcar la tarea <b>毎日</b> ya estás — la racha sigue viva. La constancia le gana a las horas.", "The path": "El camino", "Week 1 · Hiragana": "Semana 1 · Hiragana", "Read hiragana without stalling": "Leer hiragana sin trabarte", "Week 2 · Katakana + Anki": "Semana 2 · Katakana + Anki", "Finish kana, start Kaishi 1.5k": "Terminar kana, arrancar Kaishi 1.5k", "Weeks 3–6 · The routine": "Semanas 3–6 · La rutina", "Anki + grammar + immersion, daily": "Anki + gramática + inmersión, a diario", "Beyond · Speaking": "Más allá · Hablar", "Add HelloTalk or iTalki": "Sumá HelloTalk o iTalki", "Last 4 weeks": "Últimas 4 semanas", "済 marks a day the daily task was done": "済 marca un día con la tarea diaria hecha", "All resources": "Todos los recursos", "Install Anki": "Instalar Anki", "Kaishi deck": "Mazo Kaishi", "Grammar (Tae Kim)": "Gramática (Tae Kim)", "済 Done for today — the seal is yours. Keep going if you like.": "済 Listo por hoy — el sello es tuyo. Seguí si querés.", "Recognition + spaced repetition. Hit the goal to stamp today.": "Reconocimiento + repetición espaciada. Llegá a la meta para sellar el día.", "Start drill": "Empezar", "Continue drill": "Continuar", "Practice more": "Practicar más", "Options": "Opciones", "Script": "Escritura", "Goal": "Meta", "<b>Hiragana</b> (あ) and <b>Katakana</b> (ア) are the two kana alphabets — same sounds, different look (katakana is mostly for foreign / loan words). <b>Dakuten</b> are the small ゛/゜ marks that voice a sound: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).": "<b>Hiragana</b> (あ) y <b>Katakana</b> (ア) son los dos silabarios — mismos sonidos, distinta forma (katakana es sobre todo para palabras extranjeras). El <b>Dakuten</b> son las marquitas ゛/゜ que sonorizan un sonido: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).", "Kana mastery": "Dominio del kana", "characters mastered": "caracteres dominados", "Focus on": "Enfocate en", "more": "más", "Do a few drills and your mastery shows up here.": "Hacé unas cuantas y acá verás tu dominio.", "済 You've got your kana. It's logical to move on — make grammar + Anki your main focus and keep drills as warm-ups.": "済 Ya dominás el kana. Es lógico avanzar — pasá el foco a gramática + Anki y dejá la práctica como calentamiento.", "Almost there — a few more sessions and kana will feel automatic.": "Casi — unas sesiones más y el kana te saldrá solo.", "Building your foundation — keep the daily drill going.": "Construyendo la base — seguí con la práctica diaria.", "Backup &amp; sync": "Respaldo y sync", "Your backup code": "Tu código de respaldo", "Copy this and paste it on another device to carry your streak over.": "Copialo y pegalo en otro dispositivo para llevarte la racha.", "Copy code": "Copiar código", "Restore from a code": "Restaurar desde un código", "Paste a code here — it merges with what's on this device (nothing is lost).": "Pegá un código acá — se fusiona con lo que ya tenés (no se pierde nada).", "Import code": "Importar código", "Sign in to sync": "Iniciar sesión para sync", "Automatic sync across devices — no passwords, no data of yours to guard.": "Sync automático entre dispositivos — sin contraseñas, sin datos tuyos que cuidar.", "COMING SOON": "PRÓXIMAMENTE", "Copied ✓": "Copiado ✓", "Select the text above and copy manually.": "Seleccioná el texto de arriba y copialo a mano.", "Imported and merged ✓": "Importado y fusionado ✓", "Couldn't read that code.": "No pude leer ese código.", "That's not a Nikka backup code.": "Ese no es un código de Nikka.", "The code looks corrupted or incomplete.": "El código parece corrupto o incompleto.", "Reset everything — streak, days, drill progress, and today's checklist? This can't be undone.": "¿Reiniciar todo — racha, días, progreso de práctica y la lista de hoy? No se puede deshacer.", "Reset all progress": "Reiniciar todo el progreso", "This is a preview — progress won't stick here. Open the hosted page in your browser to keep your streak.": "Esto es una vista previa — el progreso no se guarda acá. Abrí la página publicada en tu navegador para mantener la racha.", "Close": "Cerrar", "Done": "Hechas", "Wrong": "Erradas", "Correct": "Aciertos", "Correct!": "¡Correcto!", "It was": "Era", "Which sound is this?": "¿Qué sonido es este?", "Tap the": "Toca el", "Daily goal": "Meta diaria", "済 Goal reached!": "済 ¡Meta alcanzada!", "Today is stamped and your streak is safe. Keep going or close.": "El día quedó sellado y tu racha está a salvo. Puedes continuar o cerrar.", "hear it": "escuchar", "Next →": "Siguiente →", "Skip": "Saltar", "Level": "Nivel", "You've got hiragana down! Ready to add dakuten?": "¡Dominás el hiragana! ¿Listo para sumar el dakuten?", "Dakuten mastered! Ready for katakana?": "¡Dominaste el dakuten! ¿Listo para el katakana?", "Yes, unlock": "Sí, desbloquear", "Not yet": "Todavía no", "Unlock": "Desbloquear", "済 Unlocked!": "済 ¡Desbloqueado!", "New character": "Carácter nuevo", "Got it →": "¡Entendido! →", "Streak": "Racha", "Solid": "Sólido", "Great": "Genial", "Perfect": "Perfecto", "済 Streak saved!": "済 ¡Racha salvada!", "済 Streak saved. Keep going: 30 solid · 50 great · 100 perfect.": "済 Racha salvada. Seguí: 30 sólido · 50 genial · 100 perfecto.", "15 saves your streak · 30 solid · 50 great · 100 perfect.": "15 salva la racha · 30 sólido · 50 genial · 100 perfecto.", "Short day? Just 15 saves your streak — 30 is solid, 50 great, 100 perfect.": "¿Día corto? Con 15 salvás la racha — 30 es sólido, 50 genial, 100 perfecto.", "Day": "Día", "Week": "Semana", "Reading": "Lectura", "Grammar": "Gramática", "Speaking": "Hablar", "read the base syllabary": "leer el silabario base", "the ゛゜ voiced sounds": "los sonidos con ゛゜", "the second syllabary": "el segundo silabario", "read everyday words": "leer palabras cotidianas", "build sentences (Tae Kim)": "armar frases (Tae Kim)", "the most frequent kanji": "los kanji más frecuentes", "Kana warm-up": "Calentamiento de kana", "Keep it sharp — a few reps": "Mantenelo afilado — unas pocas", "Voiced sounds — the drill knows what to show": "Sonidos con dakuten — la práctica sabe qué mostrar", "Read a few graded sentences": "Leé unas frases graduadas", "The vocab engine": "El motor de vocabulario", "Tae Kim's guide": "Guía de Tae Kim", "Kanji — a few new": "Kanji — unos nuevos", "Most frequent first": "Los más frecuentes primero", "HelloTalk or iTalki": "HelloTalk o iTalki", "Next stage": "Siguiente etapa", "Back": "Volver", "Traditional style (serif)": "Estilo tradicional (con serifas)",
+  var TR = {"day": "día", "days": "días", "total": "total", "daily practice": "práctica diaria", "Started": "Empezó", "week": "semana", "Today's practice": "Práctica de hoy", "every day": "cada día", "drill": "práctica", "<b>Hiragana</b> — nothing else yet": "<b>Hiragana</b> — nada más por ahora", "<b>Katakana</b> + start the Anki engine": "<b>Katakana</b> + arrancá el motor de Anki", "<b>The routine</b> — keep the streak alive": "<b>La rutina</b> — mantené la racha viva", "<b>Keep going</b> — add speaking practice": "<b>Seguí</b> — sumá práctica de habla", "Hiragana practice": "Práctica de hiragana", "Tofugu guide + drills until it's automatic": "Guía de Tofugu + práctica hasta que salga solo", "Kana drill": "Práctica de kana", "Finish katakana; drill both scripts": "Terminá katakana; practicá los dos silabarios", "Anki — 10 new words": "Anki — 10 palabras nuevas", "Set up the Kaishi 1.5k deck first": "Primero configurá el mazo Kaishi 1.5k", "Anki — reviews + 10 new": "Anki — repasos + 10 nuevas", "The engine. Never skip this one.": "El motor. Nunca te la saltes.", "Grammar — 1 point": "Gramática — 1 punto", "Tae Kim's guide, one point per day": "Guía de Tae Kim, un punto por día", "Immersion — 10 min": "Inmersión — 10 min", "Read cards aloud, or spot words in something you watch": "Leé las tarjetas en voz alta, o cazá palabras en algo que veas", "Speak / exchange": "Hablar / intercambio", "Try a message or short call": "Probá un mensaje o una llamada corta", "Chaotic day? Just tick the <b>毎日</b> task and you're covered — the streak stays alive. Consistency beats hours.": "¿Día caótico? Con marcar la tarea <b>毎日</b> ya estás — la racha sigue viva. La constancia le gana a las horas.", "The path": "El camino", "Week 1 · Hiragana": "Semana 1 · Hiragana", "Read hiragana without stalling": "Leer hiragana sin trabarte", "Week 2 · Katakana + Anki": "Semana 2 · Katakana + Anki", "Finish kana, start Kaishi 1.5k": "Terminar kana, arrancar Kaishi 1.5k", "Weeks 3–6 · The routine": "Semanas 3–6 · La rutina", "Anki + grammar + immersion, daily": "Anki + gramática + inmersión, a diario", "Beyond · Speaking": "Más allá · Hablar", "Add HelloTalk or iTalki": "Sumá HelloTalk o iTalki", "Last 4 weeks": "Últimas 4 semanas", "済 marks a day the daily task was done": "済 marca un día con la tarea diaria hecha", "All resources": "Todos los recursos", "Install Anki": "Instalar Anki", "Kaishi deck": "Mazo Kaishi", "Grammar (Tae Kim)": "Gramática (Tae Kim)", "済 Done for today — the seal is yours. Keep going if you like.": "済 Listo por hoy — el sello es tuyo. Seguí si querés.", "Recognition + spaced repetition. Hit the goal to stamp today.": "Reconocimiento + repetición espaciada. Llegá a la meta para sellar el día.", "Start drill": "Empezar", "Continue drill": "Continuar", "Practice more": "Practicar más", "Options": "Opciones", "Script": "Escritura", "Goal": "Meta", "<b>Hiragana</b> (あ) and <b>Katakana</b> (ア) are the two kana alphabets — same sounds, different look (katakana is mostly for foreign / loan words). <b>Dakuten</b> are the small ゛/゜ marks that voice a sound: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).": "<b>Hiragana</b> (あ) y <b>Katakana</b> (ア) son los dos silabarios — mismos sonidos, distinta forma (katakana es sobre todo para palabras extranjeras). El <b>Dakuten</b> son las marquitas ゛/゜ que sonorizan un sonido: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).", "Kana mastery": "Dominio del kana", "characters mastered": "caracteres dominados", "Focus on": "Enfocate en", "more": "más", "Do a few drills and your mastery shows up here.": "Hacé unas cuantas y acá verás tu dominio.", "済 You've got your kana. It's logical to move on — make grammar + Anki your main focus and keep drills as warm-ups.": "済 Ya dominás el kana. Es lógico avanzar — pasá el foco a gramática + Anki y dejá la práctica como calentamiento.", "Almost there — a few more sessions and kana will feel automatic.": "Casi — unas sesiones más y el kana te saldrá solo.", "Building your foundation — keep the daily drill going.": "Construyendo la base — seguí con la práctica diaria.", "Backup &amp; sync": "Respaldo y sync", "Your backup code": "Tu código de respaldo", "Copy this and paste it on another device to carry your streak over.": "Copialo y pegalo en otro dispositivo para llevarte la racha.", "Copy code": "Copiar código", "Restore from a code": "Restaurar desde un código", "Paste a code here — it merges with what's on this device (nothing is lost).": "Pegá un código acá — se fusiona con lo que ya tenés (no se pierde nada).", "Import code": "Importar código", "Sign in to sync": "Iniciar sesión para sync", "Automatic sync across devices — no passwords, no data of yours to guard.": "Sync automático entre dispositivos — sin contraseñas, sin datos tuyos que cuidar.", "COMING SOON": "PRÓXIMAMENTE", "Copied ✓": "Copiado ✓", "Select the text above and copy manually.": "Seleccioná el texto de arriba y copialo a mano.", "Imported and merged ✓": "Importado y fusionado ✓", "Couldn't read that code.": "No pude leer ese código.", "That's not a Nikka backup code.": "Ese no es un código de Nikka.", "The code looks corrupted or incomplete.": "El código parece corrupto o incompleto.", "Reset everything — streak, days, drill progress, and today's checklist? This can't be undone.": "¿Reiniciar todo — racha, días, progreso de práctica y la lista de hoy? No se puede deshacer.", "Reset all progress": "Reiniciar todo el progreso", "This is a preview — progress won't stick here. Open the hosted page in your browser to keep your streak.": "Esto es una vista previa — el progreso no se guarda acá. Abrí la página publicada en tu navegador para mantener la racha.", "Close": "Cerrar", "Done": "Hechas", "Wrong": "Erradas", "Correct": "Aciertos", "Correct!": "¡Correcto!", "It was": "Era", "Which sound is this?": "¿Qué sonido es este?", "Tap the": "Toca el", "Daily goal": "Meta diaria", "済 Goal reached!": "済 ¡Meta alcanzada!", "Today is stamped and your streak is safe. Keep going or close.": "El día quedó sellado y tu racha está a salvo. Puedes continuar o cerrar.", "hear it": "escuchar", "Next →": "Siguiente →", "Skip": "Saltar", "Level": "Nivel", "You've got hiragana down! Ready to add dakuten?": "¡Dominás el hiragana! ¿Listo para sumar el dakuten?", "Dakuten mastered! Ready for katakana?": "¡Dominaste el dakuten! ¿Listo para el katakana?", "Yes, unlock": "Sí, desbloquear", "Not yet": "Todavía no", "Unlock": "Desbloquear", "済 Unlocked!": "済 ¡Desbloqueado!", "New character": "Carácter nuevo", "Got it →": "¡Entendido! →", "Streak": "Racha", "Solid": "Sólido", "Great": "Genial", "Perfect": "Perfecto", "済 Streak saved!": "済 ¡Racha salvada!", "済 Streak saved. Keep going: 30 solid · 50 great · 100 perfect.": "済 Racha salvada. Seguí: 30 sólido · 50 genial · 100 perfecto.", "15 saves your streak · 30 solid · 50 great · 100 perfect.": "15 salva la racha · 30 sólido · 50 genial · 100 perfecto.", "Short day? Just 15 saves your streak — 30 is solid, 50 great, 100 perfect.": "¿Día corto? Con 15 salvás la racha — 30 es sólido, 50 genial, 100 perfecto.", "Day": "Día", "Week": "Semana", "Reading": "Lectura", "Grammar": "Gramática", "Speaking": "Hablar", "read the base syllabary": "leer el silabario base", "the ゛゜ voiced sounds": "los sonidos con ゛゜", "the second syllabary": "el segundo silabario", "read everyday words": "leer palabras cotidianas", "build sentences (Tae Kim)": "armar frases (Tae Kim)", "the most frequent kanji": "los kanji más frecuentes", "Kana warm-up": "Calentamiento de kana", "Keep it sharp — a few reps": "Mantenelo afilado — unas pocas", "Voiced sounds — the drill knows what to show": "Sonidos con dakuten — la práctica sabe qué mostrar", "Read a few graded sentences": "Leé unas frases graduadas", "The vocab engine": "El motor de vocabulario", "Tae Kim's guide": "Guía de Tae Kim", "Kanji — a few new": "Kanji — unos nuevos", "Most frequent first": "Los más frecuentes primero", "HelloTalk or iTalki": "HelloTalk o iTalki", "Next stage": "Siguiente etapa", "Back": "Volver", "Read words and useful phrases — reveal and listen.": "Leé palabras y frases útiles — revelá y escuchá.", "Start reading": "Empezar lectura", "Reveal": "Revelar", "Show romaji": "Mostrar romaji", "Hide romaji": "Ocultar romaji", "Reading quiz — read, listen, guess. It adapts to what you find hard.": "Quiz de lectura — leé, escuchá y adiviná. Se adapta a lo que te cuesta.", "What does it mean?": "¿Qué significa?", "Which one did you hear?": "¿Cuál escuchaste?", "Which one in Japanese?": "¿Cuál en japonés?", "Reading mastery": "Dominio de lectura", "phrases mastered": "frases dominadas", "済 You're reading these fluently. Time to add harder phrases.": "済 Ya leés estas con fluidez. Hora de sumar frases más difíciles.", "Reading is clicking — keep going.": "La lectura va tomando forma — seguí así.", "Every phrase you nail is real reading. Keep at it.": "Cada frase que acertás es leer de verdad. Dale que vas.", "Words": "Palabras", "Phrases": "Frases", "mastered": "dominadas", "Read and listen — it adapts to what you find hard.": "Leé y escuchá — se adapta a lo que te cuesta.", "read single words at a glance": "leer palabras sueltas de un vistazo", "read useful fixed phrases": "leer frases fijas útiles", "Read single words": "Leé palabras sueltas", "Read useful phrases": "Leé frases útiles", "Traditional style (serif)": "Estilo tradicional (con serifas)",
     "Modern style (sans-serif)": "Estilo moderno (sin serifas)"};
   function detectLang(){var n=((navigator.language||navigator.userLanguage||"en")+"").toLowerCase();return n.indexOf("es")===0?"es":"en";}
   function getLang(){return (state&&state.lang)?state.lang:detectLang();}
@@ -657,7 +696,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
      5. DERIVED
      ========================================================================= */
   function weekOf(startStr){var d=daysBetween(startStr,today());if(d<0)d=0;return Math.floor(d/7)+1;}
-  function coreDone(day){return !!(day&&(day.anki||day.kana||day.reading));}
+  function coreDone(day){return !!(day&&(day.anki||day.kana||day.words||day.phrases));}
   function computeStreak(days){var s=0,d=new Date(),t=today();
     if(!(days[t]&&coreDone(days[t])))d.setDate(d.getDate()-1);
     while(days[fmt(d)]&&coreDone(days[fmt(d)])){s++;d.setDate(d.getDate()-1);} return s;}
@@ -678,7 +717,8 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     {lbl:"Hiragana", ds:"read the base syllabary"},
     {lbl:"Dakuten",  ds:"the ゛゜ voiced sounds"},
     {lbl:"Katakana", ds:"the second syllabary"},
-    {lbl:"Reading",  ds:"read everyday words"},
+    {lbl:"Words",    ds:"read single words at a glance"},
+    {lbl:"Phrases",  ds:"read useful fixed phrases"},
     {lbl:"Grammar",  ds:"build sentences (Tae Kim)"},
     {lbl:"Kanji",    ds:"the most frequent kanji"},
     {lbl:"Speaking", ds:"HelloTalk / iTalki"}
@@ -686,7 +726,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function curStage(){ var k=ensureKana(); return Math.max(k.level, k.stageManual||0); }
   function stageState(i){ var n=i+1, cs=curStage(); if(n<cs)return "done"; if(n===cs)return "on"; return ""; }
   function stageName(st){ return STAGES[st-1]?STAGES[st-1].lbl:"Hiragana"; }
-  function advanceStage(){ var k=ensureKana(),c=curStage(); if(c>=7)return; k.stageManual=c+1; Persistence.save(state); render(); }
+  function advanceStage(){ var k=ensureKana(),c=curStage(); if(c>=8)return; k.stageManual=c+1; Persistence.save(state); render(); }
   function retreatStage(){ var k=ensureKana(),c=curStage(),nv=c-1; k.stageManual=nv<=3?0:nv; Persistence.save(state); render(); }
   function tasksForStage(st){
     var T=[];
@@ -696,11 +736,12 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       T.push({id:"kana",sacred:true,label:"Kana drill",sub:sub,link:link,drill:true});
     } else {
       T.push({id:"kana",sacred:false,label:"Kana warm-up",sub:"Keep it sharp — a few reps",drill:true});
-      T.push({id:"reading",sacred:st===4,label:"Reading",sub:"Read a few graded sentences"});
-      if(st>=5){ T.push({id:"anki",sacred:true,label:"Anki — reviews + 10 new",sub:"The vocab engine",link:LINKS.ankiweb});
+      if(st>=4) T.push({id:"words",sacred:st===4,label:"Words",sub:"Read single words"});
+      if(st>=5) T.push({id:"phrases",sacred:st===5,label:"Phrases",sub:"Read useful phrases"});
+      if(st>=6){ T.push({id:"anki",sacred:true,label:"Anki — reviews + 10 new",sub:"The vocab engine",link:LINKS.ankiweb});
                  T.push({id:"grammar",sacred:false,label:"Grammar — 1 point",sub:"Tae Kim's guide",link:LINKS.taekim}); }
-      if(st>=6) T.push({id:"kanji",sacred:false,label:"Kanji — a few new",sub:"Most frequent first"});
-      if(st>=7) T.push({id:"speaking",sacred:false,label:"Speak / exchange",sub:"HelloTalk or iTalki",link:LINKS.hello});
+      if(st>=7) T.push({id:"kanji",sacred:false,label:"Kanji — a few new",sub:"Most frequent first"});
+      if(st>=8) T.push({id:"speaking",sacred:false,label:"Speak / exchange",sub:"HelloTalk or iTalki",link:LINKS.hello});
     }
     return T;
   }
@@ -899,6 +940,8 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     /* exercises slot */
     html+=drillCardHTML();
     html+=masteryCardHTML();
+    html+=readingCardHTML();
+    html+=readingMasteryCardHTML();
 
     html+='<div class="sec-h mincho">'+t("The path")+'</div><div class="road">';
     STAGES.forEach(function(n,i){var st=stageState(i);
@@ -1104,7 +1147,252 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     Persistence.save(state); render();
     var d=document.querySelector("details.opts"); if(d)d.open=true;
   }
+  // ---- READING QUIZ (Paso C) — Palabras + Frases, 3 modos con SRS ----
+  var PHRASES=[
+    {jp:"おはよう",romaji:"ohayou",es:"buenos días",en:"good morning"},
+    {jp:"こんにちは",romaji:"konnichiwa",es:"hola / buenas tardes",en:"hello"},
+    {jp:"こんばんは",romaji:"konbanwa",es:"buenas noches",en:"good evening"},
+    {jp:"おやすみ",romaji:"oyasumi",es:"buenas noches (al dormir)",en:"good night"},
+    {jp:"ありがとう",romaji:"arigatou",es:"gracias",en:"thank you"},
+    {jp:"どういたしまして",romaji:"douitashimashite",es:"de nada",en:"you're welcome"},
+    {jp:"すみません",romaji:"sumimasen",es:"disculpe / perdón",en:"excuse me / sorry"},
+    {jp:"ごめんなさい",romaji:"gomennasai",es:"lo siento",en:"I'm sorry"},
+    {jp:"おねがいします",romaji:"onegaishimasu",es:"por favor",en:"please"},
+    {jp:"はい",romaji:"hai",es:"sí",en:"yes"},
+    {jp:"いいえ",romaji:"iie",es:"no",en:"no"},
+    {jp:"わかりました",romaji:"wakarimashita",es:"entendido",en:"understood"},
+    {jp:"わかりません",romaji:"wakarimasen",es:"no entiendo",en:"I don't understand"},
+    {jp:"だいじょうぶ",romaji:"daijoubu",es:"está bien",en:"it's okay"},
+    {jp:"はじめまして",romaji:"hajimemashite",es:"mucho gusto",en:"nice to meet you"},
+    {jp:"さようなら",romaji:"sayounara",es:"adiós",en:"goodbye"},
+    {jp:"またね",romaji:"matane",es:"nos vemos",en:"see you"},
+    {jp:"いただきます",romaji:"itadakimasu",es:"que aproveche (antes de comer)",en:"before eating"},
+    {jp:"ごちそうさま",romaji:"gochisousama",es:"gracias por la comida",en:"thanks for the meal"},
+    {jp:"おいしい",romaji:"oishii",es:"delicioso",en:"delicious"},
+    {jp:"これはいくらですか",romaji:"kore wa ikura desu ka",es:"¿cuánto cuesta esto?",en:"how much is this?"},
+    {jp:"トイレはどこですか",romaji:"toire wa doko desu ka",es:"¿dónde está el baño?",en:"where's the bathroom?"},
+    {jp:"えいごをはなせますか",romaji:"eigo o hanasemasu ka",es:"¿habla inglés?",en:"do you speak English?"},
+    {jp:"なまえはなんですか",romaji:"namae wa nan desu ka",es:"¿cómo te llamás?",en:"what's your name?"},
+    {jp:"たすけて",romaji:"tasukete",es:"¡ayuda!",en:"help!"},
+    {jp:"だいすき",romaji:"daisuki",es:"me encanta",en:"I love it"},
+    {jp:"メニューをください",romaji:"menyuu o kudasai",es:"el menú, por favor",en:"menu, please"},
+    {jp:"おかいけいおねがいします",romaji:"okaikei onegaishimasu",es:"la cuenta, por favor",en:"the check, please"},
+    {jp:"みずをください",romaji:"mizu o kudasai",es:"agua, por favor",en:"water, please"},
+    {jp:"これください",romaji:"kore kudasai",es:"este, por favor",en:"this one, please"},
+    {jp:"かんぱい",romaji:"kanpai",es:"¡salud!",en:"cheers!"},
+    {jp:"おいしかった",romaji:"oishikatta",es:"estuvo delicioso",en:"it was delicious"},
+    {jp:"いくらですか",romaji:"ikura desu ka",es:"¿cuánto es?",en:"how much is it?"},
+    {jp:"カードでいいですか",romaji:"kaado de ii desu ka",es:"¿puedo pagar con tarjeta?",en:"can I pay by card?"},
+    {jp:"たかい",romaji:"takai",es:"caro",en:"expensive"},
+    {jp:"やすい",romaji:"yasui",es:"barato",en:"cheap"},
+    {jp:"みぎ",romaji:"migi",es:"derecha",en:"right"},
+    {jp:"ひだり",romaji:"hidari",es:"izquierda",en:"left"},
+    {jp:"まっすぐ",romaji:"massugu",es:"recto / derecho",en:"straight ahead"},
+    {jp:"あそこ",romaji:"asoko",es:"allá",en:"over there"},
+    {jp:"えきはどこですか",romaji:"eki wa doko desu ka",es:"¿dónde está la estación?",en:"where's the station?"},
+    {jp:"びょういんはどこですか",romaji:"byouin wa doko desu ka",es:"¿dónde está el hospital?",en:"where's the hospital?"},
+    {jp:"きょう",romaji:"kyou",es:"hoy",en:"today"},
+    {jp:"あした",romaji:"ashita",es:"mañana (día)",en:"tomorrow"},
+    {jp:"いまなんじですか",romaji:"ima nanji desu ka",es:"¿qué hora es?",en:"what time is it?"},
+    {jp:"げんきですか",romaji:"genki desu ka",es:"¿cómo estás?",en:"how are you?"},
+    {jp:"げんきです",romaji:"genki desu",es:"estoy bien",en:"I'm fine"},
+    {jp:"またあした",romaji:"mata ashita",es:"hasta mañana",en:"see you tomorrow"},
+    {jp:"おなまえは",romaji:"onamae wa",es:"¿tu nombre?",en:"your name?"},
+    {jp:"どこからですか",romaji:"doko kara desu ka",es:"¿de dónde eres?",en:"where are you from?"},
+    {jp:"にほんごがすこしわかります",romaji:"nihongo ga sukoshi wakarimasu",es:"entiendo un poco de japonés",en:"I understand a little Japanese"},
+    {jp:"もういちど",romaji:"mou ichido",es:"otra vez",en:"once more"},
+    {jp:"ゆっくりおねがいします",romaji:"yukkuri onegaishimasu",es:"más despacio, por favor",en:"slower, please"},
+    {jp:"だいじょうぶですか",romaji:"daijoubu desu ka",es:"¿estás bien?",en:"are you okay?"},
+    {jp:"けいさつ",romaji:"keisatsu",es:"policía",en:"police"},
+    {jp:"だいすきです",romaji:"daisuki desu",es:"me encanta (mucho)",en:"I really love it"},
+    {jp:"はじめまして、よろしく",romaji:"hajimemashite, yoroshiku",es:"mucho gusto, encantado",en:"nice to meet you"},
+    {jp:"おげんきで",romaji:"ogenki de",es:"cuídate",en:"take care"},
+    {jp:"ちょっとまって",romaji:"chotto matte",es:"esperá un momento",en:"wait a moment"},
+    {jp:"だいじょうぶです",romaji:"daijoubu desu",es:"estoy bien / no hay problema",en:"I'm fine / no problem"},
+    {jp:"しつれいします",romaji:"shitsurei shimasu",es:"con permiso / disculpe",en:"excuse me (leaving)"},
+    {jp:"おつかれさま",romaji:"otsukaresama",es:"buen trabajo",en:"good work"},
+    {jp:"がんばって",romaji:"ganbatte",es:"¡ánimo! / ¡dale!",en:"do your best!"},
+    {jp:"おめでとう",romaji:"omedetou",es:"felicidades",en:"congratulations"},
+    {jp:"すごい",romaji:"sugoi",es:"¡increíble!",en:"amazing!"},
+    {jp:"ほんとうですか",romaji:"hontou desu ka",es:"¿en serio?",en:"really?"},
+    {jp:"そうです",romaji:"sou desu",es:"así es",en:"that's right"},
+    {jp:"ちがいます",romaji:"chigaimasu",es:"no es así / incorrecto",en:"that's wrong"},
+    {jp:"しりません",romaji:"shirimasen",es:"no sé",en:"I don't know"},
+    {jp:"もういちどおねがいします",romaji:"mou ichido onegaishimasu",es:"otra vez, por favor",en:"once more, please"},
+    {jp:"なんですか",romaji:"nan desu ka",es:"¿qué es?",en:"what is it?"},
+    {jp:"どこですか",romaji:"doko desu ka",es:"¿dónde está?",en:"where is it?"},
+    {jp:"だれですか",romaji:"dare desu ka",es:"¿quién es?",en:"who is it?"},
+    {jp:"いつですか",romaji:"itsu desu ka",es:"¿cuándo es?",en:"when is it?"},
+    {jp:"どうしてですか",romaji:"doushite desu ka",es:"¿por qué?",en:"why?"},
+    {jp:"えいごのメニューはありますか",romaji:"eigo no menyuu wa arimasu ka",es:"¿hay menú en inglés?",en:"is there an English menu?"},
+    {jp:"これはなんですか",romaji:"kore wa nan desu ka",es:"¿qué es esto?",en:"what is this?"},
+    {jp:"やすくしてください",romaji:"yasuku shite kudasai",es:"hágame un descuento",en:"make it cheaper, please"},
+    {jp:"みてもいいですか",romaji:"mite mo ii desu ka",es:"¿puedo mirar?",en:"can I look?"},
+    {jp:"だいじょうぶ、いりません",romaji:"daijoubu, irimasen",es:"no, gracias",en:"no, thank you"},
+    {jp:"ちょっとまってください",romaji:"chotto matte kudasai",es:"espere un momento, por favor",en:"please wait a moment"},
+    {jp:"げんきでね",romaji:"genki de ne",es:"que estés bien",en:"stay well"},
+    {jp:"おなかがすいた",romaji:"onaka ga suita",es:"tengo hambre",en:"I'm hungry"},
+    {jp:"のどがかわいた",romaji:"nodo ga kawaita",es:"tengo sed",en:"I'm thirsty"},
+    {jp:"つかれた",romaji:"tsukareta",es:"estoy cansado",en:"I'm tired"},
+    {jp:"ねむい",romaji:"nemui",es:"tengo sueño",en:"I'm sleepy"}
+  ];
+  var EXTRA_WORDS=[
+    {jp:"おかあさん",romaji:"okaasan",es:"mamá",en:"mother"},
+    {jp:"おとうさん",romaji:"otousan",es:"papá",en:"father"},
+    {jp:"あね",romaji:"ane",es:"hermana mayor",en:"older sister"},
+    {jp:"いもうと",romaji:"imouto",es:"hermana menor",en:"younger sister"},
+    {jp:"おとうと",romaji:"otouto",es:"hermano menor",en:"younger brother"},
+    {jp:"いしゃ",romaji:"isha",es:"médico",en:"doctor"},
+    {jp:"がくせい",romaji:"gakusei",es:"estudiante",en:"student"},
+    {jp:"かいしゃいん",romaji:"kaishain",es:"empleado",en:"office worker"},
+    {jp:"でんしゃ",romaji:"densha",es:"tren",en:"train"},
+    {jp:"ひこうき",romaji:"hikouki",es:"avión",en:"airplane"},
+    {jp:"ちかてつ",romaji:"chikatetsu",es:"metro",en:"subway"},
+    {jp:"うま",romaji:"uma",es:"caballo",en:"horse"},
+    {jp:"とら",romaji:"tora",es:"tigre",en:"tiger"},
+    {jp:"うさぎ",romaji:"usagi",es:"conejo",en:"rabbit"},
+    {jp:"さる",romaji:"saru",es:"mono",en:"monkey"},
+    {jp:"くま",romaji:"kuma",es:"oso",en:"bear"},
+    {jp:"あか",romaji:"aka",es:"rojo",en:"red"},
+    {jp:"きいろ",romaji:"kiiro",es:"amarillo",en:"yellow"},
+    {jp:"みどり",romaji:"midori",es:"verde",en:"green"},
+    {jp:"ちゃいろ",romaji:"chairo",es:"marrón",en:"brown"},
+    {jp:"はる",romaji:"haru",es:"primavera",en:"spring"},
+    {jp:"なつ",romaji:"natsu",es:"verano",en:"summer"},
+    {jp:"あき",romaji:"aki",es:"otoño",en:"autumn"},
+    {jp:"ふゆ",romaji:"fuyu",es:"invierno",en:"winter"},
+    {jp:"コーヒー",romaji:"koohii",es:"café",en:"coffee"},
+    {jp:"ぎゅうにゅう",romaji:"gyuunyuu",es:"leche",en:"milk"},
+    {jp:"やさい",romaji:"yasai",es:"verdura",en:"vegetable"},
+    {jp:"くだもの",romaji:"kudamono",es:"fruta",en:"fruit"},
+    {jp:"おかし",romaji:"okashi",es:"dulces",en:"sweets"},
+    {jp:"あし",romaji:"ashi",es:"pie / pierna",en:"foot / leg"},
+    {jp:"かお",romaji:"kao",es:"cara",en:"face"},
+    {jp:"くび",romaji:"kubi",es:"cuello",en:"neck"},
+    {jp:"め",romaji:"me",es:"ojo",en:"eye"},
+    {jp:"みみ",romaji:"mimi",es:"oreja",en:"ear"},
+    {jp:"はな",romaji:"hana",es:"nariz / flor",en:"nose / flower"},
+    {jp:"くち",romaji:"kuchi",es:"boca",en:"mouth"},
+    {jp:"は",romaji:"ha",es:"diente",en:"tooth"},
+    {jp:"かみ",romaji:"kami",es:"pelo / papel",en:"hair / paper"},
+    {jp:"ゆき",romaji:"yuki",es:"nieve",en:"snow"},
+    {jp:"あめ",romaji:"ame",es:"lluvia",en:"rain"},
+    {jp:"かぜ",romaji:"kaze",es:"viento",en:"wind"},
+    {jp:"つき",romaji:"tsuki",es:"luna",en:"moon"},
+    {jp:"ほし",romaji:"hoshi",es:"estrella",en:"star"},
+    {jp:"かわ",romaji:"kawa",es:"río",en:"river"},
+    {jp:"はし",romaji:"hashi",es:"puente / palillos",en:"bridge / chopsticks"},
+    {jp:"みち",romaji:"michi",es:"camino",en:"road"},
+    {jp:"まち",romaji:"machi",es:"ciudad / pueblo",en:"town"},
+    {jp:"むら",romaji:"mura",es:"aldea",en:"village"},
+    {jp:"にわ",romaji:"niwa",es:"jardín",en:"garden"},
+    {jp:"だいどころ",romaji:"daidokoro",es:"cocina",en:"kitchen"},
+    {jp:"おふろ",romaji:"ofuro",es:"baño (tina)",en:"bath"},
+    {jp:"まど",romaji:"mado",es:"ventana",en:"window"},
+    {jp:"ドア",romaji:"doa",es:"puerta",en:"door"},
+    {jp:"いす",romaji:"isu",es:"silla",en:"chair"},
+    {jp:"つくえ",romaji:"tsukue",es:"escritorio",en:"desk"},
+    {jp:"でんわ",romaji:"denwa",es:"teléfono",en:"phone"},
+    {jp:"とけい",romaji:"tokei",es:"reloj",en:"clock / watch"},
+    {jp:"かばん",romaji:"kaban",es:"bolso",en:"bag"},
+    {jp:"かさ",romaji:"kasa",es:"paraguas",en:"umbrella"},
+    {jp:"ぼうし",romaji:"boushi",es:"sombrero",en:"hat"},
+    {jp:"くつ",romaji:"kutsu",es:"zapatos",en:"shoes"},
+    {jp:"ふく",romaji:"fuku",es:"ropa",en:"clothes"}
+  ];
+  var WORD_POOL=(function(){ var seen={},out=[]; EXTRA_WORDS.forEach(function(o){ if(!seen[o.jp]){seen[o.jp]=1;out.push(o);} }); for(var k in WORDS){ WORDS[k].forEach(function(o){ if(!seen[o.w]){ seen[o.w]=1; out.push({jp:o.w,romaji:o.r,en:o.m,es:(MEANINGS_ES[o.m]||o.m)}); } }); } return out; })();
+  
+  var readingEl=document.getElementById("reading"), readingInner=document.getElementById("readingInner");
+  var rsess=null;
+  function ensureWords(){ if(!state.exercises)state.exercises={}; if(!state.exercises.words)state.exercises.words={box:{}}; if(!state.exercises.words.box)state.exercises.words.box={}; return state.exercises.words; }
+  function ensurePhrases(){ if(!state.exercises)state.exercises={}; if(!state.exercises.phrases)state.exercises.phrases={box:{}}; if(!state.exercises.phrases.box)state.exercises.phrases.box={}; return state.exercises.phrases; }
+  function poolMastery(pool,box){ var total=pool.length,solid=0,sum=0; pool.forEach(function(it){var b=Math.min(5,box[it.jp]||0);sum+=b;if(b>=4)solid++;}); return {pct:total?Math.round(sum/(total*5)*100):0,solid:solid,total:total,seen:Object.keys(box).length}; }
+  function readingCardHTML(){
+    return '<div class="reading-card"><div class="dc-top"><h3>'+t("Reading")+'</h3></div>'+
+      '<div class="dc-sub">'+t("Read and listen — it adapts to what you find hard.")+'</div>'+
+      '<div class="read-launch"><button class="start-btn half" id="startWords">'+t("Words")+'</button>'+
+      '<button class="start-btn half" id="startPhrases">'+t("Phrases")+'</button></div></div>';
+  }
+  function masteryRow(label,m){
+    var ready=m.total&&m.solid/m.total>=0.9;
+    return '<div class="mrow"><div class="mrow-top"><span class="mrow-lbl">'+label+'</span><span class="mrow-pct'+(ready?" ok":"")+'">'+m.pct+'%</span></div>'+
+      '<div class="prog"><i class="'+(ready?"g":"")+'" style="width:'+m.pct+'%"></i></div>'+
+      '<div class="mc-sub">'+m.solid+' / '+m.total+' '+t("mastered")+'</div></div>';
+  }
+  function readingMasteryCardHTML(){
+    var wm=poolMastery(WORD_POOL,ensureWords().box), pm=poolMastery(PHRASES,ensurePhrases().box);
+    if(!wm.seen && !pm.seen) return "";
+    var rows=(wm.seen?masteryRow(t("Words"),wm):"")+(pm.seen?masteryRow(t("Phrases"),pm):"");
+    return '<div class="mastery-card"><div class="mc-top"><h3>'+t("Reading mastery")+'</h3></div>'+rows+'</div>';
+  }
+  function pickReadingTarget(exclude){
+    var pool=rsess.pool,box=rsess.box,idxs=[]; for(var i=0;i<pool.length;i++) if(i!==exclude) idxs.push(i);
+    var w=idxs.map(function(i){return Math.max(1,6-(box[pool[i].jp]||0));});
+    var sum=w.reduce(function(a,b){return a+b;},0),x=Math.random()*sum;
+    for(var k=0;k<idxs.length;k++){x-=w[k];if(x<=0)return idxs[k];}
+    return idxs[idxs.length-1];
+  }
+  function buildReadingQ(){
+    var pool=rsess.pool,last=rsess.q?rsess.q.target:-1,target=pickReadingTarget(last);
+    var modes=["read","listen","recall"],mode=modes[Math.floor(Math.random()*modes.length)];
+    var p=[]; for(var j=0;j<pool.length;j++) if(j!==target) p.push(j);
+    shuffle(p); var opts=shuffle(p.slice(0,5).concat([target]));
+    rsess.q={target:target,mode:mode,opts:opts,answered:false,picked:-1};
+    if(mode==="listen") setTimeout(function(){speak(pool[target].jp);},250);
+  }
+  function startQuiz(pool,ex){ rsess={pool:pool,box:ex.box,done:0,correct:0,wrong:0,q:null}; buildReadingQ(); readingEl.classList.remove("hidden"); renderReading(); }
+  function startWords(){ startQuiz(WORD_POOL, ensureWords()); }
+  function startPhrases(){ startQuiz(PHRASES, ensurePhrases()); }
+  function closeReading(){ readingEl.classList.add("hidden"); try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){} render(); }
+  function nextReadingQ(){ buildReadingQ(); renderReading(); }
+  function answerReading(idx){
+    var q=rsess.q; if(!q||q.answered)return;
+    q.answered=true; q.picked=idx;
+    var pool=rsess.pool,box=rsess.box,key=pool[q.target].jp,cur=box[key]||0,correct=idx===q.target;
+    box[key]=correct?Math.min(5,cur+1):0;
+    rsess.done++; if(correct)rsess.correct++; else rsess.wrong++;
+    Persistence.save(state); speak(pool[q.target].jp); renderReading();
+  }
+  function renderReading(){
+    var pool=rsess.pool,q=rsess.q,it=pool[q.target],es=getLang()==="es",h="";
+    h+='<div class="d-sticky"><div class="d-head"><button class="d-close" id="rClose">✕ '+t("Close")+'</button>'+
+       '<div class="d-stats"><div class="d-stat"><div class="n">'+rsess.done+'</div><div class="l">'+t("Done")+'</div></div>'+
+       '<div class="d-stat wrong"><div class="n">'+rsess.wrong+'</div><div class="l">'+t("Wrong")+'</div></div>'+
+       '<div class="d-stat right"><div class="n">'+rsess.correct+'</div><div class="l">'+t("Correct")+'</div></div></div></div></div>';
+    h+='<div class="rq-prompt">';
+    if(q.mode==="read"){ h+='<div class="rq-kind">'+t("What does it mean?")+'</div><div class="rq-jp mincho">'+it.jp+'</div>'; }
+    else if(q.mode==="listen"){ h+='<div class="rq-kind">'+t("Which one did you hear?")+'</div><button class="d-spk big" id="rSpk" aria-label="Play">🔊</button>'; }
+    else { h+='<div class="rq-kind">'+t("Which one in Japanese?")+'</div><div class="rq-mean">'+(es?it.es:it.en)+'</div>'; }
+    h+='</div>';
+    h+='<div class="ropts">';
+    q.opts.forEach(function(oi){
+      var label=q.mode==="read"?(es?pool[oi].es:pool[oi].en):pool[oi].jp;
+      var cls="ropt"+(q.mode!=="read"?" jp mincho":"");
+      if(q.answered){ if(oi===q.target)cls+=" correct"; else if(oi===q.picked)cls+=" bad"; else cls+=" dim"; }
+      h+='<button class="'+cls+'" data-i="'+oi+'">'+label+'</button>';
+    });
+    h+='</div>';
+    h+='<div class="rq-fb">';
+    if(q.answered){
+      var correct=q.picked===q.target;
+      h+='<div class="rq-msg '+(correct?"ok":"no")+'">'+t(correct?"Correct!":"It was")+'</div>';
+      h+='<div class="rq-ans"><span class="mincho">'+it.jp+'</span> <span class="rq-rom">'+it.romaji+'</span> — <span class="mean">'+(es?it.es:it.en)+'</span> <button class="d-spk-word" id="rSpkW">🔊 <span>'+t("hear it")+'</span></button></div>';
+    }
+    h+='</div>';
+    if(q.answered) h+='<div class="d-actions"><button class="d-next" id="rNext">'+t("Next →")+'</button></div>';
+    readingInner.innerHTML=h; bindReading();
+  }
+  function bindReading(){
+    var c=document.getElementById("rClose"); if(c)c.addEventListener("click",closeReading);
+    var nx=document.getElementById("rNext"); if(nx)nx.addEventListener("click",nextReadingQ);
+    var sp=document.getElementById("rSpk"); if(sp)sp.addEventListener("click",function(){speak(rsess.pool[rsess.q.target].jp);});
+    var spw=document.getElementById("rSpkW"); if(spw)spw.addEventListener("click",function(){speak(rsess.pool[rsess.q.target].jp);});
+    if(!rsess.q.answered){ readingInner.querySelectorAll(".ropt").forEach(function(o){ o.addEventListener("click",function(){answerReading(parseInt(o.getAttribute("data-i"),10));}); }); }
+  }
+
   function bindMain(){
+    var sw=document.getElementById("startWords"); if(sw)sw.addEventListener("click",startWords);
+    var spx=document.getElementById("startPhrases"); if(spx)spx.addEventListener("click",startPhrases);
     app.querySelectorAll(".box").forEach(function(b){
       b.addEventListener("click",function(){toggle(b.getAttribute("data-id"));});
       b.addEventListener("keydown",function(e){if(e.key===" "||e.key==="Enter"){e.preventDefault();toggle(b.getAttribute("data-id"));}});
