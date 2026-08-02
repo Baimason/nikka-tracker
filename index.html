@@ -365,6 +365,33 @@
     .d-actions button{padding:11px}
   }
   @media (prefers-reduced-motion:reduce){ .seal,.seal.show,.chip,.opt,.prog>i{transition:none} }
+  .ex-sep{font-family:"Shippori Mincho",serif;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);margin:16px 0 8px;border-top:1px dashed var(--line);padding-top:12px}
+  .ex-list{display:flex;flex-direction:column;gap:7px}
+  .ex-item{width:100%;text-align:left;font:inherit;font-weight:700;font-size:14px;color:var(--ink);background:var(--paper);border:1.3px solid var(--line);border-radius:3px;padding:11px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+  .ex-item::after{content:"\2192";color:var(--ink-soft);font-weight:700}
+  .ex-item:hover{border-color:var(--ink)}
+  .today-card .dc-top{margin:12px 0 6px}
+  .today-card .focus-sm{font-family:"Shippori Mincho",serif;font-weight:700;font-size:13px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.1em}
+  .kana-opts{margin-top:14px}
+  .kana-opts>summary{cursor:pointer;font-size:12px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.1em;font-weight:700;list-style:none}
+  .kana-opts>summary::-webkit-details-marker{display:none}
+  .teach-mn{font-size:16.5px}
+  .teach-compare{display:flex;align-items:center;justify-content:center;gap:16px;margin:6px 0 6px}
+  .tc-side{display:flex;flex-direction:column;align-items:center;gap:5px}
+  .tc-side:not(.new){opacity:.6}
+  .tc-glyph{font-family:"Shippori Mincho",serif;font-weight:700;font-size:clamp(52px,15vw,80px);line-height:1;color:var(--ink)}
+  .tc-rom{font-family:"Shippori Mincho",serif;font-weight:800;font-size:19px;color:var(--ink-soft)}
+  .tc-side.new .tc-rom{color:var(--shu)}
+  .tc-arrow{font-size:26px;color:var(--ink-faint)}
+  .d-spk.sm{width:34px;height:34px;font-size:15px;margin-top:0}
+  .teach-mn.big{font-size:23px;font-weight:700;color:var(--ink);margin-top:12px;letter-spacing:.02em}
+  .teach-mn-sub{font-size:15px;line-height:1.55;color:var(--ink-soft);max-width:420px;margin:9px auto 0;padding:0 8px}
+  .emoji-toggle{align-self:center;margin-top:12px;font:inherit;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--ink-soft);background:none;border:1.2px solid var(--line);border-radius:20px;padding:6px 14px;cursor:pointer}
+  .rq-emoji{font-size:22px}
+  .rq-mean{gap:6px}
+  .stg-badge{margin-left:auto;align-self:center;font-family:"Shippori Mincho",serif;font-weight:800;font-size:13px;color:var(--ink-soft);border:1.2px solid var(--line);border-radius:20px;padding:2px 10px;white-space:nowrap}
+  .stg-badge.done{color:#fff;background:var(--green);border-color:var(--green)}
+  .stop.on .stg-badge{color:var(--shu);border-color:var(--shu)}
 </style>
 
 <div class="wrap">
@@ -391,7 +418,7 @@
 <script>
 (function(){
   "use strict";
-  var TR = {"day": "día", "days": "días", "total": "total", "daily practice": "práctica diaria", "Started": "Empezó", "week": "semana", "Today's practice": "Práctica de hoy", "every day": "cada día", "drill": "práctica", "<b>Hiragana</b> — nothing else yet": "<b>Hiragana</b> — nada más por ahora", "<b>Katakana</b> + start the Anki engine": "<b>Katakana</b> + arrancá el motor de Anki", "<b>The routine</b> — keep the streak alive": "<b>La rutina</b> — mantené la racha viva", "<b>Keep going</b> — add speaking practice": "<b>Seguí</b> — sumá práctica de habla", "Hiragana practice": "Práctica de hiragana", "Tofugu guide + drills until it's automatic": "Guía de Tofugu + práctica hasta que salga solo", "Kana drill": "Práctica de kana", "Finish katakana; drill both scripts": "Terminá katakana; practicá los dos silabarios", "Anki — 10 new words": "Anki — 10 palabras nuevas", "Set up the Kaishi 1.5k deck first": "Primero configurá el mazo Kaishi 1.5k", "Anki — reviews + 10 new": "Anki — repasos + 10 nuevas", "The engine. Never skip this one.": "El motor. Nunca te la saltes.", "Grammar — 1 point": "Gramática — 1 punto", "Tae Kim's guide, one point per day": "Guía de Tae Kim, un punto por día", "Immersion — 10 min": "Inmersión — 10 min", "Read cards aloud, or spot words in something you watch": "Leé las tarjetas en voz alta, o cazá palabras en algo que veas", "Speak / exchange": "Hablar / intercambio", "Try a message or short call": "Probá un mensaje o una llamada corta", "Chaotic day? Just tick the <b>毎日</b> task and you're covered — the streak stays alive. Consistency beats hours.": "¿Día caótico? Con marcar la tarea <b>毎日</b> ya estás — la racha sigue viva. La constancia le gana a las horas.", "The path": "El camino", "Week 1 · Hiragana": "Semana 1 · Hiragana", "Read hiragana without stalling": "Leer hiragana sin trabarte", "Week 2 · Katakana + Anki": "Semana 2 · Katakana + Anki", "Finish kana, start Kaishi 1.5k": "Terminar kana, arrancar Kaishi 1.5k", "Weeks 3–6 · The routine": "Semanas 3–6 · La rutina", "Anki + grammar + immersion, daily": "Anki + gramática + inmersión, a diario", "Beyond · Speaking": "Más allá · Hablar", "Add HelloTalk or iTalki": "Sumá HelloTalk o iTalki", "Last 4 weeks": "Últimas 4 semanas", "済 marks a day the daily task was done": "済 marca un día con la tarea diaria hecha", "All resources": "Todos los recursos", "Install Anki": "Instalar Anki", "Kaishi deck": "Mazo Kaishi", "Grammar (Tae Kim)": "Gramática (Tae Kim)", "済 Done for today — the seal is yours. Keep going if you like.": "済 Listo por hoy — el sello es tuyo. Seguí si querés.", "Recognition + spaced repetition. Hit the goal to stamp today.": "Reconocimiento + repetición espaciada. Llegá a la meta para sellar el día.", "Start drill": "Empezar", "Continue drill": "Continuar", "Practice more": "Practicar más", "Options": "Opciones", "Script": "Escritura", "Goal": "Meta", "<b>Hiragana</b> (あ) and <b>Katakana</b> (ア) are the two kana alphabets — same sounds, different look (katakana is mostly for foreign / loan words). <b>Dakuten</b> are the small ゛/゜ marks that voice a sound: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).": "<b>Hiragana</b> (あ) y <b>Katakana</b> (ア) son los dos silabarios — mismos sonidos, distinta forma (katakana es sobre todo para palabras extranjeras). El <b>Dakuten</b> son las marquitas ゛/゜ que sonorizan un sonido: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).", "Kana mastery": "Dominio del kana", "characters mastered": "caracteres dominados", "Focus on": "Enfocate en", "more": "más", "Do a few drills and your mastery shows up here.": "Hacé unas cuantas y acá verás tu dominio.", "済 You've got your kana. It's logical to move on — make grammar + Anki your main focus and keep drills as warm-ups.": "済 Ya dominás el kana. Es lógico avanzar — pasá el foco a gramática + Anki y dejá la práctica como calentamiento.", "Almost there — a few more sessions and kana will feel automatic.": "Casi — unas sesiones más y el kana te saldrá solo.", "Building your foundation — keep the daily drill going.": "Construyendo la base — seguí con la práctica diaria.", "Backup &amp; sync": "Respaldo y sync", "Your backup code": "Tu código de respaldo", "Copy this and paste it on another device to carry your streak over.": "Copialo y pegalo en otro dispositivo para llevarte la racha.", "Copy code": "Copiar código", "Restore from a code": "Restaurar desde un código", "Paste a code here — it merges with what's on this device (nothing is lost).": "Pegá un código acá — se fusiona con lo que ya tenés (no se pierde nada).", "Import code": "Importar código", "Sign in to sync": "Iniciar sesión para sync", "Automatic sync across devices — no passwords, no data of yours to guard.": "Sync automático entre dispositivos — sin contraseñas, sin datos tuyos que cuidar.", "COMING SOON": "PRÓXIMAMENTE", "Copied ✓": "Copiado ✓", "Select the text above and copy manually.": "Seleccioná el texto de arriba y copialo a mano.", "Imported and merged ✓": "Importado y fusionado ✓", "Couldn't read that code.": "No pude leer ese código.", "That's not a Nikka backup code.": "Ese no es un código de Nikka.", "The code looks corrupted or incomplete.": "El código parece corrupto o incompleto.", "Reset everything — streak, days, drill progress, and today's checklist? This can't be undone.": "¿Reiniciar todo — racha, días, progreso de práctica y la lista de hoy? No se puede deshacer.", "Reset all progress": "Reiniciar todo el progreso", "This is a preview — progress won't stick here. Open the hosted page in your browser to keep your streak.": "Esto es una vista previa — el progreso no se guarda acá. Abrí la página publicada en tu navegador para mantener la racha.", "Close": "Cerrar", "Done": "Hechas", "Wrong": "Erradas", "Correct": "Aciertos", "Correct!": "¡Correcto!", "It was": "Era", "Which sound is this?": "¿Qué sonido es este?", "Tap the": "Toca el", "Daily goal": "Meta diaria", "済 Goal reached!": "済 ¡Meta alcanzada!", "Today is stamped and your streak is safe. Keep going or close.": "El día quedó sellado y tu racha está a salvo. Puedes continuar o cerrar.", "hear it": "escuchar", "Next →": "Siguiente →", "Skip": "Saltar", "Level": "Nivel", "You've got hiragana down! Ready to add dakuten?": "¡Dominás el hiragana! ¿Listo para sumar el dakuten?", "Dakuten mastered! Ready for katakana?": "¡Dominaste el dakuten! ¿Listo para el katakana?", "Yes, unlock": "Sí, desbloquear", "Not yet": "Todavía no", "Unlock": "Desbloquear", "済 Unlocked!": "済 ¡Desbloqueado!", "New character": "Carácter nuevo", "Got it →": "¡Entendido! →", "Streak": "Racha", "Solid": "Sólido", "Great": "Genial", "Perfect": "Perfecto", "済 Streak saved!": "済 ¡Racha salvada!", "済 Streak saved. Keep going: 30 solid · 50 great · 100 perfect.": "済 Racha salvada. Seguí: 30 sólido · 50 genial · 100 perfecto.", "15 saves your streak · 30 solid · 50 great · 100 perfect.": "15 salva la racha · 30 sólido · 50 genial · 100 perfecto.", "Short day? Just 15 saves your streak — 30 is solid, 50 great, 100 perfect.": "¿Día corto? Con 15 salvás la racha — 30 es sólido, 50 genial, 100 perfecto.", "Day": "Día", "Week": "Semana", "Reading": "Lectura", "Grammar": "Gramática", "Speaking": "Hablar", "read the base syllabary": "leer el silabario base", "the ゛゜ voiced sounds": "los sonidos con ゛゜", "the second syllabary": "el segundo silabario", "read everyday words": "leer palabras cotidianas", "build sentences (Tae Kim)": "armar frases (Tae Kim)", "the most frequent kanji": "los kanji más frecuentes", "Kana warm-up": "Calentamiento de kana", "Keep it sharp — a few reps": "Mantenelo afilado — unas pocas", "Voiced sounds — the drill knows what to show": "Sonidos con dakuten — la práctica sabe qué mostrar", "Read a few graded sentences": "Leé unas frases graduadas", "The vocab engine": "El motor de vocabulario", "Tae Kim's guide": "Guía de Tae Kim", "Kanji — a few new": "Kanji — unos nuevos", "Most frequent first": "Los más frecuentes primero", "HelloTalk or iTalki": "HelloTalk o iTalki", "Next stage": "Siguiente etapa", "Back": "Volver", "Read words and useful phrases — reveal and listen.": "Leé palabras y frases útiles — revelá y escuchá.", "Start reading": "Empezar lectura", "Reveal": "Revelar", "Show romaji": "Mostrar romaji", "Hide romaji": "Ocultar romaji", "Reading quiz — read, listen, guess. It adapts to what you find hard.": "Quiz de lectura — leé, escuchá y adiviná. Se adapta a lo que te cuesta.", "What does it mean?": "¿Qué significa?", "Which one did you hear?": "¿Cuál escuchaste?", "Which one in Japanese?": "¿Cuál en japonés?", "Reading mastery": "Dominio de lectura", "phrases mastered": "frases dominadas", "済 You're reading these fluently. Time to add harder phrases.": "済 Ya leés estas con fluidez. Hora de sumar frases más difíciles.", "Reading is clicking — keep going.": "La lectura va tomando forma — seguí así.", "Every phrase you nail is real reading. Keep at it.": "Cada frase que acertás es leer de verdad. Dale que vas.", "Words": "Palabras", "Phrases": "Frases", "mastered": "dominadas", "Read and listen — it adapts to what you find hard.": "Leé y escuchá — se adapta a lo que te cuesta.", "read single words at a glance": "leer palabras sueltas de un vistazo", "read useful fixed phrases": "leer frases fijas útiles", "Read single words": "Leé palabras sueltas", "Read useful phrases": "Leé frases útiles", "Traditional style (serif)": "Estilo tradicional (con serifas)",
+  var TR = {"day": "día", "days": "días", "total": "total", "daily practice": "práctica diaria", "Started": "Empezó", "week": "semana", "Today's practice": "Práctica de hoy", "every day": "cada día", "drill": "práctica", "<b>Hiragana</b> — nothing else yet": "<b>Hiragana</b> — nada más por ahora", "<b>Katakana</b> + start the Anki engine": "<b>Katakana</b> + arrancá el motor de Anki", "<b>The routine</b> — keep the streak alive": "<b>La rutina</b> — mantené la racha viva", "<b>Keep going</b> — add speaking practice": "<b>Seguí</b> — sumá práctica de habla", "Hiragana practice": "Práctica de hiragana", "Tofugu guide + drills until it's automatic": "Guía de Tofugu + práctica hasta que salga solo", "Kana drill": "Práctica de kana", "Finish katakana; drill both scripts": "Terminá katakana; practicá los dos silabarios", "Anki — 10 new words": "Anki — 10 palabras nuevas", "Set up the Kaishi 1.5k deck first": "Primero configurá el mazo Kaishi 1.5k", "Anki — reviews + 10 new": "Anki — repasos + 10 nuevas", "The engine. Never skip this one.": "El motor. Nunca te la saltes.", "Grammar — 1 point": "Gramática — 1 punto", "Tae Kim's guide, one point per day": "Guía de Tae Kim, un punto por día", "Immersion — 10 min": "Inmersión — 10 min", "Read cards aloud, or spot words in something you watch": "Leé las tarjetas en voz alta, o cazá palabras en algo que veas", "Speak / exchange": "Hablar / intercambio", "Try a message or short call": "Probá un mensaje o una llamada corta", "Chaotic day? Just tick the <b>毎日</b> task and you're covered — the streak stays alive. Consistency beats hours.": "¿Día caótico? Con marcar la tarea <b>毎日</b> ya estás — la racha sigue viva. La constancia le gana a las horas.", "The path": "El camino", "Week 1 · Hiragana": "Semana 1 · Hiragana", "Read hiragana without stalling": "Leer hiragana sin trabarte", "Week 2 · Katakana + Anki": "Semana 2 · Katakana + Anki", "Finish kana, start Kaishi 1.5k": "Terminar kana, arrancar Kaishi 1.5k", "Weeks 3–6 · The routine": "Semanas 3–6 · La rutina", "Anki + grammar + immersion, daily": "Anki + gramática + inmersión, a diario", "Beyond · Speaking": "Más allá · Hablar", "Add HelloTalk or iTalki": "Sumá HelloTalk o iTalki", "Last 4 weeks": "Últimas 4 semanas", "済 marks a day the daily task was done": "済 marca un día con la tarea diaria hecha", "All resources": "Todos los recursos", "Install Anki": "Instalar Anki", "Kaishi deck": "Mazo Kaishi", "Grammar (Tae Kim)": "Gramática (Tae Kim)", "済 Done for today — the seal is yours. Keep going if you like.": "済 Listo por hoy — el sello es tuyo. Seguí si querés.", "Recognition + spaced repetition. Hit the goal to stamp today.": "Reconocimiento + repetición espaciada. Llegá a la meta para sellar el día.", "Start drill": "Empezar", "Continue drill": "Continuar", "Practice more": "Practicar más", "Options": "Opciones", "Script": "Escritura", "Goal": "Meta", "<b>Hiragana</b> (あ) and <b>Katakana</b> (ア) are the two kana alphabets — same sounds, different look (katakana is mostly for foreign / loan words). <b>Dakuten</b> are the small ゛/゜ marks that voice a sound: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).": "<b>Hiragana</b> (あ) y <b>Katakana</b> (ア) son los dos silabarios — mismos sonidos, distinta forma (katakana es sobre todo para palabras extranjeras). El <b>Dakuten</b> son las marquitas ゛/゜ que sonorizan un sonido: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).", "Kana mastery": "Dominio del kana", "characters mastered": "caracteres dominados", "Focus on": "Enfocate en", "more": "más", "Do a few drills and your mastery shows up here.": "Hacé unas cuantas y acá verás tu dominio.", "済 You've got your kana. It's logical to move on — make grammar + Anki your main focus and keep drills as warm-ups.": "済 Ya dominás el kana. Es lógico avanzar — pasá el foco a gramática + Anki y dejá la práctica como calentamiento.", "Almost there — a few more sessions and kana will feel automatic.": "Casi — unas sesiones más y el kana te saldrá solo.", "Building your foundation — keep the daily drill going.": "Construyendo la base — seguí con la práctica diaria.", "Backup &amp; sync": "Respaldo y sync", "Your backup code": "Tu código de respaldo", "Copy this and paste it on another device to carry your streak over.": "Copialo y pegalo en otro dispositivo para llevarte la racha.", "Copy code": "Copiar código", "Restore from a code": "Restaurar desde un código", "Paste a code here — it merges with what's on this device (nothing is lost).": "Pegá un código acá — se fusiona con lo que ya tenés (no se pierde nada).", "Import code": "Importar código", "Sign in to sync": "Iniciar sesión para sync", "Automatic sync across devices — no passwords, no data of yours to guard.": "Sync automático entre dispositivos — sin contraseñas, sin datos tuyos que cuidar.", "COMING SOON": "PRÓXIMAMENTE", "Copied ✓": "Copiado ✓", "Select the text above and copy manually.": "Seleccioná el texto de arriba y copialo a mano.", "Imported and merged ✓": "Importado y fusionado ✓", "Couldn't read that code.": "No pude leer ese código.", "That's not a Nikka backup code.": "Ese no es un código de Nikka.", "The code looks corrupted or incomplete.": "El código parece corrupto o incompleto.", "Reset everything — streak, days, drill progress, and today's checklist? This can't be undone.": "¿Reiniciar todo — racha, días, progreso de práctica y la lista de hoy? No se puede deshacer.", "Reset all progress": "Reiniciar todo el progreso", "This is a preview — progress won't stick here. Open the hosted page in your browser to keep your streak.": "Esto es una vista previa — el progreso no se guarda acá. Abrí la página publicada en tu navegador para mantener la racha.", "Close": "Cerrar", "Done": "Hechas", "Wrong": "Erradas", "Correct": "Aciertos", "Correct!": "¡Correcto!", "It was": "Era", "Which sound is this?": "¿Qué sonido es este?", "Tap the": "Toca el", "Daily goal": "Meta diaria", "済 Goal reached!": "済 ¡Meta alcanzada!", "Today is stamped and your streak is safe. Keep going or close.": "El día quedó sellado y tu racha está a salvo. Puedes continuar o cerrar.", "hear it": "escuchar", "Next →": "Siguiente →", "Skip": "Saltar", "Level": "Nivel", "You've got hiragana down! Ready to add dakuten?": "¡Dominás el hiragana! ¿Listo para sumar el dakuten?", "Dakuten mastered! Ready for katakana?": "¡Dominaste el dakuten! ¿Listo para el katakana?", "Yes, unlock": "Sí, desbloquear", "Not yet": "Todavía no", "Unlock": "Desbloquear", "済 Unlocked!": "済 ¡Desbloqueado!", "New character": "Carácter nuevo", "Got it →": "¡Entendido! →", "Streak": "Racha", "Solid": "Sólido", "Great": "Genial", "Perfect": "Perfecto", "済 Streak saved!": "済 ¡Racha salvada!", "済 Streak saved. Keep going: 30 solid · 50 great · 100 perfect.": "済 Racha salvada. Seguí: 30 sólido · 50 genial · 100 perfecto.", "15 saves your streak · 30 solid · 50 great · 100 perfect.": "15 salva la racha · 30 sólido · 50 genial · 100 perfecto.", "Short day? Just 15 saves your streak — 30 is solid, 50 great, 100 perfect.": "¿Día corto? Con 15 salvás la racha — 30 es sólido, 50 genial, 100 perfecto.", "Day": "Día", "Week": "Semana", "Reading": "Lectura", "Grammar": "Gramática", "Speaking": "Hablar", "read the base syllabary": "leer el silabario base", "the ゛゜ voiced sounds": "los sonidos con ゛゜", "the second syllabary": "el segundo silabario", "read everyday words": "leer palabras cotidianas", "build sentences (Tae Kim)": "armar frases (Tae Kim)", "the most frequent kanji": "los kanji más frecuentes", "Kana warm-up": "Calentamiento de kana", "Keep it sharp — a few reps": "Mantenelo afilado — unas pocas", "Voiced sounds — the drill knows what to show": "Sonidos con dakuten — la práctica sabe qué mostrar", "Read a few graded sentences": "Leé unas frases graduadas", "The vocab engine": "El motor de vocabulario", "Tae Kim's guide": "Guía de Tae Kim", "Kanji — a few new": "Kanji — unos nuevos", "Most frequent first": "Los más frecuentes primero", "HelloTalk or iTalki": "HelloTalk o iTalki", "Next stage": "Siguiente etapa", "Back": "Volver", "Read words and useful phrases — reveal and listen.": "Leé palabras y frases útiles — revelá y escuchá.", "Start reading": "Empezar lectura", "Reveal": "Revelar", "Show romaji": "Mostrar romaji", "Hide romaji": "Ocultar romaji", "Reading quiz — read, listen, guess. It adapts to what you find hard.": "Quiz de lectura — leé, escuchá y adiviná. Se adapta a lo que te cuesta.", "What does it mean?": "¿Qué significa?", "Which one did you hear?": "¿Cuál escuchaste?", "Which one in Japanese?": "¿Cuál en japonés?", "Reading mastery": "Dominio de lectura", "phrases mastered": "frases dominadas", "済 You're reading these fluently. Time to add harder phrases.": "済 Ya leés estas con fluidez. Hora de sumar frases más difíciles.", "Reading is clicking — keep going.": "La lectura va tomando forma — seguí así.", "Every phrase you nail is real reading. Keep at it.": "Cada frase que acertás es leer de verdad. Dale que vas.", "Words": "Palabras", "Phrases": "Frases", "mastered": "dominadas", "Read and listen — it adapts to what you find hard.": "Leé y escuchá — se adapta a lo que te cuesta.", "read single words at a glance": "leer palabras sueltas de un vistazo", "read useful fixed phrases": "leer frases fijas útiles", "Read single words": "Leé palabras sueltas", "Read useful phrases": "Leé frases útiles", "Day's progress": "Progreso de hoy", "Recommended": "Recomendado", "All exercises": "Todos los ejercicios", "Support": "Apoyo", "Kana options": "Opciones de kana", "Traditional style (serif)": "Estilo tradicional (con serifas)",
     "Modern style (sans-serif)": "Estilo moderno (sin serifas)"};
   function detectLang(){var n=((navigator.language||navigator.userLanguage||"en")+"").toLowerCase();return n.indexOf("es")===0?"es":"en";}
   function getLang(){return (state&&state.lang)?state.lang:detectLang();}
@@ -696,7 +723,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
      5. DERIVED
      ========================================================================= */
   function weekOf(startStr){var d=daysBetween(startStr,today());if(d<0)d=0;return Math.floor(d/7)+1;}
-  function coreDone(day){return !!(day&&(day.anki||day.kana||day.words||day.phrases));}
+  function coreDone(day){return !!(day&&(day.practiced||day.anki||day.kana||day.words||day.phrases));}
   function computeStreak(days){var s=0,d=new Date(),t=today();
     if(!(days[t]&&coreDone(days[t])))d.setDate(d.getDate()-1);
     while(days[fmt(d)]&&coreDone(days[fmt(d)])){s++;d.setDate(d.getDate()-1);} return s;}
@@ -726,6 +753,14 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function curStage(){ var k=ensureKana(); return Math.max(k.level, k.stageManual||0); }
   function stageState(i){ var n=i+1, cs=curStage(); if(n<cs)return "done"; if(n===cs)return "on"; return ""; }
   function stageName(st){ return STAGES[st-1]?STAGES[st-1].lbl:"Hiragana"; }
+  function stagePct(n){
+    if(n===1) return Math.round(masteryOf(BASE_KEYS).ratio*100);
+    if(n===2) return Math.round(masteryOf(DAK_KEYS).ratio*100);
+    if(n===3) return kanaMastery().pct;
+    if(n===4) return poolMastery(WORD_POOL, ensureWords().box).pct;
+    if(n===5) return poolMastery(PHRASES, ensurePhrases().box).pct;
+    return null;
+  }
   function advanceStage(){ var k=ensureKana(),c=curStage(); if(c>=8)return; k.stageManual=c+1; Persistence.save(state); render(); }
   function retreatStage(){ var k=ensureKana(),c=curStage(),nv=c-1; k.stageManual=nv<=3?0:nv; Persistence.save(state); render(); }
   function tasksForStage(st){
@@ -863,6 +898,59 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
         '<div class="sub">'+t("Automatic sync across devices — no passwords, no data of yours to guard.")+'</div></div>'+
         '<span class="tag">'+t("COMING SOON")+'</span></div></details>';
   }
+  function todayReps(){ var td=today(),k=ensureKana(),w=ensureWords(),p=ensurePhrases(); return (k.daily[td]?k.daily[td].done:0)+(w.daily[td]||0)+(p.daily[td]||0); }
+  function stampDay(){ var td=today(); if(todayReps()>=15 && !(state.days[td]&&state.days[td].practiced)){ state.days[td]=state.days[td]||{}; state.days[td].practiced=true; return true; } return false; }
+  function kanaOptsHTML(){
+    var k=ensureKana(),lvl=k.level,canAdv=canAdvance(),nxt=nextTarget(lvl);
+    function seg(kind,val,label,on){return '<button class="seg'+(on?" on":"")+'" data-seg="'+kind+'" data-val="'+val+'">'+label+'</button>';}
+    var lvlBlock='<div class="level-row"><span class="lvl-tag">'+t("Level")+' '+lvl+'</span><span class="lvl-name">'+LEVEL_NAMES[lvl]+'</span></div>';
+    if(canAdv&&nxt){
+      if(!k.declined){ lvlBlock+='<div class="advance"><div class="adv-msg">'+(lvl===1?t("You've got hiragana down! Ready to add dakuten?"):t("Dakuten mastered! Ready for katakana?"))+'</div><div class="adv-btns"><button class="adv-yes" id="lvUp">'+t("Yes, unlock")+'</button><button class="adv-no" id="lvNo">'+t("Not yet")+'</button></div></div>'; }
+      else { lvlBlock+='<button class="unlock-pill" id="lvUp">'+t("Unlock")+' '+nxt+' →</button>'; }
+    }
+    if(justLeveled){ lvlBlock='<div class="leveled">'+t("済 Unlocked!")+' '+t("Level")+' '+justLeveled+' · '+LEVEL_NAMES[justLeveled]+'</div>'+lvlBlock; justLeveled=0; }
+    return '<details class="opts kana-opts"><summary>'+t("Kana options")+'</summary>'+lvlBlock+
+      '<div class="opt-row"><span class="k">'+t("Script")+'</span>'+
+      seg("hira",1,"Hiragana",k.scope.hira)+seg("kata",1,"Katakana",k.scope.kata)+seg("dakuten",1,"+ Dakuten",k.scope.dakuten)+
+      '<button class="info-btn" id="scriptInfo" aria-label="Explain the scripts">ⓘ</button></div>'+
+      '<div class="opt-help" id="scriptHelp" hidden>'+t("<b>Hiragana</b> (あ) and <b>Katakana</b> (ア) are the two kana alphabets — same sounds, different look (katakana is mostly for foreign / loan words). <b>Dakuten</b> are the small ゛/゜ marks that voice a sound: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).")+'</div>'+
+      '</details>';
+  }
+  function todayCardHTML(){
+    var st=curStage(), reps=todayReps(), pct=Math.min(100,reps), tier=dayTier(reps), td=today(), day=state.days[td]||{};
+    var seal='<div class="seal"></div>';
+    if(coreDone(day)){
+      if(reps>=100) seal='<div class="seal show lvl-4">'+sealSVG()+'</div>';
+      else if(reps>=50) seal='<div class="seal show lvl-3">'+sealSVG()+'</div>';
+      else if(reps>=30) seal='<div class="seal show lvl-2 mincho">済</div>';
+      else seal='<div class="seal show lvl-1 mincho">済</div>';
+    }
+    var rec = st<=3?{fn:"startDrill",label:t("Kana drill")}:st===4?{fn:"startWords",label:t("Words")}:{fn:"startPhrases",label:t("Phrases")};
+    var h='<div class="card today-card">'+seal;
+    h+='<h2>'+t("Today's practice")+'</h2><div class="date">'+prettyDate(td)+'</div>';
+    h+='<div class="dc-top"><span class="focus-sm">'+t("Day's progress")+'</span><div class="dc-count">'+reps+(tier>=0?' · <span class="tier">'+t(TIER_LABEL[tier])+'</span>':'')+'</div></div>';
+    h+='<div class="prog milestones"><i style="width:'+pct+'%"></i>'+[15,30,50].map(function(m){return '<span class="tick'+(reps>=m?" on":"")+'" style="left:'+m+'%"></span>';}).join("")+'</div>';
+    h+='<div class="dc-sub">'+(reps>=15?t("済 Streak saved. Keep going: 30 solid · 50 great · 100 perfect."):t("15 saves your streak · 30 solid · 50 great · 100 perfect."))+'</div>';
+    h+='<button class="start-btn'+(reps>=15?" done-today":"")+'" data-fn="'+rec.fn+'">'+t("Recommended")+': '+rec.label+' →</button>';
+    h+='<div class="ex-sep">'+t("All exercises")+'</div><div class="ex-list">'+
+       '<button class="ex-item" data-fn="startDrill">'+t("Kana drill")+'</button>'+
+       '<button class="ex-item" data-fn="startWords">'+t("Words")+'</button>'+
+       '<button class="ex-item" data-fn="startPhrases">'+t("Phrases")+'</button></div>';
+    h+=kanaOptsHTML();
+    var ext=tasksForStage(st).filter(function(x){return x.id!=="kana"&&x.id!=="words"&&x.id!=="phrases";});
+    if(ext.length){
+      h+='<div class="ex-sep">'+t("Support")+'</div>';
+      ext.forEach(function(task){
+        var on=!!day[task.id];
+        h+='<div class="task'+(on?" done":"")+'"><div class="box'+(task.sacred?" sacred":"")+(on?" on":"")+'" data-id="'+task.id+'" role="checkbox" tabindex="0" aria-checked="'+on+'">'+(on?"✓":"")+'</div>'+
+           '<div class="t-body"><div class="t-top"><span class="t-label">'+t(task.label)+'</span>'+(task.sacred?'<span class="badge mincho">毎日 · '+t("every day")+'</span>':'')+'</div>'+
+           '<div class="t-sub">'+t(task.sub)+'</div>'+(task.link?'<div>'+chip(task.link,task.link.name)+'</div>':'')+'</div></div>';
+      });
+    }
+    if(st>=3){ h+='<div class="stage-adv">'+(st>3?'<button class="stage-back" id="stBack">← '+t("Back")+'</button>':'')+(st<8?'<button class="stage-next" id="stNext">'+t("Next stage")+': '+t(stageName(st+1))+' →</button>':'')+'</div>'; }
+    h+='<div class="note">'+t("Short day? Just 15 saves your streak — 30 is solid, 50 great, 100 perfect.")+'</div></div>';
+    return h;
+  }
   function render(){
     var todayStr=today(); if(!state.days[todayStr])state.days[todayStr]={};
     var day=state.days[todayStr],wk=weekOf(state.startDate),tasks=tasksForStage(curStage()),dt=drillToday();
@@ -906,47 +994,16 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var dayNum=daysBetween(state.startDate,today())+1; if(dayNum<1)dayNum=1;
     html+='<div class="phase"><span class="wk mincho">'+t("Day")+' '+dayNum+' · '+t("Week")+' '+wk+'</span><span class="focus">'+focus+'</span></div>';
     
-    var mainSeal = '<div class="seal"></div>';
-    if (coreDone(day)) {
-      var count = dt ? dt.done : 0;
-      if (count >= 100) {
-        mainSeal = '<div class="seal show lvl-4">' + sealSVG() + '</div>';
-      } else if (count >= 50) {
-        mainSeal = '<div class="seal show lvl-3">' + sealSVG() + '</div>';
-      } else if (count >= 30) {
-        mainSeal = '<div class="seal show lvl-2 mincho">済</div>';
-      } else {
-        mainSeal = '<div class="seal show lvl-1 mincho">済</div>';
-      }
-    }
-    html += '<div class="card">' + mainSeal;
-
-    html+='<h2>'+t("Today's practice")+'</h2><div class="date">'+prettyDate(todayStr)+'</div>';
-    tasks.forEach(function(task){
-      var on=!!day[task.id];
-      html+='<div class="task'+(on?" done":"")+'">';
-      html+='<div class="box'+(task.sacred?" sacred":"")+(on?" on":"")+'" data-id="'+task.id+'" role="checkbox" tabindex="0" aria-checked="'+on+'">'+(on?"✓":"")+'</div>';
-      html+='<div class="t-body"><div class="t-top"><span class="t-label">'+t(task.label)+'</span>';
-      if(task.sacred)html+='<span class="badge mincho">毎日 · '+t("every day")+'</span>';
-      html+='</div><div class="t-sub">'+t(task.sub)+(task.drill?' · '+t("drill")+' '+dt.done:'')+'</div>';
-      var c=""; if(task.link)c+=chip(task.link,task.link.name); if(task.extra)c+=chip(task.extra,task.extra.name);
-      if(c)html+='<div>'+c+'</div>';
-      html+='</div></div>';
-    });
-    var csA=curStage();
-    if(csA>=3){ html+='<div class="stage-adv">'+(csA>3?'<button class="stage-back" id="stBack">← '+t("Back")+'</button>':'')+(csA<7?'<button class="stage-next" id="stNext">'+t("Next stage")+': '+t(stageName(csA+1))+' →</button>':'')+'</div>'; }
-    html+='<div class="note">'+t("Short day? Just 15 saves your streak — 30 is solid, 50 great, 100 perfect.")+'</div></div>';
-
-    /* exercises slot */
-    html+=drillCardHTML();
+    html+=todayCardHTML();
     html+=masteryCardHTML();
-    html+=readingCardHTML();
     html+=readingMasteryCardHTML();
 
     html+='<div class="sec-h mincho">'+t("The path")+'</div><div class="road">';
-    STAGES.forEach(function(n,i){var st=stageState(i);
+    STAGES.forEach(function(n,i){var st=stageState(i),pct=stagePct(i+1),badge='';
+      if(st==="done")badge='<span class="stg-badge done">✓</span>';
+      else if(pct!==null)badge='<span class="stg-badge">'+pct+'%</span>';
       html+='<div class="stop '+st+'"><div class="rail"><div class="dot"></div><div class="bar"></div></div>'+
-        '<div class="rt"><div class="lbl">'+t(n.lbl)+'</div><div class="ds">'+t(n.ds)+'</div></div></div>';});
+        '<div class="rt"><div class="lbl">'+t(n.lbl)+'</div><div class="ds">'+t(n.ds)+'</div></div>'+badge+'</div>';});
     html+='</div>';
     html+='<div class="sec-h mincho">'+t("Last 4 weeks")+'</div>'+calendarHTML();
     html+='<div class="sec-h mincho">'+t("All resources")+'</div><div class="res">'+
@@ -982,7 +1039,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var c=pool.filter(function(r){return r!==exclude;}); shuffle(c); return c.slice(0,n);
   }
   function setupQuiz(target,script){
-    var pool=activePool(),dir=Math.random()<0.5?"toRomaji":"toKana",opts;
+    var pool=activePool().filter(function(r){return r===target||isLearned(script,r);}),dir=Math.random()<0.5?"toRomaji":"toKana",opts;
     if(dir==="toRomaji"){ opts=sample(pool,8,target).concat([target]); opts=shuffle(opts).map(function(r){return {label:r,romaji:r,rom:true};}); }
     else { opts=sample(pool,8,target).concat([target]); opts=shuffle(opts).map(function(r){return {label:glyph(r,script),romaji:r,rom:false};}); }
     sess.mode="quiz"; sess.teach=null;
@@ -994,7 +1051,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     if(sess.force){ var f=sess.force; sess.force=null; setupQuiz(f.romaji,f.script); return; }
     var unlearned=[],learnedG=[];
     scripts.forEach(function(sc){ pool.forEach(function(r){ (isLearned(sc,r)?learnedG:unlearned).push({script:sc,romaji:r}); }); });
-    if(unlearned.length && sess.newCount<sess.maxNew){
+    if(unlearned.length && sess.newCount<5+Math.floor(sess.done/7)){
       sess.mode="teach"; sess.teach=unlearned[Math.floor(Math.random()*unlearned.length)]; sess.q=null;
       var tc=sess.teach; setTimeout(function(){ if(sess.mode==="teach")speak(glyph(tc.romaji,tc.script)); },320); return;
     }
@@ -1037,10 +1094,8 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     sess.done++; if(correct)sess.correct++; else sess.wrong++;
     var t=today(); if(!k.daily[t])k.daily[t]={done:0,correct:0};
     k.daily[t].done++; if(correct)k.daily[t].correct++;
-    // hitting the goal stamps today's kana task
-    if(k.daily[t].done>=15 && !state.days[t].kana){
-      state.days[t]=state.days[t]||{}; state.days[t].kana=true; sess.justHitGoal=true;
-    }
+    // unified: any 15 reps (kana+reading) stamps the day
+    if(stampDay()) sess.justHitGoal=true;
     sess.q.word=pickWord(q.target);
     Persistence.save(state);
     renderDrill();
@@ -1054,11 +1109,23 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function nextQuestion(){ if(sess.justHitGoal)sess.hitGoalShown=true; sess.justHitGoal=false; buildQuestion(); renderDrill(); }
 
   function teachHTML(){
-    var c=sess.teach,g=glyph(c.romaji,c.script),mn=mnemonicFor(c.script,c.romaji),word=pickWord(c.romaji);
-    var h='<div class="teach"><div class="teach-tag">'+t("New character")+'</div>'+
-      '<div class="teach-glyph mincho">'+g+'</div><div class="teach-rom">'+c.romaji+'</div>'+
-      '<button class="d-spk" id="tSpk" aria-label="Play sound">🔊</button>'+
-      '<div class="teach-mn">'+mn+'</div>';
+    var c=sess.teach,g=glyph(c.romaji,c.script),word=pickWord(c.romaji),es=getLang()==="es";
+    var h='<div class="teach"><div class="teach-tag">'+t("New character")+'</div>';
+    var dv=DEVOICE[c.romaji];
+    if(dv){
+      var base=dv[0],sym=dv[1]==="p"?"゜":"゛",bg=glyph(base,c.script);
+      h+='<div class="teach-compare">'+
+         '<div class="tc-side"><div class="tc-glyph mincho">'+bg+'</div><div class="tc-rom">'+base+'</div><button class="d-spk sm" id="tSpkBase" aria-label="Play base">🔊</button></div>'+
+         '<div class="tc-arrow">→</div>'+
+         '<div class="tc-side new"><div class="tc-glyph mincho">'+g+'</div><div class="tc-rom">'+c.romaji+'</div><button class="d-spk sm" id="tSpk" aria-label="Play sound">🔊</button></div>'+
+         '</div>';
+      h+='<div class="teach-mn big">'+bg+' ('+base+') + '+sym+' → '+g+' ('+c.romaji+')</div>';
+      h+='<div class="teach-mn-sub">'+(es?((dv[1]==="p"?"El círculo ゜ cambia el sonido":"Las dos rayitas ゛ sonorizan el sonido")+": de "+base+" pasa a "+c.romaji+"."):((dv[1]==="p"?"The circle ゜ changes the sound":"The two dashes ゛ voice the sound")+": "+base+" becomes "+c.romaji+"."))+'</div>';
+    } else {
+      h+='<div class="teach-glyph mincho">'+g+'</div><div class="teach-rom">'+c.romaji+'</div>'+
+         '<button class="d-spk" id="tSpk" aria-label="Play sound">🔊</button>'+
+         '<div class="teach-mn">'+mnemonicFor(c.script,c.romaji)+'</div>';
+    }
     if(word) h+='<div class="teach-word"><b class="mincho">'+word.w+'</b> '+word.r+' — <span class="mean">'+tm(word.m)+'</span></div>';
     h+='</div><div class="d-actions"><button class="d-next" id="tGot">'+t("Got it →")+'</button></div>';
     return h;
@@ -1300,12 +1367,13 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     {jp:"くつ",romaji:"kutsu",es:"zapatos",en:"shoes"},
     {jp:"ふく",romaji:"fuku",es:"ropa",en:"clothes"}
   ];
-  var WORD_POOL=(function(){ var seen={},out=[]; EXTRA_WORDS.forEach(function(o){ if(!seen[o.jp]){seen[o.jp]=1;out.push(o);} }); for(var k in WORDS){ WORDS[k].forEach(function(o){ if(!seen[o.w]){ seen[o.w]=1; out.push({jp:o.w,romaji:o.r,en:o.m,es:(MEANINGS_ES[o.m]||o.m)}); } }); } return out; })();
+  var EMOJI={"ねこ":"🐱","いぬ":"🐶","とり":"🐦","うま":"🐴","とら":"🐯","うさぎ":"🐰","さる":"🐵","くま":"🐻","ぶた":"🐷","さかな":"🐟","むし":"🐛","へび":"🐍","ぞう":"🐘","えび":"🦐","うし":"🐮","みず":"💧","おちゃ":"🍵","コーヒー":"☕","ぎゅうにゅう":"🥛","たまご":"🥚","ごはん":"🍚","パン":"🍞","すし":"🍣","やさい":"🥬","くだもの":"🍓","りんご":"🍎","おかし":"🍬","にく":"🍖","やま":"⛰️","うみ":"🌊","そら":"☁️","つき":"🌙","ほし":"⭐","ゆき":"❄️","あめ":"🌧️","かぜ":"💨","き":"🌳","はな":"🌸","かわ":"🏞️","め":"👁️","みみ":"👂","て":"✋","あし":"🦶","は":"🦷","かお":"😊","くち":"👄","ほん":"📚","とけい":"🕐","かさ":"☂️","くつ":"👟","ぼうし":"🎩","かばん":"👜","でんわ":"📞","いす":"🪑","まど":"🪟","ドア":"🚪","かぎ":"🔑","ふく":"👕","くるま":"🚗","でんしゃ":"🚃","ひこうき":"✈️","ちかてつ":"🚇","じてんしゃ":"🚲","ふね":"⛵","いえ":"🏠","がっこう":"🏫","みせ":"🏪","えき":"🚉","びょういん":"🏥","せんせい":"🧑‍🏫","ともだち":"👫","いしゃ":"🧑‍⚕️","がくせい":"🎓","おかあさん":"👩","おとうさん":"👨","あね":"👧","いもうと":"👧","おとうと":"👦","あか":"🔴","あお":"🔵","きいろ":"🟡","みどり":"🟢","しろ":"⚪","くろ":"⚫","ひ":"☀️","あさ":"🌅","よる":"🌃","おかね":"💰","でんき":"💡","プール":"🏊"};
+  var WORD_POOL=(function(){ var seen={},out=[]; EXTRA_WORDS.forEach(function(o){ if(!seen[o.jp]){seen[o.jp]=1;out.push({jp:o.jp,romaji:o.romaji,es:o.es,en:o.en,emoji:(EMOJI[o.jp]||"")});} }); for(var k in WORDS){ WORDS[k].forEach(function(o){ if(!seen[o.w]){ seen[o.w]=1; out.push({jp:o.w,romaji:o.r,en:o.m,es:(MEANINGS_ES[o.m]||o.m),emoji:(EMOJI[o.w]||"")}); } }); } return out; })();
   
   var readingEl=document.getElementById("reading"), readingInner=document.getElementById("readingInner");
   var rsess=null;
-  function ensureWords(){ if(!state.exercises)state.exercises={}; if(!state.exercises.words)state.exercises.words={box:{}}; if(!state.exercises.words.box)state.exercises.words.box={}; return state.exercises.words; }
-  function ensurePhrases(){ if(!state.exercises)state.exercises={}; if(!state.exercises.phrases)state.exercises.phrases={box:{}}; if(!state.exercises.phrases.box)state.exercises.phrases.box={}; return state.exercises.phrases; }
+  function ensureWords(){ if(!state.exercises)state.exercises={}; if(!state.exercises.words)state.exercises.words={box:{},daily:{}}; var w=state.exercises.words; if(!w.box)w.box={}; if(!w.daily)w.daily={}; return w; }
+  function ensurePhrases(){ if(!state.exercises)state.exercises={}; if(!state.exercises.phrases)state.exercises.phrases={box:{},daily:{}}; var w=state.exercises.phrases; if(!w.box)w.box={}; if(!w.daily)w.daily={}; return w; }
   function poolMastery(pool,box){ var total=pool.length,solid=0,sum=0; pool.forEach(function(it){var b=Math.min(5,box[it.jp]||0);sum+=b;if(b>=4)solid++;}); return {pct:total?Math.round(sum/(total*5)*100):0,solid:solid,total:total,seen:Object.keys(box).length}; }
   function readingCardHTML(){
     return '<div class="reading-card"><div class="dc-top"><h3>'+t("Reading")+'</h3></div>'+
@@ -1325,22 +1393,31 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var rows=(wm.seen?masteryRow(t("Words"),wm):"")+(pm.seen?masteryRow(t("Phrases"),pm):"");
     return '<div class="mastery-card"><div class="mc-top"><h3>'+t("Reading mastery")+'</h3></div>'+rows+'</div>';
   }
-  function pickReadingTarget(exclude){
-    var pool=rsess.pool,box=rsess.box,idxs=[]; for(var i=0;i<pool.length;i++) if(i!==exclude) idxs.push(i);
-    var w=idxs.map(function(i){return Math.max(1,6-(box[pool[i].jp]||0));});
+  var KANA_REV=(function(){ var m={}; for(var r in KANA_BASE){m[KANA_BASE[r][0]]={romaji:r,script:"hira"};m[KANA_BASE[r][1]]={romaji:r,script:"kata"};} for(var r2 in KANA_DAKUTEN){m[KANA_DAKUTEN[r2][0]]={romaji:r2,script:"hira"};m[KANA_DAKUTEN[r2][1]]={romaji:r2,script:"kata"};} return m; })();
+  var SMALL_KANA="ぁぃぅぇぉっゃゅょゎァィゥェォッャュョヮー・、。 ";
+  function wordReadable(jp){
+    for(var i=0;i<jp.length;i++){ var ch=jp.charAt(i); if(SMALL_KANA.indexOf(ch)>=0)continue; var e=KANA_REV[ch]; if(!e)continue; if(!isLearned(e.script,e.romaji))return false; }
+    return true;
+  }
+  function readableIdx(pool){ var out=[]; for(var i=0;i<pool.length;i++) if(wordReadable(pool[i].jp)) out.push(i); return out; }
+  function weightedPick(pool,box,idxs,exclude){
+    var cand=idxs.filter(function(i){return i!==exclude;}); if(!cand.length)cand=idxs;
+    var w=cand.map(function(i){return Math.max(1,6-(box[pool[i].jp]||0));});
     var sum=w.reduce(function(a,b){return a+b;},0),x=Math.random()*sum;
-    for(var k=0;k<idxs.length;k++){x-=w[k];if(x<=0)return idxs[k];}
-    return idxs[idxs.length-1];
+    for(var k=0;k<cand.length;k++){x-=w[k];if(x<=0)return cand[k];}
+    return cand[cand.length-1];
   }
   function buildReadingQ(){
-    var pool=rsess.pool,last=rsess.q?rsess.q.target:-1,target=pickReadingTarget(last);
+    var pool=rsess.pool,box=rsess.box,all=[]; for(var i=0;i<pool.length;i++)all.push(i);
+    var readable=readableIdx(pool), tgtSet=readable.length?readable:all;
+    var target=weightedPick(pool,box,tgtSet,rsess.q?rsess.q.target:-1);
+    var distSrc=(readable.length>=6?readable:all).filter(function(i){return i!==target;});
+    shuffle(distSrc); var opts=shuffle(distSrc.slice(0,5).concat([target]));
     var modes=["read","listen","recall"],mode=modes[Math.floor(Math.random()*modes.length)];
-    var p=[]; for(var j=0;j<pool.length;j++) if(j!==target) p.push(j);
-    shuffle(p); var opts=shuffle(p.slice(0,5).concat([target]));
     rsess.q={target:target,mode:mode,opts:opts,answered:false,picked:-1};
     if(mode==="listen") setTimeout(function(){speak(pool[target].jp);},250);
   }
-  function startQuiz(pool,ex){ rsess={pool:pool,box:ex.box,done:0,correct:0,wrong:0,q:null}; buildReadingQ(); readingEl.classList.remove("hidden"); renderReading(); }
+  function startQuiz(pool,ex){ rsess={pool:pool,box:ex.box,ex:ex,done:0,correct:0,wrong:0,q:null}; buildReadingQ(); readingEl.classList.remove("hidden"); renderReading(); }
   function startWords(){ startQuiz(WORD_POOL, ensureWords()); }
   function startPhrases(){ startQuiz(PHRASES, ensurePhrases()); }
   function closeReading(){ readingEl.classList.add("hidden"); try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){} render(); }
@@ -1351,6 +1428,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var pool=rsess.pool,box=rsess.box,key=pool[q.target].jp,cur=box[key]||0,correct=idx===q.target;
     box[key]=correct?Math.min(5,cur+1):0;
     rsess.done++; if(correct)rsess.correct++; else rsess.wrong++;
+    var td=today(); rsess.ex.daily[td]=(rsess.ex.daily[td]||0)+1; stampDay();
     Persistence.save(state); speak(pool[q.target].jp); renderReading();
   }
   function renderReading(){
@@ -1362,7 +1440,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     h+='<div class="rq-prompt">';
     if(q.mode==="read"){ h+='<div class="rq-kind">'+t("What does it mean?")+'</div><div class="rq-jp mincho">'+it.jp+'</div>'; }
     else if(q.mode==="listen"){ h+='<div class="rq-kind">'+t("Which one did you hear?")+'</div><button class="d-spk big" id="rSpk" aria-label="Play">🔊</button>'; }
-    else { h+='<div class="rq-kind">'+t("Which one in Japanese?")+'</div><div class="rq-mean">'+(es?it.es:it.en)+'</div>'; }
+    else { h+='<div class="rq-kind">'+t("Which one in Japanese?")+'</div><div class="rq-mean">'+(es?it.es:it.en)+(getEmoji()&&it.emoji?' '+it.emoji:'')+'</div>'; }
     h+='</div>';
     h+='<div class="ropts">';
     q.opts.forEach(function(oi){
@@ -1376,23 +1454,26 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     if(q.answered){
       var correct=q.picked===q.target;
       h+='<div class="rq-msg '+(correct?"ok":"no")+'">'+t(correct?"Correct!":"It was")+'</div>';
-      h+='<div class="rq-ans"><span class="mincho">'+it.jp+'</span> <span class="rq-rom">'+it.romaji+'</span> — <span class="mean">'+(es?it.es:it.en)+'</span> <button class="d-spk-word" id="rSpkW">🔊 <span>'+t("hear it")+'</span></button></div>';
+      h+='<div class="rq-ans">'+(getEmoji()&&it.emoji?'<span class="rq-emoji">'+it.emoji+'</span> ':'')+'<span class="mincho">'+it.jp+'</span> <span class="rq-rom">'+it.romaji+'</span> — <span class="mean">'+(es?it.es:it.en)+'</span> <button class="d-spk-word" id="rSpkW">🔊 <span>'+t("hear it")+'</span></button></div>';
     }
     h+='</div>';
     if(q.answered) h+='<div class="d-actions"><button class="d-next" id="rNext">'+t("Next →")+'</button></div>';
+    if(rsess.pool.some(function(x){return x.emoji;})) h+='<button class="emoji-toggle" id="rEmoji">'+(getEmoji()?"☑":"☐")+' Emojis</button>';
     readingInner.innerHTML=h; bindReading();
   }
+  function getEmoji(){return state.emoji!==false;}
+  function toggleEmoji(){state.emoji=!getEmoji();Persistence.save(state);renderReading();}
   function bindReading(){
     var c=document.getElementById("rClose"); if(c)c.addEventListener("click",closeReading);
     var nx=document.getElementById("rNext"); if(nx)nx.addEventListener("click",nextReadingQ);
     var sp=document.getElementById("rSpk"); if(sp)sp.addEventListener("click",function(){speak(rsess.pool[rsess.q.target].jp);});
     var spw=document.getElementById("rSpkW"); if(spw)spw.addEventListener("click",function(){speak(rsess.pool[rsess.q.target].jp);});
+    var rem=document.getElementById("rEmoji"); if(rem)rem.addEventListener("click",toggleEmoji);
     if(!rsess.q.answered){ readingInner.querySelectorAll(".ropt").forEach(function(o){ o.addEventListener("click",function(){answerReading(parseInt(o.getAttribute("data-i"),10));}); }); }
   }
 
   function bindMain(){
-    var sw=document.getElementById("startWords"); if(sw)sw.addEventListener("click",startWords);
-    var spx=document.getElementById("startPhrases"); if(spx)spx.addEventListener("click",startPhrases);
+    app.querySelectorAll("[data-fn]").forEach(function(b){var fn=b.getAttribute("data-fn");b.addEventListener("click",function(){if(fn==="startDrill")startDrill();else if(fn==="startWords")startWords();else if(fn==="startPhrases")startPhrases();});});
     app.querySelectorAll(".box").forEach(function(b){
       b.addEventListener("click",function(){toggle(b.getAttribute("data-id"));});
       b.addEventListener("keydown",function(e){if(e.key===" "||e.key==="Enter"){e.preventDefault();toggle(b.getAttribute("data-id"));}});
@@ -1422,6 +1503,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var c=document.getElementById("dClose"); if(c)c.addEventListener("click",closeDrill);
     var tg=document.getElementById("tGot"); if(tg)tg.addEventListener("click",gotIt);
     var tsp=document.getElementById("tSpk"); if(tsp)tsp.addEventListener("click",function(){ if(sess.teach)speak(glyph(sess.teach.romaji,sess.teach.script)); });
+    var tspb=document.getElementById("tSpkBase"); if(tspb)tspb.addEventListener("click",function(){ if(sess.teach){var dv=DEVOICE[sess.teach.romaji]; if(dv)speak(glyph(dv[0],sess.teach.script));} });
     var n=document.getElementById("dNext"); if(n)n.addEventListener("click",nextQuestion);
     var s=document.getElementById("dSkip"); if(s)s.addEventListener("click",function(){buildQuestion();renderDrill();});
     var sp=document.getElementById("dSpk"); if(sp)sp.addEventListener("click",function(){speak(glyph(sess.q.target,sess.q.script));});
