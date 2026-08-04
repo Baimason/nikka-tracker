@@ -756,7 +756,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function stagePct(n){
     if(n===1) return Math.round(masteryOf(BASE_KEYS).ratio*100);
     if(n===2) return Math.round(masteryOf(DAK_KEYS).ratio*100);
-    if(n===3) return kanaMastery().pct;
+    if(n===3){ var _k=ensureKana(); return _k.scope.kata?kanaMastery().pct:null; }
     if(n===4) return poolMastery(WORD_POOL, ensureWords().box).pct;
     if(n===5) return poolMastery(PHRASES, ensurePhrases().box).pct;
     return null;
@@ -867,7 +867,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       '</details></div>';
   }
   function masteryCardHTML(){
-    var m=kanaMastery(),ratio=m.total?m.solid/m.total:0,ready=ratio>=0.9,close=ratio>=0.55;
+    var m=kanaMastery(),ratio=m.total?m.solid/m.total:0,ready=ensureKana().level>=3&&ratio>=0.9,close=ratio>=0.55;
     var verdict,vcls="";
     if(!m.solid){verdict=t("Do a few drills and your mastery shows up here.");}
     else if(ready){verdict=t("済 You've got your kana. It's logical to move on — make grammar + Anki your main focus and keep drills as warm-ups.");vcls="ok";}
