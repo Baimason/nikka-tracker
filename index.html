@@ -42,11 +42,18 @@
   .streak-meta{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);max-width:78px}
   .streak-meta b{color:var(--ink);display:block;font-size:13px;letter-spacing:.05em}
 
-  .phase{display:flex;align-items:baseline;gap:10px;margin-bottom:8px}
+  .phase{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:8px}
   .phase .wk{font-family: var(--display-font);font-weight:700;font-size:13px;letter-spacing:.2em;color:var(--shu);
     border:1.5px solid var(--shu);border-radius:2px;padding:2px 8px}
   .phase .focus{font-size:14px;color:var(--ink-soft)}
   .phase .focus b{color:var(--ink);font-weight:700}
+
+  .wotd{display:inline-flex;align-items:center;gap:6px;background:none;border:1.5px solid var(--shu);border-radius:2px;padding:3px 9px;cursor:pointer;color:var(--shu)}
+  .wotd .wotd-em{font-size:15px}
+  .wotd .wotd-jp{font-weight:700;font-size:15px;color:var(--ink)}
+  .wotd .wotd-sub{font-size:11px;letter-spacing:.04em;color:var(--ink-soft)}
+  .wotd.empty{font-size:15px;color:var(--ink-soft);border-color:var(--ink-soft);padding:3px 9px}
+  .wotd{flex-shrink:0}
 
   .card{position:relative;background:var(--card);border:1.5px solid var(--ink);
     box-shadow:5px 5px 0 rgba(35,32,26,.16);padding:20px 20px 8px;margin-bottom:30px}
@@ -98,6 +105,19 @@
   .prog.milestones{position:relative;overflow:visible}
   .prog .tick{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink-faint);transform:translateX(-1px);opacity:.5}
   .prog .tick.on{background:var(--ink);opacity:1}
+
+  .prog .tick.hit{background:transparent;opacity:1}
+  .prog .tick-seal{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:18px;height:18px;line-height:16px;text-align:center;
+    font-family:var(--display-font);font-weight:800;font-size:12px;color:var(--shu);
+    background:var(--card);border:1.5px solid var(--shu);border-radius:3px;
+    box-shadow:1px 1px 0 rgba(143,42,29,.25);z-index:2}
+  .prog .tick-seal.pop{animation:tickpop .3s ease-out}
+  @keyframes tickpop{0%{transform:translate(-50%,-50%) scale(.2);opacity:0}
+    60%{transform:translate(-50%,-50%) scale(1.15)}
+    100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
+  @media (prefers-reduced-motion:reduce){ .prog .tick-seal.pop{animation:none} }
+
   .drill-card .dc-count .tier{color:var(--green)}
   .prog{height:9px;background:var(--paper);border:1px solid var(--line);border-radius:20px;overflow:hidden;margin:12px 0 6px}
   .prog > i{display:block;height:100%;background:var(--shu);width:0;transition:width .3s}
@@ -169,7 +189,7 @@
   /* Comportamiento dinámico del sello principal de la tarjeta */
   .seal.show.lvl-1 { font-size: 32px; color: var(--shu); font-weight: 800; transform: scale(1) rotate(-8deg); }
   .seal.show.lvl-2 { font-size: 46px; color: var(--shu); font-weight: 800; transform: scale(1) rotate(-5deg); }
-  .seal.show.lvl-3 { transform: scale(1) rotate(-9deg); }
+  .seal.show.lvl-3 { transform: scale(1); }
   .seal.show.lvl-4 { transform: scale(1.15) rotate(-15deg); }
   .seal.show.lvl-4 svg { filter: drop-shadow(2px 2px 0 rgba(143,42,29,.3)); }
 
@@ -1010,6 +1030,18 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       '<div class="opt-help" id="scriptHelp" hidden>'+t("<b>Hiragana</b> (あ) and <b>Katakana</b> (ア) are the two kana alphabets — same sounds, different look (katakana is mostly for foreign / loan words). <b>Dakuten</b> are the small ゛/゜ marks that voice a sound: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).")+'</div>'+
       '</details>';
   }
+
+  var _lastMs={};
+  function milestoneTicks(done,key){
+    key=key||"main";
+    var hi=-1;[15,30,50].forEach(function(m){if(done>=m&&m>hi)hi=m;});
+    var prev=_lastMs[key]==null?-1:_lastMs[key]; var justHit=hi>prev?hi:-1; _lastMs[key]=hi;
+    return [15,30,50].map(function(m){var on=done>=m;
+      return '<span class="tick'+(on?" on hit":"")+'" style="left:'+m+'%">'+
+        (on?'<span class="tick-seal mincho'+(m===justHit?' pop':'')+'">済</span>':'')+'</span>';
+    }).join("");
+  }
+
   function todayCardHTML(){
     var st=curStage(), reps=todayReps(), pct=Math.min(100,reps), tier=dayTier(reps), td=today(), day=state.days[td]||{};
     var seal='<div class="seal"></div>';
@@ -1023,7 +1055,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var h='<div class="card today-card">'+seal;
     h+='<h2>'+t("Today's practice")+'</h2><div class="date">'+prettyDate(td)+'</div>';
     h+='<div class="dc-top"><span class="focus-sm">'+t("Day's progress")+'</span><div class="dc-count">'+reps+(tier>=0?' · <span class="tier">'+t(TIER_LABEL[tier])+'</span>':'')+'</div></div>';
-    h+='<div class="prog milestones"><i style="width:'+pct+'%"></i>'+[15,30,50].map(function(m){return '<span class="tick'+(reps>=m?" on":"")+'" style="left:'+m+'%"></span>';}).join("")+'</div>';
+    h+='<div class="prog milestones"><i style="width:'+pct+'%"></i>'+milestoneTicks(reps,"main")+'</div>';
     h+='<div class="dc-sub">'+(reps>=15?t("済 Streak saved. Keep going: 30 solid · 50 great · 100 perfect."):t("15 saves your streak · 30 solid · 50 great · 100 perfect."))+'</div>';
     var _dc=dueCount(); if(_dc>0) h+='<div class="dc-sub" style="color:var(--shu);font-weight:600">🔁 '+_dc+' '+t("due for review")+'</div>';
     h+='<button class="start-btn'+(reps>=15?" done-today":"")+'" data-fn="'+rec.fn+'">'+t("Recommended")+': '+rec.label+' →</button>';
@@ -1093,8 +1125,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     html+='</div>';
 
     html+='<div class="saveerr" id="saveErr">'+t("This is a preview — progress won't stick here. Open the hosted page in your browser to keep your streak.")+'</div>';
-    var dayNum=daysBetween(state.startDate,today())+1; if(dayNum<1)dayNum=1;
-    html+='<div class="phase"><span class="wk mincho">'+t("Day")+' '+dayNum+' · '+t("Week")+' '+wk+'</span><span class="focus">'+focus+'</span></div>';
+    html+='<div class="phase"><span class="focus">'+focus+'</span>'+wordOfDayHTML()+'</div>';
     
     html+=todayCardHTML();
     html+=masteryCardHTML();
@@ -1310,7 +1341,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
        '<div class="d-stat right"><div class="n">'+sess.correct+'</div><div class="l">'+t("Correct")+'</div></div>'+
        '</div></div>';
     h+='<div class="d-goal"><div class="lab"><span>'+t("Daily goal")+'</span><span>'+dt.done+(gtier>=0?' · '+t(TIER_LABEL[gtier]):'')+'</span></div>'+
-       '<div class="prog milestones"><i style="width:'+gpct+'%"></i>'+[15,30,50].map(function(m){return '<span class="tick'+(dt.done>=m?" on":"")+'" style="left:'+m+'%"></span>';}).join("")+'</div></div>';
+       '<div class="prog milestones"><i style="width:'+gpct+'%"></i>'+milestoneTicks(dt.done,"drill")+'</div></div>';
     h+='</div>';
 
     if(sess.mode==="teach"){ h+=teachHTML(); drillInner.innerHTML=h; bindDrill(); return; }
@@ -1575,6 +1606,21 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     for(var k=0;k<cand.length;k++){x-=w[k];if(x<=0)return cand[k];}
     return cand[cand.length-1];
   }
+
+  var KAOMOJI=["(•̀ᴗ•́)و","＼(^o^)／","(◕‿◕)","ヽ(´▽`)/","(＾▽＾)","(・∀・)","(≧▽≦)","ᕕ( ᐛ )ᕗ"];
+  function daySeed(){ var s=today(),n=0; for(var i=0;i<s.length;i++) n=(n*31+s.charCodeAt(i))>>>0; return n; }
+  function wordOfDay(){ var idx=readableIdx(WORD_POOL); return idx.length?WORD_POOL[idx[daySeed()%idx.length]]:null; }
+  function wordOfDayHTML(){
+    var w=wordOfDay();
+    if(!w) return '<span class="wotd empty">'+KAOMOJI[daySeed()%KAOMOJI.length]+'</span>';
+    var mean=(getLang()==="es"?w.es:w.en)||w.en||"";
+    var em=w.emoji?'<span class="wotd-em">'+w.emoji+'</span>':"";
+    return '<button class="wotd" data-say="'+w.jp+'">'+em+
+           '<span class="wotd-jp mincho">'+w.jp+'</span>'+
+           '<span class="wotd-sub">'+w.romaji+' · '+mean+'</span></button>';
+  }
+
+
   function buildReadingQ(){
     var pool=rsess.pool,box=rsess.box,all=[]; for(var i=0;i<pool.length;i++)all.push(i);
     var readable=readableIdx(pool), tgtSet=readable.length?readable:all;
@@ -1663,6 +1709,8 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
 
   function bindMain(){
     app.querySelectorAll("[data-fn]").forEach(function(b){var fn=b.getAttribute("data-fn");b.addEventListener("click",function(){if(fn==="startDrill")startDrill();else if(fn==="startWords")startWords();else if(fn==="startPhrases")startPhrases();});});
+
+    var wd=app.querySelector(".wotd[data-say]"); if(wd)wd.addEventListener("click",function(){speak(wd.getAttribute("data-say"));});
 
     // Conectar los botones de "Enfócate en" para lanzar el entrenamiento
     app.querySelectorAll(".focus-btn").forEach(function(btn){
