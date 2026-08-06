@@ -113,6 +113,8 @@
     background:var(--card);border:1.5px solid var(--shu);border-radius:3px;
     box-shadow:1px 1px 0 rgba(143,42,29,.25);z-index:2}
   .prog .tick-seal.pop{animation:tickpop .3s ease-out}
+  .prog .tick-seal.final{width:24px;height:24px;line-height:20px;font-size:15px;border-width:2px;
+    box-shadow:1.5px 1.5px 0 rgba(143,42,29,.3)}
   @keyframes tickpop{0%{transform:translate(-50%,-50%) scale(.2);opacity:0}
     60%{transform:translate(-50%,-50%) scale(1.15)}
     100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
@@ -1031,14 +1033,15 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       '</details>';
   }
 
-  var _lastMs={};
+   var _lastMs={};
   function milestoneTicks(done,key){
     key=key||"main";
-    var hi=-1;[15,30,50].forEach(function(m){if(done>=m&&m>hi)hi=m;});
+    var MS=[15,30,50,100];
+    var hi=-1;MS.forEach(function(m){if(done>=m&&m>hi)hi=m;});
     var prev=_lastMs[key]==null?-1:_lastMs[key]; var justHit=hi>prev?hi:-1; _lastMs[key]=hi;
-    return [15,30,50].map(function(m){var on=done>=m;
+    return MS.map(function(m){var on=done>=m;
       return '<span class="tick'+(on?" on hit":"")+'" style="left:'+m+'%">'+
-        (on?'<span class="tick-seal mincho'+(m===justHit?' pop':'')+'">済</span>':'')+'</span>';
+        (on?'<span class="tick-seal mincho'+(m===100?' final':'')+(m===justHit?' pop':'')+'">済</span>':'')+'</span>';
     }).join("");
   }
 
