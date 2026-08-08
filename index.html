@@ -884,12 +884,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     return p; }
   function teachOrder(p){ return (p.script==="kata"?2:0)+(DEVOICE[p.romaji]?1:0); }
   function isKataStr(s){ return /[\u30A0-\u30FF]/.test(s); }
-  function pickWordFor(r,script){
-    if(script==="kata"){ var a=KWORDS[r]; return (a&&a.length)?a[Math.floor(Math.random()*a.length)]:null; }
-    var b=WORDS[r]; if(!b||!b.length)return null;
-    var hira=b.filter(function(o){return !isKataStr(o.w);}); var pool=hira.length?hira:b;
-    return pool[Math.floor(Math.random()*pool.length)];
-  }
+  function pickWordFor(r,script,mode){ return pickExample(r, script==="kata"?"kata":"hira", mode||"teach"); }
   function advMsg(lvl){ return lvl===1?t("You've got hiragana down! Ready to add dakuten?"):lvl===2?t("Dakuten mastered! Ready for katakana?"):t("Katakana down! Ready for katakana dakuten?"); }
   function curKanaScript(){ return curStage()>=3?"kata":"hira"; }
   function scriptMastery(script){
@@ -1288,7 +1283,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     k.daily[t].done++; if(correct)k.daily[t].correct++;
     // unified: any 15 reps (kana+reading) stamps the day
     if(stampDay()) sess.justHitGoal=true;
-    sess.q.word=pickWordFor(q.target,q.script);
+    sess.q.word=pickWordFor(q.target,q.script,"reward");
     Persistence.save(state);
     renderDrill();
   }
@@ -1328,7 +1323,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
          '<button class="d-spk" id="tSpk" aria-label="Play sound">🔊</button>'+
          '<div class="teach-mn">'+mnemonicFor(c.script,c.romaji)+'</div>';
     }
-    if(word) h+='<div class="teach-word"><b class="mincho">'+word.w+'</b> '+word.r+' — <span class="mean">'+tm(word.m)+'</span></div>';
+    if(word) h+='<div class="teach-word"><b class="mincho">'+word.w+'</b> '+word.r+' — <span class="mean">'+exMean(word)+'</span></div>';
     h+='</div><div class="d-actions"><button class="d-next" id="tGot">'+t("Got it →")+'</button></div>';
     return h;
   }
@@ -1382,7 +1377,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
         var tgl=glyph(q.target,q.script==="kata"?"kata":"hira");
         h+='<div class="msg '+(correct?"ok":"no")+'">'+(correct?t("Correct!"):t("It was"))+' <span class="gl mincho">'+tgl+'</span> <span class="rm">'+q.target+'</span></div>';
         var word=sess.q.word;
-        if(word) h+='<div class="reward-card"><div class="rw-word mincho">'+word.w+'</div><div class="rw-sub">'+word.r+' — <span class="mean">'+tm(word.m)+'</span></div><button class="d-spk-word" id="dSpkWord" aria-label="Play word">🔊 <span>'+t("hear it")+'</span></button></div>';
+        if(word) h+='<div class="reward-card"><div class="rw-word mincho">'+word.w+'</div><div class="rw-sub">'+word.r+' — <span class="mean">'+exMean(word)+'</span></div><button class="d-spk-word" id="dSpkWord" aria-label="Play word">🔊 <span>'+t("hear it")+'</span></button></div>';
       }
     }
     h+='</div>';
@@ -1569,6 +1564,253 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     {jp:"くつ",romaji:"kutsu",es:"zapatos",en:"shoes"},
     {jp:"ふく",romaji:"fuku",es:"ropa",en:"clothes"}
   ];
+  /* MORE_WORDS: common-word pool → auto-indexed as per-character examples (hira+kata). Add words here; they become examples for every kana they contain. */
+  var MORE_WORDS=[
+    {jp:"まぐろ",romaji:"maguro",en:"tuna",es:"atún"},
+    {jp:"どうぐ",romaji:"dougu",en:"tool",es:"herramienta"},
+    {jp:"ぐあい",romaji:"guai",en:"condition",es:"estado"},
+    {jp:"げんかん",romaji:"genkan",en:"entryway",es:"recibidor"},
+    {jp:"ひげ",romaji:"hige",en:"beard",es:"barba"},
+    {jp:"げた",romaji:"geta",en:"wooden clogs",es:"zuecos de madera"},
+    {jp:"げつようび",romaji:"getsuyoubi",en:"Monday",es:"lunes"},
+    {jp:"ひざ",romaji:"hiza",en:"knee",es:"rodilla"},
+    {jp:"ざぶとん",romaji:"zabuton",en:"floor cushion",es:"cojín"},
+    {jp:"ざる",romaji:"zaru",en:"strainer",es:"colador"},
+    {jp:"ざせき",romaji:"zaseki",en:"seat",es:"asiento"},
+    {jp:"じしょ",romaji:"jisho",en:"dictionary",es:"diccionario"},
+    {jp:"おなじ",romaji:"onaji",en:"same",es:"igual"},
+    {jp:"すずめ",romaji:"suzume",en:"sparrow",es:"gorrión"},
+    {jp:"ずっと",romaji:"zutto",en:"the whole time",es:"todo el tiempo"},
+    {jp:"ぜんぶ",romaji:"zenbu",en:"everything",es:"todo"},
+    {jp:"ぜんぜん",romaji:"zenzen",en:"(not) at all",es:"para nada"},
+    {jp:"ぜひ",romaji:"zehi",en:"by all means",es:"sin falta"},
+    {jp:"どうぞ",romaji:"douzo",en:"here you go",es:"adelante"},
+    {jp:"なぞ",romaji:"nazo",en:"mystery",es:"misterio"},
+    {jp:"ぞうきん",romaji:"zoukin",en:"cleaning cloth",es:"trapo"},
+    {jp:"でる",romaji:"deru",en:"to go out",es:"salir"},
+    {jp:"そで",romaji:"sode",en:"sleeve",es:"manga"},
+    {jp:"ばんごはん",romaji:"bangohan",en:"dinner",es:"cena"},
+    {jp:"ばしょ",romaji:"basho",en:"place",es:"lugar"},
+    {jp:"ぶどう",romaji:"budou",en:"grapes",es:"uvas"},
+    {jp:"たぶん",romaji:"tabun",en:"probably",es:"probablemente"},
+    {jp:"かべ",romaji:"kabe",en:"wall",es:"pared"},
+    {jp:"たべもの",romaji:"tabemono",en:"food",es:"comida"},
+    {jp:"のぼる",romaji:"noboru",en:"to climb",es:"subir"},
+    {jp:"ぼたん",romaji:"botan",en:"button",es:"botón"},
+    {jp:"そぼ",romaji:"sobo",en:"grandmother",es:"abuela"},
+    {jp:"さけ",romaji:"sake",en:"salmon",es:"salmón"},
+    {jp:"たけ",romaji:"take",en:"bamboo",es:"bambú"},
+    {jp:"せなか",romaji:"senaka",en:"back (body)",es:"espalda"},
+    {jp:"みそ",romaji:"miso",en:"miso",es:"miso"},
+    {jp:"うそ",romaji:"uso",en:"a lie",es:"mentira"},
+    {jp:"ぬる",romaji:"nuru",en:"to paint",es:"pintar"},
+    {jp:"きぬ",romaji:"kinu",en:"silk",es:"seda"},
+    {jp:"ぬま",romaji:"numa",en:"swamp",es:"pantano"},
+    {jp:"へん",romaji:"hen",en:"strange",es:"raro"},
+    {jp:"へいわ",romaji:"heiwa",en:"peace",es:"paz"},
+    {jp:"ほね",romaji:"hone",en:"bone",es:"hueso"},
+    {jp:"ほそい",romaji:"hosoi",en:"slender",es:"delgado"},
+    {jp:"やおや",romaji:"yaoya",en:"greengrocer",es:"verdulería"},
+    {jp:"ゆか",romaji:"yuka",en:"floor",es:"piso"},
+    {jp:"おゆ",romaji:"oyu",en:"hot water",es:"agua caliente"},
+    {jp:"つよい",romaji:"tsuyoi",en:"strong",es:"fuerte"},
+    {jp:"だれ",romaji:"dare",en:"who",es:"quién"},
+    {jp:"きれい",romaji:"kirei",en:"pretty",es:"bonito"},
+    {jp:"れんしゅう",romaji:"renshuu",en:"practice",es:"práctica"},
+    {jp:"かわいい",romaji:"kawaii",en:"cute",es:"lindo"},
+    {jp:"わらう",romaji:"warau",en:"to laugh",es:"reír"},
+    {jp:"いっぱい",romaji:"ippai",en:"a lot / full",es:"lleno"},
+    {jp:"はっぱ",romaji:"happa",en:"leaf",es:"hoja"},
+    {jp:"らっぱ",romaji:"rappa",en:"trumpet",es:"trompeta"},
+    {jp:"ぴかぴか",romaji:"pikapika",en:"sparkling",es:"brillante"},
+    {jp:"ぴったり",romaji:"pittari",en:"perfectly",es:"justo"},
+    {jp:"ぴよぴよ",romaji:"piyopiyo",en:"cheep cheep",es:"pío pío"},
+    {jp:"ぴりぴり",romaji:"piripiri",en:"tingling / spicy",es:"picante"},
+    {jp:"きっぷ",romaji:"kippu",en:"ticket",es:"boleto"},
+    {jp:"ぷかぷか",romaji:"pukapuka",en:"floating",es:"flotando"},
+    {jp:"ぷりぷり",romaji:"puripuri",en:"plump",es:"regordete"},
+    {jp:"せんぷうき",romaji:"senpuuki",en:"electric fan",es:"ventilador"},
+    {jp:"ぺろぺろ",romaji:"peropero",en:"licking",es:"lamiendo"},
+    {jp:"ぺたぺた",romaji:"petapeta",en:"pat-pat",es:"toque toque"},
+    {jp:"ぺこり",romaji:"pekori",en:"a slight bow",es:"reverencia leve"},
+    {jp:"たんぽぽ",romaji:"tanpopo",en:"dandelion",es:"diente de león"},
+    {jp:"しっぽ",romaji:"shippo",en:"tail",es:"cola"},
+    {jp:"ぽかぽか",romaji:"pokapoka",en:"toasty warm",es:"cálido"},
+    {jp:"ぽつぽつ",romaji:"potsupotsu",en:"drizzling",es:"lloviznando"},
+    {jp:"スマホ",romaji:"sumaho",en:"smartphone",es:"teléfono"},
+    {jp:"テスト",romaji:"tesuto",en:"test",es:"examen"},
+    {jp:"レストラン",romaji:"resutoran",en:"restaurant",es:"restaurante"},
+    {jp:"コンビニ",romaji:"konbini",en:"convenience store",es:"tienda 24h"},
+    {jp:"アメリカ",romaji:"amerika",en:"America",es:"EE.UU."},
+    {jp:"カレンダー",romaji:"karendaa",en:"calendar",es:"calendario"},
+    {jp:"テーブル",romaji:"teeburu",en:"table",es:"mesa"},
+    {jp:"チケット",romaji:"chiketto",en:"ticket",es:"entrada"},
+    {jp:"サッカー",romaji:"sakkaa",en:"soccer",es:"fútbol"},
+    {jp:"カード",romaji:"kaado",en:"card",es:"tarjeta"},
+    {jp:"ドレス",romaji:"doresu",en:"dress",es:"vestido"},
+    {jp:"スカート",romaji:"sukaato",en:"skirt",es:"falda"},
+    {jp:"シャワー",romaji:"shawaa",en:"shower",es:"ducha"},
+    {jp:"タオル",romaji:"taoru",en:"towel",es:"toalla"},
+    {jp:"ソファー",romaji:"sofaa",en:"sofa",es:"sofá"},
+    {jp:"ラーメン",romaji:"raamen",en:"ramen",es:"ramen"},
+    {jp:"ケーキ",romaji:"keeki",en:"cake",es:"pastel"},
+    {jp:"ジュース",romaji:"juusu",en:"juice",es:"jugo"},
+    {jp:"バナナ",romaji:"banana",en:"banana",es:"plátano"},
+    {jp:"メロン",romaji:"meron",en:"melon",es:"melón"},
+    {jp:"ジャム",romaji:"jamu",en:"jam",es:"mermelada"},
+    {jp:"バター",romaji:"bataa",en:"butter",es:"mantequilla"},
+    {jp:"チョコ",romaji:"choko",en:"chocolate",es:"chocolate"},
+    {jp:"カレー",romaji:"karee",en:"curry",es:"curry"},
+    {jp:"ハンバーガー",romaji:"hanbaagaa",en:"hamburger",es:"hamburguesa"},
+    {jp:"バイク",romaji:"baiku",en:"motorcycle",es:"moto"},
+    {jp:"エレベーター",romaji:"erebeetaa",en:"elevator",es:"ascensor"},
+    {jp:"ボタン",romaji:"botan",en:"button",es:"botón"},
+    {jp:"ポケット",romaji:"poketto",en:"pocket",es:"bolsillo"},
+    {jp:"スポーツ",romaji:"supootsu",en:"sports",es:"deportes"},
+    {jp:"テニス",romaji:"tenisu",en:"tennis",es:"tenis"},
+    {jp:"ピアノ",romaji:"piano",en:"piano",es:"piano"},
+    {jp:"テキスト",romaji:"tekisuto",en:"textbook",es:"libro de texto"},
+    {jp:"ペット",romaji:"petto",en:"pet",es:"mascota"},
+    {jp:"ズボン",romaji:"zubon",en:"pants",es:"pantalones"},
+    {jp:"ハンカチ",romaji:"hankachi",en:"handkerchief",es:"pañuelo"},
+    {jp:"コップ",romaji:"koppu",en:"cup",es:"vaso"},
+    {jp:"スプーン",romaji:"supuun",en:"spoon",es:"cuchara"},
+    {jp:"グラス",romaji:"gurasu",en:"glass",es:"copa"},
+    {jp:"カップ",romaji:"kappu",en:"cup",es:"taza"},
+    {jp:"デパート",romaji:"depaato",en:"department store",es:"tienda"},
+    {jp:"スーパー",romaji:"suupaa",en:"supermarket",es:"supermercado"},
+    {jp:"ビル",romaji:"biru",en:"building",es:"edificio"},
+    {jp:"アパート",romaji:"apaato",en:"apartment",es:"apartamento"},
+    {jp:"メール",romaji:"meeru",en:"email",es:"correo"},
+    {jp:"パスポート",romaji:"pasupooto",en:"passport",es:"pasaporte"},
+    {jp:"ヌードル",romaji:"nuudoru",en:"noodles",es:"fideos"},
+    {jp:"ドーナツ",romaji:"doonatsu",en:"donut",es:"dona"},
+    {jp:"コート",romaji:"kooto",en:"coat",es:"abrigo"},
+    {jp:"ボート",romaji:"booto",en:"boat",es:"bote"},
+    {jp:"ノック",romaji:"nokku",en:"knock",es:"tocar (puerta)"},
+    {jp:"マスク",romaji:"masuku",en:"mask",es:"mascarilla"},
+    {jp:"メニュー",romaji:"menyuu",en:"menu",es:"menú"},
+    {jp:"ヨット",romaji:"yotto",en:"yacht",es:"yate"},
+    {jp:"ヨーロッパ",romaji:"yooroppa",en:"Europe",es:"Europa"},
+    {jp:"リボン",romaji:"ribon",en:"ribbon",es:"cinta"},
+    {jp:"ワイシャツ",romaji:"waishatsu",en:"dress shirt",es:"camisa"},
+    {jp:"ガソリン",romaji:"gasorin",en:"gasoline",es:"gasolina"},
+    {jp:"ガム",romaji:"gamu",en:"gum",es:"chicle"},
+    {jp:"グループ",romaji:"guruupu",en:"group",es:"grupo"},
+    {jp:"ゴリラ",romaji:"gorira",en:"gorilla",es:"gorila"},
+    {jp:"ゴム",romaji:"gomu",en:"rubber",es:"goma"},
+    {jp:"ゴルフ",romaji:"gorufu",en:"golf",es:"golf"},
+    {jp:"タンゴ",romaji:"tango",en:"tango",es:"tango"},
+    {jp:"ハンガー",romaji:"hangaa",en:"hanger",es:"gancho"},
+    {jp:"ペンギン",romaji:"pengin",en:"penguin",es:"pingüino"},
+    {jp:"ダンス",romaji:"dansu",en:"dance",es:"baile"},
+    {jp:"ビデオ",romaji:"bideo",en:"video",es:"video"},
+    {jp:"ベンチ",romaji:"benchi",en:"bench",es:"banca"},
+    {jp:"ベル",romaji:"beru",en:"bell",es:"campana"},
+    {jp:"ベルト",romaji:"beruto",en:"belt",es:"cinturón"},
+    {jp:"ポスト",romaji:"posuto",en:"mailbox",es:"buzón"},
+    {jp:"ピンク",romaji:"pinku",en:"pink",es:"rosa"},
+    {jp:"プレゼント",romaji:"purezento",en:"gift",es:"regalo"},
+    {jp:"セール",romaji:"seeru",en:"sale",es:"rebaja"},
+    {jp:"セット",romaji:"setto",en:"set",es:"conjunto"},
+    {jp:"センチ",romaji:"senchi",en:"centimeter",es:"centímetro"},
+    {jp:"セロリ",romaji:"serori",en:"celery",es:"apio"},
+    {jp:"サイズ",romaji:"saizu",en:"size",es:"talla"},
+    {jp:"サイン",romaji:"sain",en:"autograph",es:"firma"},
+    {jp:"ジーンズ",romaji:"jiinzu",en:"jeans",es:"jeans"},
+    {jp:"ジャズ",romaji:"jazu",en:"jazz",es:"jazz"},
+    {jp:"ゾーン",romaji:"zoon",en:"zone",es:"zona"},
+    {jp:"ゼロ",romaji:"zero",en:"zero",es:"cero"},
+    {jp:"ゼリー",romaji:"zerii",en:"jelly",es:"gelatina"},
+    {jp:"ムード",romaji:"muudo",en:"mood",es:"ambiente"},
+    {jp:"ユーモア",romaji:"yuumoa",en:"humor",es:"humor"},
+    {jp:"ユーロ",romaji:"yuuro",en:"euro",es:"euro"},
+    {jp:"ユーザー",romaji:"yuuzaa",en:"user",es:"usuario"},
+    {jp:"ユニフォーム",romaji:"yunifoomu",en:"uniform",es:"uniforme"},
+    {jp:"ユニーク",romaji:"yuniiku",en:"unique",es:"único"},
+    {jp:"ヨガ",romaji:"yoga",en:"yoga",es:"yoga"},
+    {jp:"ヨーヨー",romaji:"yooyoo",en:"yo-yo",es:"yoyó"},
+    {jp:"ワクチン",romaji:"wakuchin",en:"vaccine",es:"vacuna"},
+    {jp:"ワイヤ",romaji:"waiya",en:"wire",es:"alambre"},
+    {jp:"ヘリコプター",romaji:"herikoputaa",en:"helicopter",es:"helicóptero"},
+    {jp:"ヘッドホン",romaji:"heddohon",en:"headphones",es:"audífonos"},
+    {jp:"ヘア",romaji:"hea",en:"hair",es:"cabello"},
+    {jp:"ヘビー",romaji:"hebii",en:"heavy",es:"pesado"},
+    {jp:"ホース",romaji:"hoosu",en:"hose",es:"manguera"},
+    {jp:"ホーム",romaji:"hoomu",en:"platform",es:"andén"},
+    {jp:"モーター",romaji:"mootaa",en:"motor",es:"motor"},
+    {jp:"モニター",romaji:"monitaa",en:"monitor",es:"monitor"},
+    {jp:"メモ",romaji:"memo",en:"memo",es:"nota"},
+    {jp:"メダル",romaji:"medaru",en:"medal",es:"medalla"},
+    {jp:"サービス",romaji:"saabisu",en:"service",es:"servicio"},
+    {jp:"エネルギー",romaji:"enerugii",en:"energy",es:"energía"},
+    {jp:"エプロン",romaji:"epuron",en:"apron",es:"delantal"},
+    {jp:"エンジン",romaji:"enjin",en:"engine",es:"motor"},
+    {jp:"オイル",romaji:"oiru",en:"oil",es:"aceite"},
+    {jp:"オムレツ",romaji:"omuretsu",en:"omelet",es:"tortilla"},
+    {jp:"スキー",romaji:"sukii",en:"skiing",es:"esquí"},
+    {jp:"クッキー",romaji:"kukkii",en:"cookie",es:"galleta"},
+    {jp:"ロケット",romaji:"roketto",en:"rocket",es:"cohete"},
+    {jp:"クッション",romaji:"kusshon",en:"cushion",es:"cojín"},
+    {jp:"ソーダ",romaji:"sooda",en:"soda",es:"gaseosa"},
+    {jp:"パンダ",romaji:"panda",en:"panda",es:"panda"},
+    {jp:"コード",romaji:"koodo",en:"cord",es:"cable"},
+    {jp:"ブーツ",romaji:"buutsu",en:"boots",es:"botas"},
+    {jp:"ブレーキ",romaji:"bureeki",en:"brake",es:"freno"},
+    {jp:"ブロック",romaji:"burokku",en:"block",es:"bloque"},
+    {jp:"ブラシ",romaji:"burashi",en:"brush",es:"cepillo"},
+    {jp:"ボトル",romaji:"botoru",en:"bottle",es:"botella"},
+    {jp:"パパ",romaji:"papa",en:"dad",es:"papá"},
+    {jp:"ピクニック",romaji:"pikunikku",en:"picnic",es:"picnic"},
+    {jp:"ペース",romaji:"peesu",en:"pace",es:"ritmo"},
+    {jp:"スペース",romaji:"supeesu",en:"space",es:"espacio"},
+    {jp:"スポンジ",romaji:"suponji",en:"sponge",es:"esponja"},
+    {jp:"ウイルス",romaji:"uirusu",en:"virus",es:"virus"},
+    {jp:"ハウス",romaji:"hausu",en:"house",es:"casa"},
+    {jp:"マウス",romaji:"mausu",en:"mouse",es:"ratón"},
+    {jp:"アウト",romaji:"auto",en:"out",es:"fuera"},
+    {jp:"ナプキン",romaji:"napukin",en:"napkin",es:"servilleta"},
+    {jp:"サウナ",romaji:"sauna",en:"sauna",es:"sauna"},
+    {jp:"トンネル",romaji:"tonneru",en:"tunnel",es:"túnel"},
+    {jp:"マネー",romaji:"manee",en:"money",es:"dinero"},
+    {jp:"カジノ",romaji:"kajino",en:"casino",es:"casino"},
+    {jp:"ドミノ",romaji:"domino",en:"domino",es:"dominó"},
+    {jp:"ヒーロー",romaji:"hiiroo",en:"hero",es:"héroe"},
+    {jp:"ヒール",romaji:"hiiru",en:"heel",es:"tacón"},
+    {jp:"ミサイル",romaji:"misairu",en:"missile",es:"misil"},
+    {jp:"ビタミン",romaji:"bitamin",en:"vitamin",es:"vitamina"},
+    {jp:"ミシン",romaji:"mishin",en:"sewing machine",es:"máquina de coser"},
+    {jp:"タイヤ",romaji:"taiya",en:"tire",es:"llanta"},
+    {jp:"ダイヤ",romaji:"daiya",en:"diamond",es:"diamante"},
+    {jp:"イヤホン",romaji:"iyahon",en:"earphones",es:"audífonos"},
+    {jp:"ヤング",romaji:"yangu",en:"young",es:"joven"},
+    {jp:"ギフト",romaji:"gifuto",en:"gift",es:"regalo"},
+    {jp:"ゲスト",romaji:"gesuto",en:"guest",es:"invitado"},
+    {jp:"ゲート",romaji:"geeto",en:"gate",es:"portón"},
+    {jp:"ライオン",romaji:"raion",en:"lion",es:"león"},
+    {jp:"リズム",romaji:"rizumu",en:"rhythm",es:"ritmo"},
+    {jp:"ルビー",romaji:"rubii",en:"ruby",es:"rubí"},
+    {jp:"ロビー",romaji:"robii",en:"lobby",es:"vestíbulo"},
+    {jp:"ネット",romaji:"netto",en:"internet",es:"internet"},
+    {jp:"ハート",romaji:"haato",en:"heart",es:"corazón"},
+    {jp:"ヒント",romaji:"hinto",en:"hint",es:"pista"},
+    {jp:"フルーツ",romaji:"furuutsu",en:"fruit",es:"fruta"},
+    {jp:"マイク",romaji:"maiku",en:"microphone",es:"micrófono"},
+    {jp:"ミニ",romaji:"mini",en:"mini",es:"mini"},
+    {jp:"ムービー",romaji:"muubii",en:"movie",es:"película"},
+    {jp:"ケース",romaji:"keesu",en:"case",es:"estuche"},
+    {jp:"イギリス",romaji:"igirisu",en:"England",es:"Inglaterra"},
+    {jp:"ハンバーグ",romaji:"hanbaagu",en:"hamburg steak",es:"filete de carne"},
+    {jp:"バーゲン",romaji:"baagen",en:"bargain sale",es:"oferta"},
+    {jp:"ゲージ",romaji:"geeji",en:"gauge",es:"medidor"},
+    {jp:"デザイン",romaji:"dezain",en:"design",es:"diseño"},
+    {jp:"ゼミ",romaji:"zemi",en:"seminar",es:"seminario"},
+    {jp:"プレゼン",romaji:"purezen",en:"presentation",es:"presentación"},
+    {jp:"リゾート",romaji:"rizooto",en:"resort",es:"resort"},
+    {jp:"ゾンビ",romaji:"zonbi",en:"zombie",es:"zombi"},
+    {jp:"ザリガニ",romaji:"zarigani",en:"crayfish",es:"cangrejo de río"},
+    {jp:"ゾウ",romaji:"zou",en:"elephant",es:"elefante"}
+  ];
   var EMOJI={"ねこ":"🐱","いぬ":"🐶","とり":"🐦","うま":"🐴","とら":"🐯","うさぎ":"🐰","さる":"🐵","くま":"🐻","ぶた":"🐷","さかな":"🐟","むし":"🐛","へび":"🐍","ぞう":"🐘","えび":"🦐","うし":"🐮","みず":"💧","おちゃ":"🍵","コーヒー":"☕","ぎゅうにゅう":"🥛","たまご":"🥚","ごはん":"🍚","パン":"🍞","すし":"🍣","やさい":"🥬","くだもの":"🍓","りんご":"🍎","おかし":"🍬","にく":"🍖","やま":"⛰️","うみ":"🌊","そら":"☁️","つき":"🌙","ほし":"⭐","ゆき":"❄️","あめ":"🌧️","かぜ":"💨","き":"🌳","はな":"🌸","かわ":"🏞️","め":"👁️","みみ":"👂","て":"✋","あし":"🦶","は":"🦷","かお":"😊","くち":"👄","ほん":"📚","とけい":"🕐","かさ":"☂️","くつ":"👟","ぼうし":"🎩","かばん":"👜","でんわ":"📞","いす":"🪑","まど":"🪟","ドア":"🚪","かぎ":"🔑","ふく":"👕","くるま":"🚗","でんしゃ":"🚃","ひこうき":"✈️","ちかてつ":"🚇","じてんしゃ":"🚲","ふね":"⛵","いえ":"🏠","がっこう":"🏫","みせ":"🏪","えき":"🚉","びょういん":"🏥","せんせい":"🧑‍🏫","ともだち":"👫","いしゃ":"🧑‍⚕️","がくせい":"🎓","おかあさん":"👩","おとうさん":"👨","あね":"👧","いもうと":"👧","おとうと":"👦","あか":"🔴","あお":"🔵","きいろ":"🟡","みどり":"🟢","しろ":"⚪","くろ":"⚫","ひ":"☀️","あさ":"🌅","よる":"🌃","おかね":"💰","でんき":"💡","プール":"🏊"};
   var WORD_POOL=(function(){ var seen={},out=[]; EXTRA_WORDS.forEach(function(o){ if(!seen[o.jp]){seen[o.jp]=1;out.push({jp:o.jp,romaji:o.romaji,es:o.es,en:o.en,emoji:(EMOJI[o.jp]||"")});} }); for(var k in WORDS){ WORDS[k].forEach(function(o){ if(!seen[o.w]){ seen[o.w]=1; out.push({jp:o.w,romaji:o.r,en:o.m,es:(MEANINGS_ES[o.m]||o.m),emoji:(EMOJI[o.w]||"")}); } }); } return out; })();
   
@@ -1602,6 +1844,43 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     return true;
   }
   function readableIdx(pool){ var out=[]; for(var i=0;i<pool.length;i++) if(wordReadable(pool[i].jp)) out.push(i); return out; }
+  /* ---- Auto-indexed example words: one common-word pool → examples per character ----
+     A word is an example for every kana it contains. Add words to the pools above and
+     they light up all their characters at once. EX_INDEX[script][romaji] = [ {w,r,m,es} ]. */
+  var EX_INDEX=(function(){
+    var IDX={hira:{},kata:{}}, seen={};
+    function push(w,r,m,es){
+      if(!w||seen[w])return; seen[w]=1;
+      var sc=isKataStr(w)?"kata":"hira", map=IDX[sc], obj={w:w,r:r,m:m,es:es||null}, used={};
+      for(var i=0;i<w.length;i++){ var ch=w.charAt(i); if(SMALL_KANA.indexOf(ch)>=0)continue; var e=KANA_REV[ch]; if(e&&e.script===sc&&!used[e.romaji]){ used[e.romaji]=1; (map[e.romaji]=map[e.romaji]||[]).push(obj); } }
+    }
+    var k;
+    for(k in WORDS) WORDS[k].forEach(function(o){ push(o.w,o.r,o.m,MEANINGS_ES[o.m]); });
+    for(k in KWORDS) KWORDS[k].forEach(function(o){ push(o.w,o.r,o.m,MEANINGS_ES[o.m]); });
+    EXTRA_WORDS.forEach(function(o){ push(o.jp,o.romaji,o.en,o.es); });
+    MORE_WORDS.forEach(function(o){ push(o.jp,o.romaji,o.en,o.es); });
+    return IDX;
+  })();
+  function exMean(word){ return getLang()==="es" ? (word.es || MEANINGS_ES[word.m] || word.m) : word.m; }
+  /* Soft ranking: teach = short + target near front + prefer known neighbours (mild);
+     reward = strongly prefer fully-readable words (only kana you've learned). Random among top few for variety. */
+  function pickExample(key,script,mode){
+    var bag=(EX_INDEX[script]||{})[key]; if(!bag||!bag.length)return null;
+    mode=mode||"teach"; var target=glyph(key,script);
+    var scored=bag.map(function(o){
+      var unknown=0,len=0;
+      for(var i=0;i<o.w.length;i++){ var ch=o.w.charAt(i); if(SMALL_KANA.indexOf(ch)>=0)continue; var e=KANA_REV[ch]; if(!e)continue; len++; if(!isLearned(e.script,e.romaji))unknown++; }
+      var pos=o.w.indexOf(target); if(pos<0)pos=9;
+      var score=0;
+      if(mode==="reward") score += (unknown===0?30:-unknown*6);
+      else { score += -unknown*2; score += -Math.min(pos,3); }
+      score += -Math.max(0,len-3);
+      return {o:o,score:score};
+    });
+    scored.sort(function(a,b){return b.score-a.score;});
+    var topN=scored.slice(0, Math.min(5,scored.length));
+    return topN[Math.floor(Math.random()*topN.length)].o;
+  }
   function weightedPick(pool,box,idxs,exclude){
     var cand=idxs.filter(function(i){return i!==exclude;}); if(!cand.length)cand=idxs;
     var w=cand.map(function(i){return Math.max(1,6-(box[pool[i].jp]||0));});
