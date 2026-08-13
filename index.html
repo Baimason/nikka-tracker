@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="日課">
@@ -23,7 +23,9 @@
   body{
     background:linear-gradient(var(--grid) 1px, transparent 1px) 0 0/100% 34px, var(--paper);
     color:var(--ink); font-family:"Zen Kaku Gothic New",system-ui,sans-serif;
-    line-height:1.5; padding:28px 18px 60px; -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+    padding:0 calc(18px + env(safe-area-inset-right,0px)) calc(60px + env(safe-area-inset-bottom,0px)) calc(18px + env(safe-area-inset-left,0px));
+    -webkit-font-smoothing:antialiased;
   }
   .wrap{max-width:640px;margin:0 auto}
   .mincho { font-family: var(--display-font); }
@@ -33,7 +35,7 @@
   }
 
   header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;position:sticky;top:0;z-index:30;
-    background:var(--paper);border-bottom:2px solid var(--ink);padding:10px 0 14px;margin-bottom:22px;flex-wrap:wrap}
+    background:var(--paper);border-bottom:2px solid var(--ink);padding:calc(20px + env(safe-area-inset-top,0px)) 0 14px;margin-bottom:22px;flex-wrap:wrap}
   .title{display:flex;flex-direction:column;gap:2px}
   .title .kanji{font-family: var(--display-font);font-weight:800;font-size:44px;line-height:.95;letter-spacing:2px}
   .title .rom{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink-soft);margin-top:4px}
@@ -237,10 +239,10 @@
   /* ---- drill overlay ---- */
   .drill{position:fixed;inset:0;z-index:60;overflow-y:auto;
     background:linear-gradient(var(--grid) 1px, transparent 1px) 0 0/100% 34px, var(--paper);
-    padding:20px 18px 30px;display:flex;flex-direction:column}
+    padding:calc(20px + env(safe-area-inset-top,0px)) calc(18px + env(safe-area-inset-right,0px)) calc(30px + env(safe-area-inset-bottom,0px)) calc(18px + env(safe-area-inset-left,0px));display:flex;flex-direction:column}
   .drill.hidden{display:none}
   .drill-inner{max-width:520px;margin:0 auto;width:100%;display:flex;flex-direction:column;flex:1}
-  .reading{position:fixed;inset:0;z-index:60;overflow-y:auto;background:linear-gradient(var(--grid) 1px, transparent 1px) 0 0/100% 34px, var(--paper);padding:20px 18px 30px;display:flex;flex-direction:column}
+  .reading{position:fixed;inset:0;z-index:60;overflow-y:auto;background:linear-gradient(var(--grid) 1px, transparent 1px) 0 0/100% 34px, var(--paper);padding:calc(20px + env(safe-area-inset-top,0px)) calc(18px + env(safe-area-inset-right,0px)) calc(30px + env(safe-area-inset-bottom,0px)) calc(18px + env(safe-area-inset-left,0px));display:flex;flex-direction:column}
   .reading.hidden{display:none}
   .reading-inner{max-width:520px;margin:0 auto;width:100%;display:flex;flex-direction:column;flex:1}
   .r-count{font-size:13px;color:var(--ink-soft);font-weight:700}
@@ -370,11 +372,11 @@
   .weak-row .wl{font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em}
   .weak-row .wk-g{font-size:19px;color:var(--ink);border:1px solid var(--line);border-radius:3px;padding:1px 8px;background:var(--paper)}
   @media (max-width:460px){
-    body{padding:16px 13px 46px}
+    body{padding:0 calc(13px + env(safe-area-inset-right,0px)) calc(46px + env(safe-area-inset-bottom,0px)) calc(13px + env(safe-area-inset-left,0px))}
     .title .kanji{font-size:33px} .streak-num{font-size:40px}
-    header{padding:8px 0 12px;margin-bottom:18px}
+    header{padding:calc(12px + env(safe-area-inset-top,0px)) 0 12px;margin-bottom:18px}
     .card,.drill-card,.mastery-card{box-shadow:4px 4px 0 rgba(35,32,26,.16);padding:16px 15px 6px}
-    .drill{padding:10px 12px 18px}
+    .drill{padding:calc(10px + env(safe-area-inset-top,0px)) calc(12px + env(safe-area-inset-right,0px)) calc(18px + env(safe-area-inset-bottom,0px)) calc(12px + env(safe-area-inset-left,0px))}
     .d-sticky{padding:2px 0 6px;margin-bottom:6px}
     .d-stat .n{font-size:20px} .d-stat .l{font-size:8px}
     .d-prompt{min-height:78px;padding:8px 0 6px}
@@ -440,6 +442,7 @@
   .bw-slot.blank.bad{color:var(--shu);border-bottom-color:var(--shu)}
   .bw-grid{margin-top:14px}
   .bw-toggle{display:block;margin:14px auto 0;background:none;border:1.3px solid var(--line);border-radius:20px;padding:7px 16px;font:inherit;font-size:12px;font-weight:700;color:var(--ink-soft);cursor:pointer}
+  .mt-sub{font-size:11px;color:var(--ink-soft);text-align:center;margin:2px 0 0;letter-spacing:.06em;text-transform:uppercase}
   .mt-board{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
   .mt-col{display:flex;flex-direction:column;gap:9px}
   .mt-tile{aspect-ratio:auto;height:52px;font-size:26px}
@@ -2162,7 +2165,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var right=chosen.map(function(p,i){return {id:i,type:"r",p:p,label:p.romaji,done:false};});
     msess.left=shuffle(left); msess.right=shuffle(right); msess.sel=null; msess.bad=null; msess.remain=chosen.length;
   }
-  function startMatch(){ msess={done:0,boards:0}; matchDeal(); readingEl.classList.remove("hidden"); renderMatch(); }
+  function startMatch(){ msess={done:0,boards:0,wrong:0}; matchDeal(); readingEl.classList.remove("hidden"); renderMatch(); }
   function matchTap(col,idx){
     if(!msess)return;
     var arr=col==="l"?msess.left:msess.right, card=arr&&arr[idx];
@@ -2173,11 +2176,12 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     if(sel.id===card.id){
       arr[idx].done=true; (sel.col==="l"?msess.left:msess.right)[sel.idx].done=true;
       srsMark(card.p.script,card.p.romaji,true); bumpDaily(true);
-      if(state.matchSpeak)speak(glyph(card.p.romaji,card.p.script));
+      if(state.matchSpeak!==false)speak(glyph(card.p.romaji,card.p.script));
       msess.done++; msess.remain--; msess.sel=null; msess.bad=null; Persistence.save(state);
       if(msess.remain<=0){ msess.boards++; renderMatch(); setTimeout(function(){ if(dsess){ if(msess)dailyAfterUnit(); } else if(msess){ matchDeal(); renderMatch(); } },700); return; }
       renderMatch();
     }else{
+      msess.wrong=(msess.wrong||0)+1;
       msess.bad=[{col:sel.col,idx:sel.idx},{col:col,idx:idx}]; msess.sel=null; renderMatch();
       setTimeout(function(){ if(msess){ msess.bad=null; renderMatch(); } },550);
     }
@@ -2190,11 +2194,15 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     return '<button class="'+base+(sel?" sel":"")+(bad?" bad":"")+'" data-col="'+col+'" data-idx="'+idx+'">'+lab+'</button>';
   }
   function renderMatch(){
+    var mWrong=msess.wrong||0, mDone=msess.done+mWrong;
     var h='<div class="d-sticky"><div class="d-head"><button class="d-close" id="mClose">✕ '+t("Close")+'</button>'+
       '<div class="d-stats">'+
-      '<div class="d-stat right"><div class="n">'+msess.done+'</div><div class="l">'+t("Pairs")+'</div></div>'+
-      '<div class="d-stat"><div class="n">'+msess.boards+'</div><div class="l">'+t("Boards")+'</div></div>'+
-      '</div></div>'+extraGoalHTML()+'</div>';
+      '<div class="d-stat"><div class="n">'+mDone+'</div><div class="l">'+t("Done")+'</div></div>'+
+      '<div class="d-stat wrong"><div class="n">'+mWrong+'</div><div class="l">'+t("Wrong")+'</div></div>'+
+      '<div class="d-stat right"><div class="n">'+msess.done+'</div><div class="l">'+t("Correct")+'</div></div>'+
+      '</div></div>'+
+      '<div class="mt-sub">'+msess.done+' '+t("Pairs")+' · '+msess.boards+' '+t("Boards")+'</div>'+
+      extraGoalHTML()+'</div>';
     if(!msess.left){ h+='<div class="rq-prompt"><div class="rq-kind">'+t("Match")+'</div><div class="rq-mean">'+t("Learn a few characters first.")+'</div></div>'; readingInner.innerHTML=h; bindMatch(); return; }
     h+='<div class="rq-prompt" style="padding:4px 0 2px"><div class="rq-kind">'+t("Tap the pairs")+'</div></div>';
     h+='<div class="mt-board"><div class="mt-col">';
@@ -2202,12 +2210,12 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     h+='</div><div class="mt-col">';
     msess.right.forEach(function(card,idx){ h+=matchTileHTML("r",idx,card); });
     h+='</div></div>';
-    h+='<button class="bw-toggle" id="mSnd">'+(state.matchSpeak?"☑":"☐")+' '+t("🔊 on tap")+'</button>';
+    h+='<button class="bw-toggle" id="mSnd">'+(state.matchSpeak!==false?"☑":"☐")+' '+t("🔊 on tap")+'</button>';
     readingInner.innerHTML=h; bindMatch();
   }
   function bindMatch(){
     var c=document.getElementById("mClose"); if(c)c.addEventListener("click",closeExtra);
-    var s=document.getElementById("mSnd"); if(s)s.addEventListener("click",function(){ state.matchSpeak=!state.matchSpeak; Persistence.save(state); renderMatch(); });
+    var s=document.getElementById("mSnd"); if(s)s.addEventListener("click",function(){ state.matchSpeak=(state.matchSpeak===false); Persistence.save(state); renderMatch(); });
     readingInner.querySelectorAll(".mt-tile:not([disabled])").forEach(function(o){ o.addEventListener("click",function(){ matchTap(o.getAttribute("data-col"),parseInt(o.getAttribute("data-idx"),10)); }); });
   }
 
@@ -2256,7 +2264,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       buildQuestion(); drillEl.classList.remove("hidden"); renderDrill();
     }else if(type==="match"){
       drillEl.classList.add("hidden");
-      if(!msess) msess={done:0,boards:0};
+      if(!msess) msess={done:0,boards:0,wrong:0};
       matchDeal(); readingEl.classList.remove("hidden"); renderMatch();
     }else{
       drillEl.classList.add("hidden");
