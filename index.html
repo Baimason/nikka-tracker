@@ -34,12 +34,13 @@
     --display-font: "Noto Sans JP", system-ui, sans-serif;
   }
 
-  header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;position:sticky;top:0;z-index:30;
-    background:var(--paper);border-bottom:2px solid var(--ink);padding:calc(20px + env(safe-area-inset-top,0px)) 0 14px;margin-bottom:22px;flex-wrap:wrap}
-  .title{display:flex;flex-direction:column;gap:2px}
+  header{display:flex;flex-direction:column;gap:6px;position:sticky;top:0;z-index:30;
+    background:var(--paper);border-bottom:2px solid var(--ink);padding:calc(20px + env(safe-area-inset-top,0px)) 0 14px;margin-bottom:22px}
+  .header-top{display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .title{display:flex;flex-direction:column;gap:2px;min-width:0}
   .title .kanji{font-family: var(--display-font);font-weight:800;font-size:44px;line-height:.95;letter-spacing:2px}
-  .title .rom{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink-soft);margin-top:4px}
-  .streak-seal{display:flex;align-items:center;gap:12px}
+  .rom{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink-soft)}
+  .streak-seal{display:flex;align-items:center;gap:12px;flex-shrink:0}
   .streak-num{font-family: var(--display-font);font-weight:800;font-size:52px;line-height:1;color:var(--shu)}
   .streak-meta{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);max-width:78px}
   .streak-meta b{color:var(--ink);display:block;font-size:13px;letter-spacing:.05em}
@@ -453,14 +454,16 @@
 
 <div class="wrap">
   <header>
-    <div class="title">
-      <div class="kanji mincho">日課</div>
-      <div class="rom" id="romSub">Nikka · daily practice</div>
+    <div class="header-top">
+      <div class="title">
+        <div class="kanji mincho">日課</div>
+      </div>
+      <div class="streak-seal">
+        <div class="streak-num mincho" id="streakNum">0</div>
+        <div class="streak-meta" id="streakMeta"></div>
+      </div>
     </div>
-    <div class="streak-seal">
-      <div class="streak-num mincho" id="streakNum">0</div>
-      <div class="streak-meta" id="streakMeta"></div>
-    </div>
+    <div class="rom" id="romSub">Nikka · daily practice</div>
   </header>
   <div id="app"><div class="loading">Loading your progress…</div></div>
   <footer>
