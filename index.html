@@ -1879,7 +1879,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   
   var readingEl=document.getElementById("reading"), readingInner=document.getElementById("readingInner");
   var rsess=null;
-  var READ_LEARN_POOL=5, WORD_LEECH_AT=3;
+  var READ_LEARN_POOL=8, WORD_PROMOTE_AT=3, WORD_LEECH_AT=3;
   var WORD_KEYSET=(function(){var m={};WORD_POOL.forEach(function(w){m[w.jp]=1;});return m;})();
   function markWordKnown(jp){ if(!WORD_KEYSET[jp])return; var w=ensureWords(); w.seen[jp]=1; w.box[jp]=Math.min(5,(w.box[jp]||0)+1); w.leech[jp]=0; }
   function ensureWords(){ if(!state.exercises)state.exercises={}; if(!state.exercises.words)state.exercises.words={box:{},daily:{}}; var w=state.exercises.words; if(!w.box)w.box={}; if(!w.daily)w.daily={}; if(!w.seen)w.seen={}; if(!w.leech)w.leech={}; return w; }
@@ -1987,11 +1987,12 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       if(leeched.length){ var tl=leeched[Math.floor(Math.random()*leeched.length)];
         rsess.q={target:tl,mode:"teach",relearn:true,opts:[],answered:false,picked:-1};
         setTimeout(function(){speak(pool[tl].jp);},250); return; }
-      // 2) introduce a brand-new word (capped per session)
+      // 2) introduce a new word while fewer than LEARN_POOL are still being learned (box < PROMOTE)
       var unseen=tgtSet.filter(function(i){return !seen[pool[i].jp];});
       var seenSet=tgtSet.filter(function(i){return seen[pool[i].jp];});
-      if(unseen.length && ((rsess.newIntro||0) < READ_LEARN_POOL || seenSet.length===0)){
-        var tn=unseen[Math.floor(Math.random()*unseen.length)]; rsess.newIntro=(rsess.newIntro||0)+1;
+      var inFlight=seenSet.filter(function(i){return (box[pool[i].jp]||0) < WORD_PROMOTE_AT;}).length;
+      if(unseen.length && (inFlight < READ_LEARN_POOL || seenSet.length===0)){
+        var tn=unseen[Math.floor(Math.random()*unseen.length)];
         rsess.q={target:tn,mode:"teach",relearn:false,opts:[],answered:false,picked:-1};
         setTimeout(function(){speak(pool[tn].jp);},250); return; }
       // 3) otherwise quiz — known words first
@@ -2002,8 +2003,12 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function startQuiz(pool,ex,teach){ rsess={pool:pool,box:ex.box,ex:ex,done:0,correct:0,wrong:0,q:null,teach:!!teach,newIntro:0}; buildReadingQ(); readingEl.classList.remove("hidden"); renderReading(); }
   function startWords(){ startWordsMix(); }
   var wsess=null, WORDS_BUILD_PROB=0.35;
+  function wordsGoalHTML(){ var reps=todayReps(),gpct=Math.min(100,reps),gtier=dayTier(reps);
+    return '<div class="d-goal"><div class="lab"><span>'+t("Daily practice")+'</span><span>'+reps+(gtier>=0?' \u00b7 '+t(TIER_LABEL[gtier]):'')+'</span></div>'+
+      '<div class="prog milestones"><i style="width:'+gpct+'%"></i>'+milestoneTicks(reps,"words")+'</div></div>'; }
   function wordsMix(){ var seen=ensureWords().seen||{}; var sb=buildWordPool().filter(function(w){return seen[w.jp];}).length; return { canBuild: sb>=4, buildProb: WORDS_BUILD_PROB }; }
-  function startWordsMix(){ var ex=ensureWords(); rsess={pool:WORD_POOL,box:ex.box,ex:ex,done:0,correct:0,wrong:0,q:null,teach:true,newIntro:0}; bsess=null; wsess={active:true,cur:null}; wordsNextUnit(); }
+  function seedKnownFromBuild(){ var ex=ensureWords(), seen=ex.seen||(ex.seen={}), changed=false; buildWordPool().forEach(function(w){ if(!seen[w.jp]){ seen[w.jp]=1; ex.box[w.jp]=Math.max(ex.box[w.jp]||0, WORD_PROMOTE_AT); changed=true; } }); if(changed)Persistence.save(state); }
+  function startWordsMix(){ var ex=ensureWords(); seedKnownFromBuild(); rsess={pool:WORD_POOL,box:ex.box,ex:ex,done:0,correct:0,wrong:0,q:null,teach:true,newIntro:0}; bsess=null; wsess={active:true,cur:null}; wordsNextUnit(); }
   function wordsNextUnit(){ if(!wsess)return; var mix=wordsMix(); var type=(mix.canBuild&&Math.random()<mix.buildProb)?"build":"recog"; wsess.cur=type;
     if(type==="build"){ if(!bsess)bsess={done:0,correct:0,wrong:0,q:null}; buildNextQ(); if(!bsess.q){ buildReadingQ(); renderReading(); readingEl.classList.remove("hidden"); return; } renderBuild(); }
     else { buildReadingQ(); renderReading(); }
@@ -2035,7 +2040,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var head='<div class="d-sticky"><div class="d-head"><button class="d-close" id="rClose">✕ '+t("Close")+'</button>'+
        '<div class="d-stats"><div class="d-stat"><div class="n">'+rsess.done+'</div><div class="l">'+t("Done")+'</div></div>'+
        '<div class="d-stat wrong"><div class="n">'+rsess.wrong+'</div><div class="l">'+t("Wrong")+'</div></div>'+
-       '<div class="d-stat right"><div class="n">'+rsess.correct+'</div><div class="l">'+t("Correct")+'</div></div></div></div></div>';
+       '<div class="d-stat right"><div class="n">'+rsess.correct+'</div><div class="l">'+t("Correct")+'</div></div></div></div>'+(wsess?wordsGoalHTML():'')+'</div>';
     if(q.mode==="teach"){
       var em=(getEmoji()&&it.emoji)?'<span class="rq-emoji">'+it.emoji+'</span> ':'';
       readingInner.innerHTML=head+'<div class="rq-prompt teach-word">'+
@@ -2187,7 +2192,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       '<div class="d-stat"><div class="n">'+s.done+'</div><div class="l">'+t("Done")+'</div></div>'+
       '<div class="d-stat wrong"><div class="n">'+s.wrong+'</div><div class="l">'+t("Wrong")+'</div></div>'+
       '<div class="d-stat right"><div class="n">'+s.correct+'</div><div class="l">'+t("Correct")+'</div></div>'+
-      '</div></div>'+(wsess?'':extraGoalHTML())+'</div>';
+      '</div></div>'+(wsess?wordsGoalHTML():extraGoalHTML())+'</div>';
   }
   function renderBuild(){
     var q=bsess.q, h=buildHeaderHTML(bstat());
