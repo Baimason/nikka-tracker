@@ -405,9 +405,12 @@
   .ex-item:hover{border-color:var(--ink)}
   .today-card .dc-top{margin:12px 0 6px}
   .today-card .focus-sm{font-family: var(--display-font);font-weight:700;font-size:13px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.1em}
-  .kana-opts{margin-top:14px}
-  .kana-opts>summary{cursor:pointer;font-size:12px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.1em;font-weight:700;list-style:none}
-  .kana-opts>summary::-webkit-details-marker{display:none}
+  .ex-kana{gap:8px}
+  .ex-kana-label{flex:1}
+  .ex-gear{all:unset;cursor:pointer;font-size:15px;line-height:1;color:var(--ink-soft);padding:3px 7px;border-radius:6px;-webkit-tap-highlight-color:transparent}
+  .ex-gear:hover{color:var(--ink);background:rgba(128,128,128,.14)}
+  .kana-opts-panel{margin:-2px 0 4px;padding:12px 14px;border:1.3px solid var(--line);border-top:none;border-radius:0 0 3px 3px;background:var(--paper)}
+  .kana-opts-panel[hidden]{display:none}
   .teach-mn{font-size:16.5px}
   .teach-compare{display:flex;align-items:center;justify-content:center;gap:16px;margin:6px 0 6px}
   .tc-side{display:flex;flex-direction:column;align-items:center;gap:5px}
@@ -997,7 +1000,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       if(!k.declined){ lvlBlock+='<div class="advance"><div class="adv-msg">'+(lvl===1?t("You've got hiragana down! Ready to add dakuten?"):t("Dakuten mastered! Ready for katakana?"))+'</div><div class="adv-btns"><button class="adv-yes" id="lvUp">'+t("Yes, unlock")+'</button><button class="adv-no" id="lvNo">'+t("Not yet")+'</button></div></div>'; }
       else { lvlBlock+='<button class="unlock-pill" id="lvUp">'+t("Unlock")+' '+nxt+' →</button>'; }
     }
-    if(justLeveled){ lvlBlock='<div class="leveled">'+t("済 Unlocked!")+' '+t("Level")+' '+justLeveled+' · '+LEVEL_NAMES[justLeveled]+'</div>'+lvlBlock; justLeveled=0; }
+    var wasLeveled=justLeveled; if(justLeveled){ lvlBlock='<div class="leveled">'+t("済 Unlocked!")+' '+t("Level")+' '+justLeveled+' · '+LEVEL_NAMES[justLeveled]+'</div>'+lvlBlock; justLeveled=0; }
     function seg(kind,val,label,on){return '<button class="seg'+(on?" on":"")+'" data-seg="'+kind+'" data-val="'+val+'">'+label+'</button>';}
     return '<div class="drill-card">'+
       '<div class="dc-top"><h3>'+t("Kana drill")+'</h3><div class="dc-count">'+dt.done+(tier>=0?' · <span class="tier">'+t(TIER_LABEL[tier])+'</span>':'')+'</div></div>'+
@@ -1055,13 +1058,15 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       if(!k.declined){ lvlBlock+='<div class="advance"><div class="adv-msg">'+advMsg(lvl)+'</div><div class="adv-btns"><button class="adv-yes" id="lvUp">'+t("Yes, unlock")+'</button><button class="adv-no" id="lvNo">'+t("Not yet")+'</button></div></div>'; }
       else { lvlBlock+='<button class="unlock-pill" id="lvUp">'+t("Unlock")+' '+nxt+' →</button>'; }
     }
-    if(justLeveled){ lvlBlock='<div class="leveled">'+t("済 Unlocked!")+' '+t("Level")+' '+justLeveled+' · '+LEVEL_NAMES[justLeveled]+'</div>'+lvlBlock; justLeveled=0; }
-    return '<details class="opts kana-opts"'+(canAdv&&nxt?' open':'')+'><summary>'+t("Kana options")+'</summary>'+lvlBlock+
+    var wasLeveled=justLeveled; if(justLeveled){ lvlBlock='<div class="leveled">'+t("済 Unlocked!")+' '+t("Level")+' '+justLeveled+' · '+LEVEL_NAMES[justLeveled]+'</div>'+lvlBlock; justLeveled=0; }
+    var openP=(canAdv&&nxt)||wasLeveled;
+     return '<div class="ex-item ex-kana" data-fn="startDrill" role="button" tabindex="0"><span class="ex-kana-label">'+t("Kana drill")+'</span><button class="ex-gear" id="kanaOptsBtn" aria-label="'+t("Kana options")+'" aria-controls="kanaOptsPanel" aria-expanded="'+(openP?"true":"false")+'">⚙</button></div>'+
+       '<div class="kana-opts-panel" id="kanaOptsPanel"'+(openP?"":" hidden")+'>'+lvlBlock+
       '<div class="opt-row"><span class="k">'+t("Script")+'</span>'+
       seg("hira",1,"Hiragana",k.scope.hira)+seg("hdak",1,"+ ゛",k.scope.hdak)+seg("kata",1,"Katakana",k.scope.kata)+seg("kdak",1,"+ ゛",k.scope.kdak)+
       '<button class="info-btn" id="scriptInfo" aria-label="Explain the scripts">ⓘ</button></div>'+
       '<div class="opt-help" id="scriptHelp" hidden>'+t("<b>Hiragana</b> (あ) and <b>Katakana</b> (ア) are the two kana alphabets — same sounds, different look (katakana is mostly for foreign / loan words). <b>Dakuten</b> are the small ゛/゜ marks that voice a sound: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).")+'</div>'+
-      '</details>';
+      '</div>';
   }
 
    var _lastMs={};
@@ -1085,7 +1090,10 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       else if(reps>=30) seal='<div class="seal show lvl-2 mincho">済</div>';
       else seal='<div class="seal show lvl-1 mincho">済</div>';
     }
-    var rec = st<=4?{fn:"startDaily",label:t("Daily practice")}:st===5?{fn:"startWords",label:t("Words")}:{fn:"startPhrases",label:t("Phrases")};
+    var kataReady=(function(){var mm=scriptMastery("kata");return mm.total&&mm.solid/mm.total>=0.9;})();
+    var rec = (st>=6)?{fn:"startPhrases",label:t("Phrases")}
+            : (st===5||(st===4&&kataReady))?{fn:"startWords",label:t("Words")}
+            : {fn:"startDaily",label:t("Daily practice")};
     var h='<div class="card today-card">'+seal;
     h+='<h2>'+t("Today's practice")+'</h2><div class="date">'+prettyDate(td)+'</div>';
     h+='<div class="dc-top"><span class="focus-sm">'+t("Day's progress")+'</span><div class="dc-count">'+reps+(tier>=0?' · <span class="tier">'+t(TIER_LABEL[tier])+'</span>':'')+'</div></div>';
@@ -1094,7 +1102,6 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var _dc=dueCount(); if(_dc>0) h+='<div class="dc-sub" style="color:var(--shu);font-weight:600">🔁 '+_dc+' '+t("due for review")+'</div>';
     h+='<button class="start-btn'+(reps>=15?" done-today":"")+'" data-fn="'+rec.fn+'">'+(rec.fn==="startDaily"?rec.label:(t("Recommended")+': '+rec.label))+' →</button>';
     h+='<div class="ex-sep">'+t("All exercises")+'</div><div class="ex-list">'+
-       '<button class="ex-item" data-fn="startDrill">'+t("Kana drill")+'</button>'+
        kanaOptsHTML()+
        '<button class="ex-item" data-fn="startMatch">'+t("Match")+'</button>'+
        '<button class="ex-item" data-fn="startBuild">'+t("Build the word")+'</button>'+
@@ -2359,6 +2366,10 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var ln=document.getElementById("lvNo"); if(ln)ln.addEventListener("click",declineLevel);
     var si=document.getElementById("scriptInfo");
     if(si)si.addEventListener("click",function(){var hp=document.getElementById("scriptHelp");if(hp)hp.hidden=!hp.hidden;});
+    var kob=document.getElementById("kanaOptsBtn");
+    if(kob)kob.addEventListener("click",function(e){e.stopPropagation();var p=document.getElementById("kanaOptsPanel");if(p){p.hidden=!p.hidden;kob.setAttribute("aria-expanded",p.hidden?"false":"true");}});
+    var kex=app.querySelector(".ex-kana");
+    if(kex)kex.addEventListener("keydown",function(e){if((e.key==="Enter"||e.key===" ")&&e.target===kex){e.preventDefault();startDrill();}});
     var cb=document.getElementById("copyBtn"); if(cb)cb.addEventListener("click",function(){copyText(encodeState(state),document.getElementById("copyStatus"));});
     var ib=document.getElementById("importBtn"); if(ib)ib.addEventListener("click",function(){
       var st=document.getElementById("importStatus"),raw=document.getElementById("importBox").value;
