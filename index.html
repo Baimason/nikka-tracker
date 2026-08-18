@@ -2040,7 +2040,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   
   var readingEl=document.getElementById("reading"), readingInner=document.getElementById("readingInner");
   var rsess=null;
-  var READ_LEARN_POOL=8, WORD_PROMOTE_AT=3, WORD_LEECH_AT=3;
+  var READ_LEARN_POOL=12, WORD_PROMOTE_AT=3, WORD_LEECH_AT=3;
   var WORD_KEYSET=(function(){var m={};WORD_POOL.forEach(function(w){m[w.jp]=1;});return m;})();
   function markWordKnown(jp){ if(!WORD_KEYSET[jp])return; var w=ensureWords(); w.seen[jp]=1; w.known[jp]=1; w.leech[jp]=0; }
   function ensureWords(){ if(!state.exercises)state.exercises={}; if(!state.exercises.words)state.exercises.words={box:{},daily:{}}; var w=state.exercises.words; if(!w.box)w.box={}; if(!w.daily)w.daily={}; if(!w.seen)w.seen={}; if(!w.leech)w.leech={}; if(!w.known)w.known={}; return w; }
@@ -2111,6 +2111,8 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     for(k in KWORDS) KWORDS[k].forEach(function(o){ push(o.w,o.r,o.m,MEANINGS_ES[o.m]); });
     EXTRA_WORDS.forEach(function(o){ push(o.jp,o.romaji,o.en,o.es); });
     MORE_WORDS.forEach(function(o){ push(o.jp,o.romaji,o.en,o.es); });
+    N5_WORDS.forEach(function(o){ push(o.jp,o.romaji,o.en,o.es); });
+    N5_WORDS2.forEach(function(o){ push(o.jp,o.romaji,o.en,o.es); });
     return IDX;
   })();
   function exMean(word){ return getLang()==="es" ? (word.es || MEANINGS_ES[word.m] || word.m) : word.m; }
@@ -2176,7 +2178,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       // 2) introduce a new word while fewer than LEARN_POOL are still being learned (box < PROMOTE)
       var unseen=tgtSet.filter(function(i){return !seen[pool[i].jp];});
       var seenSet=tgtSet.filter(function(i){return seen[pool[i].jp];});
-      var inFlight=seenSet.filter(function(i){var jp=pool[i].jp; return !known[jp] && (box[jp]||0) < WORD_PROMOTE_AT;}).length;
+      var inFlight=seenSet.filter(function(i){return (box[pool[i].jp]||0) < WORD_PROMOTE_AT;}).length;
       if(unseen.length && (inFlight < READ_LEARN_POOL || seenSet.length===0)){
         var tn=unseen[Math.floor(Math.random()*unseen.length)];
         rsess.q={target:tn,mode:"teach",relearn:false,opts:[],answered:false,picked:-1};
@@ -2193,12 +2195,16 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     return '<div class="d-goal"><div class="lab"><span>'+t("Daily practice")+'</span><span>'+reps+(gtier>=0?' \u00b7 '+t(TIER_LABEL[gtier]):'')+'</span></div>'+
       '<div class="prog milestones"><i style="width:'+gpct+'%"></i>'+milestoneTicks(reps,"words")+'</div></div>'; }
   function wordsMix(){ var seen=ensureWords().seen||{}; var sb=buildWordPool().filter(function(w){return seen[w.jp];}).length; return { canBuild: sb>=4, buildProb: WORDS_BUILD_PROB }; }
-  function seedKnownFromBuild(){ var ex=ensureWords(), seen=ex.seen||(ex.seen={}), known=ex.known||(ex.known={}), changed=false, first=!ex.deseeded;
-    buildWordPool().forEach(function(w){ if(!seen[w.jp]){ seen[w.jp]=1; changed=true; } if(!known[w.jp]){ known[w.jp]=1; changed=true; } if(first && (ex.box[w.jp]||0)>0){ ex.box[w.jp]=0; changed=true; } });
-    if(first){ ex.deseeded=1; changed=true; }
+  function seedKnownFromBuild(){ var ex=ensureWords(), changed=false;
+    /* one-time: undo the old over-seed so words start fresh and get taught (kana-style pool) */
+    if(!ex.wreset){ ex.seen={}; ex.known={}; ex.leech={}; ex.wreset=1; changed=true; }
+    /* one-time: clear any leftover inflated reading boxes from the old build bridge */
+    if(!ex.deseeded){ buildWordPool().forEach(function(w){ if((ex.box[w.jp]||0)>0){ ex.box[w.jp]=0; changed=true; } }); ex.deseeded=1; changed=true; }
     if(changed)Persistence.save(state); }
   function startWordsMix(){ var ex=ensureWords(); seedKnownFromBuild(); rsess={pool:WORD_POOL,box:ex.box,ex:ex,done:0,correct:0,wrong:0,q:null,teach:true,newIntro:0}; bsess=null; wsess={active:true,cur:null}; wordsNextUnit(); }
-  function wordsNextUnit(){ if(!wsess)return; var mix=wordsMix(); var type=(mix.canBuild&&Math.random()<mix.buildProb)?"build":"recog"; wsess.cur=type;
+  function wordsNextUnit(){ if(!wsess)return;
+    if(wsess.forceBuild){ var _fb=wsess.forceBuild; wsess.forceBuild=null; if(!bsess)bsess={done:0,correct:0,wrong:0,q:null}; buildNextQ(_fb); if(bsess.q){ wsess.cur="build"; renderBuild(); readingEl.classList.remove("hidden"); return; } }
+    var mix=wordsMix(); var type=(mix.canBuild&&Math.random()<mix.buildProb)?"build":"recog"; wsess.cur=type;
     if(type==="build"){ if(!bsess)bsess={done:0,correct:0,wrong:0,q:null}; buildNextQ(); if(!bsess.q){ buildReadingQ(); renderReading(); readingEl.classList.remove("hidden"); return; } renderBuild(); }
     else { buildReadingQ(); renderReading(); }
     readingEl.classList.remove("hidden"); }
@@ -2211,6 +2217,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var q=rsess.q; if(!q||q.mode!=="teach")return;
     var jp=rsess.pool[q.target].jp, w=rsess.ex;
     w.seen=w.seen||{}; w.seen[jp]=1; if(w.leech)w.leech[jp]=0;
+    if(wsess && buildWordPool().some(function(x){return x.jp===jp;})) wsess.forceBuild=jp;
     var td=today(); w.daily[td]=(w.daily[td]||0)+1; stampDay();
     Persistence.save(state); if(wsess){ wordsAfterUnit(); } else { buildReadingQ(); renderReading(); }
   }
@@ -2328,11 +2335,12 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var avg=sum/pairs.length, learnedFactor=Math.min(1,pairs.length/20);
     return Math.max(0.15,Math.min(0.8,(avg/5)*0.55+learnedFactor*0.3));
   }
-  function buildNextQ(){
+  function buildNextQ(preferJp){
     var pool=buildWordPool();
     if(wsess){ var _sn=ensureWords().seen||{}; pool=pool.filter(function(w){return _sn[w.jp];}); }
     if(!pool.length){ bsess.q=null; return; }
-    var w=pool[Math.floor(Math.random()*pool.length)], chars=wordChars(w.jp);
+    var w=null; if(preferJp){ for(var _pi=0;_pi<pool.length;_pi++){ if(pool[_pi].jp===preferJp){ w=pool[_pi]; break; } } } if(!w) w=pool[Math.floor(Math.random()*pool.length)];
+    var chars=wordChars(w.jp);
     if(Math.random()<buildFullProb()){
       var uniq={}; chars.forEach(function(c){uniq[c.ch]=1;});
       var decoys=[];
