@@ -382,6 +382,8 @@
   .gbadge.comfy{background:var(--green);color:#fff;border-color:var(--green)}
   .gbadge.dict{background:transparent;color:var(--ink)}
   .gbadge.locked{background:transparent;color:var(--ink);opacity:.5}
+  .rq-note{margin-top:10px;font-size:13px;line-height:1.4;color:var(--shu);border-top:1px dashed var(--line);padding-top:8px;display:inline-block}
+  .phrase-nudge{margin-top:8px;font-size:13px;line-height:1.4;font-weight:600;color:var(--shu);background:rgba(178,55,38,.08);border:1px solid var(--shu);border-radius:6px;padding:8px 10px}
   .grow.aimed{border-left:3px solid var(--shu);padding-left:11px}
   .aim-btn{margin-top:8px;font-size:12px;font-weight:700;padding:5px 12px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
   .aim-btn.on{background:var(--shu);color:#fff;border-color:var(--shu)}
@@ -1108,7 +1110,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       else seal='<div class="seal show lvl-1 mincho">済</div>';
     }
     var kataReady=(function(){var mm=scriptMastery("kata");return mm.total&&mm.solid/mm.total>=0.9;})();
-    var rec = (st>=6)?{fn:"startPhrases",label:t("Phrases")}
+    var rec = (st>=6||(st>=4&&phraseNudgeReady()))?{fn:"startPhrases",label:t("Phrases")}
             : (st===5||(st===4&&kataReady))?{fn:"startWords",label:t("Words")}
             : {fn:"startDaily",label:t("Daily practice")};
     var h='<div class="card today-card">'+seal;
@@ -1579,6 +1581,70 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     {jp:"つかれた",romaji:"tsukareta",es:"estoy cansado",en:"I'm tired"},
     {jp:"ねむい",romaji:"nemui",es:"tengo sueño",en:"I'm sleepy"}
   ];
+
+  /* =========================================================================
+     OPENING PACKS — leer la apertura de cada juego de forma "transparente".
+     Contenido 100% ORIGINAL (no reproduce el guión): patrones de gramática que
+     la apertura repite + frases de ejemplo propias que los drillan.
+     Se foldean en PHRASES (dedup por jp) -> practicables ya con el motor de
+     frases (teach card -> SRS -> quiz). Cada frase lleva una nota de gramática.
+     Para AGREGAR: sumá una entrada por game id con {patterns, phrases}.
+     ========================================================================= */
+  var OPENINGS = {
+    'zelda-la-dx': {
+      patterns:[
+        {pat:'は + だ/です', es:'«X es Y» (cópula). La base de toda descripción.'},
+        {pat:'を + verbo',   es:'を marca el objeto directo: «hacer algo a X».'},
+        {pat:'が + いる/ある', es:'existencia: «hay X». いる = seres vivos, ある = cosas.'},
+        {pat:'か',           es:'partícula de pregunta al final de la frase.'},
+        {pat:'～てください',   es:'pedido cortés: «por favor hacé X» (así te piden cosas).'},
+        {pat:'へ / に + いく', es:'dirección: «ir a X».'},
+        {pat:'～ね / ～よ',    es:'partículas finales: ね confirma, よ avisa/enfatiza.'}
+      ],
+      phrases:[
+        {jp:'これはけんだ',romaji:'kore wa ken da',es:'esto es una espada',en:'this is a sword',note:'は = tema · だ = «es»'},
+        {jp:'たてをもつ',romaji:'tate o motsu',es:'sostener el escudo',en:'hold the shield',note:'を = objeto directo'},
+        {jp:'ようせいがいる',romaji:'yousei ga iru',es:'hay un hada',en:"there's a fairy",note:'が…いる = «hay» (vivos)'},
+        {jp:'かぎがある',romaji:'kagi ga aru',es:'hay una llave',en:"there's a key",note:'が…ある = «hay» (cosas)'},
+        {jp:'だいじょうぶか',romaji:'daijoubu ka',es:'¿estás bien?',en:'are you okay?',note:'か = pregunta'},
+        {jp:'しまへいく',romaji:'shima e iku',es:'voy a la isla',en:'I go to the island',note:'へ = «hacia»'},
+        {jp:'きをつけてね',romaji:'ki o tsukete ne',es:'cuidate, ¿eh?',en:'take care, okay?',note:'～て + ね (confirma)'},
+        {jp:'あぶないよ',romaji:'abunai yo',es:'¡es peligroso!',en:"it's dangerous!",note:'よ = te aviso'},
+        {jp:'だいじょうぶだ',romaji:'daijoubu da',es:'está todo bien',en:"it's all right",note:'だ = «es» (casual)'}
+      ]
+    },
+    'pkmn-gen1': {
+      patterns:[
+        {pat:'これ/それ + は…だ', es:'demostrativo + cópula: «esto es…».'},
+        {pat:'を + verbo',        es:'を marca el objeto: «elegir X», «usar X».'},
+        {pat:'の',                es:'の une nombres: «el X de Y» / posesivo.'},
+        {pat:'か',                es:'partícula de pregunta.'},
+        {pat:'～てください',        es:'pedido cortés.'},
+        {pat:'～こう (volitivo)',   es:'«hagamos / vamos»: いこう.'}
+      ],
+      phrases:[
+        {jp:'これはポケモンだ',romaji:'kore wa pokemon da',es:'esto es un Pokémon',en:"this is a Pokémon",note:'これは…だ = «esto es…»'},
+        {jp:'ポケモンをえらぶ',romaji:'pokemon o erabu',es:'elegir un Pokémon',en:'choose a Pokémon',note:'を = objeto directo'},
+        {jp:'きみのなまえは',romaji:'kimi no namae wa',es:'¿tu nombre?',en:'your name?',note:'の = «de» · は = tema'},
+        {jp:'モンスターボールをつかう',romaji:'monsutaabooru o tsukau',es:'usar una Poké Ball',en:'use a Poké Ball',note:'を + verbo'},
+        {jp:'ポケモンがすきか',romaji:'pokemon ga suki ka',es:'¿te gustan los Pokémon?',en:'do you like Pokémon?',note:'が + adjetivo + か'},
+        {jp:'がんばってください',romaji:'ganbatte kudasai',es:'esforzate, por favor',en:'do your best, please',note:'～てください = pedido'},
+        {jp:'いこう',romaji:'ikou',es:'¡vamos!',en:"let's go!",note:'～こう = «hagamos»'},
+        {jp:'これをつかう',romaji:'kore o tsukau',es:'usar esto',en:'use this',note:'これ + を'}
+      ]
+    }
+  };
+
+  /* Fold opening-pack phrases into PHRASES (dedup by jp), carrying the note. */
+  (function(){
+    var seen={}; PHRASES.forEach(function(p){ seen[p.jp]=1; });
+    Object.keys(OPENINGS).forEach(function(gid){
+      (OPENINGS[gid].phrases||[]).forEach(function(o){
+        if(!o||!o.jp||seen[o.jp])return; seen[o.jp]=1;
+        PHRASES.push({jp:o.jp,romaji:o.romaji||'',es:o.es||o.en||'',en:o.en||o.es||'',note:o.note||''});
+      });
+    });
+  })();
   var EXTRA_WORDS=[
     {jp:"おかあさん",romaji:"okaasan",es:"mamá",en:"mother"},
     {jp:"おとうさん",romaji:"otousan",es:"papá",en:"father"},
@@ -2093,15 +2159,15 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
         {jp:'なまえ',romaji:'namae',es:'nombre',en:'name',emoji:'🏷️'},
         {jp:'ずかん',romaji:'zukan',es:'pokédex (enciclopedia)',en:'pokédex',emoji:'📖'},
         {jp:'モンスターボール',romaji:'monsutaabooru',es:'poké ball',en:'poké ball',emoji:'⚪'},
-        {jp:'きずぐすり',romaji:'kizugusuri',es:'poción',en:'potion',emoji:'🧴'},
+        {jp:'キズぐすり',romaji:'kizugusuri',es:'poción (キズ+ぐすり)',en:'potion',emoji:'🧴'},
         {jp:'はい',romaji:'hai',es:'sí',en:'yes',emoji:'✅'},
         {jp:'いいえ',romaji:'iie',es:'no',en:'no',emoji:'❌'},
         {jp:'つづきから',romaji:'tsuzukikara',es:'continuar',en:'continue',emoji:'▶️'},
         {jp:'さいしょから',romaji:'saishokara',es:'empezar de nuevo',en:'new game',emoji:'🆕'},
         {jp:'せつめい',romaji:'setsumei',es:'instrucciones',en:'instructions',emoji:'📋'},
         {jp:'ポケットモンスター',romaji:'pokettomonsutaa',es:'Pocket Monsters (título)',en:'Pocket Monsters',emoji:'🎮'},
-        {jp:'おとこのこ',romaji:'otokonoko',es:'chico',en:'boy',emoji:'👦'},
-        {jp:'おんなのこ',romaji:'onnanoko',es:'chica',en:'girl',emoji:'👧'}
+        {jp:'じてんしゃ',romaji:'jitensha',es:'bicicleta',en:'bike',emoji:'🚲'},
+        {jp:'どく',romaji:'doku',es:'veneno (estado)',en:'poison',emoji:'☠️'}
       ]
     },
     {
@@ -2109,28 +2175,30 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       name:{ es:"Zelda: Link's Awakening DX", en:"Zelda: Link's Awakening DX" },
       mode:{ es:'kana + diccionario',          en:'kana + dictionary' },
       words:[
-        /* sistema / menú (varias se comparten con Pokémon → se deduplican solas) */
+        /* sistema / menú */
         {jp:'はい',romaji:'hai',es:'sí',en:'yes',emoji:'✅'},
         {jp:'いいえ',romaji:'iie',es:'no',en:'no',emoji:'❌'},
         {jp:'セーブ',romaji:'seebu',es:'guardar',en:'save',emoji:'💾'},
         {jp:'つづきから',romaji:'tsuzukikara',es:'continuar',en:'continue',emoji:'▶️'},
-        {jp:'どうぐ',romaji:'dougu',es:'objetos',en:'items',emoji:'🎒'},
-        /* objetos / sustantivos del juego (⚠ verificá los rótulos exactos in-game) */
-        {jp:'けん',romaji:'ken',es:'espada',en:'sword',emoji:'⚔️'},        /* el juego podría rotularla ソード */
-        {jp:'たて',romaji:'tate',es:'escudo',en:'shield',emoji:'🛡️'},
-        {jp:'ばくだん',romaji:'bakudan',es:'bomba',en:'bomb',emoji:'💣'},
-        {jp:'ゆみや',romaji:'yumiya',es:'arco y flecha',en:'bow & arrow',emoji:'🏹'},
+        {jp:'アイテム',romaji:'aitemu',es:'objeto (menú)',en:'item',emoji:'🎒'},
+        /* ítems — verificados (guías Shogakukan / tabla interna DX / Zelda Wiki) */
+        {jp:'けん',romaji:'ken',es:'espada',en:'sword',emoji:'⚔️'},        /* 剣 — a veces se lee つるぎ */
+        {jp:'たて',romaji:'tate',es:'escudo',en:'shield',emoji:'🛡️'},        /* 盾 */
+        {jp:'ばくだん',romaji:'bakudan',es:'bomba',en:'bomb',emoji:'💣'},      /* 爆弾 */
+        {jp:'ゆみや',romaji:'yumiya',es:'arco y flechas',en:'bow & arrow',emoji:'🏹'}, /* 弓矢 */
         {jp:'ブーメラン',romaji:'buumeran',es:'boomerang',en:'boomerang',emoji:'🪃'},
-        {jp:'かぎ',romaji:'kagi',es:'llave',en:'key',emoji:'🔑'},
-        {jp:'ちず',romaji:'chizu',es:'mapa',en:'map',emoji:'🗺️'},
+        {jp:'オカリナ',romaji:'okarina',es:'ocarina',en:'ocarina',emoji:'🎶'},
+        {jp:'フックショット',romaji:'fukkushotto',es:'gancho',en:'hookshot',emoji:'🪝'},
+        {jp:'かぎ',romaji:'kagi',es:'llave',en:'key',emoji:'🔑'},          /* 鍵 */
+        {jp:'マップ',romaji:'mappu',es:'mapa',en:'map',emoji:'🗺️'},
+        {jp:'コンパス',romaji:'konpasu',es:'brújula',en:'compass',emoji:'🧭'},
         {jp:'ハート',romaji:'haato',es:'corazón (vida)',en:'heart',emoji:'❤️'},
         {jp:'ルピー',romaji:'rupii',es:'rupia',en:'rupee',emoji:'💎'},
-        {jp:'ようせい',romaji:'yousei',es:'hada',en:'fairy',emoji:'🧚'},
-        {jp:'たからばこ',romaji:'takarabako',es:'cofre del tesoro',en:'treasure chest',emoji:'🧰'},
+        {jp:'ようせい',romaji:'yousei',es:'hada',en:'fairy',emoji:'🧚'},      /* 妖精 */
+        {jp:'たからばこ',romaji:'takarabako',es:'cofre del tesoro',en:'treasure chest',emoji:'🧰'}, /* 宝箱 */
         {jp:'ダンジョン',romaji:'danjon',es:'mazmorra',en:'dungeon',emoji:'🏰'},
         {jp:'リンク',romaji:'rinku',es:'Link (protagonista)',en:'Link',emoji:'🗡️'},
-        {jp:'こうげき',romaji:'kougeki',es:'ataque',en:'attack',emoji:'💥'},
-        {jp:'たたかう',romaji:'tatakau',es:'pelear',en:'fight',emoji:'⚔️'}
+        {jp:'マリン',romaji:'marin',es:'Marin (personaje)',en:'Marin',emoji:'👧'}
       ]
     }
     /* ── add more games here: paste an object with its own word list ── */
@@ -2155,6 +2223,8 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   var AIM_BIAS=0.8;
   function aimedGame(){ if(!state||!state.aim)return null; for(var i=0;i<GAMES.length;i++)if(GAMES[i].id===state.aim)return GAMES[i]; return null; }
   function aimWordSet(){ var g=aimedGame(); if(!g)return null; var m={}; (g.words||[]).forEach(function(w){m[w.jp]=1;}); return m; }
+  function aimPhraseSet(){ var g=aimedGame(); if(!g||typeof OPENINGS==='undefined')return null; var o=OPENINGS[g.id]; if(!o)return null; var m={}; (o.phrases||[]).forEach(function(x){m[x.jp]=1;}); return m; }
+  function aimSetForPool(pool){ return (typeof PHRASES!=='undefined'&&pool===PHRASES)?aimPhraseSet():aimWordSet(); }
   function setAim(id){ state.aim=(state.aim===id)?null:id; Persistence.save(state); render(); }
 
   function gameReadiness(g){
@@ -2255,13 +2325,24 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var band=next.n-prev, pct=band?Math.round((count-prev)/band*100):0;
     return {count:count,next:next,nextN:next.n,prevN:prev,pct:Math.max(0,Math.min(100,pct)),label:(es?next.es:next.en),reached:reached};
   }
+  /* Mastery-gated (not calendar): once this many words are SOLID (box>=4),
+     phrases become the recommended next step and the reading card nudges. */
+  var PHRASES_NUDGE_AT=25;
+  function phraseNudgeReady(){ return poolMastery(WORD_POOL,ensureWords().box).solid >= PHRASES_NUDGE_AT; }
   function wordsMilestoneRow(){
     var count=poolMastery(WORD_POOL,ensureWords().box).solid, mi=milestoneInfo(count), es=getLang()==="es";
     return '<div class="mrow"><div class="mrow-top"><span class="mrow-lbl">'+t("Words")+'</span>'+
       '<span class="mrow-pct'+(mi.next?'':' ok')+'">'+count+'</span></div>'+
       '<div class="prog"><i class="'+(mi.next?'':'g')+'" style="width:'+mi.pct+'%"></i></div>'+
       '<div class="mc-sub">'+count+(es?' palabras que ya leés':' words you can read')+'</div>'+
-      '<div class="mc-goal">'+(mi.next?((es?'Próximo hito: ':'Next: ')+mi.nextN+' · '+mi.label):('済 '+mi.label))+'</div></div>';
+      '<div class="mc-goal">'+(mi.next?((es?'Próximo hito: ':'Next: ')+mi.nextN+' · '+mi.label):('済 '+mi.label))+'</div>'+_phraseNudgeHTML(count,es)+'</div>';
+  }
+  function _phraseNudgeHTML(count,es){
+    if(!phraseNudgeReady())return '';
+    if(poolMastery(PHRASES,ensurePhrases().box).solid>=5)return ''; /* stop nagging once phrases are rolling */
+    return '<div class="phrase-nudge">'+(es
+      ?('🎉 ¡Ya tenés '+count+' palabras! Ahora probá las Frases — es armar, no solo reconocer.')
+      :('🎉 You\'ve got '+count+' words! Try Phrases now — it\'s building, not just recognizing.'))+'</div>';
   }
   function readingMasteryCardHTML(){
     var wm=poolMastery(WORD_POOL,ensureWords().box), pm=poolMastery(PHRASES,ensurePhrases().box);
@@ -2361,7 +2442,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       var inFlight=seenSet.filter(function(i){return (box[pool[i].jp]||0) < WORD_PROMOTE_AT;}).length;
       if(unseen.length && (inFlight < READ_LEARN_POOL || seenSet.length===0)){
         var tn;
-        var aimS=aimWordSet();
+        var aimS=aimSetForPool(pool);
         if(aimS){ var aimU=unseen.filter(function(i){return aimS[pool[i].jp];});
           if(aimU.length && Math.random()<AIM_BIAS) tn=aimU[Math.floor(Math.random()*aimU.length)]; }
         if(tn===undefined) tn=unseen[Math.floor(Math.random()*unseen.length)];
@@ -2428,7 +2509,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
         '<div class="rq-kind">'+t(q.relearn?"Let's review this word":"New word")+'</div>'+
         '<div class="rq-jp mincho">'+it.jp+'</div>'+
         '<div class="tw-rom">'+it.romaji+'</div>'+
-        '<div class="rq-mean">'+em+(es?it.es:it.en)+'</div></div>'+
+        '<div class="rq-mean">'+em+(es?it.es:it.en)+'</div>'+(it.note?'<div class="rq-note">'+it.note+'</div>':'')+'</div>'+
         '<div class="d-actions"><button class="d-spk-word" id="rSpkW">🔊 <span>'+t("hear it")+'</span></button><button class="d-next" id="rGot">'+t("Got it →")+'</button></div>';
       bindReading(); return;
     }
