@@ -373,6 +373,15 @@
   .teach-word .mean{color:var(--ink-soft)}
   .mastery-card{background:var(--card);border:1.5px solid var(--ink);box-shadow:5px 5px 0 var(--shadow);padding:18px 20px;margin-bottom:30px}
   .mastery-card .mc-top{display:flex;justify-content:space-between;align-items:baseline}
+  .grow{padding:12px 0;border-top:1px dashed var(--rule,#d8cfc0)}
+  .grow:first-of-type{border-top:0}
+  .grow-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}
+  .grow-name{font-weight:700;font-size:15px}
+  .grow-mode{font-weight:400;font-size:12px;opacity:.6}
+  .gbadge{font-size:11px;font-weight:700;padding:2px 8px;border:1.5px solid var(--ink);white-space:nowrap}
+  .gbadge.comfy{background:var(--matcha,#7a8b3f);color:#fff;border-color:var(--matcha,#7a8b3f)}
+  .gbadge.dict{background:transparent;color:var(--ink)}
+  .gbadge.locked{background:transparent;color:var(--ink);opacity:.5}
   .mastery-card h3{font-family: var(--display-font);font-weight:700;font-size:17px;margin:0}
   .mc-pct{font-family: var(--display-font);font-weight:800;font-size:28px;color:var(--shu);line-height:1}
   .mc-pct.ok{color:var(--green)}
@@ -1191,6 +1200,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     html+=todayCardHTML();
     html+=masteryCardHTML();
     html+=readingMasteryCardHTML();
+    html+=gamesCardHTML();
 
     html+='<div class="sec-h mincho">'+t("The path")+'</div><div class="road">';
     STAGES.forEach(function(n,i){var st=stageState(i),pct=stagePct(i+1),badge='';
@@ -2038,6 +2048,131 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   ];
   var WORD_POOL=(function(){ var seen={},out=[]; EXTRA_WORDS.forEach(function(o){ if(!seen[o.jp]){seen[o.jp]=1;out.push({jp:o.jp,romaji:o.romaji,es:o.es,en:o.en,emoji:(EMOJI[o.jp]||"")});} }); for(var k in WORDS){ WORDS[k].forEach(function(o){ if(!seen[o.w]){ seen[o.w]=1; out.push({jp:o.w,romaji:o.r,en:o.m,es:(MEANINGS_ES[o.m]||o.m),emoji:(EMOJI[o.w]||"")}); } }); } MORE_WORDS.forEach(function(o){ if(!seen[o.jp]){ seen[o.jp]=1; out.push({jp:o.jp,romaji:o.romaji,es:o.es,en:o.en,emoji:(EMOJI[o.jp]||"")}); } }); N5_WORDS.forEach(function(o){ if(!seen[o.jp]){ seen[o.jp]=1; out.push({jp:o.jp,romaji:o.romaji,es:o.es,en:o.en,emoji:(o.emoji||EMOJI[o.jp]||"")}); } }); N5_WORDS2.forEach(function(o){ if(!seen[o.jp]){ seen[o.jp]=1; out.push({jp:o.jp,romaji:o.romaji,es:o.es,en:o.en,emoji:(o.emoji||EMOJI[o.jp]||"")}); } }); return out; })();
   
+  /* =========================================================================
+     READINESS — "¿Qué puedo jugar?"  (playable-games ladder)
+     -------------------------------------------------------------------------
+     TO ADD A GAME: append ONE self-contained object to GAMES below.
+     Only a word list is required. Each word may carry its own teach data
+     {jp,romaji,es,en,emoji}; any word not already in WORD_POOL is folded in
+     automatically at boot, so BOTH the readiness verdict AND the teachable
+     teach-card content extend with zero other edits. Nothing else to touch.
+
+     Verdict reuses what the app already measures:
+       kana mastery -> scriptMastery('hira'|'kata').pct   (hard gate)
+       word mastery -> ensureWords().box[jp] >= 4          (reading "solid")
+     Tunables: READY_KANA_DEFAULT, READY_DICT, READY_COMFY.
+     ========================================================================= */
+  var READY_KANA_DEFAULT = { hira:85, kata:85 };  // % per-script mastery gate
+  var READY_DICT  = 0.60;   // core coverage -> "jugable con diccionario"
+  var READY_COMFY = 0.90;   // core coverage -> "¡ya podés!" (cómodo)
+
+  var GAMES = [
+    {
+      id:'pkmn-gen1', rung:1,
+      name:{ es:'Pokémon Rojo/Azul/Amarillo', en:'Pokémon Red/Blue/Yellow' },
+      mode:{ es:'kana + diccionario',          en:'kana + dictionary' },
+      // kana:{hira:85,kata:85}  // optional per-game override (else default)
+      words:[
+        {jp:'たたかう',romaji:'tatakau',es:'pelear',en:'fight',emoji:'⚔️'},
+        {jp:'どうぐ',romaji:'dougu',es:'objetos (mochila)',en:'items',emoji:'🎒'},
+        {jp:'ポケモン',romaji:'pokemon',es:'pokémon',en:'pokémon',emoji:'🔴'},
+        {jp:'にげる',romaji:'nigeru',es:'huir',en:'run',emoji:'🏃'},
+        {jp:'わざ',romaji:'waza',es:'movimiento',en:'move',emoji:'✨'},
+        {jp:'つかう',romaji:'tsukau',es:'usar',en:'use',emoji:'🖐️'},
+        {jp:'こうげき',romaji:'kougeki',es:'ataque',en:'attack',emoji:'💥'},
+        {jp:'ぼうぎょ',romaji:'bougyo',es:'defensa',en:'defense',emoji:'🛡️'},
+        {jp:'すばやさ',romaji:'subayasa',es:'velocidad',en:'speed',emoji:'💨'},
+        {jp:'とくしゅ',romaji:'tokushu',es:'especial',en:'special',emoji:'🔮'},
+        {jp:'かいふく',romaji:'kaifuku',es:'curar',en:'heal',emoji:'💊'},
+        {jp:'レベル',romaji:'reberu',es:'nivel',en:'level',emoji:'🔼'},
+        {jp:'なまえ',romaji:'namae',es:'nombre',en:'name',emoji:'🏷️'},
+        {jp:'ずかん',romaji:'zukan',es:'pokédex (enciclopedia)',en:'pokédex',emoji:'📖'},
+        {jp:'モンスターボール',romaji:'monsutaabooru',es:'poké ball',en:'poké ball',emoji:'⚪'},
+        {jp:'きずぐすり',romaji:'kizugusuri',es:'poción',en:'potion',emoji:'🧴'},
+        {jp:'はい',romaji:'hai',es:'sí',en:'yes',emoji:'✅'},
+        {jp:'いいえ',romaji:'iie',es:'no',en:'no',emoji:'❌'},
+        {jp:'つづきから',romaji:'tsuzukikara',es:'continuar',en:'continue',emoji:'▶️'},
+        {jp:'さいしょから',romaji:'saishokara',es:'empezar de nuevo',en:'new game',emoji:'🆕'},
+        {jp:'せつめい',romaji:'setsumei',es:'instrucciones',en:'instructions',emoji:'📋'},
+        {jp:'ポケットモンスター',romaji:'pokettomonsutaa',es:'Pocket Monsters (título)',en:'Pocket Monsters',emoji:'🎮'},
+        {jp:'おとこのこ',romaji:'otokonoko',es:'chico',en:'boy',emoji:'👦'},
+        {jp:'おんなのこ',romaji:'onnanoko',es:'chica',en:'girl',emoji:'👧'}
+      ]
+    }
+    /* ── add more games here: paste an object with its own word list ── */
+  ];
+
+  /* Fold each game's bundled words into WORD_POOL (dedup by jp) so they
+     become teachable/trackable exactly like the built-in word batches. */
+  (function(){
+    var seen={}; WORD_POOL.forEach(function(w){ seen[w.jp]=1; });
+    GAMES.forEach(function(g){ (g.words||[]).forEach(function(o){
+      if(!o||!o.jp||seen[o.jp])return; seen[o.jp]=1;
+      WORD_POOL.push({jp:o.jp,romaji:o.romaji||'',en:(o.en||o.es||''),es:(o.es||o.en||''),emoji:(o.emoji||EMOJI[o.jp]||'')});
+    }); });
+  })();
+
+  function gamePick(o){ return o?(getLang()==="es"?(o.es||o.en):(o.en||o.es)):""; }
+  function isWordMastered(jp){ return (ensureWords().box[jp]||0) >= 4; }
+
+  function gameReadiness(g){
+    var need = g.kana || READY_KANA_DEFAULT;
+    var hira = scriptMastery('hira').pct, kata = scriptMastery('kata').pct;
+    var kanaOK = (hira >= (need.hira||0)) && (kata >= (need.kata||0));
+    var core = (g.words||[]).map(function(w){ return w.jp; });
+    var have = core.filter(isWordMastered).length;
+    var cov  = core.length ? have/core.length : 1;
+    var st;
+    if(!kanaOK || cov < READY_DICT) st='locked';
+    else if(cov < READY_COMFY)      st='dict';
+    else                            st='comfy';
+    return { state:st, cov:cov,
+      kana:{ ok:kanaOK, hira:hira, kata:kata, needHira:(need.hira||0), needKata:(need.kata||0) },
+      words:{ done:have, total:core.length } };
+  }
+
+  /* What to show under a game: verdict badge + the honest "te falta" line. */
+  function gameVerdict(r){
+    var es=getLang()==="es";
+    if(r.state==='comfy') return { cls:'comfy', badge:(es?'¡Ya podés!':'Ready!'),
+      sub:(es?'Menús cubiertos — jugá tranquilo':'Menus covered — go for it') };
+    if(r.state==='dict'){ var falta=r.words.total-r.words.done;
+      return { cls:'dict', badge:(es?'Jugable con diccionario':'Playable w/ dictionary'),
+        sub:(es?('Te faltan '+falta+' palabra'+(falta===1?'':'s')+' para leerlo cómodo')
+               :(falta+' word'+(falta===1?'':'s')+' from reading it comfortably')) }; }
+    // locked: say WHY — kana first, then words
+    if(!r.kana.ok){
+      var parts=[];
+      if(r.kana.hira<r.kana.needHira) parts.push('hiragana ('+r.kana.hira+'/'+r.kana.needHira+'%)');
+      if(r.kana.kata<r.kana.needKata) parts.push('katakana ('+r.kana.kata+'/'+r.kana.needKata+'%)');
+      return { cls:'locked', badge:(es?'Todavía no':'Not yet'),
+        sub:(es?'Te falta ':'Need ')+parts.join(es?' y ':' & ') };
+    }
+    var f2=r.words.total-r.words.done;
+    return { cls:'locked', badge:(es?'Todavía no':'Not yet'),
+      sub:(es?('Te faltan '+f2+' palabra'+(f2===1?'':'s')+' del menú'):(f2+' menu word'+(f2===1?'':'s')+' to go')) };
+  }
+
+  function gamesCardHTML(){
+    if(!GAMES.length) return "";
+    var es=getLang()==="es";
+    var h='<div class="mastery-card"><div class="mc-top"><h3>'+(es?'¿Qué puedo jugar?':'What can I play?')+'</h3></div>';
+    GAMES.forEach(function(g){
+      var r=gameReadiness(g), v=gameVerdict(r);
+      var pct=Math.round(r.cov*100);
+      h+='<div class="grow">'+
+           '<div class="grow-top"><span class="grow-name">'+gamePick(g.name)+
+             ' <span class="grow-mode">'+gamePick(g.mode)+'</span></span>'+
+             '<span class="gbadge '+v.cls+'">'+v.badge+'</span></div>'+
+           '<div class="prog"><i class="'+(r.state==='comfy'?'g':'')+'" style="width:'+pct+'%"></i></div>'+
+           '<div class="mc-sub">'+r.words.done+' / '+r.words.total+' '+(es?'palabras del menú':'menu words')+'</div>'+
+           '<div class="mc-goal">'+v.sub+'</div>'+
+         '</div>';
+    });
+    h+='</div>';
+    return h;
+  }
+
   var readingEl=document.getElementById("reading"), readingInner=document.getElementById("readingInner");
   var rsess=null;
   var READ_LEARN_POOL=12, WORD_PROMOTE_AT=3, WORD_LEECH_AT=3;
