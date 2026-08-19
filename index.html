@@ -379,9 +379,13 @@
   .grow-name{font-weight:700;font-size:15px}
   .grow-mode{font-weight:400;font-size:12px;opacity:.6}
   .gbadge{font-size:11px;font-weight:700;padding:2px 8px;border:1.5px solid var(--ink);white-space:nowrap}
-  .gbadge.comfy{background:var(--matcha,#7a8b3f);color:#fff;border-color:var(--matcha,#7a8b3f)}
+  .gbadge.comfy{background:var(--green);color:#fff;border-color:var(--green)}
   .gbadge.dict{background:transparent;color:var(--ink)}
   .gbadge.locked{background:transparent;color:var(--ink);opacity:.5}
+  .grow.aimed{border-left:3px solid var(--shu);padding-left:11px}
+  .aim-btn{margin-top:8px;font-size:12px;font-weight:700;padding:5px 12px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
+  .aim-btn.on{background:var(--shu);color:#fff;border-color:var(--shu)}
+  .d-aim{font-size:12px;font-weight:700;color:var(--shu);margin-bottom:4px}
   .mastery-card h3{font-family: var(--display-font);font-weight:700;font-size:17px;margin:0}
   .mc-pct{font-family: var(--display-font);font-weight:800;font-size:28px;color:var(--shu);line-height:1}
   .mc-pct.ok{color:var(--green)}
@@ -759,10 +763,10 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function nowISO(){return new Date().toISOString();}
   function parse(s){return new Date(s+"T00:00:00");}
   function daysBetween(a,b){return Math.round((parse(b)-parse(a))/86400000);}
-  function emptyState(){return {schema:SCHEMA,lang:detectLang(),font:"mincho",startDate:today(),days:{},exercises:{},meta:{updatedAt:nowISO()}};}
+  function emptyState(){return {schema:SCHEMA,lang:detectLang(),font:"mincho",startDate:today(),days:{},exercises:{},aim:null,meta:{updatedAt:nowISO()}};}
   function migrate(s){
     if(!s||typeof s!=="object") return null;
-    return {schema:SCHEMA,lang:s.lang,font:s.font||"mincho",theme:s.theme||"light",startDate:s.startDate||today(),
+    return {schema:SCHEMA,lang:s.lang,font:s.font||"mincho",theme:s.theme||"light",startDate:s.startDate||today(),aim:(s.aim||null),
       days:(s.days&&typeof s.days==="object")?s.days:{},
       exercises:(s.exercises&&typeof s.exercises==="object")?s.exercises:{},
       meta:(s.meta&&typeof s.meta==="object")?s.meta:{updatedAt:nowISO()}};
@@ -775,6 +779,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       lang:a.lang||b.lang,
       font:a.font||b.font||"mincho", 
       theme:a.theme||b.theme||"light",
+      aim:a.aim||b.aim||null,
       startDate:(daysBetween(a.startDate,b.startDate)<0?b.startDate:a.startDate),
       days:{},
       exercises:Object.assign({},a.exercises,b.exercises),
@@ -2098,6 +2103,35 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
         {jp:'おとこのこ',romaji:'otokonoko',es:'chico',en:'boy',emoji:'👦'},
         {jp:'おんなのこ',romaji:'onnanoko',es:'chica',en:'girl',emoji:'👧'}
       ]
+    },
+    {
+      id:'zelda-la-dx', rung:1,
+      name:{ es:"Zelda: Link's Awakening DX", en:"Zelda: Link's Awakening DX" },
+      mode:{ es:'kana + diccionario',          en:'kana + dictionary' },
+      words:[
+        /* sistema / menú (varias se comparten con Pokémon → se deduplican solas) */
+        {jp:'はい',romaji:'hai',es:'sí',en:'yes',emoji:'✅'},
+        {jp:'いいえ',romaji:'iie',es:'no',en:'no',emoji:'❌'},
+        {jp:'セーブ',romaji:'seebu',es:'guardar',en:'save',emoji:'💾'},
+        {jp:'つづきから',romaji:'tsuzukikara',es:'continuar',en:'continue',emoji:'▶️'},
+        {jp:'どうぐ',romaji:'dougu',es:'objetos',en:'items',emoji:'🎒'},
+        /* objetos / sustantivos del juego (⚠ verificá los rótulos exactos in-game) */
+        {jp:'けん',romaji:'ken',es:'espada',en:'sword',emoji:'⚔️'},        /* el juego podría rotularla ソード */
+        {jp:'たて',romaji:'tate',es:'escudo',en:'shield',emoji:'🛡️'},
+        {jp:'ばくだん',romaji:'bakudan',es:'bomba',en:'bomb',emoji:'💣'},
+        {jp:'ゆみや',romaji:'yumiya',es:'arco y flecha',en:'bow & arrow',emoji:'🏹'},
+        {jp:'ブーメラン',romaji:'buumeran',es:'boomerang',en:'boomerang',emoji:'🪃'},
+        {jp:'かぎ',romaji:'kagi',es:'llave',en:'key',emoji:'🔑'},
+        {jp:'ちず',romaji:'chizu',es:'mapa',en:'map',emoji:'🗺️'},
+        {jp:'ハート',romaji:'haato',es:'corazón (vida)',en:'heart',emoji:'❤️'},
+        {jp:'ルピー',romaji:'rupii',es:'rupia',en:'rupee',emoji:'💎'},
+        {jp:'ようせい',romaji:'yousei',es:'hada',en:'fairy',emoji:'🧚'},
+        {jp:'たからばこ',romaji:'takarabako',es:'cofre del tesoro',en:'treasure chest',emoji:'🧰'},
+        {jp:'ダンジョン',romaji:'danjon',es:'mazmorra',en:'dungeon',emoji:'🏰'},
+        {jp:'リンク',romaji:'rinku',es:'Link (protagonista)',en:'Link',emoji:'🗡️'},
+        {jp:'こうげき',romaji:'kougeki',es:'ataque',en:'attack',emoji:'💥'},
+        {jp:'たたかう',romaji:'tatakau',es:'pelear',en:'fight',emoji:'⚔️'}
+      ]
     }
     /* ── add more games here: paste an object with its own word list ── */
   ];
@@ -2114,6 +2148,14 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
 
   function gamePick(o){ return o?(getLang()==="es"?(o.es||o.en):(o.en||o.es)):""; }
   function isWordMastered(jp){ return (ensureWords().box[jp]||0) >= 4; }
+
+  /* ---- Aim at a game: bias new-word introductions toward its core vocab ----
+     Mixed, not exclusive (AIM_BIAS) and still capped by READ_LEARN_POOL, so it
+     prioritises without flooding. state.aim holds one game id at a time. */
+  var AIM_BIAS=0.8;
+  function aimedGame(){ if(!state||!state.aim)return null; for(var i=0;i<GAMES.length;i++)if(GAMES[i].id===state.aim)return GAMES[i]; return null; }
+  function aimWordSet(){ var g=aimedGame(); if(!g)return null; var m={}; (g.words||[]).forEach(function(w){m[w.jp]=1;}); return m; }
+  function setAim(id){ state.aim=(state.aim===id)?null:id; Persistence.save(state); render(); }
 
   function gameReadiness(g){
     var need = g.kana || READY_KANA_DEFAULT;
@@ -2160,13 +2202,16 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     GAMES.forEach(function(g){
       var r=gameReadiness(g), v=gameVerdict(r);
       var pct=Math.round(r.cov*100);
-      h+='<div class="grow">'+
+      var aimed=(state.aim===g.id);
+      var aimLbl=aimed?(es?'🎯 Apuntando':'🎯 Aiming'):(es?'🎯 Apuntar a este':'🎯 Aim at this');
+      h+='<div class="grow'+(aimed?' aimed':'')+'">'+
            '<div class="grow-top"><span class="grow-name">'+gamePick(g.name)+
              ' <span class="grow-mode">'+gamePick(g.mode)+'</span></span>'+
              '<span class="gbadge '+v.cls+'">'+v.badge+'</span></div>'+
            '<div class="prog"><i class="'+(r.state==='comfy'?'g':'')+'" style="width:'+pct+'%"></i></div>'+
            '<div class="mc-sub">'+r.words.done+' / '+r.words.total+' '+(es?'palabras del menú':'menu words')+'</div>'+
            '<div class="mc-goal">'+v.sub+'</div>'+
+           '<button class="aim-btn'+(aimed?' on':'')+'" data-aim="'+g.id+'">'+aimLbl+'</button>'+
          '</div>';
     });
     h+='</div>';
@@ -2315,7 +2360,11 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       var seenSet=tgtSet.filter(function(i){return seen[pool[i].jp];});
       var inFlight=seenSet.filter(function(i){return (box[pool[i].jp]||0) < WORD_PROMOTE_AT;}).length;
       if(unseen.length && (inFlight < READ_LEARN_POOL || seenSet.length===0)){
-        var tn=unseen[Math.floor(Math.random()*unseen.length)];
+        var tn;
+        var aimS=aimWordSet();
+        if(aimS){ var aimU=unseen.filter(function(i){return aimS[pool[i].jp];});
+          if(aimU.length && Math.random()<AIM_BIAS) tn=aimU[Math.floor(Math.random()*aimU.length)]; }
+        if(tn===undefined) tn=unseen[Math.floor(Math.random()*unseen.length)];
         rsess.q={target:tn,mode:"teach",relearn:false,opts:[],answered:false,picked:-1};
         setTimeout(function(){speak(pool[tn].jp);},250); return; }
       // 3) otherwise quiz — known words first
@@ -2327,7 +2376,8 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function startWords(){ startWordsMix(); }
   var wsess=null, WORDS_BUILD_PROB=0.35;
   function wordsGoalHTML(){ var reps=todayReps(),gpct=Math.min(100,reps),gtier=dayTier(reps);
-    return '<div class="d-goal"><div class="lab"><span>'+t("Daily practice")+'</span><span>'+reps+(gtier>=0?' \u00b7 '+t(TIER_LABEL[gtier]):'')+'</span></div>'+
+    var _ag=aimedGame(), _aim=_ag?('<div class="d-aim">🎯 '+gamePick(_ag.name)+'</div>'):'';
+    return '<div class="d-goal">'+_aim+'<div class="lab"><span>'+t("Daily practice")+'</span><span>'+reps+(gtier>=0?' \u00b7 '+t(TIER_LABEL[gtier]):'')+'</span></div>'+
       '<div class="prog milestones"><i style="width:'+gpct+'%"></i>'+milestoneTicks(reps,"words")+'</div></div>'; }
   function wordsMix(){ var seen=ensureWords().seen||{}; var sb=buildWordPool().filter(function(w){return seen[w.jp];}).length; return { canBuild: sb>=4, buildProb: WORDS_BUILD_PROB }; }
   function seedKnownFromBuild(){ var ex=ensureWords(), changed=false;
@@ -2731,6 +2781,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     app.querySelectorAll("[data-fn]").forEach(function(b){var fn=b.getAttribute("data-fn");b.addEventListener("click",function(){if(fn==="startDrill")startDrill();else if(fn==="startDaily")startDaily();else if(fn==="startWords")startWords();else if(fn==="startPhrases")startPhrases();else if(fn==="startBuild")startBuild();else if(fn==="startMatch")startMatch();});});
 
     var wd=app.querySelector(".wotd[data-say]"); if(wd)wd.addEventListener("click",function(){speak(wd.getAttribute("data-say"));});
+    app.querySelectorAll("[data-aim]").forEach(function(b){ b.addEventListener("click",function(){ setAim(b.getAttribute("data-aim")); }); });
 
     // Conectar los botones de "Enfócate en" para lanzar el entrenamiento
     app.querySelectorAll(".focus-btn").forEach(function(btn){
