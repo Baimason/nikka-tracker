@@ -2567,7 +2567,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var head='<div class="d-sticky"><div class="d-head"><button class="d-close" id="rClose">✕ '+t("Close")+'</button>'+
        '<div class="d-stats"><div class="d-stat"><div class="n">'+rsess.done+'</div><div class="l">'+t("Done")+'</div></div>'+
        '<div class="d-stat wrong"><div class="n">'+rsess.wrong+'</div><div class="l">'+t("Wrong")+'</div></div>'+
-       '<div class="d-stat right"><div class="n">'+rsess.correct+'</div><div class="l">'+t("Correct")+'</div></div></div></div>'+(wsess?wordsGoalHTML():'')+'</div>';
+       '<div class="d-stat right"><div class="n">'+rsess.correct+'</div><div class="l">'+t("Correct")+'</div></div></div></div>'+wordsGoalHTML()+'</div>';
     if(q.mode==="teach"){
       var em=(getEmoji()&&it.emoji)?'<span class="rq-emoji">'+it.emoji+'</span> ':'';
       readingInner.innerHTML=head+'<div class="rq-prompt teach-word">'+
@@ -2720,7 +2720,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       '<div class="d-stat"><div class="n">'+s.done+'</div><div class="l">'+t("Done")+'</div></div>'+
       '<div class="d-stat wrong"><div class="n">'+s.wrong+'</div><div class="l">'+t("Wrong")+'</div></div>'+
       '<div class="d-stat right"><div class="n">'+s.correct+'</div><div class="l">'+t("Correct")+'</div></div>'+
-      '</div></div>'+(wsess?wordsGoalHTML():extraGoalHTML())+'</div>';
+      '</div></div>'+wordsGoalHTML()+'</div>';
   }
   function renderBuild(){
     var q=bsess.q, h=buildHeaderHTML(bstat());
@@ -2827,7 +2827,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       '<div class="d-stat right"><div class="n">'+msess.done+'</div><div class="l">'+t("Correct")+'</div></div>'+
       '</div></div>'+
       '<div class="mt-sub">'+msess.done+' '+t("Pairs")+' · '+msess.boards+' '+t("Boards")+'</div>'+
-      extraGoalHTML()+'</div>';
+      wordsGoalHTML()+'</div>';
     if(!msess.left){ h+='<div class="rq-prompt"><div class="rq-kind">'+t("Match")+'</div><div class="rq-mean">'+t("Learn a few characters first.")+'</div></div>'; readingInner.innerHTML=h; bindMatch(); return; }
     h+='<div class="rq-prompt" style="padding:4px 0 2px"><div class="rq-kind">'+t("Tap the pairs")+'</div></div>';
     h+='<div class="mt-board"><div class="mt-col">';
@@ -2884,7 +2884,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     return '<div class="d-sticky"><div class="d-head"><button class="d-close" id="rClose">✕ '+t("Close")+'</button>'+
       '<div class="d-stats"><div class="d-stat"><div class="n">'+rsess.done+'</div><div class="l">'+t("Done")+'</div></div>'+
       '<div class="d-stat wrong"><div class="n">'+rsess.wrong+'</div><div class="l">'+t("Wrong")+'</div></div>'+
-      '<div class="d-stat right"><div class="n">'+rsess.correct+'</div><div class="l">'+t("Correct")+'</div></div></div></div></div>';
+      '<div class="d-stat right"><div class="n">'+rsess.correct+'</div><div class="l">'+t("Correct")+'</div></div></div></div>'+wordsGoalHTML()+'</div>';
   }
   function renderPhraseBuild(){
     var q=pbsess, es=getLang()==="es", p=q.phrase, h=pbHeadHTML();
