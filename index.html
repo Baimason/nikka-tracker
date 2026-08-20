@@ -471,6 +471,21 @@
   .bw-slot.blank.correct{color:var(--green);border-bottom-color:var(--green)}
   .bw-slot.blank.bad{color:var(--shu);border-bottom-color:var(--shu)}
   .bw-grid{margin-top:14px}
+  /* phrase first-contact card: phrases are longer than single words */
+  .rq-jp.rq-jp-ph{font-size:clamp(30px,8vw,44px);line-height:1.25}
+  /* ---- Armá la frase (build a phrase from word-tiles) ---- */
+  .pb-slots{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin:16px 0 4px}
+  .pb-slot{min-width:44px;min-height:48px;padding:6px 12px;display:flex;align-items:center;justify-content:center;
+    font-size:22px;color:var(--ink);border-bottom:2.5px solid var(--line)}
+  .pb-slot.filled{border-bottom-color:var(--ink)}
+  .pb-slot.active{border-bottom-color:var(--shu)}
+  .pb-slot.empty{color:var(--ink-faint)}
+  .pb-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;margin-top:16px}
+  .pb-tile{font:inherit;font-size:21px;color:var(--ink);background:var(--card);border:1.6px solid var(--ink);
+    border-radius:4px;padding:11px 16px;cursor:pointer;transition:transform .08s,background .12s}
+  .pb-tile:active{transform:scale(.96)}
+  .pb-tile.used{opacity:.32;pointer-events:none}
+  .pb-tile.bad{background:var(--bad-bg);border-color:var(--shu);color:var(--shu)}
   .bw-toggle{display:block;margin:14px auto 0;background:none;border:1.3px solid var(--line);border-radius:20px;padding:7px 16px;font:inherit;font-size:12px;font-weight:700;color:var(--ink-soft);cursor:pointer}
   .mt-sub{font-size:11px;color:var(--ink-soft);text-align:center;margin:2px 0 0;letter-spacing:.06em;text-transform:uppercase}
   .mt-board{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
@@ -507,7 +522,7 @@
 <script>
 (function(){
   "use strict";
-  var TR = {"day": "día", "days": "días", "total": "total", "daily practice": "práctica diaria", "Started": "Empezó", "week": "semana", "Today's practice": "Práctica de hoy", "every day": "cada día", "drill": "práctica", "<b>Hiragana</b> — nothing else yet": "<b>Hiragana</b> — nada más por ahora", "<b>Katakana</b> + start the Anki engine": "<b>Katakana</b> + arrancá el motor de Anki", "<b>The routine</b> — keep the streak alive": "<b>La rutina</b> — mantené la racha viva", "<b>Keep going</b> — add speaking practice": "<b>Seguí</b> — sumá práctica de habla", "Hiragana practice": "Práctica de hiragana", "Tofugu guide + drills until it's automatic": "Guía de Tofugu + práctica hasta que salga solo", "Kana drill": "Práctica de kana", "Finish katakana; drill both scripts": "Terminá katakana; practicá los dos silabarios", "Anki — 10 new words": "Anki — 10 palabras nuevas", "Set up the Kaishi 1.5k deck first": "Primero configurá el mazo Kaishi 1.5k", "Anki — reviews + 10 new": "Anki — repasos + 10 nuevas", "The engine. Never skip this one.": "El motor. Nunca te la saltes.", "Grammar — 1 point": "Gramática — 1 punto", "Tae Kim's guide, one point per day": "Guía de Tae Kim, un punto por día", "Immersion — 10 min": "Inmersión — 10 min", "Read cards aloud, or spot words in something you watch": "Leé las tarjetas en voz alta, o cazá palabras en algo que veas", "Speak / exchange": "Hablar / intercambio", "Try a message or short call": "Probá un mensaje o una llamada corta", "Chaotic day? Just tick the <b>毎日</b> task and you're covered — the streak stays alive. Consistency beats hours.": "¿Día caótico? Con marcar la tarea <b>毎日</b> ya estás — la racha sigue viva. La constancia le gana a las horas.", "The path": "El camino", "Week 1 · Hiragana": "Semana 1 · Hiragana", "Read hiragana without stalling": "Leer hiragana sin trabarte", "Week 2 · Katakana + Anki": "Semana 2 · Katakana + Anki", "Finish kana, start Kaishi 1.5k": "Terminar kana, arrancar Kaishi 1.5k", "Weeks 3–6 · The routine": "Semanas 3–6 · La rutina", "Anki + grammar + immersion, daily": "Anki + gramática + inmersión, a diario", "Beyond · Speaking": "Más allá · Hablar", "Add HelloTalk or iTalki": "Sumá HelloTalk o iTalki", "Last 4 weeks": "Últimas 4 semanas", "済 marks a day the daily task was done": "済 marca un día con la tarea diaria hecha", "All resources": "Todos los recursos", "Install Anki": "Instalar Anki", "Kaishi deck": "Mazo Kaishi", "Grammar (Tae Kim)": "Gramática (Tae Kim)", "済 Done for today — the seal is yours. Keep going if you like.": "済 Listo por hoy — el sello es tuyo. Seguí si querés.", "Recognition + spaced repetition. Hit the goal to stamp today.": "Reconocimiento + repetición espaciada. Llegá a la meta para sellar el día.", "Start drill": "Empezar", "Continue drill": "Continuar", "Practice more": "Practicar más", "Options": "Opciones", "Script": "Escritura", "Goal": "Meta", "<b>Hiragana</b> (あ) and <b>Katakana</b> (ア) are the two kana alphabets — same sounds, different look (katakana is mostly for foreign / loan words). <b>Dakuten</b> are the small ゛/゜ marks that voice a sound: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).": "<b>Hiragana</b> (あ) y <b>Katakana</b> (ア) son los dos silabarios — mismos sonidos, distinta forma (katakana es sobre todo para palabras extranjeras). El <b>Dakuten</b> son las marquitas ゛/゜ que sonorizan un sonido: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).", "Kana mastery": "Dominio del kana", "characters mastered": "caracteres dominados", "Focus on": "Enfocate en", "more": "más", "Do a few drills and your mastery shows up here.": "Hacé unas cuantas y acá verás tu dominio.", "済 You've got your kana. It's logical to move on — make grammar + Anki your main focus and keep drills as warm-ups.": "済 Ya dominás el kana. Es lógico avanzar — pasá el foco a gramática + Anki y dejá la práctica como calentamiento.", "Almost there — a few more sessions and kana will feel automatic.": "Casi — unas sesiones más y el kana te saldrá solo.", "Building your foundation — keep the daily drill going.": "Construyendo la base — seguí con la práctica diaria.", "Backup &amp; sync": "Respaldo y sync", "Your backup code": "Tu código de respaldo", "Copy this and paste it on another device to carry your streak over.": "Copialo y pegalo en otro dispositivo para llevarte la racha.", "Copy code": "Copiar código", "Restore from a code": "Restaurar desde un código", "Paste a code here — it merges with what's on this device (nothing is lost).": "Pegá un código acá — se fusiona con lo que ya tenés (no se pierde nada).", "Import code": "Importar código", "Sign in to sync": "Iniciar sesión para sync", "Automatic sync across devices — no passwords, no data of yours to guard.": "Sync automático entre dispositivos — sin contraseñas, sin datos tuyos que cuidar.", "COMING SOON": "PRÓXIMAMENTE", "Copied ✓": "Copiado ✓", "Select the text above and copy manually.": "Seleccioná el texto de arriba y copialo a mano.", "Imported and merged ✓": "Importado y fusionado ✓", "Couldn't read that code.": "No pude leer ese código.", "That's not a Nikka backup code.": "Ese no es un código de Nikka.", "The code looks corrupted or incomplete.": "El código parece corrupto o incompleto.", "Reset everything — streak, days, drill progress, and today's checklist? This can't be undone.": "¿Reiniciar todo — racha, días, progreso de práctica y la lista de hoy? No se puede deshacer.", "Reset all progress": "Reiniciar todo el progreso", "This is a preview — progress won't stick here. Open the hosted page in your browser to keep your streak.": "Esto es una vista previa — el progreso no se guarda acá. Abrí la página publicada en tu navegador para mantener la racha.", "Close": "Cerrar", "Done": "Hechas", "Wrong": "Erradas", "Correct": "Aciertos", "Correct!": "¡Correcto!", "It was": "Era", "Which sound is this?": "¿Qué sonido es este?", "Tap the": "Toca el", "Daily goal": "Meta diaria", "済 Goal reached!": "済 ¡Meta alcanzada!", "Today is stamped and your streak is safe. Keep going or close.": "El día quedó sellado y tu racha está a salvo. Puedes continuar o cerrar.", "hear it": "escuchar", "Next →": "Siguiente →", "Skip": "Saltar", "Level": "Nivel", "You've got hiragana down! Ready to add dakuten?": "¡Dominás el hiragana! ¿Listo para sumar el dakuten?", "Dakuten mastered! Ready for katakana?": "¡Dominaste el dakuten! ¿Listo para el katakana?", "Yes, unlock": "Sí, desbloquear", "Not yet": "Todavía no", "Unlock": "Desbloquear", "済 Unlocked!": "済 ¡Desbloqueado!", "New character": "Carácter nuevo", "New word": "Palabra nueva", "Let's review this word": "Repasemos esta palabra", "Got it →": "¡Entendido! →", "Streak": "Racha", "Solid": "Sólido", "Great": "Genial", "Perfect": "Perfecto", "済 Streak saved!": "済 ¡Racha salvada!", "済 Streak saved. Keep going: 30 solid · 50 great · 100 perfect.": "済 Racha salvada. Seguí: 30 sólido · 50 genial · 100 perfecto.", "15 saves your streak · 30 solid · 50 great · 100 perfect.": "15 salva la racha · 30 sólido · 50 genial · 100 perfecto.", "Short day? Just 15 saves your streak — 30 is solid, 50 great, 100 perfect.": "¿Día corto? Con 15 salvás la racha — 30 es sólido, 50 genial, 100 perfecto.", "Day": "Día", "Week": "Semana", "Reading": "Lectura", "Grammar": "Gramática", "Speaking": "Hablar", "read the base syllabary": "leer el silabario base", "the ゛゜ voiced sounds": "los sonidos con ゛゜", "the second syllabary": "el segundo silabario", "read everyday words": "leer palabras cotidianas", "build sentences (Tae Kim)": "armar frases (Tae Kim)", "the most frequent kanji": "los kanji más frecuentes", "Kana warm-up": "Calentamiento de kana", "Keep it sharp — a few reps": "Mantenelo afilado — unas pocas", "Voiced sounds — the drill knows what to show": "Sonidos con dakuten — la práctica sabe qué mostrar", "Read a few graded sentences": "Leé unas frases graduadas", "The vocab engine": "El motor de vocabulario", "Tae Kim's guide": "Guía de Tae Kim", "Kanji — a few new": "Kanji — unos nuevos", "Most frequent first": "Los más frecuentes primero", "HelloTalk or iTalki": "HelloTalk o iTalki", "Next stage": "Siguiente etapa", "Back": "Volver", "Read words and useful phrases — reveal and listen.": "Leé palabras y frases útiles — revelá y escuchá.", "Start reading": "Empezar lectura", "Reveal": "Revelar", "Show romaji": "Mostrar romaji", "Hide romaji": "Ocultar romaji", "Reading quiz — read, listen, guess. It adapts to what you find hard.": "Quiz de lectura — leé, escuchá y adiviná. Se adapta a lo que te cuesta.", "What does it mean?": "¿Qué significa?", "Which one did you hear?": "¿Cuál escuchaste?", "Which one in Japanese?": "¿Cuál en japonés?", "Reading mastery": "Dominio de lectura", "phrases mastered": "frases dominadas", "済 You're reading these fluently. Time to add harder phrases.": "済 Ya leés estas con fluidez. Hora de sumar frases más difíciles.", "Reading is clicking — keep going.": "La lectura va tomando forma — seguí así.", "Every phrase you nail is real reading. Keep at it.": "Cada frase que acertás es leer de verdad. Dale que vas.", "Words": "Palabras", "Phrases": "Frases", "mastered": "dominadas", "Read and listen — it adapts to what you find hard.": "Leé y escuchá — se adapta a lo que te cuesta.", "read single words at a glance": "leer palabras sueltas de un vistazo", "read useful fixed phrases": "leer frases fijas útiles", "Read single words": "Leé palabras sueltas", "Read useful phrases": "Leé frases útiles", "Day's progress": "Progreso de hoy", "Recommended": "Recomendado", "All exercises": "Todos los ejercicios", "Support": "Apoyo", "Build the word": "Armá la palabra", "Match": "Emparejar", "Fill the gap": "Completá el hueco", "Spell it out": "Armala con las fichas", "Tap the pairs": "Tocá los pares", "Pairs": "Pares", "Boards": "Tableros", "Learn a few characters first.": "Aprendé algunos caracteres primero.", "🔊 on tap": "🔊 al tocar", "Daily practice": "Práctica diaria", "Kana options": "Opciones de kana", "Traditional style (serif)": "Estilo tradicional (con serifas)",
+  var TR = {"day": "día", "days": "días", "total": "total", "daily practice": "práctica diaria", "Started": "Empezó", "week": "semana", "Today's practice": "Práctica de hoy", "every day": "cada día", "drill": "práctica", "<b>Hiragana</b> — nothing else yet": "<b>Hiragana</b> — nada más por ahora", "<b>Katakana</b> + start the Anki engine": "<b>Katakana</b> + arrancá el motor de Anki", "<b>The routine</b> — keep the streak alive": "<b>La rutina</b> — mantené la racha viva", "<b>Keep going</b> — add speaking practice": "<b>Seguí</b> — sumá práctica de habla", "Hiragana practice": "Práctica de hiragana", "Tofugu guide + drills until it's automatic": "Guía de Tofugu + práctica hasta que salga solo", "Kana drill": "Práctica de kana", "Finish katakana; drill both scripts": "Terminá katakana; practicá los dos silabarios", "Anki — 10 new words": "Anki — 10 palabras nuevas", "Set up the Kaishi 1.5k deck first": "Primero configurá el mazo Kaishi 1.5k", "Anki — reviews + 10 new": "Anki — repasos + 10 nuevas", "The engine. Never skip this one.": "El motor. Nunca te la saltes.", "Grammar — 1 point": "Gramática — 1 punto", "Tae Kim's guide, one point per day": "Guía de Tae Kim, un punto por día", "Immersion — 10 min": "Inmersión — 10 min", "Read cards aloud, or spot words in something you watch": "Leé las tarjetas en voz alta, o cazá palabras en algo que veas", "Speak / exchange": "Hablar / intercambio", "Try a message or short call": "Probá un mensaje o una llamada corta", "Chaotic day? Just tick the <b>毎日</b> task and you're covered — the streak stays alive. Consistency beats hours.": "¿Día caótico? Con marcar la tarea <b>毎日</b> ya estás — la racha sigue viva. La constancia le gana a las horas.", "The path": "El camino", "Week 1 · Hiragana": "Semana 1 · Hiragana", "Read hiragana without stalling": "Leer hiragana sin trabarte", "Week 2 · Katakana + Anki": "Semana 2 · Katakana + Anki", "Finish kana, start Kaishi 1.5k": "Terminar kana, arrancar Kaishi 1.5k", "Weeks 3–6 · The routine": "Semanas 3–6 · La rutina", "Anki + grammar + immersion, daily": "Anki + gramática + inmersión, a diario", "Beyond · Speaking": "Más allá · Hablar", "Add HelloTalk or iTalki": "Sumá HelloTalk o iTalki", "Last 4 weeks": "Últimas 4 semanas", "済 marks a day the daily task was done": "済 marca un día con la tarea diaria hecha", "All resources": "Todos los recursos", "Install Anki": "Instalar Anki", "Kaishi deck": "Mazo Kaishi", "Grammar (Tae Kim)": "Gramática (Tae Kim)", "済 Done for today — the seal is yours. Keep going if you like.": "済 Listo por hoy — el sello es tuyo. Seguí si querés.", "Recognition + spaced repetition. Hit the goal to stamp today.": "Reconocimiento + repetición espaciada. Llegá a la meta para sellar el día.", "Start drill": "Empezar", "Continue drill": "Continuar", "Practice more": "Practicar más", "Options": "Opciones", "Script": "Escritura", "Goal": "Meta", "<b>Hiragana</b> (あ) and <b>Katakana</b> (ア) are the two kana alphabets — same sounds, different look (katakana is mostly for foreign / loan words). <b>Dakuten</b> are the small ゛/゜ marks that voice a sound: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).": "<b>Hiragana</b> (あ) y <b>Katakana</b> (ア) son los dos silabarios — mismos sonidos, distinta forma (katakana es sobre todo para palabras extranjeras). El <b>Dakuten</b> son las marquitas ゛/゜ que sonorizan un sonido: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).", "Kana mastery": "Dominio del kana", "characters mastered": "caracteres dominados", "Focus on": "Enfocate en", "more": "más", "Do a few drills and your mastery shows up here.": "Hacé unas cuantas y acá verás tu dominio.", "済 You've got your kana. It's logical to move on — make grammar + Anki your main focus and keep drills as warm-ups.": "済 Ya dominás el kana. Es lógico avanzar — pasá el foco a gramática + Anki y dejá la práctica como calentamiento.", "Almost there — a few more sessions and kana will feel automatic.": "Casi — unas sesiones más y el kana te saldrá solo.", "Building your foundation — keep the daily drill going.": "Construyendo la base — seguí con la práctica diaria.", "Backup &amp; sync": "Respaldo y sync", "Your backup code": "Tu código de respaldo", "Copy this and paste it on another device to carry your streak over.": "Copialo y pegalo en otro dispositivo para llevarte la racha.", "Copy code": "Copiar código", "Restore from a code": "Restaurar desde un código", "Paste a code here — it merges with what's on this device (nothing is lost).": "Pegá un código acá — se fusiona con lo que ya tenés (no se pierde nada).", "Import code": "Importar código", "Sign in to sync": "Iniciar sesión para sync", "Automatic sync across devices — no passwords, no data of yours to guard.": "Sync automático entre dispositivos — sin contraseñas, sin datos tuyos que cuidar.", "COMING SOON": "PRÓXIMAMENTE", "Copied ✓": "Copiado ✓", "Select the text above and copy manually.": "Seleccioná el texto de arriba y copialo a mano.", "Imported and merged ✓": "Importado y fusionado ✓", "Couldn't read that code.": "No pude leer ese código.", "That's not a Nikka backup code.": "Ese no es un código de Nikka.", "The code looks corrupted or incomplete.": "El código parece corrupto o incompleto.", "Reset everything — streak, days, drill progress, and today's checklist? This can't be undone.": "¿Reiniciar todo — racha, días, progreso de práctica y la lista de hoy? No se puede deshacer.", "Reset all progress": "Reiniciar todo el progreso", "This is a preview — progress won't stick here. Open the hosted page in your browser to keep your streak.": "Esto es una vista previa — el progreso no se guarda acá. Abrí la página publicada en tu navegador para mantener la racha.", "Close": "Cerrar", "Done": "Hechas", "Wrong": "Erradas", "Correct": "Aciertos", "Correct!": "¡Correcto!", "It was": "Era", "Which sound is this?": "¿Qué sonido es este?", "Tap the": "Toca el", "Daily goal": "Meta diaria", "済 Goal reached!": "済 ¡Meta alcanzada!", "Today is stamped and your streak is safe. Keep going or close.": "El día quedó sellado y tu racha está a salvo. Puedes continuar o cerrar.", "hear it": "escuchar", "Next →": "Siguiente →", "Skip": "Saltar", "Level": "Nivel", "You've got hiragana down! Ready to add dakuten?": "¡Dominás el hiragana! ¿Listo para sumar el dakuten?", "Dakuten mastered! Ready for katakana?": "¡Dominaste el dakuten! ¿Listo para el katakana?", "Yes, unlock": "Sí, desbloquear", "Not yet": "Todavía no", "Unlock": "Desbloquear", "済 Unlocked!": "済 ¡Desbloqueado!", "New character": "Carácter nuevo", "New word": "Palabra nueva", "Let's review this word": "Repasemos esta palabra", "Got it →": "¡Entendido! →", "Streak": "Racha", "Solid": "Sólido", "Great": "Genial", "Perfect": "Perfecto", "済 Streak saved!": "済 ¡Racha salvada!", "済 Streak saved. Keep going: 30 solid · 50 great · 100 perfect.": "済 Racha salvada. Seguí: 30 sólido · 50 genial · 100 perfecto.", "15 saves your streak · 30 solid · 50 great · 100 perfect.": "15 salva la racha · 30 sólido · 50 genial · 100 perfecto.", "Short day? Just 15 saves your streak — 30 is solid, 50 great, 100 perfect.": "¿Día corto? Con 15 salvás la racha — 30 es sólido, 50 genial, 100 perfecto.", "Day": "Día", "Week": "Semana", "Reading": "Lectura", "Grammar": "Gramática", "Speaking": "Hablar", "read the base syllabary": "leer el silabario base", "the ゛゜ voiced sounds": "los sonidos con ゛゜", "the second syllabary": "el segundo silabario", "read everyday words": "leer palabras cotidianas", "build sentences (Tae Kim)": "armar frases (Tae Kim)", "the most frequent kanji": "los kanji más frecuentes", "Kana warm-up": "Calentamiento de kana", "Keep it sharp — a few reps": "Mantenelo afilado — unas pocas", "Voiced sounds — the drill knows what to show": "Sonidos con dakuten — la práctica sabe qué mostrar", "Read a few graded sentences": "Leé unas frases graduadas", "The vocab engine": "El motor de vocabulario", "Tae Kim's guide": "Guía de Tae Kim", "Kanji — a few new": "Kanji — unos nuevos", "Most frequent first": "Los más frecuentes primero", "HelloTalk or iTalki": "HelloTalk o iTalki", "Next stage": "Siguiente etapa", "Back": "Volver", "Read words and useful phrases — reveal and listen.": "Leé palabras y frases útiles — revelá y escuchá.", "Start reading": "Empezar lectura", "Reveal": "Revelar", "Show romaji": "Mostrar romaji", "Hide romaji": "Ocultar romaji", "Reading quiz — read, listen, guess. It adapts to what you find hard.": "Quiz de lectura — leé, escuchá y adiviná. Se adapta a lo que te cuesta.", "What does it mean?": "¿Qué significa?", "Which one did you hear?": "¿Cuál escuchaste?", "Which one in Japanese?": "¿Cuál en japonés?", "Reading mastery": "Dominio de lectura", "phrases mastered": "frases dominadas", "済 You're reading these fluently. Time to add harder phrases.": "済 Ya leés estas con fluidez. Hora de sumar frases más difíciles.", "Reading is clicking — keep going.": "La lectura va tomando forma — seguí así.", "Every phrase you nail is real reading. Keep at it.": "Cada frase que acertás es leer de verdad. Dale que vas.", "Words": "Palabras", "Phrases": "Frases", "mastered": "dominadas", "Read and listen — it adapts to what you find hard.": "Leé y escuchá — se adapta a lo que te cuesta.", "read single words at a glance": "leer palabras sueltas de un vistazo", "read useful fixed phrases": "leer frases fijas útiles", "Read single words": "Leé palabras sueltas", "Read useful phrases": "Leé frases útiles", "Day's progress": "Progreso de hoy", "Recommended": "Recomendado", "All exercises": "Todos los ejercicios", "Support": "Apoyo", "Build the word": "Armá la palabra", "Match": "Emparejar", "Fill the gap": "Completá el hueco", "Spell it out": "Armala con las fichas", "Tap the pairs": "Tocá los pares", "Pairs": "Pares", "Boards": "Tableros", "Learn a few characters first.": "Aprendé algunos caracteres primero.", "New phrase": "Frase nueva", "Let's review this phrase": "Repasemos esta frase", "Build the phrase": "Armá la frase", "Put the words in order": "Ordená las palabras", "Tap the words in order to build the phrase": "Tocá las palabras en orden para armar la frase", "🔊 on tap": "🔊 al tocar", "Daily practice": "Práctica diaria", "Kana options": "Opciones de kana", "Traditional style (serif)": "Estilo tradicional (con serifas)",
     "Modern style (sans-serif)": "Estilo moderno (sin serifas)", "Katakana dakuten": "Katakana dakuten", "katakana ゛゜ voiced sounds": "sonidos katakana con ゛゜", "Hiragana mastery": "Dominio del hiragana", "Katakana mastery": "Dominio del katakana", "済 Hiragana solid! Move on to katakana — keep hiragana as warm-up.": "済 ¡Hiragana sólido! Avanzá al katakana — dejá el hiragana como calentamiento.", "Katakana down! Ready for katakana dakuten?": "¡Katakana listo! ¿Vamos con el katakana dakuten?", "Katakana voiced sounds — the drill knows what to show": "Sonidos katakana con dakuten — la práctica sabe qué mostrar", "New script": "Nuevo silabario", "This is a new script": "Esto es un silabario nuevo", "Let's review this one": "Repasemos este", "due for review": "para repasar", "Light mode": "Modo claro", "Dark mode": "Modo oscuro"};
   function detectLang(){var n=((navigator.language||navigator.userLanguage||"en")+"").toLowerCase();return n.indexOf("es")===0?"es":"en";}
   function getLang(){return (state&&state.lang)?state.lang:detectLang();}
@@ -1499,7 +1514,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     {jp:"こんばんは",romaji:"konbanwa",es:"buenas noches",en:"good evening"},
     {jp:"おやすみ",romaji:"oyasumi",es:"buenas noches (al dormir)",en:"good night"},
     {jp:"ありがとう",romaji:"arigatou",es:"gracias",en:"thank you"},
-    {jp:"どういたしまして",romaji:"douitashimashite",es:"de nada",en:"you're welcome"},
+    {jp:"どういたしまして",romaji:"douitashimashite",es:"de nada",en:"you're welcome",note:"Expresión fija: se responde a un «gracias». No se arma por partes."},
     {jp:"すみません",romaji:"sumimasen",es:"disculpe / perdón",en:"excuse me / sorry"},
     {jp:"ごめんなさい",romaji:"gomennasai",es:"lo siento",en:"I'm sorry"},
     {jp:"おねがいします",romaji:"onegaishimasu",es:"por favor",en:"please"},
@@ -1508,76 +1523,76 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     {jp:"わかりました",romaji:"wakarimashita",es:"entendido",en:"understood"},
     {jp:"わかりません",romaji:"wakarimasen",es:"no entiendo",en:"I don't understand"},
     {jp:"だいじょうぶ",romaji:"daijoubu",es:"está bien",en:"it's okay"},
-    {jp:"はじめまして",romaji:"hajimemashite",es:"mucho gusto",en:"nice to meet you"},
+    {jp:"はじめまして",romaji:"hajimemashite",es:"mucho gusto",en:"nice to meet you",note:"Expresión fija: al conocer a alguien por primera vez."},
     {jp:"さようなら",romaji:"sayounara",es:"adiós",en:"goodbye"},
     {jp:"またね",romaji:"matane",es:"nos vemos",en:"see you"},
-    {jp:"いただきます",romaji:"itadakimasu",es:"que aproveche (antes de comer)",en:"before eating"},
-    {jp:"ごちそうさま",romaji:"gochisousama",es:"gracias por la comida",en:"thanks for the meal"},
+    {jp:"いただきます",romaji:"itadakimasu",es:"que aproveche (antes de comer)",en:"before eating",note:"Expresión fija: se dice antes de comer, agradeciendo la comida."},
+    {jp:"ごちそうさま",romaji:"gochisousama",es:"gracias por la comida",en:"thanks for the meal",note:"Expresión fija: se dice al terminar de comer."},
     {jp:"おいしい",romaji:"oishii",es:"delicioso",en:"delicious"},
-    {jp:"これはいくらですか",romaji:"kore wa ikura desu ka",es:"¿cuánto cuesta esto?",en:"how much is this?"},
-    {jp:"トイレはどこですか",romaji:"toire wa doko desu ka",es:"¿dónde está el baño?",en:"where's the bathroom?"},
-    {jp:"えいごをはなせますか",romaji:"eigo o hanasemasu ka",es:"¿habla inglés?",en:"do you speak English?"},
-    {jp:"なまえはなんですか",romaji:"namae wa nan desu ka",es:"¿cómo te llamás?",en:"what's your name?"},
+    {jp:"これはいくらですか",romaji:"kore wa ikura desu ka",es:"¿cuánto cuesta esto?",en:"how much is this?",parts:["これ","は","いくら","ですか"],note:"X + は + いくら + ですか = «¿cuánto cuesta X?». は marca el tema."},
+    {jp:"トイレはどこですか",romaji:"toire wa doko desu ka",es:"¿dónde está el baño?",en:"where's the bathroom?",parts:["トイレ","は","どこ","ですか"],note:"X + は + どこ + ですか = «¿dónde está X?»."},
+    {jp:"えいごをはなせますか",romaji:"eigo o hanasemasu ka",es:"¿habla inglés?",en:"do you speak English?",parts:["えいご","を","はなせますか"],note:"X + を + はなせますか = «¿podés hablar X?». を marca el objeto."},
+    {jp:"なまえはなんですか",romaji:"namae wa nan desu ka",es:"¿cómo te llamás?",en:"what's your name?",parts:["なまえ","は","なん","ですか"],note:"X + は + なん + ですか = «¿cómo te llamás? / ¿cuál es tu nombre?»."},
     {jp:"たすけて",romaji:"tasukete",es:"¡ayuda!",en:"help!"},
     {jp:"だいすき",romaji:"daisuki",es:"me encanta",en:"I love it"},
-    {jp:"メニューをください",romaji:"menyuu o kudasai",es:"el menú, por favor",en:"menu, please"},
-    {jp:"おかいけいおねがいします",romaji:"okaikei onegaishimasu",es:"la cuenta, por favor",en:"the check, please"},
-    {jp:"みずをください",romaji:"mizu o kudasai",es:"agua, por favor",en:"water, please"},
-    {jp:"これください",romaji:"kore kudasai",es:"este, por favor",en:"this one, please"},
+    {jp:"メニューをください",romaji:"menyuu o kudasai",es:"el menú, por favor",en:"menu, please",parts:["メニュー","を","ください"],note:"Patrón: X + を + ください = «X, por favor»."},
+    {jp:"おかいけいおねがいします",romaji:"okaikei onegaishimasu",es:"la cuenta, por favor",en:"the check, please",parts:["おかいけい","おねがいします"],note:"X + おねがいします = pedido cortés. おかいけい = «la cuenta»."},
+    {jp:"みずをください",romaji:"mizu o kudasai",es:"agua, por favor",en:"water, please",parts:["みず","を","ください"],note:"Patrón: X + を + ください = «X, por favor» (を marca el objeto)."},
+    {jp:"これください",romaji:"kore kudasai",es:"este, por favor",en:"this one, please",parts:["これ","ください"],note:"Patrón: X + ください = «X, por favor»."},
     {jp:"かんぱい",romaji:"kanpai",es:"¡salud!",en:"cheers!"},
     {jp:"おいしかった",romaji:"oishikatta",es:"estuvo delicioso",en:"it was delicious"},
-    {jp:"いくらですか",romaji:"ikura desu ka",es:"¿cuánto es?",en:"how much is it?"},
-    {jp:"カードでいいですか",romaji:"kaado de ii desu ka",es:"¿puedo pagar con tarjeta?",en:"can I pay by card?"},
+    {jp:"いくらですか",romaji:"ikura desu ka",es:"¿cuánto es?",en:"how much is it?",parts:["いくら","ですか"],note:"いくら = «cuánto» + ですか."},
+    {jp:"カードでいいですか",romaji:"kaado de ii desu ka",es:"¿puedo pagar con tarjeta?",en:"can I pay by card?",parts:["カード","で","いいですか"],note:"X + で + いいですか = «¿está bien con X?». で = medio."},
     {jp:"たかい",romaji:"takai",es:"caro",en:"expensive"},
     {jp:"やすい",romaji:"yasui",es:"barato",en:"cheap"},
     {jp:"みぎ",romaji:"migi",es:"derecha",en:"right"},
     {jp:"ひだり",romaji:"hidari",es:"izquierda",en:"left"},
     {jp:"まっすぐ",romaji:"massugu",es:"recto / derecho",en:"straight ahead"},
     {jp:"あそこ",romaji:"asoko",es:"allá",en:"over there"},
-    {jp:"えきはどこですか",romaji:"eki wa doko desu ka",es:"¿dónde está la estación?",en:"where's the station?"},
-    {jp:"びょういんはどこですか",romaji:"byouin wa doko desu ka",es:"¿dónde está el hospital?",en:"where's the hospital?"},
+    {jp:"えきはどこですか",romaji:"eki wa doko desu ka",es:"¿dónde está la estación?",en:"where's the station?",parts:["えき","は","どこ","ですか"],note:"X + は + どこ + ですか = «¿dónde está X?»."},
+    {jp:"びょういんはどこですか",romaji:"byouin wa doko desu ka",es:"¿dónde está el hospital?",en:"where's the hospital?",parts:["びょういん","は","どこ","ですか"],note:"X + は + どこ + ですか = «¿dónde está X?»."},
     {jp:"きょう",romaji:"kyou",es:"hoy",en:"today"},
     {jp:"あした",romaji:"ashita",es:"mañana (día)",en:"tomorrow"},
-    {jp:"いまなんじですか",romaji:"ima nanji desu ka",es:"¿qué hora es?",en:"what time is it?"},
-    {jp:"げんきですか",romaji:"genki desu ka",es:"¿cómo estás?",en:"how are you?"},
-    {jp:"げんきです",romaji:"genki desu",es:"estoy bien",en:"I'm fine"},
-    {jp:"またあした",romaji:"mata ashita",es:"hasta mañana",en:"see you tomorrow"},
-    {jp:"おなまえは",romaji:"onamae wa",es:"¿tu nombre?",en:"your name?"},
-    {jp:"どこからですか",romaji:"doko kara desu ka",es:"¿de dónde eres?",en:"where are you from?"},
-    {jp:"にほんごがすこしわかります",romaji:"nihongo ga sukoshi wakarimasu",es:"entiendo un poco de japonés",en:"I understand a little Japanese"},
-    {jp:"もういちど",romaji:"mou ichido",es:"otra vez",en:"once more"},
-    {jp:"ゆっくりおねがいします",romaji:"yukkuri onegaishimasu",es:"más despacio, por favor",en:"slower, please"},
-    {jp:"だいじょうぶですか",romaji:"daijoubu desu ka",es:"¿estás bien?",en:"are you okay?"},
+    {jp:"いまなんじですか",romaji:"ima nanji desu ka",es:"¿qué hora es?",en:"what time is it?",parts:["いま","なんじ","ですか"],note:"いま = «ahora» + なんじ = «qué hora» + ですか."},
+    {jp:"げんきですか",romaji:"genki desu ka",es:"¿cómo estás?",en:"how are you?",parts:["げんき","ですか"],note:"A + ですか = «¿estás A?» (か vuelve pregunta la frase)."},
+    {jp:"げんきです",romaji:"genki desu",es:"estoy bien",en:"I'm fine",parts:["げんき","です"],note:"A + です = «estoy A / soy A»."},
+    {jp:"またあした",romaji:"mata ashita",es:"hasta mañana",en:"see you tomorrow",parts:["また","あした"],note:"また = «otra vez» + あした = «mañana»."},
+    {jp:"おなまえは",romaji:"onamae wa",es:"¿tu nombre?",en:"your name?",parts:["おなまえ","は"],note:"X + は…? = pregunta abreviada («¿y tu nombre?»)."},
+    {jp:"どこからですか",romaji:"doko kara desu ka",es:"¿de dónde eres?",en:"where are you from?",parts:["どこ","から","ですか"],note:"どこ + から + ですか = «¿de dónde?». から = «desde»."},
+    {jp:"にほんごがすこしわかります",romaji:"nihongo ga sukoshi wakarimasu",es:"entiendo un poco de japonés",en:"I understand a little Japanese",parts:["にほんご","が","すこし","わかります"],note:"X + が + わかります = «entiendo X». すこし = «un poco»."},
+    {jp:"もういちど",romaji:"mou ichido",es:"otra vez",en:"once more",parts:["もう","いちど"],note:"もう = «más» + いちど = «una vez» = «otra vez»."},
+    {jp:"ゆっくりおねがいします",romaji:"yukkuri onegaishimasu",es:"más despacio, por favor",en:"slower, please",parts:["ゆっくり","おねがいします"],note:"X + おねがいします = pedido. ゆっくり = «despacio»."},
+    {jp:"だいじょうぶですか",romaji:"daijoubu desu ka",es:"¿estás bien?",en:"are you okay?",parts:["だいじょうぶ","ですか"],note:"A + ですか = «¿estás A? / ¿está bien?»."},
     {jp:"けいさつ",romaji:"keisatsu",es:"policía",en:"police"},
-    {jp:"だいすきです",romaji:"daisuki desu",es:"me encanta (mucho)",en:"I really love it"},
+    {jp:"だいすきです",romaji:"daisuki desu",es:"me encanta (mucho)",en:"I really love it",parts:["だいすき","です"],note:"A + です. だいすき = «me encanta»."},
     {jp:"はじめまして、よろしく",romaji:"hajimemashite, yoroshiku",es:"mucho gusto, encantado",en:"nice to meet you"},
     {jp:"おげんきで",romaji:"ogenki de",es:"cuídate",en:"take care"},
-    {jp:"ちょっとまって",romaji:"chotto matte",es:"esperá un momento",en:"wait a moment"},
-    {jp:"だいじょうぶです",romaji:"daijoubu desu",es:"estoy bien / no hay problema",en:"I'm fine / no problem"},
-    {jp:"しつれいします",romaji:"shitsurei shimasu",es:"con permiso / disculpe",en:"excuse me (leaving)"},
-    {jp:"おつかれさま",romaji:"otsukaresama",es:"buen trabajo",en:"good work"},
-    {jp:"がんばって",romaji:"ganbatte",es:"¡ánimo! / ¡dale!",en:"do your best!"},
+    {jp:"ちょっとまって",romaji:"chotto matte",es:"esperá un momento",en:"wait a moment",parts:["ちょっと","まって"],note:"ちょっと = «un momento» + まって = «esperá»."},
+    {jp:"だいじょうぶです",romaji:"daijoubu desu",es:"estoy bien / no hay problema",en:"I'm fine / no problem",parts:["だいじょうぶ","です"],note:"A + です = «estoy bien / no hay problema»."},
+    {jp:"しつれいします",romaji:"shitsurei shimasu",es:"con permiso / disculpe",en:"excuse me (leaving)",note:"Expresión fija: al entrar o salir de un lugar formal, o para interrumpir con cortesía."},
+    {jp:"おつかれさま",romaji:"otsukaresama",es:"buen trabajo",en:"good work",note:"Expresión fija: reconoce el esfuerzo de alguien tras un trabajo o jornada."},
+    {jp:"がんばって",romaji:"ganbatte",es:"¡ánimo! / ¡dale!",en:"do your best!",note:"Expresión fija: se le dice a alguien que va a encarar algo difícil (un examen, un partido). Literal: «esforzate»."},
     {jp:"おめでとう",romaji:"omedetou",es:"felicidades",en:"congratulations"},
     {jp:"すごい",romaji:"sugoi",es:"¡increíble!",en:"amazing!"},
-    {jp:"ほんとうですか",romaji:"hontou desu ka",es:"¿en serio?",en:"really?"},
-    {jp:"そうです",romaji:"sou desu",es:"así es",en:"that's right"},
+    {jp:"ほんとうですか",romaji:"hontou desu ka",es:"¿en serio?",en:"really?",parts:["ほんとう","ですか"],note:"ほんとう = «verdad» + ですか = «¿en serio?»."},
+    {jp:"そうです",romaji:"sou desu",es:"así es",en:"that's right",parts:["そう","です"],note:"そう = «así» + です = «así es»."},
     {jp:"ちがいます",romaji:"chigaimasu",es:"no es así / incorrecto",en:"that's wrong"},
     {jp:"しりません",romaji:"shirimasen",es:"no sé",en:"I don't know"},
-    {jp:"もういちどおねがいします",romaji:"mou ichido onegaishimasu",es:"otra vez, por favor",en:"once more, please"},
-    {jp:"なんですか",romaji:"nan desu ka",es:"¿qué es?",en:"what is it?"},
-    {jp:"どこですか",romaji:"doko desu ka",es:"¿dónde está?",en:"where is it?"},
-    {jp:"だれですか",romaji:"dare desu ka",es:"¿quién es?",en:"who is it?"},
-    {jp:"いつですか",romaji:"itsu desu ka",es:"¿cuándo es?",en:"when is it?"},
-    {jp:"どうしてですか",romaji:"doushite desu ka",es:"¿por qué?",en:"why?"},
+    {jp:"もういちどおねがいします",romaji:"mou ichido onegaishimasu",es:"otra vez, por favor",en:"once more, please",parts:["もう","いちど","おねがいします"],note:"もう + いちど + おねがいします = «otra vez, por favor»."},
+    {jp:"なんですか",romaji:"nan desu ka",es:"¿qué es?",en:"what is it?",parts:["なん","ですか"],note:"Interrogativa + ですか. なん = «qué»."},
+    {jp:"どこですか",romaji:"doko desu ka",es:"¿dónde está?",en:"where is it?",parts:["どこ","ですか"],note:"どこ = «dónde» + ですか."},
+    {jp:"だれですか",romaji:"dare desu ka",es:"¿quién es?",en:"who is it?",parts:["だれ","ですか"],note:"だれ = «quién» + ですか."},
+    {jp:"いつですか",romaji:"itsu desu ka",es:"¿cuándo es?",en:"when is it?",parts:["いつ","ですか"],note:"いつ = «cuándo» + ですか."},
+    {jp:"どうしてですか",romaji:"doushite desu ka",es:"¿por qué?",en:"why?",parts:["どうして","ですか"],note:"どうして = «por qué» + ですか."},
     {jp:"えいごのメニューはありますか",romaji:"eigo no menyuu wa arimasu ka",es:"¿hay menú en inglés?",en:"is there an English menu?"},
-    {jp:"これはなんですか",romaji:"kore wa nan desu ka",es:"¿qué es esto?",en:"what is this?"},
-    {jp:"やすくしてください",romaji:"yasuku shite kudasai",es:"hágame un descuento",en:"make it cheaper, please"},
-    {jp:"みてもいいですか",romaji:"mite mo ii desu ka",es:"¿puedo mirar?",en:"can I look?"},
-    {jp:"だいじょうぶ、いりません",romaji:"daijoubu, irimasen",es:"no, gracias",en:"no, thank you"},
-    {jp:"ちょっとまってください",romaji:"chotto matte kudasai",es:"espere un momento, por favor",en:"please wait a moment"},
+    {jp:"これはなんですか",romaji:"kore wa nan desu ka",es:"¿qué es esto?",en:"what is this?",parts:["これ","は","なん","ですか"],note:"X + は + なん + ですか = «¿qué es X?»."},
+    {jp:"やすくしてください",romaji:"yasuku shite kudasai",es:"hágame un descuento",en:"make it cheaper, please",parts:["やすくして","ください"],note:"～てください = pedido. «hágalo más barato»."},
+    {jp:"みてもいいですか",romaji:"mite mo ii desu ka",es:"¿puedo mirar?",en:"can I look?",parts:["みても","いいですか"],note:"～ても + いいですか = «¿puedo…?» (permiso)."},
+    {jp:"だいじょうぶ、いりません",romaji:"daijoubu, irimasen",es:"no, gracias",en:"no, thank you",parts:["だいじょうぶ","いりません"],note:"«está bien» + «no lo necesito» = rechazo cortés."},
+    {jp:"ちょっとまってください",romaji:"chotto matte kudasai",es:"espere un momento, por favor",en:"please wait a moment",parts:["ちょっと","まって","ください"],note:"～てください = pedido. «esperá un momento, por favor»."},
     {jp:"げんきでね",romaji:"genki de ne",es:"que estés bien",en:"stay well"},
-    {jp:"おなかがすいた",romaji:"onaka ga suita",es:"tengo hambre",en:"I'm hungry"},
-    {jp:"のどがかわいた",romaji:"nodo ga kawaita",es:"tengo sed",en:"I'm thirsty"},
+    {jp:"おなかがすいた",romaji:"onaka ga suita",es:"tengo hambre",en:"I'm hungry",parts:["おなか","が","すいた"],note:"おなか + が + すいた = literal «la panza se vació» = «tengo hambre»."},
+    {jp:"のどがかわいた",romaji:"nodo ga kawaita",es:"tengo sed",en:"I'm thirsty",parts:["のど","が","かわいた"],note:"のど + が + かわいた = literal «la garganta se secó» = «tengo sed»."},
     {jp:"つかれた",romaji:"tsukareta",es:"estoy cansado",en:"I'm tired"},
     {jp:"ねむい",romaji:"nemui",es:"tengo sueño",en:"I'm sleepy"}
   ];
@@ -2453,7 +2468,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     }
     quiz(tgtSet);
   }
-  function startQuiz(pool,ex,teach){ rsess={pool:pool,box:ex.box,ex:ex,done:0,correct:0,wrong:0,q:null,teach:!!teach,newIntro:0}; buildReadingQ(); readingEl.classList.remove("hidden"); renderReading(); }
+  function startQuiz(pool,ex,teach){ pbsess=null; rsess={pool:pool,box:ex.box,ex:ex,done:0,correct:0,wrong:0,q:null,teach:!!teach,newIntro:0}; buildReadingQ(); readingEl.classList.remove("hidden"); renderReading(); }
   function startWords(){ startWordsMix(); }
   var wsess=null, WORDS_BUILD_PROB=0.35;
   function wordsGoalHTML(){ var reps=todayReps(),gpct=Math.min(100,reps),gtier=dayTier(reps);
@@ -2476,9 +2491,11 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     readingEl.classList.remove("hidden"); }
   function wordsAfterUnit(){ if(!wsess)return; wordsNextUnit(); }
   function wordsEnd(){ wsess=null; rsess=null; bsess=null; readingEl.classList.add("hidden"); try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){} render(); }
-  function startPhrases(){ startQuiz(PHRASES, ensurePhrases()); }
-  function closeReading(){ if(wsess){ wordsEnd(); return; } readingEl.classList.add("hidden"); try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){} render(); }
-  function nextReadingQ(){ if(wsess){ wordsAfterUnit(); return; } buildReadingQ(); renderReading(); }
+  function startPhrases(){ startQuiz(PHRASES, ensurePhrases(), true); }
+  function closeReading(){ if(wsess){ wordsEnd(); return; } pbsess=null; readingEl.classList.add("hidden"); try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){} render(); }
+  function nextReadingQ(){ if(wsess){ wordsAfterUnit(); return; }
+    if(rsess && rsess.pool===PHRASES && maybePhraseBuild())return;   // occasional "armá la frase" detour
+    pbsess=null; buildReadingQ(); renderReading(); }
   function teachWordDone(){
     var q=rsess.q; if(!q||q.mode!=="teach")return;
     var jp=rsess.pool[q.target].jp, w=rsess.ex;
@@ -2506,8 +2523,8 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     if(q.mode==="teach"){
       var em=(getEmoji()&&it.emoji)?'<span class="rq-emoji">'+it.emoji+'</span> ':'';
       readingInner.innerHTML=head+'<div class="rq-prompt teach-word">'+
-        '<div class="rq-kind">'+t(q.relearn?"Let's review this word":"New word")+'</div>'+
-        '<div class="rq-jp mincho">'+it.jp+'</div>'+
+        '<div class="rq-kind">'+t(rsess.pool===PHRASES?(q.relearn?"Let's review this phrase":"New phrase"):(q.relearn?"Let's review this word":"New word"))+'</div>'+
+        '<div class="rq-jp mincho'+(rsess.pool===PHRASES?' rq-jp-ph':'')+'">'+it.jp+'</div>'+
         '<div class="tw-rom">'+it.romaji+'</div>'+
         '<div class="rq-mean">'+em+(es?it.es:it.en)+'</div>'+(it.note?'<div class="rq-note">'+it.note+'</div>':'')+'</div>'+
         '<div class="d-actions"><button class="d-spk-word" id="rSpkW">🔊 <span>'+t("hear it")+'</span></button><button class="d-next" id="rGot">'+t("Got it →")+'</button></div>';
@@ -2777,6 +2794,99 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var c=document.getElementById("mClose"); if(c)c.addEventListener("click",closeExtra);
     var s=document.getElementById("mSnd"); if(s)s.addEventListener("click",function(){ state.matchSpeak=(state.matchSpeak===false); Persistence.save(state); renderMatch(); });
     readingInner.querySelectorAll(".mt-tile:not([disabled])").forEach(function(o){ o.addEventListener("click",function(){ matchTap(o.getAttribute("data-col"),parseInt(o.getAttribute("data-idx"),10)); }); });
+  }
+
+  /* =========================================================================
+     ARMÁ LA FRASE — build a compositional phrase from word-tiles.
+     Only phrases carrying a `parts` array are buildable (fixed idioms like
+     がんばって have none and are recognition-only, which is correct — they
+     don't decompose). Gated by "solo lo aprendido": the phrase must be
+     readable AND already seen (its first-contact card was shown). Runs inside
+     the Frases session as an occasional detour from the recognition quiz,
+     mirroring the words+build (wsess+bsess) seam. Never punitive: a wrong tile
+     just flags red; only a completed build advances SRS. Tunable: PHRASE_BUILD_PROB.
+     ========================================================================= */
+  var pbsess=null, PHRASE_BUILD_PROB=0.34;
+  function phraseDecoyUniverse(){ var u={}; PHRASES.forEach(function(p){ if(p.parts)p.parts.forEach(function(w){u[w]=1;}); }); return Object.keys(u); }
+  function phraseBuildPool(){
+    if(!rsess||rsess.pool!==PHRASES)return [];
+    var seen=(rsess.ex&&rsess.ex.seen)||{};
+    return PHRASES.filter(function(p){ return p.parts && p.parts.length>=2 && seen[p.jp] && wordReadable(p.jp); });
+  }
+  function maybePhraseBuild(){
+    var pool=phraseBuildPool(); if(!pool.length)return false;
+    if(Math.random()>=PHRASE_BUILD_PROB)return false;
+    var last=pbsess?pbsess.phrase.jp:null;
+    var pick=pool.filter(function(p){return p.jp!==last;}); if(!pick.length)pick=pool;
+    /* lean toward phrases with a weaker box (needs more reinforcement) */
+    var box=rsess.box; pick.sort(function(a,b){return (box[a.jp]||0)-(box[b.jp]||0);});
+    var head=pick.slice(0,Math.min(3,pick.length)), phrase=head[Math.floor(Math.random()*head.length)];
+    phraseBuildLaunch(phrase); return true;
+  }
+  function phraseBuildLaunch(phrase){
+    var target=phrase.parts.slice();
+    var uniq={}; target.forEach(function(w){uniq[w]=1;});
+    var decoys=phraseDecoyUniverse().filter(function(w){return !uniq[w];});
+    shuffle(decoys); decoys=decoys.slice(0,Math.max(1,Math.min(3,6-target.length)));
+    var tiles=shuffle(target.concat(decoys));
+    pbsess={phrase:phrase,target:target,tiles:tiles,slot:0,used:{},badIdx:-1,done:false};
+    readingEl.classList.remove("hidden"); renderPhraseBuild();
+  }
+  function pbHeadHTML(){
+    return '<div class="d-sticky"><div class="d-head"><button class="d-close" id="rClose">✕ '+t("Close")+'</button>'+
+      '<div class="d-stats"><div class="d-stat"><div class="n">'+rsess.done+'</div><div class="l">'+t("Done")+'</div></div>'+
+      '<div class="d-stat wrong"><div class="n">'+rsess.wrong+'</div><div class="l">'+t("Wrong")+'</div></div>'+
+      '<div class="d-stat right"><div class="n">'+rsess.correct+'</div><div class="l">'+t("Correct")+'</div></div></div></div></div>';
+  }
+  function renderPhraseBuild(){
+    var q=pbsess, es=getLang()==="es", p=q.phrase, h=pbHeadHTML();
+    h+='<div class="rq-prompt">';
+    h+='<div class="rq-kind">'+t("Build the phrase")+'</div>';
+    h+='<div class="rq-mean">'+(es?p.es:p.en)+'</div>';
+    h+='<button class="d-spk" id="pbSpk" aria-label="Play">🔊</button>';
+    h+='</div>';
+    h+='<div class="pb-slots mincho">';
+    q.target.forEach(function(w,i){
+      if(i<q.slot) h+='<span class="pb-slot filled">'+q.placed[i]+'</span>';
+      else if(i===q.slot && !q.done) h+='<span class="pb-slot active empty">＿</span>';
+      else h+='<span class="pb-slot empty">＿</span>';
+    });
+    h+='</div>';
+    h+='<div class="pb-grid mincho">';
+    q.tiles.forEach(function(w,i){
+      var cls="pb-tile"+(q.used[i]?" used":"")+(q.badIdx===i?" bad":"");
+      h+='<button class="'+cls+'" data-i="'+i+'">'+w+'</button>';
+    });
+    h+='</div>';
+    if(q.done){
+      h+='<div class="rq-fb"><div class="rq-ans"><span class="mincho">'+p.jp+'</span> <span class="rq-rom">'+p.romaji+'</span> — <span class="mean">'+(es?p.es:p.en)+'</span></div>'+(p.note?'<div class="rq-note">'+p.note+'</div>':'')+'</div>';
+      h+='<div class="d-actions"><button class="d-next" id="pbNext">'+t("Next →")+'</button></div>';
+    }
+    readingInner.innerHTML=h; bindPhraseBuild();
+  }
+  function pbTap(i){
+    var q=pbsess; if(!q||q.done||q.used[i])return;
+    var need=q.target[q.slot];
+    if(q.tiles[i]===need){
+      q.used[i]=true; q.placed=q.placed||[]; q.placed[q.slot]=q.tiles[i]; q.slot++; q.badIdx=-1;
+      if(q.slot>=q.target.length){
+        q.done=true;
+        var jp=q.phrase.jp, box=rsess.box, cur=box[jp]||0; box[jp]=Math.min(5,cur+1);
+        if(rsess.ex.leech)rsess.ex.leech[jp]=0;
+        rsess.done++; rsess.correct++;
+        var td=today(); rsess.ex.daily[td]=(rsess.ex.daily[td]||0)+1; stampDay();
+        Persistence.save(state); speak(jp);
+      }
+      renderPhraseBuild();
+    }else{
+      q.badIdx=i; renderPhraseBuild();
+    }
+  }
+  function bindPhraseBuild(){
+    var c=document.getElementById("rClose"); if(c)c.addEventListener("click",closeReading);
+    var sp=document.getElementById("pbSpk"); if(sp)sp.addEventListener("click",function(){ if(pbsess)speak(pbsess.phrase.jp); });
+    var nx=document.getElementById("pbNext"); if(nx)nx.addEventListener("click",nextReadingQ);
+    if(!pbsess.done) readingInner.querySelectorAll(".pb-tile:not(.used)").forEach(function(o){ o.addEventListener("click",function(){ pbTap(parseInt(o.getAttribute("data-i"),10)); }); });
   }
 
   /* =========================================================================
