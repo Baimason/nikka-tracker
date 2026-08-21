@@ -2516,7 +2516,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     }
     quiz(tgtSet);
   }
-  function startQuiz(pool,ex,teach){ pbsess=null; rsess={pool:pool,box:ex.box,ex:ex,done:0,correct:0,wrong:0,q:null,teach:!!teach,newIntro:0}; buildReadingQ(); readingEl.classList.remove("hidden"); renderReading(); }
+  function startQuiz(pool,ex,teach){ pbsess=null; pbRecent=[]; rsess={pool:pool,box:ex.box,ex:ex,done:0,correct:0,wrong:0,q:null,teach:!!teach,newIntro:0}; buildReadingQ(); readingEl.classList.remove("hidden"); renderReading(); }
   function startWords(){ startWordsMix(); }
   var wsess=null, WORDS_BUILD_PROB=0.35;
   function wordsGoalHTML(){ var reps=todayReps(),gpct=Math.min(100,reps),gtier=dayTier(reps);
@@ -2854,7 +2854,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
      mirroring the words+build (wsess+bsess) seam. Never punitive: a wrong tile
      just flags red; only a completed build advances SRS. Tunable: PHRASE_BUILD_PROB.
      ========================================================================= */
-  var pbsess=null, PHRASE_BUILD_PROB=0.34;
+  var pbsess=null, PHRASE_BUILD_PROB=0.34, pbRecent=[];
   function phraseDecoyUniverse(){ var u={}; PHRASES.forEach(function(p){ if(p.parts)p.parts.forEach(function(w){u[w]=1;}); }); return Object.keys(u); }
   function phraseBuildPool(){
     if(!rsess||rsess.pool!==PHRASES)return [];
@@ -2864,11 +2864,15 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function maybePhraseBuild(){
     var pool=phraseBuildPool(); if(!pool.length)return false;
     if(Math.random()>=PHRASE_BUILD_PROB)return false;
-    var last=pbsess?pbsess.phrase.jp:null;
-    var pick=pool.filter(function(p){return p.jp!==last;}); if(!pick.length)pick=pool;
-    /* lean toward phrases with a weaker box (needs more reinforcement) */
+    /* ring buffer of the last 3 built phrases — pbsess is nulled between
+       questions, so we can't rely on it to remember. Falls back to the full
+       pool only if everything's recent (tiny pool). */
+    var recentSet={}; pbRecent.forEach(function(jp){recentSet[jp]=1;});
+    var pick=pool.filter(function(p){return !recentSet[p.jp];});
+    if(!pick.length)pick=pool;
     var box=rsess.box; pick.sort(function(a,b){return (box[a.jp]||0)-(box[b.jp]||0);});
     var head=pick.slice(0,Math.min(3,pick.length)), phrase=head[Math.floor(Math.random()*head.length)];
+    pbRecent.push(phrase.jp); if(pbRecent.length>3)pbRecent.shift();
     phraseBuildLaunch(phrase); return true;
   }
   function phraseBuildLaunch(phrase){
