@@ -515,6 +515,35 @@
   .mt-tile.rom{font-size:19px}
   .mt-tile.sel{background:var(--ink);border-color:var(--ink);color:var(--card)}
   .mt-tile.done{background:rgba(79,122,82,.07);border-color:rgba(79,122,82,.5);color:var(--green);pointer-events:none}
+  .pt-card{padding:4px 0 2px}
+  .pt-kind{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--shu);margin-bottom:14px}
+  .pt-particle{border:1px dashed var(--line);border-radius:2px;padding:12px;margin-bottom:14px;background:var(--paper)}
+  .pt-pg{display:flex;align-items:baseline;gap:12px}
+  .pt-glyph{font-size:40px;font-weight:800;color:var(--ink);line-height:1}
+  .pt-read{font-size:14px;color:var(--ink-soft)}
+  .pt-fn{font-size:14px;color:var(--ink-soft);line-height:1.5;margin-top:6px}
+  .pt-mold{background:var(--paper);border:1px dashed var(--line);border-radius:2px;padding:14px 10px;text-align:center;font-size:22px;line-height:1.4}
+  .pt-mold .pt-slot{color:var(--ink-soft);font-size:17px}
+  .pt-mold .pt-fix{color:var(--shu);font-weight:800}
+  .pt-gloss{font-family:var(--display-font);font-weight:700;font-size:18px;color:var(--ink);text-align:center;margin:14px 0 4px}
+  .pt-exlabel{font-size:12px;color:var(--ink-soft);margin:16px 0 8px}
+  .pt-ex{display:flex;flex-direction:column;gap:9px}
+  .pt-exrow{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .pt-exrow .mincho{font-size:22px;color:var(--ink)}
+  .pt-hi{color:var(--shu);font-weight:700}
+  .pt-exmean{font-size:13px;color:var(--ink-faint)}
+  .pt-cloze{font-size:32px;color:var(--ink);text-align:center;margin:8px 0 4px}
+  .pt-hole{display:inline-block;min-width:40px;border-bottom:3px solid var(--shu);color:var(--shu);text-align:center}
+  .pt-hole.filled{color:var(--green);border-color:var(--green)}
+  .pt-clmean{text-align:center;font-size:14px;color:var(--ink-soft);margin:10px 0 18px}
+  .pt-opts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .pt-opt{background:var(--paper);border:1.5px solid var(--ink);border-radius:2px;padding:12px 0;font-size:24px;font-weight:700;color:var(--ink);cursor:pointer;text-align:center}
+  .pt-opt.ok{background:var(--green);color:#fff;border-color:var(--green)}
+  .pt-opt.bad{background:var(--shu);color:#fff;border-color:var(--shu)}
+  .pt-opt.dim{opacity:.4}
+  .pt-fb{margin-top:16px;border-top:1px dashed var(--line);padding-top:12px;font-size:14px;color:var(--ink-soft);text-align:center}
+  .pt-fb b{color:var(--shu);font-size:20px}
+
 </style>
 
 <div class="wrap">
@@ -1673,7 +1702,48 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     {jp:"おなかがすいた",romaji:"onaka ga suita",es:"tengo hambre",en:"I'm hungry",parts:["おなか","が","すいた"],note:"おなか + が + すいた = literal «la panza se vació» = «tengo hambre»."},
     {jp:"のどがかわいた",romaji:"nodo ga kawaita",es:"tengo sed",en:"I'm thirsty",parts:["のど","が","かわいた"],note:"のど + が + かわいた = literal «la garganta se secó» = «tengo sed»."},
     {jp:"つかれた",romaji:"tsukareta",es:"estoy cansado",en:"I'm tired"},
-    {jp:"ねむい",romaji:"nemui",es:"tengo sueño",en:"I'm sleepy"}
+    {jp:"ねむい",romaji:"nemui",es:"tengo sueño",en:"I'm sleepy"},
+    // AはBです — «X es Y» (cortés)
+    {jp:'これはほんです',romaji:'kore wa hon desu',es:'esto es un libro',en:'this is a book',parts:['これ','は','ほん','です'],pattern:'cop-desu',note:'X は Y です = «X es Y» (cortés)'},
+    {jp:'それはとけいです',romaji:'sore wa tokei desu',es:'eso es un reloj',en:'that is a clock',parts:['それ','は','とけい','です'],pattern:'cop-desu',note:'X は Y です = «X es Y» (cortés)'},
+    {jp:'わたしはいしゃです',romaji:'watashi wa isha desu',es:'soy médico',en:'I am a doctor',parts:['わたし','は','いしゃ','です'],pattern:'cop-desu',note:'わたし は X です = «yo soy X»'},
+    // Aですか — «¿es A?»
+    {jp:'たかいですか',romaji:'takai desu ka',es:'¿es caro?',en:'is it expensive?',parts:['たかい','ですか'],pattern:'q-desu',note:'A + ですか = «¿es A?»'},
+    // Aをください — «X, por favor»
+    {jp:'おちゃをください',romaji:'ocha o kudasai',es:'un té, por favor',en:'tea, please',parts:['おちゃ','を','ください'],pattern:'req-kudasai',note:'X を ください = «X, por favor»'},
+    {jp:'パンをください',romaji:'pan o kudasai',es:'pan, por favor',en:'bread, please',parts:['パン','を','ください'],pattern:'req-kudasai',note:'X を ください = «X, por favor»'},
+    {jp:'これをください',romaji:'kore o kudasai',es:'esto, por favor',en:'this, please',parts:['これ','を','ください'],pattern:'req-kudasai',note:'X を ください = «X, por favor»'},
+    // Aおねがいします — pedido cortés
+    {jp:'みずおねがいします',romaji:'mizu onegaishimasu',es:'agua, por favor',en:'water, please',parts:['みず','おねがいします'],pattern:'req-onegai',note:'X おねがいします = pedido cortés'},
+    {jp:'メニューおねがいします',romaji:'menyuu onegaishimasu',es:'el menú, por favor',en:'menu, please',parts:['メニュー','おねがいします'],pattern:'req-onegai',note:'X おねがいします = pedido cortés'},
+    // Aがある — «hay X» (cosa)
+    {jp:'ほんがある',romaji:'hon ga aru',es:'hay un libro',en:'there is a book',parts:['ほん','が','ある'],pattern:'exist-aru',note:'が…ある = «hay» (cosas)'},
+    {jp:'とけいがある',romaji:'tokei ga aru',es:'hay un reloj',en:'there is a clock',parts:['とけい','が','ある'],pattern:'exist-aru',note:'が…ある = «hay» (cosas)'},
+    // Aがいる — «hay X» (ser vivo)
+    {jp:'とりがいる',romaji:'tori ga iru',es:'hay un pájaro',en:'there is a bird',parts:['とり','が','いる'],pattern:'exist-iru',note:'が…いる = «hay» (seres vivos)'},
+    {jp:'うまがいる',romaji:'uma ga iru',es:'hay un caballo',en:'there is a horse',parts:['うま','が','いる'],pattern:'exist-iru',note:'が…いる = «hay» (seres vivos)'},
+    // Aがすき — «me gusta X»
+    {jp:'いぬがすき',romaji:'inu ga suki',es:'me gustan los perros',en:'I like dogs',parts:['いぬ','が','すき'],pattern:'like-suki',note:'X が すき = «me gusta X»'},
+    {jp:'すしがすき',romaji:'sushi ga suki',es:'me gusta el sushi',en:'I like sushi',parts:['すし','が','すき'],pattern:'like-suki',note:'X が すき = «me gusta X»'},
+    // A～たい — «quiero (hacer) X»
+    {jp:'パンがたべたい',romaji:'pan ga tabetai',es:'quiero comer pan',en:'I want to eat bread',parts:['パン','が','たべたい'],pattern:'want-tai',note:'～たい = «querer». たべたい = «querer comer»'},
+    {jp:'おちゃがのみたい',romaji:'ocha ga nomitai',es:'quiero beber té',en:'I want to drink tea',parts:['おちゃ','が','のみたい'],pattern:'want-tai',note:'～たい = «querer». のみたい = «querer beber»'},
+    {jp:'ほんがよみたい',romaji:'hon ga yomitai',es:'quiero leer un libro',en:'I want to read a book',parts:['ほん','が','よみたい'],pattern:'want-tai',note:'～たい = «querer». よみたい = «querer leer»'},
+    // Aへいく — «ir a X»
+    {jp:'がっこうへいく',romaji:'gakkou e iku',es:'voy a la escuela',en:'I go to school',parts:['がっこう','へ','いく'],pattern:'dir-e',note:'へ = «hacia» · いく = «ir»'},
+    // Aでいく — «ir en X»
+    {jp:'くるまでいく',romaji:'kuruma de iku',es:'ir en carro',en:'go by car',parts:['くるま','で','いく'],pattern:'means-de',note:'X で いく = «ir en X» (で = medio)'},
+    {jp:'じてんしゃでいく',romaji:'jitensha de iku',es:'ir en bici',en:'go by bike',parts:['じてんしゃ','で','いく'],pattern:'means-de',note:'X で いく = «ir en X» (で = medio)'},
+    // AのB — «B de A» / posesivo
+    {jp:'わたしのほん',romaji:'watashi no hon',es:'mi libro',en:'my book',parts:['わたし','の','ほん'],pattern:'poss-no',note:'X の Y = «Y de X». わたしの = «mi»'},
+    {jp:'ぼくのくるま',romaji:'boku no kuruma',es:'mi carro',en:'my car',parts:['ぼく','の','くるま'],pattern:'poss-no',note:'X の Y = «Y de X». ぼくの = «mi»'},
+    {jp:'いぬのなまえ',romaji:'inu no namae',es:'el nombre del perro',en:'the dog\'s name',parts:['いぬ','の','なまえ'],pattern:'poss-no',note:'X の Y = «el Y de X»'},
+    {jp:'わたしのいえ',romaji:'watashi no ie',es:'mi casa',en:'my house',parts:['わたし','の','いえ'],pattern:'poss-no',note:'X の Y = «Y de X». わたしの = «mi»'},
+    // Aにいる/ある — «estar/haber en X»
+    {jp:'がっこうにいる',romaji:'gakkou ni iru',es:'estar en la escuela',en:'be at school',parts:['がっこう','に','いる'],pattern:'loc-ni',note:'lugar に いる = «estar en» (seres vivos)'},
+    {jp:'こうえんにいる',romaji:'kouen ni iru',es:'estar en el parque',en:'be at the park',parts:['こうえん','に','いる'],pattern:'loc-ni',note:'lugar に いる = «estar en» (seres vivos)'},
+    {jp:'みせにある',romaji:'mise ni aru',es:'está en la tienda',en:'it is in the shop',parts:['みせ','に','ある'],pattern:'loc-ni',note:'lugar に ある = «está en» (cosas)'},
+    {jp:'えきにいる',romaji:'eki ni iru',es:'estar en la estación',en:'be at the station',parts:['えき','に','いる'],pattern:'loc-ni',note:'lugar に いる = «estar en» (seres vivos)'},
   ];
 
   /* =========================================================================
@@ -2532,9 +2602,189 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   }
 
 
+
+  /* ---- PHRASE GATE (i+1) — reemplaza readableIdx() para el pool PHRASES ----
+     Elegible sii se leen todos los kana Y la frase trae <=1 pieza nueva: o una
+     palabra de contenido nueva (patrón ya conocido), o un patrón nuevo (todo el
+     vocab ya dominado). Nunca ambas. Las partículas viajan dentro del patrón. */
+  var PHRASE_WORD_MIN=3, PATTERN_SEEN_MIN=1;
+  var STRUCT_TOKENS={'は':1,'が':1,'を':1,'に':1,'で':1,'へ':1,'の':1,'と':1,'も':1,'か':1,'から':1,'まで':1,'や':1,'だ':1,'です':1,'ですか':1,'ください':1,'おねがいします':1,'いる':1,'ある':1,'すき':1};
+  function isStructTok(w){ return !!STRUCT_TOKENS[w] || /たい$/.test(w); }
+  function inferPattern(parts){ if(!parts||!parts.length)return null;
+    var has=function(t){return parts.indexOf(t)>=0;}, last=parts[parts.length-1];
+    if(has('は')&&last==='だ')   return 'cop-da';
+    if(has('は')&&last==='です')  return 'cop-desu';
+    if(has('を')&&has('ください')) return 'req-kudasai';
+    if(has('おねがいします'))       return 'req-onegai';
+    if(has('を'))                return 'obj-wo';
+    if(has('が')&&last==='ある')  return 'exist-aru';
+    if(has('が')&&last==='いる')  return 'exist-iru';
+    if(has('が')&&has('すき'))    return 'like-suki';
+    if(parts.some(function(w){return /たい$/.test(w);})) return 'want-tai';
+    if(has('へ')) return 'dir-e';
+    if(has('で')) return 'means-de';
+    if(has('の')) return 'poss-no';
+    if(has('に')) return 'loc-ni';
+    if(['どこ','なん','だれ','いつ','どうして','いくら'].some(has)&&last==='ですか') return 'q-interr';
+    if(last==='ですか') return 'q-desu';
+    return null; }
+  function phraseWordKnown(w){ if(isStructTok(w))return true; if(!WORD_KEYSET[w])return true; return (ensureWords().box[w]||0)>=PHRASE_WORD_MIN; }
+  function patternKnown(pid){ if(!pid)return true; return (ensurePatterns().box[pid]||0)>=PATTERN_SEEN_MIN; }
+  function phraseReady(phrase){ if(!wordReadable(phrase.jp))return false; if(!phrase.parts)return true;
+    var novel=0; phrase.parts.forEach(function(w){ if(!phraseWordKnown(w))novel++; });
+    var pid=phrase.pattern||inferPattern(phrase.parts); if(!patternKnown(pid))novel++;
+    return novel<=1; }
+  function phraseReadyIdx(pool){ var out=[]; for(var i=0;i<pool.length;i++) if(phraseReady(pool[i])) out.push(i); return out; }
+
+
+  /* =========================================================================
+     GRAMMAR ENGINE (Stage 6 core) — patrones + partículas como unidades SRS.
+     Data-pure: un PATTERN es un molde; sus ejemplos se DERIVAN del pool PHRASES
+     (patternExamples), así que sumar frases con `pattern:'id'` = más ejemplos,
+     cero ediciones al motor. Espeja el director kana/palabras: teach card ->
+     cloze drill -> SRS (box/due/leech). El gate phraseReady (i+1) sólo deja
+     pasar una frase con <=1 pieza nueva. Encendido junto con este motor.
+     ========================================================================= */
+  var PARTICLES={
+    'は':{read:'wa · se escribe ha', fn:'marca el tema — de lo que hablás'},
+    'を':{read:'o · se escribe wo',  fn:'marca el objeto — lo que recibe la acción'},
+    'が':{read:'ga',                 fn:'marca el sujeto — quien hace o siente'},
+    'へ':{read:'e · se escribe he',  fn:'hacia — la dirección del movimiento'},
+    'で':{read:'de',                 fn:'medio — cómo o con qué'},
+    'に':{read:'ni',                 fn:'lugar — dónde está algo'},
+    'の':{read:'no',                 fn:'de — conecta o posee'},
+    'か':{read:'ka',                 fn:'convierte la frase en pregunta'}
+  };
+  var PATTERNS=[
+    {id:'cop-da',    order:1,  needs:[],           intro:['は','だ'], mold:'｛tema｝は｛qué es｝だ',   gloss:'«X es Y» — decir qué es algo (casual)'},
+    {id:'cop-desu',  order:2,  needs:['cop-da'],   intro:['です'],    mold:'｛tema｝は｛qué es｝です', gloss:'«X es Y» — la versión cortés'},
+    {id:'q-desu',    order:3,  needs:['cop-desu'], intro:['か'],      mold:'｛algo｝ですか',          gloss:'«¿es X?» — か vuelve pregunta la frase'},
+    {id:'obj-wo',    order:4,  needs:['cop-da'],   intro:['を'],      mold:'｛cosa｝を｛verbo｝',       gloss:'hacerle algo a X — を marca el objeto'},
+    {id:'exist-aru', order:5,  needs:['cop-da'],   intro:['が'],      mold:'｛cosa｝がある',           gloss:'«hay X» — para cosas (ある)'},
+    {id:'exist-iru', order:6,  needs:['exist-aru'],intro:[],          mold:'｛ser vivo｝がいる',        gloss:'«hay X» — para seres vivos (いる)'},
+    {id:'like-suki', order:7,  needs:['exist-aru'],intro:[],          mold:'｛cosa｝がすき',           gloss:'«me gusta X» — が marca lo que gusta'},
+    {id:'want-tai',  order:8,  needs:['exist-aru'],intro:[],          mold:'｛cosa｝が｛verbo｝たい',    gloss:'«quiero (hacer) X» — verbo + たい'},
+    {id:'req-kudasai',order:9, needs:['obj-wo'],   intro:[],          mold:'｛cosa｝をください',        gloss:'«X, por favor» — pedir algo'},
+    {id:'req-onegai',order:10, needs:['obj-wo'],   intro:[],          mold:'｛cosa｝おねがいします',     gloss:'«X, por favor» — pedido cortés'},
+    {id:'dir-e',     order:11, needs:['obj-wo'],   intro:['へ'],      mold:'｛lugar｝へいく',          gloss:'«ir a X» — へ marca el destino'},
+    {id:'means-de',  order:12, needs:['dir-e'],    intro:['で'],      mold:'｛medio｝でいく',          gloss:'«ir en X» — で marca el medio'},
+    {id:'loc-ni',    order:13, needs:['exist-iru'],intro:['に'],      mold:'｛lugar｝にいる／ある',      gloss:'«estar/haber en X» — に marca el lugar'},
+    {id:'poss-no',   order:14, needs:['cop-da'],   intro:['の'],      mold:'｛A｝の｛B｝',              gloss:'«el B de A» / «mi B» — の conecta'},
+    {id:'q-interr',  order:15, needs:['q-desu'],   intro:[],          mold:'｛qué／dónde／quién｝ですか', gloss:'preguntar con なん／どこ／だれ + ですか'}
+  ];
+  var PATTERN_BY_ID=(function(){ var m={}; PATTERNS.forEach(function(p){m[p.id]=p;}); return m; })();
+
+  /* Distractores de partícula confundible (espeja CONFUSE_GROUPS del kana). */
+  var PARTICLE_CONFUSE=[['は','が','を'],['へ','に','で'],['の','は','が'],['か','ね','よ']];
+  var PCONF=(function(){ var out={}; PARTICLE_CONFUSE.forEach(function(g){ g.forEach(function(p){ out[p]=out[p]||{}; g.forEach(function(o){ if(o!==p)out[p][o]=1; }); }); }); return out; })();
+
+  /* ---- SRS de patrones (mismo intervalo que el kana) ---- */
+  var PAT_SRS_IV=[0,1,2,4,7,14], PAT_LEECH_AT=3, PATTERN_DRILL_PROB=0.30;
+  function ensurePatterns(){ if(!state.exercises)state.exercises={};
+    if(!state.exercises.patterns)state.exercises.patterns={box:{},seen:{},due:{},leech:{},daily:{}};
+    var p=state.exercises.patterns; if(!p.box)p.box={}; if(!p.seen)p.seen={}; if(!p.due)p.due={}; if(!p.leech)p.leech={}; if(!p.daily)p.daily={}; return p; }
+  function setPatternDue(pid,box){ var pt=ensurePatterns(); var days=PAT_SRS_IV[Math.min(box,PAT_SRS_IV.length-1)]||0; var d=new Date(); d.setDate(d.getDate()+days); pt.due[pid]=d.toISOString().slice(0,10); }
+  function isPatternDue(pid){ var pt=ensurePatterns(); if(!pt.seen[pid])return false; var due=pt.due[pid]; if(!due)return true; return due<=today(); }
+
+  /* ---- ejemplos derivados del pool (data-pure) ---- */
+  function patternOf(p){ return p.pattern || inferPattern(p.parts||[]); }
+  function patternExamples(id,n){ return PHRASES.filter(function(p){ return p.parts && patternOf(p)===id && wordReadable(p.jp); }).slice(0,n||3); }
+
+  /* ---- desbloqueo: needs satisfechos Y al menos 1 ejemplo legible ---- */
+  function patternUnlocked(pid){ var p=PATTERN_BY_ID[pid]; if(!p)return false; var pt=ensurePatterns();
+    for(var i=0;i<p.needs.length;i++){ if(!(pt.box[p.needs[i]]>=1))return false; }
+    return patternExamples(pid,1).length>0; }
+  function nextPatternToTeach(){ var pt=ensurePatterns(), cand=PATTERNS.filter(function(p){ return !pt.seen[p.id] && patternUnlocked(p.id); }); cand.sort(function(a,b){return a.order-b.order;}); return cand.length?cand[0]:null; }
+  function duePattern(){ var pt=ensurePatterns(), cand=PATTERNS.filter(function(p){ return pt.seen[p.id] && isPatternDue(p.id) && patternExamples(p.id,1).length; }); cand.sort(function(a,b){return a.order-b.order;}); return cand.length?cand[0]:null; }
+  function anySeenPatternForDrill(){ var pt=ensurePatterns(), cand=PATTERNS.filter(function(p){ return pt.seen[p.id] && patternExamples(p.id,1).length; }); return cand.length?cand[Math.floor(Math.random()*cand.length)]:null; }
+
+  /* ---- director: detour al inicio de cada pregunta de Frases ---- */
+  var ptsess=null;
+  function maybePattern(){
+    if(!rsess || rsess.pool!==PHRASES) return false;
+    var due=duePattern(); if(due){ launchPatternCloze(due.id,true); return true; }
+    var nu=nextPatternToTeach(); if(nu){ launchPatternTeach(nu.id); return true; }
+    if(Math.random()<PATTERN_DRILL_PROB){ var s=anySeenPatternForDrill(); if(s){ launchPatternCloze(s.id,false); return true; } }
+    return false;
+  }
+
+  /* ---- TEACH CARD de patrón (absorbe la partícula nueva si la hay) ---- */
+  function moldHTML(mold){ var out=''; for(var i=0;i<mold.length;i++){ var ch=mold.charAt(i);
+      if(ch==='｛'){ var j=mold.indexOf('｝',i); var slot=mold.slice(i+1,j); out+='<span class="pt-slot">'+slot+'</span>'; i=j; }
+      else { out+='<span class="pt-fix">'+ch+'</span>'; } }
+    return out; }
+  function launchPatternTeach(pid){ ptsess={mode:'teach',pid:pid,relearn:false}; renderPatternTeach(); readingEl.classList.remove('hidden'); }
+  function renderPatternTeach(){
+    var p=PATTERN_BY_ID[ptsess.pid], pt=ensurePatterns();
+    var newP=(p.intro||[]).filter(function(x){ return PARTICLES[x] && !pt.seen['_p_'+x]; });
+    var h='<div class="d-sticky"><div class="d-head"><button class="d-close" id="rClose">✕ '+t('Close')+'</button></div></div>';
+    h+='<div class="pt-card">';
+    h+='<div class="pt-kind">'+t('New pattern')+'</div>';
+    if(newP.length){ var pc=newP[0], info=PARTICLES[pc];
+      h+='<div class="pt-particle"><div class="pt-pg"><span class="pt-glyph mincho">'+pc+'</span><span class="pt-read">'+info.read+'</span></div><div class="pt-fn">'+info.fn+'</div></div>'; }
+    h+='<div class="pt-mold mincho">'+moldHTML(p.mold)+'</div>';
+    h+='<div class="pt-gloss">'+p.gloss+'</div>';
+    var ex=patternExamples(p.id,3), es=getLang()==='es';
+    if(ex.length){ h+='<div class="pt-exlabel">'+t('Same mold, different fill:')+'</div><div class="pt-ex">';
+      ex.forEach(function(e){ h+='<div class="pt-exrow"><span class="mincho">'+phraseHilite(e)+'</span><span class="pt-exmean">'+(es?e.es:e.en)+'</span></div>'; });
+      h+='</div>'; }
+    h+='</div><div class="d-actions"><button class="d-next" id="ptGot">'+t('Got it →')+'</button></div>';
+    readingInner.innerHTML=h;
+    var c=document.getElementById('rClose'); if(c)c.addEventListener('click',closeReading);
+    var g=document.getElementById('ptGot'); if(g)g.addEventListener('click',patternTeachDone);
+    if(ex.length) setTimeout(function(){ speak(ex[0].jp); },300);
+  }
+  /* resalta partículas/terminaciones fijas en shu dentro de una frase de ejemplo */
+  function phraseHilite(e){ if(!e.parts) return e.jp; var out=''; e.parts.forEach(function(w){ var fix=PARTICLES[w]||['だ','です','ですか','か','ください','おねがいします','ある','いる','すき'].indexOf(w)>=0||/たい$/.test(w); out+=fix?'<span class="pt-hi">'+w+'</span>':w; }); return out; }
+  function patternTeachDone(){ var pid=ptsess.pid, p=PATTERN_BY_ID[pid], pt=ensurePatterns();
+    pt.seen[pid]=1; if(!(pt.box[pid]>=1))pt.box[pid]=1; (p.intro||[]).forEach(function(x){ if(PARTICLES[x])pt.seen['_p_'+x]=1; });
+    setPatternDue(pid,pt.box[pid]); var td=today(); pt.daily[td]=(pt.daily[td]||0)+1; stampDay();
+    Persistence.save(state); ptsess=null; buildReadingQ(); renderReading(); }
+
+  /* ---- CLOZE de partícula: ocultar UNA partícula y elegirla ---- */
+  function launchPatternCloze(pid,relearn){
+    var exs=PHRASES.filter(function(p){ return p.parts && patternOf(p)===pid && wordReadable(p.jp) && p.parts.some(function(w){return PARTICLES[w];}); });
+    if(!exs.length){ // sin frase con partícula visible -> tratamos como visto y seguimos
+      var pt=ensurePatterns(); pt.seen[pid]=1; if(!(pt.box[pid]>=1))pt.box[pid]=1; setPatternDue(pid,pt.box[pid]); ptsess=null; buildReadingQ(); renderReading(); return; }
+    var phrase=exs[Math.floor(Math.random()*exs.length)];
+    var pidxs=[]; phrase.parts.forEach(function(w,i){ if(PARTICLES[w])pidxs.push(i); });
+    var slot=pidxs[Math.floor(Math.random()*pidxs.length)], answer=phrase.parts[slot];
+    var conf=Object.keys(PCONF[answer]||{}); shuffle(conf);
+    var opts=[answer].concat(conf.filter(function(x){return x!==answer;}).slice(0,3));
+    while(opts.length<3){ var extra=['は','が','を','に','で','へ','の'].filter(function(x){return opts.indexOf(x)<0;}); if(!extra.length)break; opts.push(extra[0]); }
+    opts=shuffle(opts);
+    ptsess={mode:'cloze',pid:pid,relearn:!!relearn,phrase:phrase,slot:slot,answer:answer,opts:opts,answered:false,picked:null};
+    renderPatternCloze(); readingEl.classList.remove('hidden');
+  }
+  function renderPatternCloze(){
+    var q=ptsess, phrase=q.phrase, es=getLang()==='es';
+    var jp=''; phrase.parts.forEach(function(w,i){ if(i===q.slot){ var cls='pt-hole'+(q.answered?(w===q.answer?' filled':''):''); jp+='<span class="'+cls+'">'+(q.answered?q.answer:'▢')+'</span>'; } else jp+=w; });
+    var h='<div class="d-sticky"><div class="d-head"><button class="d-close" id="rClose">✕ '+t('Close')+'</button></div></div>';
+    h+='<div class="pt-card"><div class="pt-kind">'+t('Which particle goes here?')+'</div>';
+    h+='<div class="pt-cloze mincho">'+jp+'</div>';
+    h+='<div class="pt-clmean">'+(es?phrase.es:phrase.en)+'</div>';
+    h+='<div class="pt-opts">';
+    q.opts.forEach(function(w){ var cls='pt-opt mincho'; if(q.answered){ if(w===q.answer)cls+=' ok'; else if(w===q.picked)cls+=' bad'; else cls+=' dim'; } h+='<button class="'+cls+'" data-p="'+w+'">'+w+'</button>'; });
+    h+='</div>';
+    if(q.answered){ var info=PARTICLES[q.answer]; h+='<div class="pt-fb"><b class="mincho">'+q.answer+'</b> — '+(info?info.fn:'')+'</div>';
+      h+='<div class="d-actions"><button class="d-next" id="ptNext">'+t('Next →')+'</button></div>'; }
+    readingInner.innerHTML=h;
+    var c=document.getElementById('rClose'); if(c)c.addEventListener('click',closeReading);
+    var nx=document.getElementById('ptNext'); if(nx)nx.addEventListener('click',function(){ ptsess=null; nextReadingQ(); });
+    if(!q.answered){ readingInner.querySelectorAll('.pt-opt').forEach(function(o){ o.addEventListener('click',function(){ clozeAnswer(o.getAttribute('data-p')); }); }); }
+    else { setTimeout(function(){ speak(phrase.jp); },250); }
+  }
+  function clozeAnswer(p){ var q=ptsess; if(!q||q.answered)return; q.answered=true; q.picked=p;
+    var pt=ensurePatterns(), pid=q.pid, correct=(p===q.answer), cur=pt.box[pid]||0;
+    pt.box[pid]=correct?Math.min(5,cur+1):Math.max(1,cur-1);
+    if(correct){ if((pt.leech[pid]||0)>0)pt.leech[pid]=0; } else { pt.leech[pid]=(pt.leech[pid]||0)+1; }
+    setPatternDue(pid,pt.box[pid]); var td=today(); pt.daily[td]=(pt.daily[td]||0)+1; stampDay();
+    Persistence.save(state); renderPatternCloze(); }
+
+
   function buildReadingQ(){
     var pool=rsess.pool,box=rsess.box,all=[]; for(var i=0;i<pool.length;i++)all.push(i);
-    var readable=readableIdx(pool), tgtSet=readable.length?readable:all;
+    var readable=(pool===PHRASES?phraseReadyIdx(pool):readableIdx(pool)), tgtSet=readable.length?readable:all;
     function quiz(setIdx){
       var target=weightedPick(pool,box,setIdx,rsess.recent||[]);
       var distSrc=(readable.length>=6?readable:all).filter(function(i){return i!==target;});
@@ -2593,10 +2843,10 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     readingEl.classList.remove("hidden"); }
   function wordsAfterUnit(){ if(!wsess)return; wordsNextUnit(); }
   function wordsEnd(){ wsess=null; rsess=null; bsess=null; readingEl.classList.add("hidden"); try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){} render(); }
-  function startPhrases(){ startQuiz(PHRASES, ensurePhrases(), true); }
-  function closeReading(){ if(csess){ customEnd(); return; } if(wsess){ wordsEnd(); return; } pbsess=null; readingEl.classList.add("hidden"); try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){} render(); }
+  function startPhrases(){ startQuiz(PHRASES, ensurePhrases(), true); if(maybePattern())return; }
+  function closeReading(){ if(csess){ customEnd(); return; } if(wsess){ wordsEnd(); return; } pbsess=null; ptsess=null; readingEl.classList.add("hidden"); try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){} render(); }
   function nextReadingQ(){ if(csess){ customAfterUnit(); return; } if(wsess){ wordsAfterUnit(); return; }
-    if(rsess && rsess.pool===PHRASES && maybePhraseBuild())return;   // occasional "armá la frase" detour
+    if(rsess && rsess.pool===PHRASES && maybePattern())return;   // grammar detour (teach/cloze); builder off for now
     pbsess=null; buildReadingQ(); renderReading(); }
   function teachWordDone(){
     var q=rsess.q; if(!q||q.mode!=="teach")return;
