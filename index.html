@@ -1176,7 +1176,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
         '<div class="sub">'+t("Automatic sync across devices — no passwords, no data of yours to guard.")+'</div></div>'+
         '<span class="tag">'+t("COMING SOON")+'</span></div></details>';
   }
-  function dayReps(s){ var k=ensureKana(),w=ensureWords(),p=ensurePhrases(); return (k.daily[s]?k.daily[s].done:0)+(w.daily[s]||0)+(p.daily[s]||0); }
+  function dayReps(s){ var k=ensureKana(),w=ensureWords(),p=ensurePhrases(),pt=ensurePatterns(); return (k.daily[s]?k.daily[s].done:0)+(w.daily[s]||0)+(p.daily[s]||0)+(pt.daily?(pt.daily[s]||0):0); }
   function todayReps(){ return dayReps(today()); }
   function stampDay(){ var td=today(); if(todayReps()>=15 && !(state.days[td]&&state.days[td].practiced)){ state.days[td]=state.days[td]||{}; state.days[td].practiced=true; return true; } return false; }
   function kanaOptsHTML(){
@@ -2751,6 +2751,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       else { out+='<span class="pt-fix">'+ch+'</span>'; } }
     return out; }
   function launchPatternTeach(pid){ ptsess={mode:'teach',pid:pid,relearn:false}; renderPatternTeach(); readingEl.classList.remove('hidden'); }
+  function ptHead(){ return '<div class="d-sticky"><div class="d-head"><button class="d-close" id="rClose">✕ '+t('Close')+'</button></div>'+wordsGoalHTML()+'</div>'; }
   /* parte pronunciable del molde: las piezas fijas, sin los huecos ｛...｝ */
   function moldSpoken(mold){ var out=''; for(var i=0;i<mold.length;i++){ var ch=mold.charAt(i); if(ch==='｛'){ i=mold.indexOf('｝',i); } else if(ch==='／'){ } else out+=ch; } return out; }
   function spkBtn(say,small){ return '<button class="pt-spk'+(small?' sm':'')+'" data-say="'+say+'" aria-label="'+t('Play')+'">🔊</button>'; }
@@ -2758,7 +2759,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var p=PATTERN_BY_ID[ptsess.pid], pt=ensurePatterns();
     var newP=(p.intro||[]).filter(function(x){ return PARTICLES[x] && !pt.seen['_p_'+x]; });
     var ex=patternExamples(p.id,3), es=getLang()==='es';
-    var h='<div class="d-sticky"><div class="d-head"><button class="d-close" id="rClose">✕ '+t('Close')+'</button></div></div>';
+    var h=ptHead();
     h+='<div class="pt-card">';
     h+='<div class="pt-kind">'+t('New pattern')+'</div>';
     if(newP.length){ var pc=newP[0], info=PARTICLES[pc];
@@ -2800,7 +2801,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function renderPatternCloze(){
     var q=ptsess, phrase=q.phrase, es=getLang()==='es';
     var jp=''; phrase.parts.forEach(function(w,i){ if(i===q.slot){ var cls='pt-hole'+(q.answered?(w===q.answer?' filled':''):''); jp+='<span class="'+cls+'">'+(q.answered?q.answer:'▢')+'</span>'; } else jp+=w; });
-    var h='<div class="d-sticky"><div class="d-head"><button class="d-close" id="rClose">✕ '+t('Close')+'</button></div></div>';
+    var h=ptHead();
     h+='<div class="pt-card"><div class="pt-kind">'+t('Which particle goes here?')+'</div>';
     h+='<div class="pt-cloze mincho">'+jp+'</div>';
     h+='<div class="pt-clmean">'+(es?phrase.es:phrase.en)+'</div>';
@@ -2808,10 +2809,11 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     q.opts.forEach(function(w){ var cls='pt-opt mincho'; if(q.answered){ if(w===q.answer)cls+=' ok'; else if(w===q.picked)cls+=' bad'; else cls+=' dim'; } h+='<button class="'+cls+'" data-p="'+w+'">'+w+'</button>'; });
     h+='</div>';
     if(q.answered){ var info=PARTICLES[q.answer]; h+='<div class="pt-fb"><b class="mincho">'+q.answer+'</b> — '+(info?info.fn:'')+'</div>';
-      h+='<div class="d-actions"><button class="d-next" id="ptNext">'+t('Next →')+'</button></div>'; }
+      h+='<div class="rq-ans" style="text-align:center;margin:4px 0 2px"><button class="d-spk-word" id="clSpk">🔊 <span>'+t('hear it')+'</span></button></div><div class="d-actions"><button class="d-next" id="ptNext">'+t('Next →')+'</button></div>'; }
     readingInner.innerHTML=h;
     var c=document.getElementById('rClose'); if(c)c.addEventListener('click',closeReading);
     var nx=document.getElementById('ptNext'); if(nx)nx.addEventListener('click',function(){ ptsess=null; nextReadingQ(); });
+    var csp=document.getElementById('clSpk'); if(csp)csp.addEventListener('click',function(){ speak(phrase.jp); });
     if(!q.answered){ readingInner.querySelectorAll('.pt-opt').forEach(function(o){ o.addEventListener('click',function(){ clozeAnswer(o.getAttribute('data-p')); }); }); }
     else { setTimeout(function(){ speak(phrase.jp); },250); }
   }
@@ -2841,7 +2843,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function launchSegCard(){ ptsess={mode:'seg'}; renderSegCard(); readingEl.classList.remove('hidden'); }
   function renderSegCard(){
     var es=getLang()==='es';
-    var h='<div class="d-sticky"><div class="d-head"><button class="d-close" id="rClose">✕ '+t('Close')+'</button></div></div>';
+    var h=ptHead();
     h+='<div class="sg-card">';
     h+='<div class="pt-kind">'+(es?'Cómo leer japonés':'Reading Japanese')+'</div>';
     h+='<div class="sg-title mincho">'+(es?'¿Dónde termina una palabra?':'Where does a word end?')+'</div>';
@@ -2876,7 +2878,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   }
   function renderGuidedBuild(){
     var q=ptsess, es=getLang()==='es';
-    var h='<div class="d-sticky"><div class="d-head"><button class="d-close" id="rClose">✕ '+t('Close')+'</button></div></div>';
+    var h=ptHead();
     h+='<div class="pt-card"><div class="pt-kind">'+t('Build the phrase')+'</div>';
     h+='<div class="gb-goal">'+(es?q.phrase.es:q.phrase.en)+'</div>';
     h+='<div class="gb-sub">'+t('Tap the words in order to build the phrase')+'</div>';
@@ -2891,10 +2893,11 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       h+='</div>';
     }
     h+='</div>';
-    if(q.answered) h+='<div class="d-actions"><button class="d-next" id="gbNext">'+t('Next →')+'</button></div>';
+    if(q.answered) h+='<div class="rq-ans" style="text-align:center;margin:4px 0 2px"><button class="d-spk-word" id="gbSpk">🔊 <span>'+t('hear it')+'</span></button></div><div class="d-actions"><button class="d-next" id="gbNext">'+t('Next →')+'</button></div>';
     readingInner.innerHTML=h;
     var c=document.getElementById('rClose'); if(c)c.addEventListener('click',closeReading);
     var nx=document.getElementById('gbNext'); if(nx)nx.addEventListener('click',function(){ ptsess=null; nextReadingQ(); });
+    var gsp=document.getElementById('gbSpk'); if(gsp)gsp.addEventListener('click',function(){ speak(q.phrase.jp); });
     if(!q.answered){ readingInner.querySelectorAll('.gb-tile:not(.used)').forEach(function(o){ o.addEventListener('click',function(){ gbTap(parseInt(o.getAttribute('data-i'),10)); }); }); }
     else { setTimeout(function(){ speak(q.phrase.jp); },250); }
   }
