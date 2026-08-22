@@ -380,6 +380,7 @@
   .adv-no{font:inherit;font-weight:600;font-size:13.5px;color:var(--ink-soft);background:transparent;border:1.3px solid var(--line);border-radius:3px;padding:10px 16px;cursor:pointer}
   .unlock-pill{font:inherit;font-weight:700;font-size:12.5px;color:var(--shu);background:var(--paper);border:1.3px dashed var(--shu);border-radius:20px;padding:6px 14px;cursor:pointer;margin:9px 0 2px}
   .leveled{font-family: var(--display-font);font-weight:800;font-size:15px;color:var(--shu);margin:10px 0 2px}
+  .kana-level{margin-top:14px}
   .stage-adv{display:flex;gap:8px;align-items:center;margin:14px 0 4px;flex-wrap:wrap}
   .stage-next{font:inherit;font-weight:700;font-size:12.5px;color:var(--card);background:var(--ink);border:none;border-radius:20px;padding:7px 14px;cursor:pointer}
   .stage-back{font:inherit;font-weight:600;font-size:12px;color:var(--ink-soft);background:none;border:1.2px solid var(--line);border-radius:20px;padding:6px 12px;cursor:pointer}
@@ -1123,22 +1124,30 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function todayReps(){ return dayReps(today()); }
   function stampDay(){ var td=today(); if(todayReps()>=15 && !(state.days[td]&&state.days[td].practiced)){ state.days[td]=state.days[td]||{}; state.days[td].practiced=true; return true; } return false; }
   function kanaOptsHTML(){
-    var k=ensureKana(),lvl=k.level,canAdv=canAdvance(),nxt=nextTarget(lvl);
+    var k=ensureKana();
     function seg(kind,val,label,on){return '<button class="seg'+(on?" on":"")+'" data-seg="'+kind+'" data-val="'+val+'">'+label+'</button>';}
-    var lvlBlock='<div class="level-row"><span class="lvl-tag">'+t("Level")+' '+lvl+'</span><span class="lvl-name">'+LEVEL_NAMES[lvl]+'</span></div>';
-    if(canAdv&&nxt){
-      if(!k.declined){ lvlBlock+='<div class="advance"><div class="adv-msg">'+advMsg(lvl)+'</div><div class="adv-btns"><button class="adv-yes" id="lvUp">'+t("Yes, unlock")+'</button><button class="adv-no" id="lvNo">'+t("Not yet")+'</button></div></div>'; }
-      else { lvlBlock+='<button class="unlock-pill" id="lvUp">'+t("Unlock")+' '+nxt+' →</button>'; }
-    }
-    var wasLeveled=justLeveled; if(justLeveled){ lvlBlock='<div class="leveled">'+t("済 Unlocked!")+' '+t("Level")+' '+justLeveled+' · '+LEVEL_NAMES[justLeveled]+'</div>'+lvlBlock; justLeveled=0; }
-    var openP=(canAdv&&nxt)||wasLeveled;
-     return '<div class="ex-item ex-kana" data-fn="startDrill" role="button" tabindex="0"><span class="ex-kana-label">'+t("Kana drill")+'</span><button class="ex-gear" id="kanaOptsBtn" aria-label="'+t("Kana options")+'" aria-controls="kanaOptsPanel" aria-expanded="'+(openP?"true":"false")+'">⚙</button></div>'+
-       '<div class="kana-opts-panel" id="kanaOptsPanel"'+(openP?"":" hidden")+'>'+lvlBlock+
+     return '<div class="ex-item ex-kana" data-fn="startDrill" role="button" tabindex="0"><span class="ex-kana-label">'+t("Kana drill")+'</span><button class="ex-gear" id="kanaOptsBtn" aria-label="'+t("Kana options")+'" aria-controls="kanaOptsPanel" aria-expanded="false">⚙</button></div>'+
+       '<div class="kana-opts-panel" id="kanaOptsPanel" hidden>'+
       '<div class="opt-row"><span class="k">'+t("Script")+'</span>'+
       seg("hira",1,"Hiragana",k.scope.hira)+seg("hdak",1,"+ ゛",k.scope.hdak)+seg("kata",1,"Katakana",k.scope.kata)+seg("kdak",1,"+ ゛",k.scope.kdak)+
       '<button class="info-btn" id="scriptInfo" aria-label="Explain the scripts">ⓘ</button></div>'+
       '<div class="opt-help" id="scriptHelp" hidden>'+t("<b>Hiragana</b> (あ) and <b>Katakana</b> (ア) are the two kana alphabets — same sounds, different look (katakana is mostly for foreign / loan words). <b>Dakuten</b> are the small ゛/゜ marks that voice a sound: か (ka) → が (ga); は (ha) → ば (ba) / ぱ (pa).")+'</div>'+
       '</div>';
+  }
+  /* Level-up de kana extraído del gear para hacerlo transparente en el flujo
+     principal (nivel actual + prompt de desbloqueo dakuten/katakana). Usa los
+     mismos IDs lvUp/lvNo que ya bindea bindMain. */
+  function kanaLevelHTML(){
+    var k=ensureKana(),lvl=k.level,canAdv=canAdvance(),nxt=nextTarget(lvl);
+    if(justLeveled){ var jl=justLeveled; justLeveled=0;
+      return '<div class="kana-level"><div class="leveled">'+t("済 Unlocked!")+' '+t("Level")+' '+jl+' · '+LEVEL_NAMES[jl]+'</div></div>'; }
+    if(canAdv&&nxt){
+      var inner;
+      if(!k.declined){ inner='<div class="advance"><div class="adv-msg">'+advMsg(lvl)+'</div><div class="adv-btns"><button class="adv-yes" id="lvUp">'+t("Yes, unlock")+'</button><button class="adv-no" id="lvNo">'+t("Not yet")+'</button></div></div>'; }
+      else { inner='<button class="unlock-pill" id="lvUp">'+t("Unlock")+' '+nxt+' →</button>'; }
+      return '<div class="kana-level">'+inner+'</div>';
+    }
+    return '';
   }
 
    var _lastMs={};
@@ -1175,12 +1184,6 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var _dc=dueCount(); if(_dc>0) h+='<div class="dc-sub" style="color:var(--shu);font-weight:600">🔁 '+_dc+' '+t("due for review")+'</div>';
     h+='<button class="start-btn'+(reps>=15?" done-today":"")+'" data-fn="'+rec.fn+'">'+(rec.fn==="startDaily"?rec.label:(t("Recommended")+': '+rec.label))+' →</button>';
     h+='<button class="ex-custom-btn" data-fn="openCustom">🎛 '+t("Custom exercise")+'</button>';
-    h+='<div class="ex-sep">'+t("All exercises")+'</div><div class="ex-list">'+
-       kanaOptsHTML()+
-       '<button class="ex-item" data-fn="startMatch">'+t("Match")+'</button>'+
-       '<button class="ex-item" data-fn="startBuild">'+t("Build the word")+'</button>'+
-       (us>=5?'<button class="ex-item" data-fn="startWords">'+t("Words")+'</button>':'')+
-       (us>=6?'<button class="ex-item" data-fn="startPhrases">'+t("Phrases")+'</button>':'')+'</div>';
     var ext=tasksForStage(st).filter(function(x){return x.id!=="kana"&&x.id!=="words"&&x.id!=="phrases";});
     if(ext.length){
       h+='<div class="ex-sep">'+t("Support")+'</div>';
@@ -1191,6 +1194,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
            '<div class="t-sub">'+t(task.sub)+'</div>'+(task.link?'<div>'+chip(task.link,task.link.name)+'</div>':'')+'</div></div>';
       });
     }
+    h+=kanaLevelHTML();
     if(st>=3){ h+='<div class="stage-adv">'+(st>3?'<button class="stage-back" id="stBack">← '+t("Back")+'</button>':'')+(st<9?'<button class="stage-next" id="stNext">'+t("Next stage")+': '+t(stageName(st+1))+' →</button>':'')+'</div>'; }
     h+='<div class="note">'+t("Short day? Just 15 saves your streak — 30 is solid, 50 great, 100 perfect.")+'</div></div>';
     return h;
