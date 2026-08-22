@@ -537,6 +537,27 @@
   .pt-mold-row .pt-mold{flex:1 1 auto}
   .pt-exrow{align-items:center}
   .pt-extext{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+  .gb-goal{text-align:center;font-size:20px;color:var(--ink);font-weight:600;margin:14px 0 4px}
+  .gb-sub{text-align:center;font-size:12px;color:var(--ink-faint);margin-bottom:18px}
+  .gb-slot{min-height:64px;border:1.5px dashed var(--shu);border-radius:2px;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;flex-wrap:wrap}
+  .gb-placed{font-family:var(--display-font);font-size:26px;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:2px;padding:4px 12px}
+  .gb-placed.pt{color:var(--shu);border-color:var(--shu)}
+  .gb-caret{width:2px;height:30px;background:var(--ink-faint)}
+  .gb-tray{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+  .gb-tile{font-family:var(--display-font);font-size:24px;color:var(--ink);background:var(--card);border:1.5px solid var(--ink);border-radius:2px;padding:10px 16px;cursor:pointer}
+  .gb-tile.pt{color:var(--shu);border-color:var(--shu)}
+  .gb-tile.used{opacity:.22;pointer-events:none}
+  .gb-tile.bad{animation:gbshake .3s;border-color:var(--shu);background:var(--shu);color:#fff}
+  @keyframes gbshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+  .sg-card{padding:4px 0 2px}
+  .sg-title{font-weight:800;font-size:22px;color:var(--ink);margin-bottom:14px;line-height:1.3}
+  .sg-p{font-size:14px;color:var(--ink-soft);line-height:1.6;margin:0 0 12px}
+  .sg-demo{background:var(--paper);border:1px dashed var(--line);border-radius:2px;padding:14px 10px;margin:12px 0;text-align:center}
+  .sg-es{font-size:18px;color:var(--ink-soft)}
+  .sg-jp{font-size:28px;color:var(--ink)}
+  .sg-cut{font-size:24px;color:var(--ink)}
+  .sg-bar{color:var(--ink-faint);margin:0 3px}
+  .sg-note{font-size:12px;color:var(--ink-faint);font-style:italic;line-height:1.5;border-top:1px dashed var(--line);padding-top:12px;margin-top:14px}
   .pt-exmean{font-size:13px;color:var(--ink-faint)}
   .pt-cloze{font-size:32px;color:var(--ink);text-align:center;margin:8px 0 4px}
   .pt-hole{display:inline-block;min-width:40px;border-bottom:3px solid var(--shu);color:var(--shu);text-align:center}
@@ -2708,8 +2729,18 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   var ptsess=null;
   function maybePattern(){
     if(!rsess || rsess.pool!==PHRASES) return false;
+    var pt=ensurePatterns();
+    // 0) ficha de segmentación: una sola vez, justo antes del primer patrón
+    if(!pt.segSeen && nextPatternToTeach()){ launchSegCard(); return true; }
+    // 1) repaso vencido
     var due=duePattern(); if(due){ launchPatternCloze(due.id,true); return true; }
+    // 2) patrón nuevo desbloqueado -> teach card
     var nu=nextPatternToTeach(); if(nu){ launchPatternTeach(nu.id); return true; }
+    // 3) patrón joven -> constructor guiado (afianza antes de reconocer)
+    var yng=youngPattern();
+    if(yng){ var mature=phraseReadyIdxMature(PHRASES).length>0;
+      if(!mature || Math.random()<GUIDED_PROB){ launchGuidedBuild(yng.id); return true; } }
+    // 4) refuerzo ocasional: cloze de un patrón ya visto
     if(Math.random()<PATTERN_DRILL_PROB){ var s=anySeenPatternForDrill(); if(s){ launchPatternCloze(s.id,false); return true; } }
     return false;
   }
@@ -2791,10 +2822,100 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     setPatternDue(pid,pt.box[pid]); var td=today(); pt.daily[td]=(pt.daily[td]||0)+1; stampDay();
     Persistence.save(state); renderPatternCloze(); }
 
+  /* =========================================================================
+     MADURACIÓN + CONSTRUCTOR GUIADO + FICHA DE SEGMENTACIÓN
+     Ciclo de una construcción: teach -> construir guiado (x2) -> madura ->
+     reconocer frase completa. El reconocimiento ("¿qué significa?") se reserva
+     a patrones maduros (box>=PAT_MATURE). Patrón joven = se practica armando,
+     con andamiaje: sólo las piezas de la frase + 1 distractor confundible.
+     ========================================================================= */
+  var PAT_MATURE=3, GUIDED_PROB=0.6;
+  function patternMature(pid){ return (ensurePatterns().box[pid]||0)>=PAT_MATURE; }
+  function phraseReadyMature(p){ if(!phraseReady(p))return false; if(!p.parts)return true; var pid=p.pattern||inferPattern(p.parts); if(!pid)return true; return patternMature(pid); }
+  function phraseReadyIdxMature(pool){ var out=[]; for(var i=0;i<pool.length;i++) if(phraseReadyMature(pool[i])) out.push(i); return out; }
+  /* frases del patrón totalmente construibles (todo el vocab ya dominado) */
+  function buildablePhrases(pid){ return PHRASES.filter(function(p){ return p.parts && patternOf(p)===pid && wordReadable(p.jp) && p.parts.every(function(w){ return phraseWordKnown(w); }); }); }
+  function youngPattern(){ var pt=ensurePatterns(), cand=PATTERNS.filter(function(p){ var b=pt.box[p.id]||0; return pt.seen[p.id] && b>=1 && b<PAT_MATURE && buildablePhrases(p.id).length; }); cand.sort(function(a,b){return a.order-b.order;}); return cand.length?cand[0]:null; }
+
+  /* ---- FICHA DE SEGMENTACIÓN (una sola vez, antes del primer patrón) ---- */
+  function launchSegCard(){ ptsess={mode:'seg'}; renderSegCard(); readingEl.classList.remove('hidden'); }
+  function renderSegCard(){
+    var es=getLang()==='es';
+    var h='<div class="d-sticky"><div class="d-head"><button class="d-close" id="rClose">✕ '+t('Close')+'</button></div></div>';
+    h+='<div class="sg-card">';
+    h+='<div class="pt-kind">'+(es?'Cómo leer japonés':'Reading Japanese')+'</div>';
+    h+='<div class="sg-title mincho">'+(es?'¿Dónde termina una palabra?':'Where does a word end?')+'</div>';
+    h+='<p class="sg-p">'+(es?'En español, las palabras van separadas por espacios:':'In English, spaces separate the words:')+'</p>';
+    h+='<div class="sg-demo"><span class="sg-es">'+(es?'me·gusta·el·té':'I·like·tea')+'</span></div>';
+    h+='<p class="sg-p">'+(es?'En japonés, <b>no</b>. Todo va pegado, sin un solo espacio:':'In Japanese, <b>no</b>. It all runs together, no spaces:')+'</p>';
+    h+='<div class="sg-demo"><span class="sg-jp mincho">おちゃ<span class="pt-hi">が</span>すき</span></div>';
+    h+='<p class="sg-p">'+(es?'¿Cómo sabés dónde corta? Por las <b>partículas</b>: piezas cortitas (は・が・を・に…) que marcan las junturas. Cuando reconocés una, sabés que ahí termina una palabra y empieza otra:':'How do you know where to cut? By the <b>particles</b>: tiny pieces (は・が・を・に…) that mark the joins. Spot one and you know a word just ended:')+'</p>';
+    h+='<div class="sg-demo"><div class="sg-cut mincho">おちゃ <span class="sg-bar">|</span> <span class="pt-hi">が</span> <span class="sg-bar">|</span> すき</div></div>';
+    h+='<p class="sg-p">'+(es?'Por eso Nikka resalta las partículas en rojo: son tus <b>señales de corte</b>. Con el tiempo tu ojo las encuentra solo.':'That is why Nikka highlights particles in red: they are your <b>cut markers</b>. In time your eye finds them on its own.')+'</p>';
+    h+='<div class="sg-note">'+(es?'Más adelante, cuando aparezcan los kanji (漢字), tendrás una segunda pista: el salto entre kanji y kana también marca los cortes.':'Later, when kanji (漢字) appear, you get a second cue: the jump between kanji and kana also marks the cuts.')+'</div>';
+    h+='</div><div class="d-actions"><button class="d-next" id="ptGot">'+t('Got it →')+'</button></div>';
+    readingInner.innerHTML=h;
+    var c=document.getElementById('rClose'); if(c)c.addEventListener('click',closeReading);
+    var g=document.getElementById('ptGot'); if(g)g.addEventListener('click',segDone);
+  }
+  function segDone(){ ensurePatterns().segSeen=1; Persistence.save(state); ptsess=null; nextReadingQ(); }
+
+  /* ---- CONSTRUCTOR GUIADO ---- */
+  function launchGuidedBuild(pid){
+    var exs=buildablePhrases(pid); if(!exs.length){ ptsess=null; buildReadingQ(); renderReading(); return; }
+    var phrase=exs[Math.floor(Math.random()*exs.length)];
+    var tiles=phrase.parts.map(function(w){ return {w:w,used:false}; });
+    var partIdx=-1; for(var i=0;i<phrase.parts.length;i++){ if(PARTICLES[phrase.parts[i]]){ partIdx=i; break; } }
+    if(partIdx>=0){ var pw=phrase.parts[partIdx], conf=Object.keys(PCONF[pw]||{}).filter(function(c){return phrase.parts.indexOf(c)<0;});
+      if(conf.length) tiles.push({w:conf[0],used:false,distractor:true}); }
+    else { var pool=PHRASES.filter(function(p){return p.parts&&patternOf(p)===pid;}).reduce(function(a,p){p.parts.forEach(function(w){if(!PARTICLES[w]&&phrase.parts.indexOf(w)<0&&a.indexOf(w)<0&&wordReadable(w))a.push(w);});return a;},[]);
+      if(pool.length){ shuffle(pool); tiles.push({w:pool[0],used:false,distractor:true}); } }
+    shuffle(tiles);
+    ptsess={mode:'build',pid:pid,phrase:phrase,tiles:tiles,placed:[],answered:false,bad:-1};
+    renderGuidedBuild(); readingEl.classList.remove('hidden');
+  }
+  function renderGuidedBuild(){
+    var q=ptsess, es=getLang()==='es';
+    var h='<div class="d-sticky"><div class="d-head"><button class="d-close" id="rClose">✕ '+t('Close')+'</button></div></div>';
+    h+='<div class="pt-card"><div class="pt-kind">'+t('Build the phrase')+'</div>';
+    h+='<div class="gb-goal">'+(es?q.phrase.es:q.phrase.en)+'</div>';
+    h+='<div class="gb-sub">'+t('Tap the words in order to build the phrase')+'</div>';
+    h+='<div class="gb-slot">';
+    q.placed.forEach(function(w){ h+='<span class="gb-placed'+(PARTICLES[w]?' pt':'')+'">'+w+'</span>'; });
+    if(!q.answered) h+='<span class="gb-caret"></span>';
+    h+='</div>';
+    if(q.answered){ h+='<div class="pt-fb" style="border:none;padding-top:8px"><span class="mincho" style="font-size:22px;color:var(--green)">'+q.phrase.jp+'</span></div>'; }
+    else {
+      h+='<div class="gb-tray">';
+      q.tiles.forEach(function(tl,i){ var cls='gb-tile'+(PARTICLES[tl.w]?' pt':'')+(tl.used?' used':'')+(q.bad===i?' bad':''); h+='<button class="'+cls+'" data-i="'+i+'">'+tl.w+'</button>'; });
+      h+='</div>';
+    }
+    h+='</div>';
+    if(q.answered) h+='<div class="d-actions"><button class="d-next" id="gbNext">'+t('Next →')+'</button></div>';
+    readingInner.innerHTML=h;
+    var c=document.getElementById('rClose'); if(c)c.addEventListener('click',closeReading);
+    var nx=document.getElementById('gbNext'); if(nx)nx.addEventListener('click',function(){ ptsess=null; nextReadingQ(); });
+    if(!q.answered){ readingInner.querySelectorAll('.gb-tile:not(.used)').forEach(function(o){ o.addEventListener('click',function(){ gbTap(parseInt(o.getAttribute('data-i'),10)); }); }); }
+    else { setTimeout(function(){ speak(q.phrase.jp); },250); }
+  }
+  function gbTap(i){ var q=ptsess; if(!q||q.answered)return; var tl=q.tiles[i]; if(tl.used)return;
+    var next=q.phrase.parts[q.placed.length];
+    if(tl.w===next){ tl.used=true; q.placed.push(tl.w); q.bad=-1;
+      if(q.placed.length===q.phrase.parts.length){ q.answered=true; buildComplete(); } }
+    else { q.bad=i; }
+    renderGuidedBuild();
+  }
+  function buildComplete(){ var pt=ensurePatterns(), pid=ptsess.pid, cur=pt.box[pid]||0;
+    pt.box[pid]=Math.min(5,cur+1); setPatternDue(pid,pt.box[pid]);
+    ensurePhrases().seen[ptsess.phrase.jp]=1;   // no re-enseñar como frase nueva en reconocimiento
+    var td=today(); pt.daily[td]=(pt.daily[td]||0)+1; stampDay();
+    Persistence.save(state); }
+
+
 
   function buildReadingQ(){
     var pool=rsess.pool,box=rsess.box,all=[]; for(var i=0;i<pool.length;i++)all.push(i);
-    var readable=(pool===PHRASES?phraseReadyIdx(pool):readableIdx(pool)), tgtSet=readable.length?readable:all;
+    var readable=(pool===PHRASES?phraseReadyIdxMature(pool):readableIdx(pool)), tgtSet=readable.length?readable:all;
     function quiz(setIdx){
       var target=weightedPick(pool,box,setIdx,rsess.recent||[]);
       var distSrc=(readable.length>=6?readable:all).filter(function(i){return i!==target;});
