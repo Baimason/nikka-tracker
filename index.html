@@ -2503,7 +2503,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   var WORD_KEYSET=(function(){var m={};WORD_POOL.forEach(function(w){m[w.jp]=1;});return m;})();
   function markWordKnown(jp){ if(!WORD_KEYSET[jp])return; var w=ensureWords(); w.seen[jp]=1; w.known[jp]=1; w.leech[jp]=0; }
   function ensureWords(){ if(!state.exercises)state.exercises={}; if(!state.exercises.words)state.exercises.words={box:{},daily:{}}; var w=state.exercises.words; if(!w.box)w.box={}; if(!w.daily)w.daily={}; if(!w.seen)w.seen={}; if(!w.leech)w.leech={}; if(!w.known)w.known={}; return w; }
-  function ensurePhrases(){ if(!state.exercises)state.exercises={}; if(!state.exercises.phrases)state.exercises.phrases={box:{},daily:{}}; var w=state.exercises.phrases; if(!w.box)w.box={}; if(!w.daily)w.daily={}; if(!w.seen)w.seen={}; if(!w.leech)w.leech={}; return w; }
+  function ensurePhrases(){ if(!state.exercises)state.exercises={}; if(!state.exercises.phrases)state.exercises.phrases={box:{},daily:{}}; var w=state.exercises.phrases; if(!w.box)w.box={}; if(!w.daily)w.daily={}; if(!w.seen)w.seen={}; if(!w.leech)w.leech={}; if(!w.built)w.built={}; return w; }
   function poolMastery(pool,box){ var total=pool.length,solid=0,sum=0; pool.forEach(function(it){var b=Math.min(5,box[it.jp]||0);sum+=b;if(b>=4)solid++;}); return {pct:total?Math.round(sum/(total*5)*100):0,solid:solid,total:total,seen:Object.keys(box).length}; }
   function readingCardHTML(){
     return '<div class="reading-card"><div class="dc-top"><h3>'+t("Reading")+'</h3></div>'+
@@ -2737,9 +2737,9 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     // 2) patrón nuevo desbloqueado -> teach card
     var nu=nextPatternToTeach(); if(nu){ launchPatternTeach(nu.id); return true; }
     // 3) patrón joven -> constructor guiado (afianza antes de reconocer)
-    var yng=youngPattern();
-    if(yng){ var mature=phraseReadyIdxMature(PHRASES).length>0;
-      if(!mature || Math.random()<GUIDED_PROB){ launchGuidedBuild(yng.id); return true; } }
+    var bp=nextBuildPhrase();
+    if(bp){ var mature=phraseReadyIdxMature(PHRASES).length>0;
+      if(!mature || Math.random()<GUIDED_PROB){ launchGuidedBuild(bp); return true; } }
     // 4) refuerzo ocasional: cloze de un patrón ya visto
     if(Math.random()<PATTERN_DRILL_PROB){ var s=anySeenPatternForDrill(); if(s){ launchPatternCloze(s.id,false); return true; } }
     return false;
@@ -2831,9 +2831,27 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
      a patrones maduros (box>=PAT_MATURE). Patrón joven = se practica armando,
      con andamiaje: sólo las piezas de la frase + 1 distractor confundible.
      ========================================================================= */
-  var PAT_MATURE=3, GUIDED_PROB=0.6;
+  var PAT_MATURE=4, GUIDED_PROB=0.85, BUILD_NOPAT=2;
   function patternMature(pid){ return (ensurePatterns().box[pid]||0)>=PAT_MATURE; }
-  function phraseReadyMature(p){ if(!phraseReady(p))return false; if(!p.parts)return true; var pid=p.pattern||inferPattern(p.parts); if(!pid)return true; return patternMature(pid); }
+  function phraseMature(p){ if(!p.parts)return true;
+    var ph=ensurePhrases(), built=(ph.built&&ph.built[p.jp])||0, pid=patternOf(p);
+    if(pid&&PATTERN_BY_ID[pid]) return built>=1 && patternMature(pid);  // frase con patrón: armada >=1 vez + patrón maduro
+    return built>=BUILD_NOPAT;                                          // frase sin patrón: armada BUILD_NOPAT veces
+  }
+  function phraseReadyMature(p){ if(!phraseReady(p))return false; return phraseMature(p); }
+  /* frase construible sólo si su patrón ya fue enseñado (o no tiene patrón) */
+  function buildableGate(p){ var pid=patternOf(p); if(!pid||!PATTERN_BY_ID[pid])return true; return !!ensurePatterns().seen[pid]; }
+  /* próxima frase a construir: patrón de menor order primero, y dentro, la menos construida */
+  function nextBuildPhrase(){ var ph=ensurePhrases();
+    var blt=function(p){ return (ph.built&&ph.built[p.jp])||0; };
+    var ord=function(p){ var pp=patternOf(p); return (pp&&PATTERN_BY_ID[pp])?PATTERN_BY_ID[pp].order:99; };
+    var cand=PHRASES.filter(function(p){ return p.parts && wordReadable(p.jp) && p.parts.every(phraseWordKnown) && buildableGate(p) && !phraseMature(p); });
+    if(!cand.length)return null;
+    cand.sort(function(a,b){ return (ord(a)-ord(b)) || (blt(a)-blt(b)); });
+    var bo=ord(cand[0]), bb=blt(cand[0]);
+    var top=cand.filter(function(p){ return ord(p)===bo && blt(p)===bb; });
+    return top[Math.floor(Math.random()*top.length)];
+  }
   function phraseReadyIdxMature(pool){ var out=[]; for(var i=0;i<pool.length;i++) if(phraseReadyMature(pool[i])) out.push(i); return out; }
   /* frases del patrón totalmente construibles (todo el vocab ya dominado) */
   function buildablePhrases(pid){ return PHRASES.filter(function(p){ return p.parts && patternOf(p)===pid && wordReadable(p.jp) && p.parts.every(function(w){ return phraseWordKnown(w); }); }); }
@@ -2863,14 +2881,14 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function segDone(){ ensurePatterns().segSeen=1; Persistence.save(state); ptsess=null; nextReadingQ(); }
 
   /* ---- CONSTRUCTOR GUIADO ---- */
-  function launchGuidedBuild(pid){
-    var exs=buildablePhrases(pid); if(!exs.length){ ptsess=null; buildReadingQ(); renderReading(); return; }
-    var phrase=exs[Math.floor(Math.random()*exs.length)];
+  function launchGuidedBuild(phrase){
+    if(!phrase||!phrase.parts){ ptsess=null; buildReadingQ(); renderReading(); return; }
+    var pid=patternOf(phrase);
     var tiles=phrase.parts.map(function(w){ return {w:w,used:false}; });
     var partIdx=-1; for(var i=0;i<phrase.parts.length;i++){ if(PARTICLES[phrase.parts[i]]){ partIdx=i; break; } }
     if(partIdx>=0){ var pw=phrase.parts[partIdx], conf=Object.keys(PCONF[pw]||{}).filter(function(c){return phrase.parts.indexOf(c)<0;});
       if(conf.length) tiles.push({w:conf[0],used:false,distractor:true}); }
-    else { var pool=PHRASES.filter(function(p){return p.parts&&patternOf(p)===pid;}).reduce(function(a,p){p.parts.forEach(function(w){if(!PARTICLES[w]&&phrase.parts.indexOf(w)<0&&a.indexOf(w)<0&&wordReadable(w))a.push(w);});return a;},[]);
+    else { var pool=PHRASES.filter(function(p){return p.parts&&(!pid||patternOf(p)===pid);}).reduce(function(a,p){p.parts.forEach(function(w){if(!PARTICLES[w]&&phrase.parts.indexOf(w)<0&&a.indexOf(w)<0&&wordReadable(w))a.push(w);});return a;},[]);
       if(pool.length){ shuffle(pool); tiles.push({w:pool[0],used:false,distractor:true}); } }
     shuffle(tiles);
     ptsess={mode:'build',pid:pid,phrase:phrase,tiles:tiles,placed:[],answered:false,bad:-1};
@@ -2908,9 +2926,10 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     else { q.bad=i; }
     renderGuidedBuild();
   }
-  function buildComplete(){ var pt=ensurePatterns(), pid=ptsess.pid, cur=pt.box[pid]||0;
-    pt.box[pid]=Math.min(5,cur+1); setPatternDue(pid,pt.box[pid]);
-    ensurePhrases().seen[ptsess.phrase.jp]=1;   // no re-enseñar como frase nueva en reconocimiento
+  function buildComplete(){ var pt=ensurePatterns(), ph=ensurePhrases(), q=ptsess;
+    ph.built[q.phrase.jp]=(ph.built[q.phrase.jp]||0)+1;         // cuenta la construcción de esta frase
+    if(q.pid && PATTERN_BY_ID[q.pid]){ var cur=pt.box[q.pid]||0; pt.box[q.pid]=Math.min(5,cur+1); setPatternDue(q.pid,pt.box[q.pid]); }
+    ph.seen[q.phrase.jp]=1;                                     // no re-enseñar como frase nueva
     var td=today(); pt.daily[td]=(pt.daily[td]||0)+1; stampDay();
     Persistence.save(state); }
 
