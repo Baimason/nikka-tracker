@@ -242,6 +242,7 @@
   .reset{background:none;border:none;color:var(--ink-faint);font:inherit;font-size:11.5px;cursor:pointer;
     text-decoration:underline;padding:0}
   .reset:hover{color:var(--shu)}
+  .reset-row{display:flex;gap:14px;justify-content:center;margin-bottom:2px}
   .loading{text-align:center;color:var(--ink-soft);padding:40px 0;font-size:14px}
   .saveerr{display:none;background:var(--shu);color:#fff;font-size:12px;padding:6px 12px;border-radius:2px;margin-bottom:16px}
 
@@ -589,6 +590,11 @@
   <div id="app"><div class="loading">Loading your progress…</div></div>
   <footer>
     <span id="startedLabel"></span>
+    <div class="reset-row" id="resetRow">
+      <button class="reset" id="resetKana">↺ kana</button>
+      <button class="reset" id="resetWords">↺ palabras</button>
+      <button class="reset" id="resetPhrases">↺ frases</button>
+    </div>
     <button class="reset" id="resetBtn">Reset all progress</button>
   </footer>
 </div>
@@ -1666,7 +1672,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     {jp:"おいしい",romaji:"oishii",es:"delicioso",en:"delicious"},
     {jp:"これはいくらですか",romaji:"kore wa ikura desu ka",es:"¿cuánto cuesta esto?",en:"how much is this?",parts:["これ","は","いくら","ですか"],note:"X + は + いくら + ですか = «¿cuánto cuesta X?». は marca el tema."},
     {jp:"トイレはどこですか",romaji:"toire wa doko desu ka",es:"¿dónde está el baño?",en:"where's the bathroom?",parts:["トイレ","は","どこ","ですか"],note:"X + は + どこ + ですか = «¿dónde está X?»."},
-    {jp:"えいごをはなせますか",romaji:"eigo o hanasemasu ka",es:"¿habla inglés?",en:"do you speak English?",parts:["えいご","を","はなせますか"],note:"X + を + はなせますか = «¿podés hablar X?». を marca el objeto."},
+    {jp:"えいごをはなせますか",romaji:"eigo o hanasemasu ka",es:"¿habla inglés?",en:"do you speak English?"},
     {jp:"なまえはなんですか",romaji:"namae wa nan desu ka",es:"¿cómo te llamás?",en:"what's your name?",parts:["なまえ","は","なん","ですか"],note:"X + は + なん + ですか = «¿cómo te llamás? / ¿cuál es tu nombre?»."},
     {jp:"たすけて",romaji:"tasukete",es:"¡ayuda!",en:"help!"},
     {jp:"だいすき",romaji:"daisuki",es:"me encanta",en:"I love it"},
@@ -1677,7 +1683,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     {jp:"かんぱい",romaji:"kanpai",es:"¡salud!",en:"cheers!"},
     {jp:"おいしかった",romaji:"oishikatta",es:"estuvo delicioso",en:"it was delicious"},
     {jp:"いくらですか",romaji:"ikura desu ka",es:"¿cuánto es?",en:"how much is it?",parts:["いくら","ですか"],note:"いくら = «cuánto» + ですか."},
-    {jp:"カードでいいですか",romaji:"kaado de ii desu ka",es:"¿puedo pagar con tarjeta?",en:"can I pay by card?",parts:["カード","で","いいですか"],note:"X + で + いいですか = «¿está bien con X?». で = medio."},
+    {jp:"カードでいいですか",romaji:"kaado de ii desu ka",es:"¿puedo pagar con tarjeta?",en:"can I pay by card?"},
     {jp:"たかい",romaji:"takai",es:"caro",en:"expensive"},
     {jp:"やすい",romaji:"yasui",es:"barato",en:"cheap"},
     {jp:"みぎ",romaji:"migi",es:"derecha",en:"right"},
@@ -1691,18 +1697,18 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     {jp:"いまなんじですか",romaji:"ima nanji desu ka",es:"¿qué hora es?",en:"what time is it?",parts:["いま","なんじ","ですか"],note:"いま = «ahora» + なんじ = «qué hora» + ですか."},
     {jp:"げんきですか",romaji:"genki desu ka",es:"¿cómo estás?",en:"how are you?",parts:["げんき","ですか"],note:"A + ですか = «¿estás A?» (か vuelve pregunta la frase)."},
     {jp:"げんきです",romaji:"genki desu",es:"estoy bien",en:"I'm fine",parts:["げんき","です"],note:"A + です = «estoy A / soy A»."},
-    {jp:"またあした",romaji:"mata ashita",es:"hasta mañana",en:"see you tomorrow",parts:["また","あした"],note:"また = «otra vez» + あした = «mañana»."},
-    {jp:"おなまえは",romaji:"onamae wa",es:"¿tu nombre?",en:"your name?",parts:["おなまえ","は"],note:"X + は…? = pregunta abreviada («¿y tu nombre?»)."},
-    {jp:"どこからですか",romaji:"doko kara desu ka",es:"¿de dónde eres?",en:"where are you from?",parts:["どこ","から","ですか"],note:"どこ + から + ですか = «¿de dónde?». から = «desde»."},
-    {jp:"にほんごがすこしわかります",romaji:"nihongo ga sukoshi wakarimasu",es:"entiendo un poco de japonés",en:"I understand a little Japanese",parts:["にほんご","が","すこし","わかります"],note:"X + が + わかります = «entiendo X». すこし = «un poco»."},
-    {jp:"もういちど",romaji:"mou ichido",es:"otra vez",en:"once more",parts:["もう","いちど"],note:"もう = «más» + いちど = «una vez» = «otra vez»."},
+    {jp:"またあした",romaji:"mata ashita",es:"hasta mañana",en:"see you tomorrow"},
+    {jp:"おなまえは",romaji:"onamae wa",es:"¿tu nombre?",en:"your name?"},
+    {jp:"どこからですか",romaji:"doko kara desu ka",es:"¿de dónde eres?",en:"where are you from?",parts:["どこ","から","ですか"],note:"どこ + から + ですか = «¿de dónde?». から = «desde».",pattern:'q-from'},
+    {jp:"にほんごがすこしわかります",romaji:"nihongo ga sukoshi wakarimasu",es:"entiendo un poco de japonés",en:"I understand a little Japanese"},
+    {jp:"もういちど",romaji:"mou ichido",es:"otra vez",en:"once more"},
     {jp:"ゆっくりおねがいします",romaji:"yukkuri onegaishimasu",es:"más despacio, por favor",en:"slower, please",parts:["ゆっくり","おねがいします"],note:"X + おねがいします = pedido. ゆっくり = «despacio»."},
     {jp:"だいじょうぶですか",romaji:"daijoubu desu ka",es:"¿estás bien?",en:"are you okay?",parts:["だいじょうぶ","ですか"],note:"A + ですか = «¿estás A? / ¿está bien?»."},
     {jp:"けいさつ",romaji:"keisatsu",es:"policía",en:"police"},
     {jp:"だいすきです",romaji:"daisuki desu",es:"me encanta (mucho)",en:"I really love it",parts:["だいすき","です"],note:"A + です. だいすき = «me encanta»."},
     {jp:"はじめまして、よろしく",romaji:"hajimemashite, yoroshiku",es:"mucho gusto, encantado",en:"nice to meet you"},
     {jp:"おげんきで",romaji:"ogenki de",es:"cuídate",en:"take care"},
-    {jp:"ちょっとまって",romaji:"chotto matte",es:"esperá un momento",en:"wait a moment",parts:["ちょっと","まって"],note:"ちょっと = «un momento» + まって = «esperá»."},
+    {jp:"ちょっとまって",romaji:"chotto matte",es:"esperá un momento",en:"wait a moment"},
     {jp:"だいじょうぶです",romaji:"daijoubu desu",es:"estoy bien / no hay problema",en:"I'm fine / no problem",parts:["だいじょうぶ","です"],note:"A + です = «estoy bien / no hay problema»."},
     {jp:"しつれいします",romaji:"shitsurei shimasu",es:"con permiso / disculpe",en:"excuse me (leaving)",note:"Expresión fija: al entrar o salir de un lugar formal, o para interrumpir con cortesía."},
     {jp:"おつかれさま",romaji:"otsukaresama",es:"buen trabajo",en:"good work",note:"Expresión fija: reconoce el esfuerzo de alguien tras un trabajo o jornada."},
@@ -1710,10 +1716,10 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     {jp:"おめでとう",romaji:"omedetou",es:"felicidades",en:"congratulations"},
     {jp:"すごい",romaji:"sugoi",es:"¡increíble!",en:"amazing!"},
     {jp:"ほんとうですか",romaji:"hontou desu ka",es:"¿en serio?",en:"really?",parts:["ほんとう","ですか"],note:"ほんとう = «verdad» + ですか = «¿en serio?»."},
-    {jp:"そうです",romaji:"sou desu",es:"así es",en:"that's right",parts:["そう","です"],note:"そう = «así» + です = «así es»."},
+    {jp:"そうです",romaji:"sou desu",es:"así es",en:"that's right"},
     {jp:"ちがいます",romaji:"chigaimasu",es:"no es así / incorrecto",en:"that's wrong"},
     {jp:"しりません",romaji:"shirimasen",es:"no sé",en:"I don't know"},
-    {jp:"もういちどおねがいします",romaji:"mou ichido onegaishimasu",es:"otra vez, por favor",en:"once more, please",parts:["もう","いちど","おねがいします"],note:"もう + いちど + おねがいします = «otra vez, por favor»."},
+    {jp:"もういちどおねがいします",romaji:"mou ichido onegaishimasu",es:"otra vez, por favor",en:"once more, please"},
     {jp:"なんですか",romaji:"nan desu ka",es:"¿qué es?",en:"what is it?",parts:["なん","ですか"],note:"Interrogativa + ですか. なん = «qué»."},
     {jp:"どこですか",romaji:"doko desu ka",es:"¿dónde está?",en:"where is it?",parts:["どこ","ですか"],note:"どこ = «dónde» + ですか."},
     {jp:"だれですか",romaji:"dare desu ka",es:"¿quién es?",en:"who is it?",parts:["だれ","ですか"],note:"だれ = «quién» + ですか."},
@@ -1721,13 +1727,13 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     {jp:"どうしてですか",romaji:"doushite desu ka",es:"¿por qué?",en:"why?",parts:["どうして","ですか"],note:"どうして = «por qué» + ですか."},
     {jp:"えいごのメニューはありますか",romaji:"eigo no menyuu wa arimasu ka",es:"¿hay menú en inglés?",en:"is there an English menu?"},
     {jp:"これはなんですか",romaji:"kore wa nan desu ka",es:"¿qué es esto?",en:"what is this?",parts:["これ","は","なん","ですか"],note:"X + は + なん + ですか = «¿qué es X?»."},
-    {jp:"やすくしてください",romaji:"yasuku shite kudasai",es:"hágame un descuento",en:"make it cheaper, please",parts:["やすくして","ください"],note:"～てください = pedido. «hágalo más barato»."},
-    {jp:"みてもいいですか",romaji:"mite mo ii desu ka",es:"¿puedo mirar?",en:"can I look?",parts:["みても","いいですか"],note:"～ても + いいですか = «¿puedo…?» (permiso)."},
-    {jp:"だいじょうぶ、いりません",romaji:"daijoubu, irimasen",es:"no, gracias",en:"no, thank you",parts:["だいじょうぶ","いりません"],note:"«está bien» + «no lo necesito» = rechazo cortés."},
-    {jp:"ちょっとまってください",romaji:"chotto matte kudasai",es:"espere un momento, por favor",en:"please wait a moment",parts:["ちょっと","まって","ください"],note:"～てください = pedido. «esperá un momento, por favor»."},
+    {jp:"やすくしてください",romaji:"yasuku shite kudasai",es:"hágame un descuento",en:"make it cheaper, please"},
+    {jp:"みてもいいですか",romaji:"mite mo ii desu ka",es:"¿puedo mirar?",en:"can I look?"},
+    {jp:"だいじょうぶ、いりません",romaji:"daijoubu, irimasen",es:"no, gracias",en:"no, thank you"},
+    {jp:"ちょっとまってください",romaji:"chotto matte kudasai",es:"espere un momento, por favor",en:"please wait a moment"},
     {jp:"げんきでね",romaji:"genki de ne",es:"que estés bien",en:"stay well"},
-    {jp:"おなかがすいた",romaji:"onaka ga suita",es:"tengo hambre",en:"I'm hungry",parts:["おなか","が","すいた"],note:"おなか + が + すいた = literal «la panza se vació» = «tengo hambre»."},
-    {jp:"のどがかわいた",romaji:"nodo ga kawaita",es:"tengo sed",en:"I'm thirsty",parts:["のど","が","かわいた"],note:"のど + が + かわいた = literal «la garganta se secó» = «tengo sed»."},
+    {jp:"おなかがすいた",romaji:"onaka ga suita",es:"tengo hambre",en:"I'm hungry"},
+    {jp:"のどがかわいた",romaji:"nodo ga kawaita",es:"tengo sed",en:"I'm thirsty"},
     {jp:"つかれた",romaji:"tsukareta",es:"estoy cansado",en:"I'm tired"},
     {jp:"ねむい",romaji:"nemui",es:"tengo sueño",en:"I'm sleepy"},
     // AはBです — «X es Y» (cortés)
@@ -1771,6 +1777,8 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     {jp:'こうえんにいる',romaji:'kouen ni iru',es:'estar en el parque',en:'be at the park',parts:['こうえん','に','いる'],pattern:'loc-ni',note:'lugar に いる = «estar en» (seres vivos)'},
     {jp:'みせにある',romaji:'mise ni aru',es:'está en la tienda',en:'it is in the shop',parts:['みせ','に','ある'],pattern:'loc-ni',note:'lugar に ある = «está en» (cosas)'},
     {jp:'えきにいる',romaji:'eki ni iru',es:'estar en la estación',en:'be at the station',parts:['えき','に','いる'],pattern:'loc-ni',note:'lugar に いる = «estar en» (seres vivos)'},
+    {jp:'にほんからですか',romaji:'nihon kara desu ka',es:'¿sos de Japón?',en:'are you from Japan?',parts:['にほん','から','ですか'],pattern:'q-from',note:'X から ですか = «¿sos de X?»'},
+    {jp:'とうきょうからですか',romaji:'toukyou kara desu ka',es:'¿sos de Tokio?',en:'are you from Tokyo?',parts:['とうきょう','から','ですか'],pattern:'q-from',note:'X から ですか = «¿sos de X?»'},
   ];
 
   /* =========================================================================
@@ -1920,6 +1928,21 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   ];
   /* MORE_WORDS: common-word pool → auto-indexed as per-character examples (hira+kata). Add words here; they become examples for every kana they contain. */
   var MORE_WORDS=[
+    {jp:"どこ",romaji:"doko",en:"where",es:"dónde"},
+    {jp:"なん",romaji:"nan",en:"what",es:"qué"},
+    {jp:"いくら",romaji:"ikura",en:"how much",es:"cuánto (precio)"},
+    {jp:"いつ",romaji:"itsu",en:"when",es:"cuándo"},
+    {jp:"どうして",romaji:"doushite",en:"why",es:"por qué"},
+    {jp:"なんじ",romaji:"nanji",en:"what time",es:"qué hora"},
+    {jp:"つかう",romaji:"tsukau",en:"to use",es:"usar"},
+    {jp:"えらぶ",romaji:"erabu",en:"to choose",es:"elegir"},
+    {jp:"けん",romaji:"ken",en:"sword",es:"espada"},
+    {jp:"たて",romaji:"tate",en:"shield",es:"escudo"},
+    {jp:"にほんご",romaji:"nihongo",en:"Japanese (language)",es:"japonés (idioma)"},
+    {jp:"ポケモン",romaji:"pokemon",en:"Pokémon",es:"Pokémon"},
+    {jp:"ゆっくり",romaji:"yukkuri",en:"slowly",es:"despacio"},
+    {jp:"おかいけい",romaji:"okaikei",en:"the bill",es:"la cuenta"},
+    {jp:"とうきょう",romaji:"toukyou",en:"Tokyo",es:"Tokio"},
     {jp:"まぐろ",romaji:"maguro",en:"tuna",es:"atún"},
     {jp:"どうぐ",romaji:"dougu",en:"tool",es:"herramienta"},
     {jp:"ぐあい",romaji:"guai",en:"condition",es:"estado"},
@@ -2652,6 +2675,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     if(has('で')) return 'means-de';
     if(has('の')) return 'poss-no';
     if(has('に')) return 'loc-ni';
+    if(has('から')) return 'q-from';
     if(['どこ','なん','だれ','いつ','どうして','いくら'].some(has)&&last==='ですか') return 'q-interr';
     if(last==='ですか') return 'q-desu';
     return null; }
@@ -2680,7 +2704,8 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     'で':{read:'de',                 fn:'medio — cómo o con qué'},
     'に':{read:'ni',                 fn:'lugar — dónde está algo'},
     'の':{read:'no',                 fn:'de — conecta o posee'},
-    'か':{read:'ka',                 fn:'convierte la frase en pregunta'}
+    'か':{read:'ka',                 fn:'convierte la frase en pregunta'},
+    'から':{read:'kara',               fn:'desde — el origen, de dónde venís'}
   };
   var PATTERNS=[
     {id:'cop-da',    order:1,  needs:[],           intro:['は','だ'], mold:'｛tema｝は｛qué es｝だ',   gloss:'«X es Y» — decir qué es algo (casual)'},
@@ -2697,7 +2722,8 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     {id:'means-de',  order:12, needs:['dir-e'],    intro:['で'],      mold:'｛medio｝でいく',          gloss:'«ir en X» — で marca el medio'},
     {id:'loc-ni',    order:13, needs:['exist-iru'],intro:['に'],      mold:'｛lugar｝にいる／ある',      gloss:'«estar/haber en X» — に marca el lugar'},
     {id:'poss-no',   order:14, needs:['cop-da'],   intro:['の'],      mold:'｛A｝の｛B｝',              gloss:'«el B de A» / «mi B» — の conecta'},
-    {id:'q-interr',  order:15, needs:['q-desu'],   intro:[],          mold:'｛qué／dónde／quién｝ですか', gloss:'preguntar con なん／どこ／だれ + ですか'}
+    {id:'q-interr',  order:15, needs:['q-desu'],   intro:[],          mold:'｛qué／dónde／quién｝ですか', gloss:'preguntar con なん／どこ／だれ + ですか'},
+    {id:'q-from',    order:16, needs:['q-desu'],   intro:['から'],    mold:'｛lugar｝からですか',       gloss:'«¿de dónde?» / «¿sos de X?» — から marca el origen'}
   ];
   var PATTERN_BY_ID=(function(){ var m={}; PATTERNS.forEach(function(p){m[p.id]=p;}); return m; })();
 
@@ -3659,6 +3685,14 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     if(!confirm(t("Reset everything — streak, days, drill progress, and today's checklist? This can't be undone."))) return;
     state=emptyState();Persistence.save(state);render();
   });
+  function resetSection(keys,label){
+    if(!confirm("¿Borrar el progreso de "+label+"? La racha y los días no se tocan. No se puede deshacer.")) return;
+    if(state.exercises){ keys.forEach(function(k){ delete state.exercises[k]; }); }
+    Persistence.save(state); render();
+  }
+  var _rk=document.getElementById("resetKana"); if(_rk)_rk.addEventListener("click",function(){ resetSection(["kana"],"kana"); });
+  var _rw=document.getElementById("resetWords"); if(_rw)_rw.addEventListener("click",function(){ resetSection(["words"],"palabras"); });
+  var _rp=document.getElementById("resetPhrases"); if(_rp)_rp.addEventListener("click",function(){ resetSection(["phrases","patterns"],"frases y gramática"); });
 
   (function boot(){
     var loaded=Persistence.boot();
