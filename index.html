@@ -2636,6 +2636,33 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     return true;
   }
   function readableIdx(pool){ var out=[]; for(var i=0;i<pool.length;i++) if(wordReadable(pool[i].jp)) out.push(i); return out; }
+  /* ================= KANJI LAYER — durmiente hasta la sección de kanji =================
+     Filosofía: KANA-FIRST. Una palabra SIEMPRE es legible por su kana; saber los kanji
+     sólo desbloquea su FORMA con kanji (una capa que se suma, nunca un portón que oculta
+     la palabra). Con KANJI_MODE=false todo se comporta como hoy (kana puro).
+     Para encender la sección de kanji: (1) KANJI_MODE=true, (2) llenar ensureKanji() con
+     el SRS de kanji igual que ensureKana, (3) ampliar KANJI_WORDS / el campo .kanji desde
+     JMdict. wordForm() ya enruta la forma correcta en cada render; wordReadable() NO cambia:
+     el kana manda, así nunca frenás tu lectura esperando un kanji. */
+  var KANJI_MODE=false;
+  var KANJI_WORDS={  /* kana -> forma con kanji. Semilla verificada; JMdict la amplía luego. */
+    'がっこう':'学校','せんせい':'先生','がくせい':'学生','でんわ':'電話','ほん':'本',
+    'みず':'水','ひと':'人','やま':'山','かわ':'川','くるま':'車','いえ':'家','えき':'駅',
+    'め':'目','て':'手','くち':'口','おかね':'お金','にほん':'日本','にほんご':'日本語',
+    'ともだち':'友達','じかん':'時間'
+  };
+  function ensureKanji(){ if(!state.exercises)state.exercises={};
+    if(!state.exercises.kanji)state.exercises.kanji={box:{},learned:{},due:{},leech:{},daily:{}};
+    var k=state.exercises.kanji; if(!k.box)k.box={}; if(!k.learned)k.learned={}; if(!k.due)k.due={}; if(!k.leech)k.leech={}; if(!k.daily)k.daily={}; return k; }
+  function isKanjiChar(ch){ var c=ch.charCodeAt(0); return c>=0x4E00&&c<=0x9FFF; }
+  function kanjiLearned(ch){ return !!ensureKanji().learned[ch]; }
+  function kanjiReadable(str){ if(!str)return false; for(var i=0;i<str.length;i++){ if(isKanjiChar(str[i])&&!kanjiLearned(str[i]))return false; } return true; }
+  function kanjiForm(w){ if(!w)return null; if(w.kanji)return w.kanji; var jp=(typeof w==='string')?w:w.jp; return KANJI_WORDS[jp]||null; }
+  /* forma a mostrar: kana por defecto; kanji sólo si el modo está activo Y ya sabés los kanji */
+  function wordForm(w){ var jp=(typeof w==='string')?w:(w&&w.jp); if(!KANJI_MODE)return jp;
+    var kf=kanjiForm(w); return (kf&&kanjiReadable(kf))?kf:jp; }
+  /* dominio "completo": hoy = su kana; con kanji activo sumará saber los kanji de la palabra */
+  function wordFullyKnown(w){ if(!KANJI_MODE)return true; var kf=kanjiForm(w); return !kf||kanjiReadable(kf); }
   /* ---- Auto-indexed example words: one common-word pool → examples per character ----
      A word is an example for every kana it contains. Add words to the pools above and
      they light up all their characters at once. EX_INDEX[script][romaji] = [ {w,r,m,es} ]. */
@@ -3102,7 +3129,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       var em=(getEmoji()&&it.emoji)?'<span class="rq-emoji">'+it.emoji+'</span> ':'';
       readingInner.innerHTML=head+'<div class="rq-prompt teach-word">'+
         '<div class="rq-kind">'+t(rsess.pool===PHRASES?(q.relearn?"Let's review this phrase":"New phrase"):(q.relearn?"Let's review this word":"New word"))+'</div>'+
-        '<div class="rq-jp mincho'+(rsess.pool===PHRASES?' rq-jp-ph':'')+'">'+it.jp+'</div>'+
+        '<div class="rq-jp mincho'+(rsess.pool===PHRASES?' rq-jp-ph':'')+'">'+wordForm(it)+'</div>'+
         '<div class="tw-rom">'+it.romaji+'</div>'+
         '<div class="rq-mean">'+em+(es?it.es:it.en)+'</div>'+(it.note?'<div class="rq-note">'+it.note+'</div>':'')+'</div>'+
         '<div class="d-actions"><button class="d-spk-word" id="rSpkW">🔊 <span>'+t("hear it")+'</span></button><button class="d-next" id="rGot">'+t("Got it →")+'</button></div>';
@@ -3110,7 +3137,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     }
     h+=head;
     h+='<div class="rq-prompt">';
-    if(q.mode==="read"){ h+='<div class="rq-kind">'+t("What does it mean?")+'</div><div class="rq-jp mincho">'+it.jp+'</div>'; }
+    if(q.mode==="read"){ h+='<div class="rq-kind">'+t("What does it mean?")+'</div><div class="rq-jp mincho">'+wordForm(it)+'</div>'; }
     else if(q.mode==="listen"){ h+='<div class="rq-kind">'+t("Which one did you hear?")+'</div><button class="d-spk big" id="rSpk" aria-label="Play">🔊</button>'; }
     else { h+='<div class="rq-kind">'+t("Which one in Japanese?")+'</div><div class="rq-mean">'+(es?it.es:it.en)+(getEmoji()&&it.emoji?' '+it.emoji:'')+'</div>'; }
     h+='</div>';
@@ -3126,7 +3153,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     if(q.answered){
       var correct=q.picked===q.target;
       h+='<div class="rq-msg '+(correct?"ok":"no")+'">'+t(correct?"Correct!":"It was")+'</div>';
-      h+='<div class="rq-ans">'+(getEmoji()&&it.emoji?'<span class="rq-emoji">'+it.emoji+'</span> ':'')+'<span class="mincho">'+it.jp+'</span> <span class="rq-rom">'+it.romaji+'</span> — <span class="mean">'+(es?it.es:it.en)+'</span> <button class="d-spk-word" id="rSpkW">🔊 <span>'+t("hear it")+'</span></button></div>';
+      h+='<div class="rq-ans">'+(getEmoji()&&it.emoji?'<span class="rq-emoji">'+it.emoji+'</span> ':'')+'<span class="mincho">'+wordForm(it)+'</span> <span class="rq-rom">'+it.romaji+'</span> — <span class="mean">'+(es?it.es:it.en)+'</span> <button class="d-spk-word" id="rSpkW">🔊 <span>'+t("hear it")+'</span></button></div>';
     }
     h+='</div>';
     if(q.answered) h+='<div class="d-actions"><button class="d-next" id="rNext">'+t("Next →")+'</button></div>';
