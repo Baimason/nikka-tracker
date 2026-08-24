@@ -247,12 +247,12 @@
   .saveerr{display:none;background:var(--shu);color:#fff;font-size:12px;padding:6px 12px;border-radius:2px;margin-bottom:16px}
 
   /* ---- drill overlay ---- */
-  .drill{position:fixed;inset:0;z-index:60;overflow-y:auto;
+  .drill{position:fixed;inset:0;z-index:60;overflow-y:auto;overscroll-behavior:contain;min-height:100%;
     background:linear-gradient(var(--grid) 1px, transparent 1px) 0 0/100% 34px, var(--paper);
     padding:calc(20px + env(safe-area-inset-top,0px)) calc(18px + env(safe-area-inset-right,0px)) calc(30px + env(safe-area-inset-bottom,0px)) calc(18px + env(safe-area-inset-left,0px));display:flex;flex-direction:column}
   .drill.hidden{display:none}
   .drill-inner{max-width:520px;margin:0 auto;width:100%;display:flex;flex-direction:column;flex:1}
-  .reading{position:fixed;inset:0;z-index:60;overflow-y:auto;background:linear-gradient(var(--grid) 1px, transparent 1px) 0 0/100% 34px, var(--paper);padding:calc(20px + env(safe-area-inset-top,0px)) calc(18px + env(safe-area-inset-right,0px)) calc(30px + env(safe-area-inset-bottom,0px)) calc(18px + env(safe-area-inset-left,0px));display:flex;flex-direction:column}
+  .reading{position:fixed;inset:0;z-index:60;overflow-y:auto;overscroll-behavior:contain;min-height:100%;background:linear-gradient(var(--grid) 1px, transparent 1px) 0 0/100% 34px, var(--paper);padding:calc(20px + env(safe-area-inset-top,0px)) calc(18px + env(safe-area-inset-right,0px)) calc(30px + env(safe-area-inset-bottom,0px)) calc(18px + env(safe-area-inset-left,0px));display:flex;flex-direction:column}
   .reading.hidden{display:none}
   .ex-custom-btn{width:100%;font:inherit;font-weight:700;font-size:14px;color:var(--ink);background:var(--card);border:1.3px solid var(--ink);border-radius:3px;padding:11px 14px;margin-top:12px;cursor:pointer;text-align:center;-webkit-tap-highlight-color:transparent}
   .ex-custom-btn:active{transform:translateY(1px)}
@@ -1235,8 +1235,9 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     }
     var kataReady=(function(){var mm=scriptMastery("kata");return mm.total&&mm.solid/mm.total>=0.9;})();
     var us=unlockedStage(); /* honor what the user already unlocked, not just the current stage */
-    var rec = (us>=6||(us>=4&&phraseNudgeReady()))?{fn:"startPhrases",label:t("Phrases")}
-            : (us===5||(us===4&&kataReady))?{fn:"startWords",label:t("Words")}
+    var cs=Math.min(curStage(), us);   /* la etapa donde estás parado (Volver/Siguiente la mueven) */
+    var rec = (cs>=6)?{fn:"startPhrases",label:t("Phrases")}
+            : (cs===5||(cs===4&&kataReady))?{fn:"startWords",label:t("Words")}
             : {fn:"startDaily",label:t("Daily practice")};
     var h='<div class="card today-card">'+seal;
     h+='<h2>'+t("Today's practice")+'</h2><div class="date">'+prettyDate(td)+'</div>';
@@ -3592,7 +3593,8 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     }else if(type==="phrases"){
       drillEl.classList.add("hidden");
       if(!rsess || rsess.pool!==PHRASES){ startQuiz(PHRASES, ensurePhrases(), true); }
-      else { buildReadingQ(); readingEl.classList.remove("hidden"); renderReading(); }
+      if(rsess && rsess.pool===PHRASES && maybePattern()) return;   // teach / construir / cloze también acá
+      buildReadingQ(); readingEl.classList.remove("hidden"); renderReading();
     }
   }
   function customAfterUnit(){ if(!csess)return; customNextUnit(); }
@@ -3687,7 +3689,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   });
   function resetSection(keys,label){
     if(!confirm("¿Borrar el progreso de "+label+"? La racha y los días no se tocan. No se puede deshacer.")) return;
-    if(state.exercises){ keys.forEach(function(k){ delete state.exercises[k]; }); }
+    if(state.exercises){ keys.forEach(function(k){ var sec=state.exercises[k]; if(!sec)return; var d=sec.daily; delete state.exercises[k]; if(d)state.exercises[k]={daily:d}; }); }
     Persistence.save(state); render();
   }
   var _rk=document.getElementById("resetKana"); if(_rk)_rk.addEventListener("click",function(){ resetSection(["kana"],"kana"); });
