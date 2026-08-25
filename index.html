@@ -417,6 +417,10 @@
   .mc-goal{font-size:12px;color:var(--shu);font-weight:700;margin:2px 0 4px}
   .mc-verdict{font-size:13px;color:var(--ink);line-height:1.5;margin-top:8px}
   .mc-verdict.ok{color:var(--green);font-weight:600}
+  .weak-head{font-size:13px;color:var(--ink);margin-top:12px}
+  .weak-head b{color:var(--shu);font-weight:800}
+  .focus-all-btn{width:100%;margin-top:11px;font:inherit;font-weight:700;font-size:14px;color:var(--card);background:var(--shu);border:none;border-radius:3px;padding:11px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .focus-all-btn:active{transform:translateY(1px)}
   .weak-row{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-top:12px}
   .weak-row .wl{font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em}
   .weak-row .wk-g{font-size:19px;color:var(--ink);border:1px solid var(--line);border-radius:3px;padding:1px 8px;background:var(--paper)}
@@ -1158,9 +1162,20 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     else if(close){verdict=t("Almost there — a few more sessions and kana will feel automatic.");}
     else{verdict=t("Building your foundation — keep the daily drill going.");}
     var weak="";
-    if(m.weak.length){ weak='<div class="weak-row"><span class="wl">'+t("Focus on")+'</span>'+
-      m.weak.slice(0,8).map(function(x){return '<button class="wk-g mincho focus-btn" data-r="'+x.r+'" data-s="'+script+'">'+glyph(x.r,script)+'</button>';}).join("")+
-      (m.weak.length>8?'<span class="wl">+'+(m.weak.length-8)+' '+t("more")+'</span>':'')+'</div>'; }
+    if(m.weak.length){
+      // real blockers = characters already taught but not yet solid; the untaught ones
+      // arrive through normal teaching, so we don't count them as "left to close".
+      var _dr=m.weak.filter(function(x){return isLearned(script,x.r);});
+      if(_dr.length){
+        var _es=getLang()==="es",_sN=isKata?"katakana":"hiragana",_n=_dr.length;
+        var _head=_es?("Te "+(_n===1?"queda":"quedan")+" <b>"+_n+"</b> por afianzar en "+_sN):("<b>"+_n+"</b> left to lock in "+_sN);
+        weak='<div class="weak-head">'+_head+'</div>'+
+          '<div class="weak-row"><span class="wl">'+t("Focus on")+'</span>'+
+          _dr.slice(0,8).map(function(x){return '<button class="wk-g mincho focus-btn" data-r="'+x.r+'" data-s="'+script+'">'+glyph(x.r,script)+'</button>';}).join("")+
+          (_dr.length>8?'<span class="wl">+'+(_dr.length-8)+' '+t("more")+'</span>':'')+'</div>'+
+          '<button class="focus-all-btn" id="focusAll" data-s="'+script+'">'+(_es?"Practicar solo estos →":"Drill just these →")+'</button>';
+      }
+    }
     return '<div class="mastery-card"><div class="mc-top"><h3>'+title+'</h3>'+
       '<div class="mc-pct'+(ready?" ok":"")+'">'+m.pct+'%</div></div>'+
       '<div class="prog"><i class="'+(ready?"g":"")+'" style="width:'+m.pct+'%"></i></div>'+
@@ -1394,6 +1409,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
      ramp (~15% of the ~46 base kana ≈ 7) or lower it (3–4) for a gentler pace. */
   var LEARN_POOL=5;   // max characters actively being learned at once
   var PROMOTE_AT=3;   // SRS box (0–5) at which a char graduates out of the pool
+  var WEAK_BIAS=0.5;  // share of reviews steered to characters still below box 4
   function learningPoolCount(){
     var n=0; activePairs().forEach(function(p){
       if(isLearned(p.script,p.romaji) && (boxFor(p.script)[p.romaji]||0)<PROMOTE_AT) n++;
@@ -1431,6 +1447,20 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
 
   function buildQuestion(){
     var k=ensureKana();
+    // --- Focus drill: restrict the whole session to the weak set of one script ---
+    if(sess.focusWeak){
+      var _fs=sess.focusWeak,_fb=boxFor(_fs);
+      var _fp=poolForScript(_fs).filter(function(r){return isLearned(_fs,r)&&(_fb[r]||0)<4;});
+      if(_fp.length){
+        var _flast=sess.q?sess.q.target:null;
+        var _fc=_fp.filter(function(r){return r!==_flast;}); if(!_fc.length)_fc=_fp;
+        var _fw=_fc.map(function(r){var b=_fb[r]||0;return (6-b)*(6-b);});
+        var _fsum=_fw.reduce(function(a,b){return a+b;},0),_fx=Math.random()*_fsum,_fpick=_fc[_fc.length-1];
+        for(var _fi=0;_fi<_fc.length;_fi++){_fx-=_fw[_fi];if(_fx<=0){_fpick=_fc[_fi];break;}}
+        setupQuiz(_fpick,_fs); return;
+      }
+      sess.focusWeak=null; // all blockers cleared — drop back to the normal flow
+    }
     if(sess.force){ var f=sess.force; sess.force=null; setupQuiz(f.romaji,f.script); return; }
     var relearn=dueLeech();
     if(relearn){ clearLeech(relearn.script,relearn.romaji); sess.mode="teach"; sess.teach={script:relearn.script,romaji:relearn.romaji,relearn:true}; sess.q=null;
@@ -1449,6 +1479,15 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     }
     if(!learnedG.length){ sess.mode="teach"; sess.teach=(unlearned[0]||{script:"hira",romaji:BASE_KEYS[0]}); sess.q=null; return; }
     var lastT=sess.q?sess.q.target:null;
+    // --- Weak-first bias: reserve a share of reviews for characters still below box 4,
+    //     so the handful of blockers climb instead of being drowned out by mastered kana. ---
+    var weakG=learnedG.filter(function(c){return (boxFor(c.script)[c.romaji]||0)<4 && c.romaji!==lastT;});
+    if(weakG.length && Math.random()<WEAK_BIAS){
+      var ww=weakG.map(function(c){var b=boxFor(c.script)[c.romaji]||0;return (6-b)*(6-b);});
+      var wsum=ww.reduce(function(a,b){return a+b;},0),wx=Math.random()*wsum,wp=weakG[weakG.length-1];
+      for(var wi=0;wi<weakG.length;wi++){wx-=ww[wi];if(wx<=0){wp=weakG[wi];break;}}
+      setupQuiz(wp.romaji,wp.script); return;
+    }
     var dueG=learnedG.filter(function(c){return isDue(c.script,c.romaji);}),reviewSet=dueG.length?dueG:learnedG;
     var cands=reviewSet.filter(function(c){return c.romaji!==lastT;}); if(!cands.length)cands=reviewSet;
     var w=cands.map(function(c){var b=boxFor(c.script);return Math.max(1,6-(b[c.romaji]||0));});
@@ -1467,6 +1506,13 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function startDrill(){
     ensureKana();
     sess={done:0,correct:0,wrong:0,q:null,hitGoalShown:false,newCount:0,maxNew:5,mode:"quiz",teach:null,force:null};
+    buildQuestion();
+    drillEl.classList.remove("hidden");
+    renderDrill();
+  }
+  function startWeakDrill(script){
+    ensureKana();
+    sess={done:0,correct:0,wrong:0,q:null,hitGoalShown:false,newCount:0,maxNew:0,mode:"quiz",teach:null,force:null,focusWeak:script};
     buildQuestion();
     drillEl.classList.remove("hidden");
     renderDrill();
@@ -3708,6 +3754,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
         startFocusDrill(btn.getAttribute("data-r"), btn.getAttribute("data-s"));
       });
     });
+    var fa=app.querySelector("#focusAll"); if(fa)fa.addEventListener("click",function(){startWeakDrill(fa.getAttribute("data-s"));});
 
     app.querySelectorAll(".box").forEach(function(b){
       b.addEventListener("click",function(){toggle(b.getAttribute("data-id"));});
