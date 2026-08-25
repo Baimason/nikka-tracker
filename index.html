@@ -1262,6 +1262,8 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var _dc=dueCount(); if(_dc>0) h+='<div class="dc-sub" style="color:var(--shu);font-weight:600">🔁 '+_dc+' '+t("due for review")+'</div>';
     h+='<button class="start-btn'+(reps>=15?" done-today":"")+'" data-fn="'+rec.fn+'">'+(rec.fn==="startDaily"?rec.label:(t("Recommended")+': '+rec.label))+' →</button>';
     h+='<button class="ex-custom-btn" data-fn="openCustom">🎛 '+t("Custom exercise")+'</button>';
+    if(kanjiUnlockReady()) h+='<button class="ex-custom-btn" data-fn="activateKanji">漢字 '+t("Activate kanji")+'</button>';
+    else if(kanjiDueCount()>0) h+='<button class="ex-custom-btn" data-fn="startKanji">漢字 '+t("Kanji")+' ('+kanjiDueCount()+')</button>';
     var ext=tasksForStage(st).filter(function(x){return x.id!=="kana"&&x.id!=="words"&&x.id!=="phrases";});
     if(ext.length){
       h+='<div class="ex-sep">'+t("Support")+'</div>';
@@ -2710,6 +2712,53 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var kf=kanjiForm(w); return (kf&&kanjiReadable(kf))?kf:jp; }
   /* dominio "completo": hoy = su kana; con kanji activo sumará saber los kanji de la palabra */
   function wordFullyKnown(w){ if(!KANJI_MODE)return true; var kf=kanjiForm(w); return !kf||kanjiReadable(kf); }
+  /* ================= KANJI ENGINE (Fase 1) — furigana dinámico + crédito por carácter =================
+     Filosofía intacta: KANA-FIRST. wordReadable() NO cambia — el kana siempre manda, nunca
+     frenás tu lectura esperando un kanji. Con state.kanjiOn=false TODO se comporta como hoy.
+     Examen a NIVEL PALABRA (leés la palabra en kanji, sin furigana, y elegís la lectura);
+     crédito a NIVEL CARÁCTER (cada kanji nuevo de esa palabra suma/resta). Un kanji se aprende
+     cuando junta KANJI_PROMOTE_AT aciertos a través de CUALQUIER palabra que lo contenga:
+     así 学 visto en 学校 y en 学生 acumula de las dos y se transfiere. */
+  var KANJI_PROMOTE_AT=3;   // aciertos para marcar un kanji como aprendido
+  var KANJI_LEARN_POOL=5;   // máx. kanji en aprendizaje simultáneo (mismo patrón que el kana)
+  var KANJI_UNLOCK_AT=4;    // kanji elegibles necesarios para ofrecer activar la sección
+  function kanjiOn(){ return !!state.kanjiOn; }
+  function setKanjiOn(v){ state.kanjiOn=!!v; Persistence.save(state); }
+  function wordMature(jp){ return (ensureWords().box[jp]||0)>=4; }   // "sólida" en el word-SRS
+
+  /* crédito por carácter: reusa ensureKanji().box como contador (0..PROMOTE_AT) */
+  function kanjiCredit(ch,correct){ var k=ensureKanji(),cur=k.box[ch]||0;
+    k.box[ch]=correct?Math.min(KANJI_PROMOTE_AT,cur+1):Math.max(0,cur-1);
+    if(k.box[ch]>=KANJI_PROMOTE_AT){ k.learned[ch]=true; }
+    var td=today(); k.daily[td]=(k.daily[td]||0)+1; }
+  function kanjiSeen(ch){ var k=ensureKanji(); if(!k.box[ch])k.box[ch]=1; }   /* marca "en vuelo" al enseñarlo */
+
+  /* kanji distintos que aparecen en palabras YA maduras y cuya forma-kanji conocemos, aún no aprendidos */
+  function eligibleKanji(){ var seen={},out=[];
+    WORD_POOL.forEach(function(w){ if(!wordMature(w.jp))return; var kf=kanjiForm(w); if(!kf)return;
+      for(var i=0;i<kf.length;i++){ var ch=kf.charAt(i);
+        if(isKanjiChar(ch)&&!kanjiLearned(ch)&&!seen[ch]){ seen[ch]=1; out.push(ch); } } });
+    return out; }
+  function inFlightKanji(){ var k=ensureKanji(); return eligibleKanji().filter(function(ch){ return (k.box[ch]||0)>0; }); }
+  function unseenKanji(){ var k=ensureKanji(); return eligibleKanji().filter(function(ch){ return !(k.box[ch]||0); }); }
+  /* palabras maduras quizzeables: su forma-kanji tiene ≥1 kanji todavía no aprendido */
+  function kanjiWordPool(){ return WORD_POOL.filter(function(w){ if(!wordMature(w.jp))return false;
+    var kf=kanjiForm(w); return !!kf && !kanjiReadable(kf); }); }
+  /* ¿hay algo para practicar ahora? (para el botón del hub) */
+  function kanjiDueCount(){ return kanjiOn()? kanjiWordPool().length : 0; }
+  function kanjiUnlockReady(){ return !kanjiOn() && eligibleKanji().length>=KANJI_UNLOCK_AT; }
+
+  /* ---- Render del furigana: los 3 estados de una palabra con kanji ----
+     kana puro (no maduró / kanji off) → 学校+がっこう (andamio) → 学校 (desnudo, kanji dominado). */
+  function rubyHTML(kf,reading){ return '<ruby>'+kf+'<rt>'+reading+'</rt></ruby>'; }
+  function wordFormHTML(w){ var jp=(typeof w==='string')?w:(w&&w.jp);
+    if(!kanjiOn())return jp;                     // kanji off → idéntico a hoy
+    var kf=kanjiForm(w); if(!kf)return jp;        // sin forma-kanji → kana
+    if(kanjiReadable(kf))return kf;              // todos los kanji aprendidos → kanji desnudo
+    if(!wordMature(jp))return jp;                // palabra aún no madura → no le sumo carga
+    return rubyHTML(kf,jp);                      // andamio: kanji + furigana
+  }
+
   /* ---- Auto-indexed example words: one common-word pool → examples per character ----
      A word is an example for every kana it contains. Add words to the pools above and
      they light up all their characters at once. EX_INDEX[script][romaji] = [ {w,r,m,es} ]. */
@@ -3143,6 +3192,95 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     readingEl.classList.remove("hidden"); }
   function wordsAfterUnit(){ if(!wsess)return; wordsNextUnit(); }
   function wordsEnd(){ wsess=null; rsess=null; bsess=null; readingEl.classList.add("hidden"); try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){} render(); }
+  /* ================= KANJI DRILL (Fase 1) — sesión propia sobre el overlay #reading =================
+     No toca el director de words: corre aislado y reusa las clases CSS existentes (.rq-*, .ropt…).
+     Teach card = presenta un kanji nuevo dentro de una palabra que ya dominás. Quiz = te muestra
+     la palabra en kanji SIN furigana y elegís la lectura; el acierto acredita cada kanji nuevo. */
+  (function(){ var add={
+    "New kanji":"Kanji nuevo","appears in":"aparece en","How do you read it?":"¿Cómo se lee?",
+    "Activate kanji":"Activar kanji","You've mastered these words in kana — now learn their kanji.":"Ya dominás estas palabras en kana — ahora aprendé sus kanji.",
+    "Nothing to review right now.":"Nada para repasar por ahora.","kanji to practice":"kanji para practicar",
+    "You've learned":"Aprendiste","Pause kanji":"Pausar kanji"
+  }; for(var k in add){ if(typeof TR==="object" && !(k in TR))TR[k]=add[k]; } })();
+
+  var ksess=null;
+  function exampleWordFor(ch){ var best=null; WORD_POOL.forEach(function(w){ if(!wordMature(w.jp))return;
+    var kf=kanjiForm(w); if(kf&&kf.indexOf(ch)>=0){ if(!best||kf.length<kanjiForm(best).length)best=w; } }); return best; }
+
+  function startKanji(){ pbsess=null; bsess=null; wsess=null; rsess=null;
+    ksess={done:0,correct:0,wrong:0,q:null}; kanjiNextUnit(); }
+  function kanjiEnd(){ ksess=null; readingEl.classList.add("hidden");
+    try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){} render(); }
+
+  function kanjiNextUnit(){ if(!ksess)return;
+    var quizWords=kanjiWordPool();
+    if(!quizWords.length){ kanjiEnd(); return; }
+    var unseen=unseenKanji(), inflight=inFlightKanji();
+    if(unseen.length && inflight.length<KANJI_LEARN_POOL){
+      var ch=unseen[0], ex=exampleWordFor(ch);
+      if(ex){ ksess.q={mode:"teach",ch:ch,ex:ex,kf:kanjiForm(ex)}; renderKanji(); readingEl.classList.remove("hidden"); return; }
+    }
+    /* quiz: preferí una palabra que contenga un kanji en vuelo */
+    var withInflight=quizWords.filter(function(w){ var kf=kanjiForm(w);
+      for(var i=0;i<kf.length;i++){ if(inflight.indexOf(kf.charAt(i))>=0)return true; } return false; });
+    var pool=withInflight.length?withInflight:quizWords;
+    var target=pool[Math.floor(Math.random()*pool.length)];
+    var distSrc=WORD_POOL.filter(function(w){ return w.jp!==target.jp && wordReadable(w.jp); });
+    shuffle(distSrc); var opts=shuffle([target].concat(distSrc.slice(0,5)));
+    ksess.q={mode:"quiz",word:target,opts:opts,answered:false,picked:-1};
+    renderKanji(); readingEl.classList.remove("hidden");
+    setTimeout(function(){speak(target.jp);},250); }
+
+  function kanjiHead(){ return '<div class="d-sticky"><div class="d-head"><button class="d-close" id="kClose">✕ '+t("Close")+'</button>'+
+    '<div class="d-stats"><div class="d-stat"><div class="n">'+ksess.done+'</div><div class="l">'+t("Done")+'</div></div>'+
+    '<div class="d-stat wrong"><div class="n">'+ksess.wrong+'</div><div class="l">'+t("Wrong")+'</div></div>'+
+    '<div class="d-stat right"><div class="n">'+ksess.correct+'</div><div class="l">'+t("Correct")+'</div></div></div></div></div>'; }
+
+  function renderKanji(){ var q=ksess.q,es=getLang()==="es",h=kanjiHead();
+    if(q.mode==="teach"){ var ex=q.ex;
+      h+='<div class="rq-prompt teach-word">'+
+         '<div class="rq-kind">'+t("New kanji")+'</div>'+
+         '<div class="rq-jp mincho" style="font-size:64px;line-height:1.1">'+q.ch+'</div>'+
+         '<div class="rq-mean">'+t("appears in")+' <span class="mincho">'+rubyHTML(q.kf,ex.jp)+'</span> — '+(es?ex.es:ex.en)+'</div></div>'+
+         '<div class="d-actions"><button class="d-spk-word" id="kSpk">🔊 <span>'+t("hear it")+'</span></button><button class="d-next" id="kGot">'+t("Got it →")+'</button></div>';
+      readingInner.innerHTML=h; bindKanji(); return; }
+    /* quiz */
+    var w=q.word, promptJP=kanjiForm(w);
+    h+='<div class="rq-prompt"><div class="rq-kind">'+t("How do you read it?")+'</div>'+
+       '<div class="rq-jp mincho">'+promptJP+'</div></div>';
+    h+='<div class="ropts">';
+    q.opts.forEach(function(o){ var cls="ropt jp mincho";
+      if(q.answered){ if(o.jp===w.jp)cls+=" correct"; else if(q.picked>=0&&q.opts[q.picked]&&q.opts[q.picked].jp===o.jp)cls+=" bad"; else cls+=" dim"; }
+      h+='<button class="'+cls+'" data-jp="'+o.jp+'">'+o.jp+'</button>'; });
+    h+='</div>';
+    h+='<div class="rq-fb">';
+    if(q.answered){ var correct=q.opts[q.picked]&&q.opts[q.picked].jp===w.jp;
+      h+='<div class="rq-msg '+(correct?"ok":"no")+'">'+t(correct?"Correct!":"It was")+'</div>';
+      h+='<div class="rq-ans"><span class="mincho">'+rubyHTML(kanjiForm(w),w.jp)+'</span> <span class="rq-rom">'+w.romaji+'</span> — <span class="mean">'+(es?w.es:w.en)+'</span> <button class="d-spk-word" id="kSpkW">🔊 <span>'+t("hear it")+'</span></button></div>'; }
+    h+='</div>';
+    if(q.answered) h+='<div class="d-actions"><button class="d-next" id="kNext">'+t("Next →")+'</button></div>';
+    readingInner.innerHTML=h; bindKanji(); }
+
+  function kanjiTeachDone(){ var q=ksess.q; if(!q||q.mode!=="teach")return;
+    kanjiSeen(q.ch); Persistence.save(state); kanjiNextUnit(); }
+
+  function answerKanji(jp){ var q=ksess.q; if(!q||q.answered)return;
+    q.answered=true; for(var i=0;i<q.opts.length;i++){ if(q.opts[i].jp===jp){ q.picked=i; break; } }
+    var correct=jp===q.word.jp, kf=kanjiForm(q.word);
+    for(var j=0;j<kf.length;j++){ var ch=kf.charAt(j); if(isKanjiChar(ch)&&!kanjiLearned(ch))kanjiCredit(ch,correct); }
+    ksess.done++; if(correct)ksess.correct++; else ksess.wrong++;
+    stampDay(); Persistence.save(state); speak(q.word.jp); renderKanji(); }
+
+  function bindKanji(){ var c=document.getElementById("kClose"); if(c)c.addEventListener("click",kanjiEnd);
+    var nx=document.getElementById("kNext"); if(nx)nx.addEventListener("click",kanjiNextUnit);
+    var gt=document.getElementById("kGot"); if(gt)gt.addEventListener("click",kanjiTeachDone);
+    var sp=document.getElementById("kSpk"); if(sp)sp.addEventListener("click",function(){speak(ksess.q.ex.jp);});
+    var spw=document.getElementById("kSpkW"); if(spw)spw.addEventListener("click",function(){speak(ksess.q.word.jp);});
+    if(ksess.q.mode==="quiz"&&!ksess.q.answered){ readingInner.querySelectorAll(".ropt").forEach(function(o){
+      o.addEventListener("click",function(){answerKanji(o.getAttribute("data-jp"));}); }); } }
+
+  function activateKanji(){ setKanjiOn(true); render(); }
+
   function startPhrases(){ startQuiz(PHRASES, ensurePhrases(), true); if(maybePattern())return; }
   function closeReading(){ if(csess){ customEnd(); return; } if(wsess){ wordsEnd(); return; } pbsess=null; ptsess=null; readingEl.classList.add("hidden"); try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){} render(); }
   function nextReadingQ(){ if(csess){ customAfterUnit(); return; } if(wsess){ wordsAfterUnit(); return; }
@@ -3176,7 +3314,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       var em=(getEmoji()&&it.emoji)?'<span class="rq-emoji">'+it.emoji+'</span> ':'';
       readingInner.innerHTML=head+'<div class="rq-prompt teach-word">'+
         '<div class="rq-kind">'+t(rsess.pool===PHRASES?(q.relearn?"Let's review this phrase":"New phrase"):(q.relearn?"Let's review this word":"New word"))+'</div>'+
-        '<div class="rq-jp mincho'+(rsess.pool===PHRASES?' rq-jp-ph':'')+'">'+wordForm(it)+'</div>'+
+        '<div class="rq-jp mincho'+(rsess.pool===PHRASES?' rq-jp-ph':'')+'">'+wordFormHTML(it)+'</div>'+
         '<div class="tw-rom">'+it.romaji+'</div>'+
         '<div class="rq-mean">'+em+(es?it.es:it.en)+'</div>'+(it.note?'<div class="rq-note">'+it.note+'</div>':'')+'</div>'+
         '<div class="d-actions"><button class="d-spk-word" id="rSpkW">🔊 <span>'+t("hear it")+'</span></button><button class="d-next" id="rGot">'+t("Got it →")+'</button></div>';
@@ -3184,7 +3322,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     }
     h+=head;
     h+='<div class="rq-prompt">';
-    if(q.mode==="read"){ h+='<div class="rq-kind">'+t("What does it mean?")+'</div><div class="rq-jp mincho">'+wordForm(it)+'</div>'; }
+    if(q.mode==="read"){ h+='<div class="rq-kind">'+t("What does it mean?")+'</div><div class="rq-jp mincho">'+wordFormHTML(it)+'</div>'; }
     else if(q.mode==="listen"){ h+='<div class="rq-kind">'+t("Which one did you hear?")+'</div><button class="d-spk big" id="rSpk" aria-label="Play">🔊</button>'; }
     else { h+='<div class="rq-kind">'+t("Which one in Japanese?")+'</div><div class="rq-mean">'+(es?it.es:it.en)+(getEmoji()&&it.emoji?' '+it.emoji:'')+'</div>'; }
     h+='</div>';
@@ -3200,7 +3338,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     if(q.answered){
       var correct=q.picked===q.target;
       h+='<div class="rq-msg '+(correct?"ok":"no")+'">'+t(correct?"Correct!":"It was")+'</div>';
-      h+='<div class="rq-ans">'+(getEmoji()&&it.emoji?'<span class="rq-emoji">'+it.emoji+'</span> ':'')+'<span class="mincho">'+wordForm(it)+'</span> <span class="rq-rom">'+it.romaji+'</span> — <span class="mean">'+(es?it.es:it.en)+'</span> <button class="d-spk-word" id="rSpkW">🔊 <span>'+t("hear it")+'</span></button></div>';
+      h+='<div class="rq-ans">'+(getEmoji()&&it.emoji?'<span class="rq-emoji">'+it.emoji+'</span> ':'')+'<span class="mincho">'+wordFormHTML(it)+'</span> <span class="rq-rom">'+it.romaji+'</span> — <span class="mean">'+(es?it.es:it.en)+'</span> <button class="d-spk-word" id="rSpkW">🔊 <span>'+t("hear it")+'</span></button></div>';
     }
     h+='</div>';
     if(q.answered) h+='<div class="d-actions"><button class="d-next" id="rNext">'+t("Next →")+'</button></div>';
@@ -3746,7 +3884,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   }
 
   function bindMain(){
-    app.querySelectorAll("[data-fn]").forEach(function(b){var fn=b.getAttribute("data-fn");b.addEventListener("click",function(){if(fn==="startDrill")startDrill();else if(fn==="startDaily")startDaily();else if(fn==="startWords")startWords();else if(fn==="startPhrases")startPhrases();else if(fn==="startBuild")startBuild();else if(fn==="startMatch")startMatch();else if(fn==="openCustom")openCustom();});});
+    app.querySelectorAll("[data-fn]").forEach(function(b){var fn=b.getAttribute("data-fn");b.addEventListener("click",function(){if(fn==="startDrill")startDrill();else if(fn==="startDaily")startDaily();else if(fn==="startWords")startWords();else if(fn==="startPhrases")startPhrases();else if(fn==="startBuild")startBuild();else if(fn==="startMatch")startMatch();else if(fn==="openCustom")openCustom();else if(fn==="startKanji")startKanji();else if(fn==="activateKanji")activateKanji();});});
 
     var wd=app.querySelector(".wotd[data-say]"); if(wd)wd.addEventListener("click",function(){speak(wd.getAttribute("data-say"));});
     app.querySelectorAll("[data-aim]").forEach(function(b){ b.addEventListener("click",function(){ setAim(b.getAttribute("data-aim")); }); });
