@@ -1906,7 +1906,22 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
         {jp:'いこう',romaji:'ikou',es:'¡vamos!',en:"let's go!",note:'～こう = «hagamos»'},
         {jp:'これをつかう',romaji:'kore o tsukau',es:'usar esto',en:'use this',parts:['これ','を','つかう'],note:'これ + を + verbo'}
       ]
-    }
+    },
+    'gyakuten-saiban': {
+      patterns:[
+        {pat:'と + むじゅんしている', es:'«Contradice a X». と se usa para decir "con", marcando contra qué choca el testimonio.'},
+        {pat:'うそ + を + つく', es:'Expresión fija: «Decir mentiras». を marca la mentira como el objeto.'},
+        {pat:'～は + あなた + だ', es:'«X eres tú». Clásica frase de acusación en la corte.'}
+      ],
+      phrases:[
+        {jp:'しょうことむじゅんしている',romaji:'shouko to mujun shite iru',es:'contradice la evidencia',en:'it contradicts the evidence',parts:['しょうこ','と','むじゅん','している'],note:'と = «con» · むじゅんしている = «está contradiciendo»'},
+        {jp:'しょうげんとむじゅんしている',romaji:'shougen to mujun shite iru',es:'contradice el testimonio',en:'it contradicts the testimony',parts:['しょうげん','と','むじゅん','している'],note:'と = «con»'},
+        {jp:'うそをついている',romaji:'uso o tsuite iru',es:'está mintiendo',en:'is lying',parts:['うそ','を','ついている'],note:'うそをつく = «mentir» (estado continuo: ついている)'},
+        {jp:'はんにんはあなただ',romaji:'hannin wa anata da',es:'el culpable eres tú',en:'the culprit is you',parts:['はんにん','は','あなた','だ'],note:'A は B だ = Acusación directa'},
+        {jp:'しょうこはある',romaji:'shouko wa aru',es:'hay pruebas',en:'there is evidence',parts:['しょうこ','は','ある'],note:'は marca el tema. ある = «hay / existen» (cosas)'},
+        {jp:'しょうげんをはじめる',romaji:'shougen o hajimeru',es:'comenzar el testimonio',en:'begin testimony',parts:['しょうげん','を','はじめる'],note:'を marca el objeto. はじめる = «comenzar»'}
+      ]
+    },
   };
 
   /* Fold opening-pack phrases into PHRASES (dedup by jp), carrying the note. */
@@ -2534,6 +2549,32 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
         {jp:'リンク',romaji:'rinku',es:'Link (protagonista)',en:'Link',emoji:'🗡️'},
         {jp:'マリン',romaji:'marin',es:'Marin (personaje)',en:'Marin',emoji:'👧'}
       ]
+    },
+    {
+      id: 'gyakuten-saiban', rung: 5,
+      name: { es: 'Phoenix Wright (Gyakuten Saiban)', en: 'Phoenix Wright: Ace Attorney' },
+      mode: { es: 'N4 + vocabulario legal', en: 'N4 + legal vocabulary' },
+      words: [
+        /* Jerga de la corte */
+        {jp: 'さいばん', romaji: 'saiban', es: 'juicio', en: 'trial', emoji: '⚖️'},
+        {jp: 'べんごし', romaji: 'bengoshi', es: 'abogado defensor', en: 'defense attorney', emoji: '💼'},
+        {jp: 'けんじ', romaji: 'kenji', es: 'fiscal', en: 'prosecutor', emoji: '🍷'},
+        {jp: 'さいばんちょう', romaji: 'saibanchou', es: 'juez', en: 'judge', emoji: '👨‍⚖️'},
+        {jp: 'しょうこ', romaji: 'shouko', es: 'prueba / evidencia', en: 'evidence', emoji: '📁'},
+        {jp: 'しょうげん', romaji: 'shougen', es: 'testimonio', en: 'testimony', emoji: '🗣️'},
+        {jp: 'しょうにん', romaji: 'shounin', es: 'testigo', en: 'witness', emoji: '👁️'},
+        {jp: 'むじゅん', romaji: 'mujun', es: 'contradicción', en: 'contradiction', emoji: '❌'},
+        {jp: 'うそ', romaji: 'uso', es: 'mentira', en: 'lie', emoji: '🤥'},
+        /* Jerga de crimen */
+        {jp: 'じけん', romaji: 'jiken', es: 'caso / incidente', en: 'case / incident', emoji: '🚨'},
+        {jp: 'はんにん', romaji: 'hannin', es: 'culpable / criminal', en: 'culprit', emoji: '👤'},
+        {jp: 'ひがいしゃ', romaji: 'higaisha', es: 'víctima', en: 'victim', emoji: '🩸'},
+        {jp: 'ひこくにん', romaji: 'hikokunin', es: 'acusado', en: 'defendant', emoji: '😨'},
+        {jp: 'ゆうざい', romaji: 'yuuzai', es: 'culpable (veredicto)', en: 'guilty', emoji: '🔨'},
+        {jp: 'むざい', romaji: 'muzai', es: 'inocente (veredicto)', en: 'not guilty', emoji: '🕊️'},
+        {jp: 'きおく', romaji: 'kioku', es: 'memoria / recuerdos', en: 'memory', emoji: '🧠'},
+        {jp: 'いと', romaji: 'ito', es: 'intención', en: 'intent', emoji: '💭'}
+      ]
     }
     /* ── add more games here: paste an object with its own word list ── */
   ];
@@ -2767,7 +2808,11 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     'ゆめ':'夢','ようせい':'妖精','よこ':'横','よっつ':'四つ','よむ':'読む','よる':'夜',
     'よわい':'弱い','よん':'四','りょこう':'旅行','りんご':'林檎','れい':'零','れきし':'歴史',
     'れんしゅう':'練習','ろく':'六','わざ':'技','わすれる':'忘れる','わたし':'私','わらう':'笑う',
-    'わるい':'悪い'
+    'わるい':'悪い',
+    'さいばん':'裁判', 'べんごし':'弁護士', 'けんじ':'検事', 'しょうこ':'証拠',
+    'しょうげん':'証言', 'しょうにん':'証人', 'むじゅん':'矛盾', 'うそ':'嘘',
+    'じけん':'事件', 'はんにん':'犯人', 'ひがいしゃ':'被害者', 'ひこくにん':'被告人',
+    'ゆうざい':'有罪', 'むざい':'無罪', 'さいばんちょう':'裁判長', 'きおく':'記憶', 'いと':'意図'
   };
   function ensureKanji(){ if(!state.exercises)state.exercises={};
     if(!state.exercises.kanji)state.exercises.kanji={box:{},learned:{},due:{},leech:{},daily:{}};
