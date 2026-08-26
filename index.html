@@ -366,7 +366,10 @@
   .info-btn:hover{color:var(--shu)}
   .opt-help{font-size:12px;color:var(--ink-soft);line-height:1.55;margin-top:10px;padding:9px 11px;background:var(--paper);border:1px dashed var(--line);border-radius:3px}
   .opt-help b{color:var(--ink)}
-  .lang-switch{display:flex;justify-content:flex-end;margin:-4px 0 12px}
+  .lang-switch{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:10px;margin:-4px 0 12px}
+  .seg-group{display:flex;gap:4px}
+  .seg-group .lseg{border:1.3px solid var(--line);border-radius:4px}
+  .seg-group .lseg.on{border-color:var(--ink)}
   .lseg{font:inherit;font-size:11px;font-weight:700;letter-spacing:.08em;border:1.3px solid var(--line);background:var(--card);color:var(--ink-soft);padding:4px 12px;cursor:pointer}
   .lseg:first-child{border-radius:3px 0 0 3px;border-right:none}
   .lseg:last-child{border-radius:0 3px 3px 0}
@@ -513,6 +516,8 @@
   .pb-tile.used{opacity:.32;pointer-events:none}
   .pb-tile.bad{background:var(--bad-bg);border-color:var(--shu);color:var(--shu)}
   .bw-toggle{display:block;margin:14px auto 0;background:none;border:1.3px solid var(--line);border-radius:20px;padding:7px 16px;font:inherit;font-size:12px;font-weight:700;color:var(--ink-soft);cursor:pointer}
+  .rd-toggles{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px;margin-top:14px}
+  .rd-toggles .bw-toggle,.rd-toggles .emoji-toggle{margin:0}
   .mt-sub{font-size:11px;color:var(--ink-soft);text-align:center;margin:2px 0 0;letter-spacing:.06em;text-transform:uppercase}
   .mt-board{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
   .mt-col{display:flex;flex-direction:column;gap:9px}
@@ -1319,24 +1324,25 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     if(tcMeta){tcMeta.setAttribute("content",theme==="dark"?"#191510":"#e4ddcc");}
 
     // Nuevo bloque con los botones de Idioma y Fuente
-    html+='<div class="lang-switch" style="gap:4px;">';
+    html+='<div class="lang-switch">';
 
     //Botones de Font
+    html+='<div class="seg-group">';
     html+='<button class="fseg lseg'+(font==="mincho"?" on":"")+'" data-font="mincho" title="'+t("Traditional style (serif)")+'" style="font-family: \'Shippori Mincho\', serif; font-size: 14px;">あ</button>';
     html+='<button class="fseg lseg'+(font==="gothic"?" on":"")+'" data-font="gothic" title="'+t("Modern style (sans-serif)")+'" style="font-family: \'Noto Sans JP\', sans-serif; font-size: 14px;">あ</button>';
-
-    html+='<div style="width:8px;"></div>'; /* Separador visual */
-
-    html+='<button class="lseg'+(lang==="en"?" on":"")+'" data-lang="en">EN</button>';
-    html+='<button class="lseg'+(lang==="es"?" on":"")+'" data-lang="es">ES</button>';
+    html+='</div>';
 
     //Botones de idioma
-
-    html+='<div style="width:8px;"></div>'; /* Separador visual */
+    html+='<div class="seg-group">';
+    html+='<button class="lseg'+(lang==="en"?" on":"")+'" data-lang="en">EN</button>';
+    html+='<button class="lseg'+(lang==="es"?" on":"")+'" data-lang="es">ES</button>';
+    html+='</div>';
 
     //Botones de tema (claro / oscuro)
+    html+='<div class="seg-group">';
     html+='<button class="tseg lseg'+(theme==="light"?" on":"")+'" data-theme="light" title="'+t("Light mode")+'" style="font-size:13px;">☀</button>';
     html+='<button class="tseg lseg'+(theme==="dark"?" on":"")+'" data-theme="dark" title="'+t("Dark mode")+'" style="font-size:13px;">☾</button>';
+    html+='</div>';
 
     html+='</div>';
 
@@ -2865,7 +2871,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var exArr=(exclude==null)?[]:(exclude.length!=null?exclude:[exclude]);
     var exSet={}; exArr.forEach(function(e){if(e!=null&&e>=0)exSet[e]=1;});
     var cand=idxs.filter(function(i){return !exSet[i];}); if(!cand.length)cand=idxs;
-    var w=cand.map(function(i){return Math.max(1,6-(box[pool[i].jp]||0));});
+    var w=cand.map(function(i){var b=Math.min(5,box[pool[i].jp]||0); return b>=4?1:(10-b*2);});
     var sum=w.reduce(function(a,b){return a+b;},0),x=Math.random()*sum;
     for(var k=0;k<cand.length;k++){x-=w[k];if(x<=0)return cand[k];}
     return cand[cand.length-1];
@@ -3560,8 +3566,10 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       q.tiles.forEach(function(g){ h+='<button class="opt mincho'+(q.badTile===g?" bad":"")+'" data-tile="'+g+'">'+g+'</button>'; });
     }
     h+='</div>';
+    h+='<div class="rd-toggles">';
     h+='<button class="bw-toggle" id="xRom">'+t(showRom?"Hide romaji":"Show romaji")+'</button>';
     if(w.emoji) h+='<button class="emoji-toggle" id="xEmoji">'+(getEmoji()?"☑":"☐")+' Emojis</button>';
+    h+='</div>';
     if(q.done){
       h+='<div class="rq-fb"><div class="rq-ans"><span class="mincho">'+w.jp+'</span> <span class="rq-rom">'+w.romaji+'</span> — <span class="mean">'+mean+'</span></div></div>';
       h+='<div class="d-actions"><button class="d-next" id="xNext">'+t("Next →")+'</button></div>';
