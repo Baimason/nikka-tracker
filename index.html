@@ -2668,7 +2668,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   var READ_LEARN_POOL=12, WORD_PROMOTE_AT=3, WORD_LEECH_AT=3;
   var WORD_KEYSET=(function(){var m={};WORD_POOL.forEach(function(w){m[w.jp]=1;});return m;})();
   function markWordKnown(jp){ if(!WORD_KEYSET[jp])return; var w=ensureWords(); w.seen[jp]=1; w.known[jp]=1; w.leech[jp]=0; }
-  function ensureWords(){ if(!state.exercises)state.exercises={}; if(!state.exercises.words)state.exercises.words={box:{},daily:{}}; var w=state.exercises.words; if(!w.box)w.box={}; if(!w.daily)w.daily={}; if(!w.seen)w.seen={}; if(!w.leech)w.leech={}; if(!w.known)w.known={}; return w; }
+  function ensureWords(){ if(!state.exercises)state.exercises={}; if(!state.exercises.words)state.exercises.words={box:{},daily:{}}; var w=state.exercises.words; if(!w.box)w.box={}; if(!w.daily)w.daily={}; if(!w.seen)w.seen={}; if(!w.leech)w.leech={}; if(!w.known)w.known={}; if(!w.lastMove)w.lastMove={}; return w; }
   function ensurePhrases(){ if(!state.exercises)state.exercises={}; if(!state.exercises.phrases)state.exercises.phrases={box:{},daily:{}}; var w=state.exercises.phrases; if(!w.box)w.box={}; if(!w.daily)w.daily={}; if(!w.seen)w.seen={}; if(!w.leech)w.leech={}; if(!w.built)w.built={}; return w; }
   function poolMastery(pool,box){ var total=pool.length,solid=0,sum=0; pool.forEach(function(it){var b=Math.min(5,box[it.jp]||0);sum+=b;if(b>=4)solid++;}); return {pct:total?Math.round(sum/(total*5)*100):0,solid:solid,total:total,seen:Object.keys(box).length}; }
   function readingCardHTML(){
@@ -3412,10 +3412,21 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var q=rsess.q; if(!q||q.answered)return;
     q.answered=true; q.picked=idx;
     var pool=rsess.pool,box=rsess.box,key=pool[q.target].jp,cur=box[key]||0,correct=idx===q.target;
-    box[key]=correct?Math.min(5,cur+1):0;
-    if(rsess.ex.leech){ rsess.ex.leech[key]=correct?0:((rsess.ex.leech[key]||0)+1); }
+    var ex=rsess.ex, td=today(); ex.lastMove=ex.lastMove||{};
+    /* SRS de palabras — dos reglas que mantienen el pool sano y el dominio honesto:
+       (A) fallar hace ‑1 (Math.max(0,cur‑1)), NO reset a 0: un tropiezo ya no borra
+           toda la racha, así las palabras convergen en vez de reciclarse al fondo.
+       (B) un movimiento de box por palabra por día: solo el PRIMER encuentro de cada
+           día mueve el box (ese es el reencuentro espaciado real). Los siguientes
+           del mismo día refuerzan pero no lo mueven. Así box>=4 = acertada en 4 días
+           distintos = dominio espaciado de verdad, no una racha de un mismo minuto. */
+    if(ex.lastMove[key]!==td){
+      box[key]=correct?Math.min(5,cur+1):Math.max(0,cur-1);
+      ex.lastMove[key]=td;
+    }
+    if(ex.leech){ ex.leech[key]=correct?0:((ex.leech[key]||0)+1); }
     rsess.done++; if(correct)rsess.correct++; else rsess.wrong++;
-    var td=today(); rsess.ex.daily[td]=(rsess.ex.daily[td]||0)+1; stampDay();
+    ex.daily[td]=(ex.daily[td]||0)+1; stampDay();
     Persistence.save(state); speak(pool[q.target].jp); renderReading();
   }
   function renderReading(){
