@@ -312,6 +312,7 @@
   .mrow-lbl{font-weight:700;font-size:14px;color:var(--ink)}
   .mrow-pct{font-family: var(--display-font);font-weight:800;font-size:18px;color:var(--shu)}
   .mrow-pct.ok{color:var(--green)}
+  .mrow-mo{font-size:12px;font-weight:700;color:var(--green);margin:2px 0 4px;letter-spacing:.01em}
   .d-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
   .d-close{background:none;border:none;font:inherit;font-size:13px;color:var(--ink-soft);cursor:pointer;
     text-transform:uppercase;letter-spacing:.1em;font-weight:700}
@@ -2595,7 +2596,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   /* ---- Aim at a game: bias new-word introductions toward its core vocab ----
      Mixed, not exclusive (AIM_BIAS) and still capped by READ_LEARN_POOL, so it
      prioritises without flooding. state.aim holds one game id at a time. */
-  var AIM_BIAS=0.8;
+  var AIM_BIAS=0.8, AIM_RESERVE=3, AIM_REVIEW_BIAS=0.45;
   function aimedGame(){ if(!state||!state.aim)return null; for(var i=0;i<GAMES.length;i++)if(GAMES[i].id===state.aim)return GAMES[i]; return null; }
   function aimWordSet(){ var g=aimedGame(); if(!g)return null; var m={}; (g.words||[]).forEach(function(w){m[w.jp]=1;}); return m; }
   function aimPhraseSet(){ var g=aimedGame(); if(!g||typeof OPENINGS==='undefined')return null; var o=OPENINGS[g.id]; if(!o)return null; var m={}; (o.phrases||[]).forEach(function(x){m[x.jp]=1;}); return m; }
@@ -2668,7 +2669,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   var READ_LEARN_POOL=12, WORD_PROMOTE_AT=3, WORD_LEECH_AT=3;
   var WORD_KEYSET=(function(){var m={};WORD_POOL.forEach(function(w){m[w.jp]=1;});return m;})();
   function markWordKnown(jp){ if(!WORD_KEYSET[jp])return; var w=ensureWords(); w.seen[jp]=1; w.known[jp]=1; w.leech[jp]=0; }
-  function ensureWords(){ if(!state.exercises)state.exercises={}; if(!state.exercises.words)state.exercises.words={box:{},daily:{}}; var w=state.exercises.words; if(!w.box)w.box={}; if(!w.daily)w.daily={}; if(!w.seen)w.seen={}; if(!w.leech)w.leech={}; if(!w.known)w.known={}; if(!w.lastMove)w.lastMove={}; return w; }
+  function ensureWords(){ if(!state.exercises)state.exercises={}; if(!state.exercises.words)state.exercises.words={box:{},daily:{}}; var w=state.exercises.words; if(!w.box)w.box={}; if(!w.daily)w.daily={}; if(!w.seen)w.seen={}; if(!w.leech)w.leech={}; if(!w.known)w.known={}; if(!w.lastMove)w.lastMove={}; if(!w.up)w.up={}; if(!w.mas)w.mas={}; return w; }
   function ensurePhrases(){ if(!state.exercises)state.exercises={}; if(!state.exercises.phrases)state.exercises.phrases={box:{},daily:{}}; var w=state.exercises.phrases; if(!w.box)w.box={}; if(!w.daily)w.daily={}; if(!w.seen)w.seen={}; if(!w.leech)w.leech={}; if(!w.built)w.built={}; return w; }
   function poolMastery(pool,box){ var total=pool.length,solid=0,sum=0; pool.forEach(function(it){var b=Math.min(5,box[it.jp]||0);sum+=b;if(b>=4)solid++;}); return {pct:total?Math.round(sum/(total*5)*100):0,solid:solid,total:total,seen:Object.keys(box).length}; }
   function readingCardHTML(){
@@ -2704,13 +2705,26 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
      phrases become the recommended next step and the reading card nudges. */
   var PHRASES_NUDGE_AT=25;
   function phraseNudgeReady(){ return poolMastery(WORD_POOL,ensureWords().box).solid >= PHRASES_NUDGE_AT; }
+  /* Momentum: mastery (box>=4) is cross-day and stays flat for days, so a session can
+     feel like nothing happened. This shows the day's REAL movement — words that climbed
+     a box today — which is honest (a spaced reencounter passed) without inflating the
+     mastered count. Renders nothing until something actually moves. */
+  function todayMomentumHTML(es){
+    var w=ensureWords(), td=today(), up=(w.up&&w.up[td])||0, ma=(w.mas&&w.mas[td])||0;
+    if(!up) return '';
+    var s=es?('▲ Hoy subiste '+up+(up===1?' palabra':' palabras')+' de nivel')
+            :('▲ '+up+(up===1?' word':' words')+' leveled up today');
+    if(ma>0) s+=es?(' · '+ma+(ma===1?' nueva dominada':' nuevas dominadas')+' 🎉')
+                  :(' · '+ma+' newly mastered 🎉');
+    return '<div class="mrow-mo">'+s+'</div>';
+  }
   function wordsMilestoneRow(){
     var count=poolMastery(WORD_POOL,ensureWords().box).solid, mi=milestoneInfo(count), es=getLang()==="es";
     return '<div class="mrow"><div class="mrow-top"><span class="mrow-lbl">'+t("Words")+'</span>'+
       '<span class="mrow-pct'+(mi.next?'':' ok')+'">'+count+'</span></div>'+
       '<div class="prog"><i class="'+(mi.next?'':'g')+'" style="width:'+mi.pct+'%"></i></div>'+
       '<div class="mc-sub">'+count+(es?' palabras que ya leés':' words you can read')+'</div>'+
-      '<div class="mc-goal">'+(mi.next?((es?'Próximo hito: ':'Next: ')+mi.nextN+' · '+mi.label):('済 '+mi.label))+'</div>'+_phraseNudgeHTML(count,es)+'</div>';
+      '<div class="mc-goal">'+(mi.next?((es?'Próximo hito: ':'Next: ')+mi.nextN+' · '+mi.label):('済 '+mi.label))+'</div>'+todayMomentumHTML(es)+_phraseNudgeHTML(count,es)+'</div>';
   }
   function _phraseNudgeHTML(count,es){
     if(!phraseNudgeReady())return '';
@@ -3248,8 +3262,17 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function buildReadingQ(){
     var pool=rsess.pool,box=rsess.box,all=[]; for(var i=0;i<pool.length;i++)all.push(i);
     var readable=(pool===PHRASES?phraseReadyIdxMature(pool):readableIdx(pool)), tgtSet=readable.length?readable:all;
+    /* aim set for this pool — null when no game is aimed (or a custom run opted out).
+       Hoisted so both the intro lane and the review quiz can see it. */
+    var aimS=(csess && !csess.useAim)?null:aimSetForPool(pool);
     function quiz(setIdx){
-      var target=weightedPick(pool,box,setIdx,rsess.recent||[]);
+      var useIdx=setIdx;
+      /* AIM LANE (review): bias the quiz toward aim words that haven't matured yet
+         (box<4) so they actually surface today and can take their one daily box-step.
+         Moderate bias — enough to guarantee they show up, not enough to drown the rest. */
+      if(aimS){ var aimDue=setIdx.filter(function(i){return aimS[pool[i].jp] && (box[pool[i].jp]||0)<4;});
+        if(aimDue.length && Math.random()<AIM_REVIEW_BIAS) useIdx=aimDue; }
+      var target=weightedPick(pool,box,useIdx,rsess.recent||[]);
       var distSrc=(readable.length>=6?readable:all).filter(function(i){return i!==target;});
       shuffle(distSrc); var opts=shuffle(distSrc.slice(0,5).concat([target]));
       var modes=["read","listen","recall"],mode=modes[Math.floor(Math.random()*modes.length)];
@@ -3266,19 +3289,30 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       if(leeched.length){ var tl=leeched[Math.floor(Math.random()*leeched.length)];
         rsess.q={target:tl,mode:"teach",relearn:true,opts:[],answered:false,picked:-1};
         setTimeout(function(){speak(pool[tl].jp);},250); return; }
-      // 2) introduce a new word while fewer than LEARN_POOL are still being learned (box < PROMOTE)
       var unseen=tgtSet.filter(function(i){return !seen[pool[i].jp];});
       var seenSet=tgtSet.filter(function(i){return seen[pool[i].jp];});
+      // 2) AIM LANE (intro): guarantee the aimed game keeps flowing even when the
+      //    general pool is over its cap. Measured on the AIM's OWN in-flight, so an
+      //    overflowed general pool can't starve it. AIM_RESERVE is a guaranteed floor,
+      //    not a ceiling — the general step below may still add more aim words.
+      if(aimS){
+        var aimUnseen=unseen.filter(function(i){return aimS[pool[i].jp];});
+        var aimInFlight=seenSet.filter(function(i){return aimS[pool[i].jp] && (box[pool[i].jp]||0)<WORD_PROMOTE_AT;}).length;
+        if(aimUnseen.length && aimInFlight<AIM_RESERVE){
+          var ta=aimUnseen[Math.floor(Math.random()*aimUnseen.length)];
+          rsess.q={target:ta,mode:"teach",relearn:false,opts:[],answered:false,picked:-1};
+          setTimeout(function(){speak(pool[ta].jp);},250); return; }
+      }
+      // 3) introduce a general new word while fewer than LEARN_POOL are still being learned (box < PROMOTE)
       var inFlight=seenSet.filter(function(i){return (box[pool[i].jp]||0) < WORD_PROMOTE_AT;}).length;
       if(unseen.length && (inFlight < READ_LEARN_POOL || seenSet.length===0)){
         var tn;
-        var aimS=(csess && !csess.useAim)?null:aimSetForPool(pool);
         if(aimS){ var aimU=unseen.filter(function(i){return aimS[pool[i].jp];});
           if(aimU.length && Math.random()<AIM_BIAS) tn=aimU[Math.floor(Math.random()*aimU.length)]; }
         if(tn===undefined) tn=unseen[Math.floor(Math.random()*unseen.length)];
         rsess.q={target:tn,mode:"teach",relearn:false,opts:[],answered:false,picked:-1};
         setTimeout(function(){speak(pool[tn].jp);},250); return; }
-      // 3) otherwise quiz — known words first
+      // 4) otherwise quiz — known words first
       quiz(seenSet.length?seenSet:tgtSet); return;
     }
     quiz(tgtSet);
@@ -3423,6 +3457,10 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     if(ex.lastMove[key]!==td){
       box[key]=correct?Math.min(5,cur+1):Math.max(0,cur-1);
       ex.lastMove[key]=td;
+      if(box[key]>cur){ /* real level-up today (honest momentum, not just reps) */
+        ex.up=ex.up||{}; ex.up[td]=(ex.up[td]||0)+1;
+        if(cur<4 && box[key]>=4){ ex.mas=ex.mas||{}; ex.mas[td]=(ex.mas[td]||0)+1; }
+      }
     }
     if(ex.leech){ ex.leech[key]=correct?0:((ex.leech[key]||0)+1); }
     rsess.done++; if(correct)rsess.correct++; else rsess.wrong++;
