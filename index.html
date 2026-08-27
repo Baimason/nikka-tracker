@@ -313,6 +313,7 @@
   .mrow-pct{font-family: var(--display-font);font-weight:800;font-size:18px;color:var(--shu)}
   .mrow-pct.ok{color:var(--green)}
   .mrow-mo{font-size:12px;font-weight:700;color:var(--green);margin:2px 0 4px;letter-spacing:.01em}
+  .grow-prog{color:var(--shu);font-weight:600}
   .d-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
   .d-close{background:none;border:none;font:inherit;font-size:13px;color:var(--ink-soft);cursor:pointer;
     text-transform:uppercase;letter-spacing:.1em;font-weight:700}
@@ -2614,9 +2615,13 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     if(!kanaOK || cov < READY_DICT) st='locked';
     else if(cov < READY_COMFY)      st='dict';
     else                            st='comfy';
+    var w=ensureWords();
+    /* in progress = started (seen) but not yet mastered — the aim's live activity,
+       which the mastered-only count can't show until a word crosses box 4. */
+    var prog = core.filter(function(jp){ return w.seen[jp] && (w.box[jp]||0) < 4; }).length;
     return { state:st, cov:cov,
       kana:{ ok:kanaOK, hira:hira, kata:kata, needHira:(need.hira||0), needKata:(need.kata||0) },
-      words:{ done:have, total:core.length } };
+      words:{ done:have, total:core.length, prog:prog } };
   }
 
   /* What to show under a game: verdict badge + the honest "te falta" line. */
@@ -2655,7 +2660,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
              ' <span class="grow-mode">'+gamePick(g.mode)+'</span></span>'+
              '<span class="gbadge '+v.cls+'">'+v.badge+'</span></div>'+
            '<div class="prog"><i class="'+(r.state==='comfy'?'g':'')+'" style="width:'+pct+'%"></i></div>'+
-           '<div class="mc-sub">'+r.words.done+' / '+r.words.total+' '+(es?'palabras del menú':'menu words')+'</div>'+
+           '<div class="mc-sub">'+r.words.done+' / '+r.words.total+' '+(es?'palabras del menú':'menu words')+(r.words.prog?(' · <span class="grow-prog">'+r.words.prog+(es?' en progreso':' in progress')+'</span>'):'')+'</div>'+
            '<div class="mc-goal">'+v.sub+'</div>'+
            '<button class="aim-btn'+(aimed?' on':'')+'" data-aim="'+g.id+'">'+aimLbl+'</button>'+
          '</div>';
