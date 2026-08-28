@@ -1265,6 +1265,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     h+='<div class="dc-top"><span class="focus-sm">'+t("Day's progress")+'</span><div class="dc-count">'+reps+(tier>=0?' · <span class="tier">'+t(TIER_LABEL[tier])+'</span>':'')+'</div></div>';
     h+='<div class="prog milestones"><i style="width:'+pct+'%"></i>'+milestoneTicks(reps,"main")+'</div>';
     h+='<div class="dc-sub">'+(reps>=15?t("済 Streak saved. Keep going: 30 solid · 50 great · 100 perfect."):t("15 saves your streak · 30 solid · 50 great · 100 perfect."))+'</div>';
+      h+=todayMomentumHTML(getLang()==="es");
     var _dc=dueCount(); if(_dc>0) h+='<div class="dc-sub" style="color:var(--shu);font-weight:600">🔁 '+_dc+' '+t("due for review")+'</div>';
     h+='<button class="start-btn'+(reps>=15?" done-today":"")+'" data-fn="'+rec.fn+'">'+(rec.fn==="startDaily"?rec.label:(t("Recommended")+': '+rec.label))+' →</button>';
     h+='<button class="ex-custom-btn" data-fn="openCustom">🎛 '+t("Custom exercise")+'</button>';
