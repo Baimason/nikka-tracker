@@ -410,6 +410,8 @@
   .gbadge.locked{background:transparent;color:var(--ink);opacity:.5}
   .rq-note{margin-top:10px;font-size:13px;line-height:1.4;color:var(--shu);border-top:1px dashed var(--line);padding-top:8px;display:inline-block}
   .phrase-nudge{margin-top:8px;font-size:13px;line-height:1.4;font-weight:600;color:var(--shu);background:rgba(178,55,38,.08);border:1px solid var(--shu);border-radius:6px;padding:8px 10px}
+  .phrase-nudge-btn{display:block;width:100%;font:inherit;font-weight:700;font-size:13px;color:var(--card);background:var(--shu);border:none;border-radius:4px;padding:9px 12px;margin-top:8px;cursor:pointer;text-align:center;-webkit-tap-highlight-color:transparent}
+  .phrase-nudge-btn:active{transform:translateY(1px)}
   .grow.aimed{border-left:3px solid var(--shu);padding-left:11px}
   .aim-btn{margin-top:8px;font-size:12px;font-weight:700;padding:5px 12px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
   .aim-btn.on{background:var(--shu);color:#fff;border-color:var(--shu)}
@@ -2730,9 +2732,11 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function _phraseNudgeHTML(count,es){
     if(!phraseNudgeReady())return '';
     if(poolMastery(PHRASES,ensurePhrases().box).solid>=5)return ''; /* stop nagging once phrases are rolling */
-    return '<div class="phrase-nudge">'+(es
+    var msg=es
       ?('🎉 ¡Ya tenés '+count+' palabras! Ahora probá las Frases — es armar, no solo reconocer.')
-      :('🎉 You\'ve got '+count+' words! Try Phrases now — it\'s building, not just recognizing.'))+'</div>';
+      :('🎉 You\'ve got '+count+' words! Try Phrases now — it\'s building, not just recognizing.');
+    var btn='<button class="phrase-nudge-btn" data-fn="startPhrases">'+(es?'→ Probá las Frases':'→ Try Phrases')+'</button>';
+    return '<div class="phrase-nudge">'+msg+btn+'</div>';
   }
   function readingMasteryCardHTML(){
     var wm=poolMastery(WORD_POOL,ensureWords().box), pm=poolMastery(PHRASES,ensurePhrases().box);
