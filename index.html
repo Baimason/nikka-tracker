@@ -3036,9 +3036,16 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
 
   /* ---- SRS de patrones (mismo intervalo que el kana) ---- */
   var PAT_SRS_IV=[0,1,2,4,7,14], PAT_LEECH_AT=3, PATTERN_DRILL_PROB=0.30;
+  /* Consolidation gates: at most MAX_YOUNG_PATTERNS still-immature patterns "in flight"
+     at once, and no more than NEW_PATTERNS_PER_DAY brand-new patterns introduced per day.
+     A pattern matures at box>=PAT_MATURE (~3 correct build/cloze reps after the teach card),
+     so this forces the cadence: teach one -> practice it -> only then introduce the next. */
+  var MAX_YOUNG_PATTERNS=1, NEW_PATTERNS_PER_DAY=3;
+  function youngPatternCount(){ var pt=ensurePatterns(); return PATTERNS.filter(function(p){ var b=pt.box[p.id]||0; return pt.seen[p.id] && b>=1 && b<PAT_MATURE && buildablePhrases(p.id).length; }).length; }
+  function newPatternsToday(){ var pt=ensurePatterns(); return (pt.newDay&&pt.newDay[today()])||0; }
   function ensurePatterns(){ if(!state.exercises)state.exercises={};
     if(!state.exercises.patterns)state.exercises.patterns={box:{},seen:{},due:{},leech:{},daily:{}};
-    var p=state.exercises.patterns; if(!p.box)p.box={}; if(!p.seen)p.seen={}; if(!p.due)p.due={}; if(!p.leech)p.leech={}; if(!p.daily)p.daily={}; return p; }
+    var p=state.exercises.patterns; if(!p.box)p.box={}; if(!p.seen)p.seen={}; if(!p.due)p.due={}; if(!p.leech)p.leech={}; if(!p.daily)p.daily={}; if(!p.newDay)p.newDay={}; return p; }
   function setPatternDue(pid,box){ var pt=ensurePatterns(); var days=PAT_SRS_IV[Math.min(box,PAT_SRS_IV.length-1)]||0; var d=new Date(); d.setDate(d.getDate()+days); pt.due[pid]=d.toISOString().slice(0,10); }
   function isPatternDue(pid){ var pt=ensurePatterns(); if(!pt.seen[pid])return false; var due=pt.due[pid]; if(!due)return true; return due<=today(); }
 
@@ -3064,7 +3071,10 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     // 1) repaso vencido
     var due=duePattern(); if(due){ launchPatternCloze(due.id,true); return true; }
     // 2) patrón nuevo desbloqueado -> teach card
-    var nu=nextPatternToTeach(); if(nu){ launchPatternTeach(nu.id); return true; }
+    //    sólo si queda cupo diario Y no hay ya un patrón joven sin madurar (uno en vuelo)
+    if(newPatternsToday()<NEW_PATTERNS_PER_DAY && youngPatternCount()<MAX_YOUNG_PATTERNS){
+      var nu=nextPatternToTeach(); if(nu){ launchPatternTeach(nu.id); return true; }
+    }
     // 3) patrón joven -> constructor guiado (afianza antes de reconocer)
     var bp=nextBuildPhrase();
     if(bp){ var mature=phraseReadyIdxMature(PHRASES).length>0;
@@ -3109,7 +3119,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function phraseHilite(e){ if(!e.parts) return e.jp; var out=''; e.parts.forEach(function(w){ var fix=PARTICLES[w]||['だ','です','ですか','か','ください','おねがいします','ある','いる','すき'].indexOf(w)>=0||/たい$/.test(w); out+=fix?'<span class="pt-hi">'+w+'</span>':w; }); return out; }
   function patternTeachDone(){ var pid=ptsess.pid, p=PATTERN_BY_ID[pid], pt=ensurePatterns();
     pt.seen[pid]=1; if(!(pt.box[pid]>=1))pt.box[pid]=1; (p.intro||[]).forEach(function(x){ if(PARTICLES[x])pt.seen['_p_'+x]=1; });
-    setPatternDue(pid,pt.box[pid]); var td=today(); pt.daily[td]=(pt.daily[td]||0)+1; stampDay();
+    setPatternDue(pid,pt.box[pid]); var td=today(); pt.daily[td]=(pt.daily[td]||0)+1; pt.newDay[td]=(pt.newDay[td]||0)+1; stampDay();
     Persistence.save(state); ptsess=null; buildReadingQ(); renderReading(); }
 
   /* ---- CLOZE de partícula: ocultar UNA partícula y elegirla ---- */
