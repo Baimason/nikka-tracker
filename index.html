@@ -2862,7 +2862,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   /* ---- Frases: mismo patrón que los kanji. Se ACTIVAN con un botón una vez que
      hay suficientes palabras dominadas; hasta entonces NO aparecen (nada de tanda
      de frases nuevas al entrar). Apagado por defecto. ---- */
-  var PHRASE_UNLOCK_AT=25, PHRASE_DAILY_BURST=2;
+  var PHRASE_UNLOCK_AT=25, PHRASE_DAILY_BURST=2, PHRASE_WEAVE_PROB=0.25;
   function phrasesOn(){ return !!state.phrasesOn; }
   function setPhrasesOn(v){ state.phrasesOn=!!v; Persistence.save(state); }
   function masteredWordCount(){ var b=ensureWords().box, n=0; for(var k in b){ if((b[k]||0)>=4)n++; } return n; }
@@ -3391,9 +3391,20 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     /* one-time: clear any leftover inflated reading boxes from the old build bridge */
     if(!ex.deseeded){ buildWordPool().forEach(function(w){ if((ex.box[w.jp]||0)>0){ ex.box[w.jp]=0; changed=true; } }); ex.deseeded=1; changed=true; }
     if(changed)Persistence.save(state); }
-  function startWordsMix(){ var ex=ensureWords(); seedKnownFromBuild(); rsess={pool:WORD_POOL,box:ex.box,ex:ex,done:0,correct:0,wrong:0,q:null,teach:true,newIntro:0}; bsess=null; wsess={active:true,cur:null}; wordsNextUnit(); }
+  function startWordsMix(){ var ex=ensureWords(); seedKnownFromBuild(); rsess={pool:WORD_POOL,box:ex.box,ex:ex,done:0,correct:0,wrong:0,q:null,teach:true,newIntro:0}; bsess=null; wsess={active:true,cur:null,wr:rsess}; wordsNextUnit(); }
   function wordsNextUnit(){ if(!wsess)return;
+    rsess = wsess.wr || rsess;   // por defecto: sesión de palabras
     if(wsess.forceBuild){ var _fb=wsess.forceBuild; wsess.forceBuild=null; if(!bsess)bsess={done:0,correct:0,wrong:0,q:null}; buildNextQ(_fb); if(bsess.q){ wsess.cur="build"; renderBuild(); readingEl.classList.remove("hidden"); return; } }
+    /* Frases tejidas en el MISMO flujo: de vez en cuando una unidad del director de
+       patrones (enseñar molde / armar frase / cloze), y luego vuelve solo a las
+       palabras. maybePattern exige rsess.pool===PHRASES, así que le prestamos rsess
+       como "llave" (las unidades de frase corren sobre ptsess, no sobre rsess). */
+    if(phrasesOn() && anyPhraseWork() && Math.random()<PHRASE_WEAVE_PROB){
+      if(!wsess.pr) wsess.pr={pool:PHRASES,box:ensurePhrases().box,ex:ensurePhrases(),done:0,correct:0,wrong:0,q:null,teach:true,newIntro:0};
+      rsess = wsess.pr;
+      if(maybePattern()){ wsess.cur="phrase"; return; }
+      rsess = wsess.wr;   // no había trabajo de frases → seguimos con palabras
+    }
     var mix=wordsMix(); var type=(mix.canBuild&&Math.random()<mix.buildProb)?"build":"recog"; wsess.cur=type;
     if(type==="build"){ if(!bsess)bsess={done:0,correct:0,wrong:0,q:null}; buildNextQ(); if(!bsess.q){ buildReadingQ(); renderReading(); readingEl.classList.remove("hidden"); return; } renderBuild(); }
     else { buildReadingQ(); renderReading(); }
