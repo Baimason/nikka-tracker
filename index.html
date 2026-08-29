@@ -1259,8 +1259,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var kataReady=(function(){var mm=scriptMastery("kata");return mm.total&&mm.solid/mm.total>=0.9;})();
     var us=unlockedStage(); /* honor what the user already unlocked, not just the current stage */
     var cs=Math.min(curStage(), us);   /* la etapa donde estás parado (Volver/Siguiente la mueven) */
-    var rec = (cs>=6 && phrasesOn())?{fn:"startPhrases",label:t("Phrases")}
-            : (cs===5||(cs===4&&kataReady))?{fn:"startWords",label:t("Words")}
+    var rec = (cs>=5||(cs===4&&kataReady))?{fn:"startWords",label:t("Words")}
             : {fn:"startDaily",label:t("Daily practice")};
     var h='<div class="card today-card">'+seal;
     h+='<h2>'+t("Today's practice")+'</h2><div class="date">'+prettyDate(td)+'</div>';
