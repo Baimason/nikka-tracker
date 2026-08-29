@@ -1259,7 +1259,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var kataReady=(function(){var mm=scriptMastery("kata");return mm.total&&mm.solid/mm.total>=0.9;})();
     var us=unlockedStage(); /* honor what the user already unlocked, not just the current stage */
     var cs=Math.min(curStage(), us);   /* la etapa donde estás parado (Volver/Siguiente la mueven) */
-    var rec = (cs>=6)?{fn:"startPhrases",label:t("Phrases")}
+    var rec = (cs>=6 && phrasesOn())?{fn:"startPhrases",label:t("Phrases")}
             : (cs===5||(cs===4&&kataReady))?{fn:"startWords",label:t("Words")}
             : {fn:"startDaily",label:t("Daily practice")};
     var h='<div class="card today-card">'+seal;
@@ -1273,6 +1273,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     h+='<button class="ex-custom-btn" data-fn="openCustom">🎛 '+t("Custom exercise")+'</button>';
     if(kanjiUnlockReady()) h+='<button class="ex-custom-btn" data-fn="activateKanji">漢字 '+t("Activate kanji")+'</button>';
     else if(kanjiDueCount()>0) h+='<button class="ex-custom-btn" data-fn="startKanji">漢字 '+t("Kanji")+' ('+kanjiDueCount()+')</button>';
+    if(phraseUnlockReady()) h+='<button class="ex-custom-btn" data-fn="activatePhrases">🗣 '+t("Activate phrases")+'</button>';
     var ext=tasksForStage(st).filter(function(x){return x.id!=="kana"&&x.id!=="words"&&x.id!=="phrases";});
     if(ext.length){
       h+='<div class="ex-sep">'+t("Support")+'</div>';
@@ -2679,7 +2680,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     return '<div class="reading-card"><div class="dc-top"><h3>'+t("Reading")+'</h3></div>'+
       '<div class="dc-sub">'+t("Read and listen — it adapts to what you find hard.")+'</div>'+
       '<div class="read-launch"><button class="start-btn half" id="startWords">'+t("Words")+'</button>'+
-      '<button class="start-btn half" id="startPhrases">'+t("Phrases")+'</button></div></div>';
+      (phrasesOn()?'<button class="start-btn half" id="startPhrases">'+t("Phrases")+'</button>':'')+'</div></div>';
   }
   function masteryRow(label,m){
     var ready=m.total&&m.solid/m.total>=0.9;
@@ -2730,6 +2731,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       '<div class="mc-goal">'+(mi.next?((es?'Próximo hito: ':'Next: ')+mi.nextN+' · '+mi.label):('済 '+mi.label))+'</div>'+todayMomentumHTML(es)+_phraseNudgeHTML(count,es)+'</div>';
   }
   function _phraseNudgeHTML(count,es){
+    if(!phrasesOn())return '';
     if(!phraseNudgeReady())return '';
     if(poolMastery(PHRASES,ensurePhrases().box).solid>=5)return ''; /* stop nagging once phrases are rolling */
     var msg=es
@@ -2857,6 +2859,14 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   var KANJI_UNLOCK_AT=4;    // kanji elegibles necesarios para ofrecer activar la sección
   function kanjiOn(){ return !!state.kanjiOn; }
   function setKanjiOn(v){ state.kanjiOn=!!v; Persistence.save(state); }
+  /* ---- Frases: mismo patrón que los kanji. Se ACTIVAN con un botón una vez que
+     hay suficientes palabras dominadas; hasta entonces NO aparecen (nada de tanda
+     de frases nuevas al entrar). Apagado por defecto. ---- */
+  var PHRASE_UNLOCK_AT=25, PHRASE_DAILY_BURST=2;
+  function phrasesOn(){ return !!state.phrasesOn; }
+  function setPhrasesOn(v){ state.phrasesOn=!!v; Persistence.save(state); }
+  function masteredWordCount(){ var b=ensureWords().box, n=0; for(var k in b){ if((b[k]||0)>=4)n++; } return n; }
+  function phraseUnlockReady(){ return !phrasesOn() && masteredWordCount()>=PHRASE_UNLOCK_AT; }
   function wordMature(jp){ return (ensureWords().box[jp]||0)>=4; }   // "sólida" en el word-SRS
 
   /* crédito por carácter: reusa ensureKanji().box como contador (0..PROMOTE_AT) */
@@ -3354,7 +3364,8 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       }
       // 3) introduce a general new word while fewer than LEARN_POOL are still being learned (box < PROMOTE)
       var inFlight=seenSet.filter(function(i){return (box[pool[i].jp]||0) < WORD_PROMOTE_AT;}).length;
-      if(unseen.length && (inFlight < READ_LEARN_POOL || seenSet.length===0)){
+      var _cap=(pool===PHRASES)?2:READ_LEARN_POOL;   // frases de a poco, no en tanda de 12
+      if(unseen.length && (inFlight < _cap || seenSet.length===0)){
         var tn;
         if(aimS){ var aimU=unseen.filter(function(i){return aimS[pool[i].jp];});
           if(aimU.length && Math.random()<AIM_BIAS) tn=aimU[Math.floor(Math.random()*aimU.length)]; }
@@ -3395,7 +3406,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
      la palabra en kanji SIN furigana y elegís la lectura; el acierto acredita cada kanji nuevo. */
   (function(){ var add={
     "New kanji":"Kanji nuevo","appears in":"aparece en","How do you read it?":"¿Cómo se lee?",
-    "Activate kanji":"Activar kanji","You've mastered these words in kana — now learn their kanji.":"Ya dominás estas palabras en kana — ahora aprendé sus kanji.",
+    "Activate kanji":"Activar kanji","Activate phrases":"Activar frases","You've mastered these words in kana — now learn their kanji.":"Ya dominás estas palabras en kana — ahora aprendé sus kanji.",
     "Nothing to review right now.":"Nada para repasar por ahora.","kanji to practice":"kanji para practicar",
         "You've learned":"Aprendiste","Pause kanji":"Pausar kanji",
     "What is a kanji?":"¿Qué es un kanji?",
@@ -3492,11 +3503,16 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       o.addEventListener("click",function(){answerKanji(o.getAttribute("data-jp"));}); }); } }
 
   function activateKanji(){ setKanjiOn(true); render(); }
+  function activatePhrases(){ setPhrasesOn(true); render(); }
 
-  function startPhrases(){ startQuiz(PHRASES, ensurePhrases(), true); if(maybePattern())return; }
+  function startPhrases(){ if(!phrasesOn())return; startQuiz(PHRASES, ensurePhrases(), true); if(maybePattern())return; }
   function closeReading(){ if(csess){ customEnd(); return; } if(wsess){ wordsEnd(); return; } pbsess=null; ptsess=null; readingEl.classList.add("hidden"); try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){} render(); }
   function nextReadingQ(){ if(csess){ customAfterUnit(); return; } if(wsess){ wordsAfterUnit(); return; }
-    if(rsess && rsess.pool===PHRASES && maybePattern())return;   // grammar detour (teach/cloze); builder off for now
+    if(dsess && dsess.inPhrase){                      // dentro de una ráfaga de frases del diario
+      if(dsess.phraseBudget<=0){ dsess.inPhrase=false; ptsess=null; dailyAfterUnit(); return; }
+      dsess.phraseBudget--;
+    }
+    if(rsess && rsess.pool===PHRASES && maybePattern())return;   // grammar detour (teach/cloze)
     pbsess=null; buildReadingQ(); renderReading(); }
   function teachWordDone(){
     var q=rsess.q; if(!q||q.mode!=="teach")return;
@@ -3513,7 +3529,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     if(!csess && !wsess && rsess.pool===PHRASES && _it.parts && _it.parts.length>1 && buildableGate(_it)){
       launchGuidedBuild(_it); return;
     }
-    if(csess){ customAfterUnit(); } else if(wsess){ wordsAfterUnit(); } else { buildReadingQ(); renderReading(); }
+    if(csess){ customAfterUnit(); } else if(wsess){ wordsAfterUnit(); } else if(dsess){ nextReadingQ(); } else { buildReadingQ(); renderReading(); }
   }
   function answerReading(idx){
     var q=rsess.q; if(!q||q.answered)return;
@@ -3945,6 +3961,10 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var solid=(sum/n)/5, count=Math.max(0,Math.min(1,(n-15)/(100-15)));
     return Math.max(0,Math.min(1,0.5*count+0.5*solid));      // 0..1: blends how many + how solid
   }
+  /* ¿hay algo de frases para hacer ahora? (patrón por enseñar, frase por armar, o
+     reconocimiento maduro). Sólo si las frases están activadas. */
+  function anyPhraseWork(){ if(!phrasesOn())return false;
+    return !!nextPatternToTeach() || !!nextBuildPhrase() || phraseReadyIdxMature(PHRASES).length>0; }
   function dailyMix(){
     var days=practicedDays(), m=masteryLevel();
     var learnedN=activePairs().filter(function(p){return isLearned(p.script,p.romaji);}).length;
@@ -3954,18 +3974,25 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     if(canBuild){ build=15+55*m; drill=70-55*m; match=15; }   // steady 70/15/15 -> mastery 15/15/70
     else if(canMatch){ drill=80; match=20; build=0; }         // just introduced pairs
     else { drill=100; match=0; build=0; }                     // day 1: only characters
-    var tot=drill+match+build;
-    return {drill:drill/tot, match:match/tot, build:build/tot, canMatch:canMatch, canBuild:canBuild, m:m, days:days, learnedN:learnedN};
+    /* frases tejidas en el mismo flujo (no una etapa aparte), sólo si están activadas */
+    var phrase=(canBuild && anyPhraseWork())?25:0;
+    var tot=drill+match+build+phrase;
+    return {drill:drill/tot, match:match/tot, build:build/tot, phrase:phrase/tot, canMatch:canMatch, canBuild:canBuild, m:m, days:days, learnedN:learnedN};
   }
   function pickDailyType(mix){ mix=mix||dailyMix(); var r=Math.random();
-    if(r<mix.drill)return "drill"; if(r<mix.drill+mix.match)return "match"; return "build"; }
+    if(r<mix.drill)return "drill";
+    if(r<mix.drill+mix.match)return "match";
+    if(r<mix.drill+mix.match+mix.build)return "build";
+    return "phrase"; }
   function startDaily(){ ensureKana(); dsess={active:true,cur:null}; dailyNextUnit(); }
   function dailyNextUnit(){
     if(!dsess)return;
     var mix=dailyMix(), type=pickDailyType(mix);
     if(type==="match" && !mix.canMatch)type="drill";
     if(type==="build" && !mix.canBuild)type="drill";
+    if(type==="phrase" && !(phrasesOn() && anyPhraseWork()))type="drill";
     dsess.cur=type;
+    if(type!=="phrase"){ dsess.inPhrase=false; ptsess=null; }
     if(type==="drill"){
       readingEl.classList.add("hidden");
       if(!sess) sess={done:0,correct:0,wrong:0,q:null,hitGoalShown:false,newCount:0,maxNew:5,mode:"quiz",teach:null,force:null};
@@ -3974,10 +4001,16 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       drillEl.classList.add("hidden");
       if(!msess) msess={done:0,boards:0,wrong:0};
       matchDeal(); readingEl.classList.remove("hidden"); renderMatch();
-    }else{
+    }else if(type==="build"){
       drillEl.classList.add("hidden");
       if(!bsess) bsess={done:0,correct:0,wrong:0,q:null};
       buildNextQ(); readingEl.classList.remove("hidden"); renderBuild();
+    }else{ /* phrase: ráfaga corta de frases tejida en el mismo flujo, luego vuelve a palabras */
+      drillEl.classList.add("hidden");
+      dsess.inPhrase=true; dsess.phraseBudget=PHRASE_DAILY_BURST;
+      if(!rsess || rsess.pool!==PHRASES){ startQuiz(PHRASES, ensurePhrases(), true); }
+      else { readingEl.classList.remove("hidden"); buildReadingQ(); renderReading(); }
+      if(rsess && rsess.pool===PHRASES) maybePattern();   // detour de gramática para la 1a unidad
     }
   }
   function dailyAfterUnit(){ if(!dsess)return; dailyNextUnit(); }
@@ -4122,7 +4155,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   }
 
   function bindMain(){
-    app.querySelectorAll("[data-fn]").forEach(function(b){var fn=b.getAttribute("data-fn");b.addEventListener("click",function(){if(fn==="startDrill")startDrill();else if(fn==="startDaily")startDaily();else if(fn==="startWords")startWords();else if(fn==="startPhrases")startPhrases();else if(fn==="startBuild")startBuild();else if(fn==="startMatch")startMatch();else if(fn==="openCustom")openCustom();else if(fn==="startKanji")startKanji();else if(fn==="activateKanji")activateKanji();});});
+    app.querySelectorAll("[data-fn]").forEach(function(b){var fn=b.getAttribute("data-fn");b.addEventListener("click",function(){if(fn==="startDrill")startDrill();else if(fn==="startDaily")startDaily();else if(fn==="startWords")startWords();else if(fn==="startPhrases")startPhrases();else if(fn==="startBuild")startBuild();else if(fn==="startMatch")startMatch();else if(fn==="openCustom")openCustom();else if(fn==="startKanji")startKanji();else if(fn==="activateKanji")activateKanji();else if(fn==="activatePhrases")activatePhrases();});});
 
     var wd=app.querySelector(".wotd[data-say]"); if(wd)wd.addEventListener("click",function(){speak(wd.getAttribute("data-say"));});
     app.querySelectorAll("[data-aim]").forEach(function(b){ b.addEventListener("click",function(){ setAim(b.getAttribute("data-aim")); }); });
