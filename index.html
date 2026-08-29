@@ -3120,7 +3120,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function patternTeachDone(){ var pid=ptsess.pid, p=PATTERN_BY_ID[pid], pt=ensurePatterns();
     pt.seen[pid]=1; if(!(pt.box[pid]>=1))pt.box[pid]=1; (p.intro||[]).forEach(function(x){ if(PARTICLES[x])pt.seen['_p_'+x]=1; });
     setPatternDue(pid,pt.box[pid]); var td=today(); pt.daily[td]=(pt.daily[td]||0)+1; pt.newDay[td]=(pt.newDay[td]||0)+1; stampDay();
-    Persistence.save(state); ptsess=null; buildReadingQ(); renderReading(); }
+    Persistence.save(state); ptsess=null; nextReadingQ(); }
 
   /* ---- CLOZE de partícula: ocultar UNA partícula y elegirla ---- */
   function launchPatternCloze(pid,relearn){
@@ -3283,7 +3283,20 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
 
   function buildReadingQ(){
     var pool=rsess.pool,box=rsess.box,all=[]; for(var i=0;i<pool.length;i++)all.push(i);
-    var readable=(pool===PHRASES?phraseReadyIdxMature(pool):readableIdx(pool)), tgtSet=readable.length?readable:all;
+    var readable=(pool===PHRASES?phraseReadyIdxMature(pool):readableIdx(pool)), tgtSet;
+    if(pool===PHRASES){
+      /* Frases: nunca usar TODO el pool como fallback (eso soltaba ~15 frases de
+         golpe tras un reset y evaluaba reconocimiento de patrones sin enseñar).
+         El set = frases maduras (para reconocer) UNIÓN las introducibles bajo la
+         escalera: frases fijas (sin partes) o frases cuyo patrón YA se enseñó y su
+         vocab se lee. El resto lo maneja el director de patrones (maybePattern). */
+      tgtSet=readable.slice();
+      for(var _e=0;_e<pool.length;_e++){ var _p=pool[_e];
+        if(tgtSet.indexOf(_e)>=0) continue;
+        if(wordReadable(_p.jp) && (!_p.parts || (_p.parts.every(phraseWordKnown) && buildableGate(_p)))) tgtSet.push(_e);
+      }
+      if(!tgtSet.length) tgtSet=all;
+    } else { tgtSet=readable.length?readable:all; }
     /* aim set for this pool — null when no game is aimed (or a custom run opted out).
        Hoisted so both the intro lane and the review quiz can see it. */
     var aimS=(csess && !csess.useAim)?null:aimSetForPool(pool);
