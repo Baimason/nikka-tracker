@@ -3120,7 +3120,13 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function patternTeachDone(){ var pid=ptsess.pid, p=PATTERN_BY_ID[pid], pt=ensurePatterns();
     pt.seen[pid]=1; if(!(pt.box[pid]>=1))pt.box[pid]=1; (p.intro||[]).forEach(function(x){ if(PARTICLES[x])pt.seen['_p_'+x]=1; });
     setPatternDue(pid,pt.box[pid]); var td=today(); pt.daily[td]=(pt.daily[td]||0)+1; pt.newDay[td]=(pt.newDay[td]||0)+1; stampDay();
-    Persistence.save(state); ptsess=null; nextReadingQ(); }
+    Persistence.save(state); ptsess=null;
+    /* Coherencia: tras enseñar el molde, armamos UNA de sus propias frases de
+       ejemplo (mismo patrón), no una cualquiera. Las demás del mismo molde salen
+       después vía nextBuildPhrase (ordenado por patrón). */
+    var _exs=patternExamples(pid,20).filter(function(e){ return e.parts && !phraseMature(e); });
+    if(_exs.length){ launchGuidedBuild(_exs[0]); return; }
+    nextReadingQ(); }
 
   /* ---- CLOZE de partícula: ocultar UNA partícula y elegirla ---- */
   function launchPatternCloze(pid,relearn){
@@ -3157,10 +3163,11 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     else { setTimeout(function(){ speak(phrase.jp); },250); }
   }
   function clozeAnswer(p){ var q=ptsess; if(!q||q.answered)return; q.answered=true; q.picked=p;
-    var pt=ensurePatterns(), pid=q.pid, correct=(p===q.answer), cur=pt.box[pid]||0;
-    pt.box[pid]=correct?Math.min(5,cur+1):Math.max(1,cur-1);
+    var pt=ensurePatterns(), pid=q.pid, correct=(p===q.answer), cur=pt.box[pid]||0, td=today();
+    if(!pt.lastMove)pt.lastMove={};
+    if(pt.lastMove[pid]!==td){ pt.box[pid]=correct?Math.min(5,cur+1):Math.max(1,cur-1); pt.lastMove[pid]=td; setPatternDue(pid,pt.box[pid]); }
     if(correct){ if((pt.leech[pid]||0)>0)pt.leech[pid]=0; } else { pt.leech[pid]=(pt.leech[pid]||0)+1; }
-    setPatternDue(pid,pt.box[pid]); var td=today(); pt.daily[td]=(pt.daily[td]||0)+1; stampDay();
+    pt.daily[td]=(pt.daily[td]||0)+1; stampDay();
     Persistence.save(state); renderPatternCloze(); }
 
   /* =========================================================================
@@ -3184,7 +3191,10 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function nextBuildPhrase(){ var ph=ensurePhrases();
     var blt=function(p){ return (ph.built&&ph.built[p.jp])||0; };
     var ord=function(p){ var pp=patternOf(p); return (pp&&PATTERN_BY_ID[pp])?PATTERN_BY_ID[pp].order:99; };
-    var cand=PHRASES.filter(function(p){ return p.parts && wordReadable(p.jp) && p.parts.every(phraseWordKnown) && buildableGate(p) && !phraseMature(p); });
+    /* construible = legible (kana aprendido) + patrón enseñado + no madura.
+       NO exigimos vocab dominado (box>=3): armar la frase, con las piezas a la
+       vista y el molde recién explicado, ES la forma de aprender ese vocab. */
+    var cand=PHRASES.filter(function(p){ return p.parts && wordReadable(p.jp) && buildableGate(p) && !phraseMature(p); });
     if(!cand.length)return null;
     cand.sort(function(a,b){ return (ord(a)-ord(b)) || (blt(a)-blt(b)); });
     var bo=ord(cand[0]), bb=blt(cand[0]);
@@ -3272,11 +3282,15 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     else { q.bad=i; }
     renderGuidedBuild();
   }
-  function buildComplete(){ var pt=ensurePatterns(), ph=ensurePhrases(), q=ptsess;
+  function buildComplete(){ var pt=ensurePatterns(), ph=ensurePhrases(), q=ptsess, td=today();
     ph.built[q.phrase.jp]=(ph.built[q.phrase.jp]||0)+1;         // cuenta la construcción de esta frase
-    if(q.pid && PATTERN_BY_ID[q.pid]){ var cur=pt.box[q.pid]||0; pt.box[q.pid]=Math.min(5,cur+1); setPatternDue(q.pid,pt.box[q.pid]); }
+    /* El patrón sube de nivel como máximo UNA vez por día (igual que el SRS de
+       palabras). Así madurar hasta el reconocimiento toma varios días, no 4 clics
+       de la misma sesión. Podés seguir armando hoy: practica sin adelantar el box. */
+    if(q.pid && PATTERN_BY_ID[q.pid]){ if(!pt.lastMove)pt.lastMove={};
+      if(pt.lastMove[q.pid]!==td){ var cur=pt.box[q.pid]||0; pt.box[q.pid]=Math.min(5,cur+1); pt.lastMove[q.pid]=td; setPatternDue(q.pid,pt.box[q.pid]); } }
     ph.seen[q.phrase.jp]=1;                                     // no re-enseñar como frase nueva
-    var td=today(); pt.daily[td]=(pt.daily[td]||0)+1; stampDay();
+    pt.daily[td]=(pt.daily[td]||0)+1; stampDay();
     Persistence.save(state); }
 
 
