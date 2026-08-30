@@ -1597,7 +1597,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     return h;
   }
   function renderDrill(){
-    var q=sess.q,k=ensureKana(),dt=k.daily[today()]||{done:0};
+    var q=sess.q,k=ensureKana(),dt={done:todayReps()};
     var gpct=Math.min(100,dt.done),gtier=dayTier(dt.done);
     var h="";
     h+='<div class="d-sticky">';
@@ -2727,7 +2727,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       '<span class="mrow-pct'+(mi.next?'':' ok')+'">'+count+'</span></div>'+
       '<div class="prog"><i class="'+(mi.next?'':'g')+'" style="width:'+mi.pct+'%"></i></div>'+
       '<div class="mc-sub">'+count+(es?' palabras que ya leés':' words you can read')+'</div>'+
-      '<div class="mc-goal">'+(mi.next?((es?'Próximo hito: ':'Next: ')+mi.nextN+' · '+mi.label):('済 '+mi.label))+'</div>'+todayMomentumHTML(es)+_phraseNudgeHTML(count,es)+'</div>';
+      '<div class="mc-goal">'+(mi.next?((es?'Próximo hito: ':'Next: ')+mi.nextN+' · '+mi.label):('済 '+mi.label))+'</div>'+todayMomentumHTML(es)+'</div>';
   }
   function _phraseNudgeHTML(count,es){
     if(!phrasesOn())return '';
