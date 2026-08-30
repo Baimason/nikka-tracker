@@ -880,6 +880,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function migrate(s){
     if(!s||typeof s!=="object") return null;
     return {schema:SCHEMA,lang:s.lang,font:s.font||"mincho",theme:s.theme||"light",startDate:s.startDate||today(),aim:(s.aim||null),
+      phrasesOn:!!s.phrasesOn,kanjiOn:!!s.kanjiOn,emoji:(s.emoji!==false),buildRomaji:(s.buildRomaji!==false),matchSpeak:(s.matchSpeak!==false),
       days:(s.days&&typeof s.days==="object")?s.days:{},
       exercises:(s.exercises&&typeof s.exercises==="object")?s.exercises:{},
       meta:(s.meta&&typeof s.meta==="object")?s.meta:{updatedAt:nowISO()}};
@@ -893,6 +894,8 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       font:a.font||b.font||"mincho", 
       theme:a.theme||b.theme||"light",
       aim:a.aim||b.aim||null,
+      phrasesOn:!!(a.phrasesOn||b.phrasesOn),kanjiOn:!!(a.kanjiOn||b.kanjiOn),
+      emoji:(a.emoji!==false||b.emoji!==false),buildRomaji:(a.buildRomaji!==false||b.buildRomaji!==false),matchSpeak:(a.matchSpeak!==false||b.matchSpeak!==false),
       startDate:(daysBetween(a.startDate,b.startDate)<0?b.startDate:a.startDate),
       days:{},
       exercises:Object.assign({},a.exercises,b.exercises),
