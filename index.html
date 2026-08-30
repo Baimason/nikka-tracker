@@ -3049,7 +3049,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
      at once, and no more than NEW_PATTERNS_PER_DAY brand-new patterns introduced per day.
      A pattern matures at box>=PAT_MATURE (~3 correct build/cloze reps after the teach card),
      so this forces the cadence: teach one -> practice it -> only then introduce the next. */
-  var MAX_YOUNG_PATTERNS=1, NEW_PATTERNS_PER_DAY=3;
+  var MAX_YOUNG_PATTERNS=2, NEW_PATTERNS_PER_DAY=3;
   function youngPatternCount(){ var pt=ensurePatterns(); return PATTERNS.filter(function(p){ var b=pt.box[p.id]||0; return pt.seen[p.id] && b>=1 && b<PAT_MATURE && patternPracticeable(p.id); }).length; }
   function newPatternsToday(){ var pt=ensurePatterns(); return (pt.newDay&&pt.newDay[today()])||0; }
   function ensurePatterns(){ if(!state.exercises)state.exercises={};
@@ -3337,7 +3337,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       rsess.q={target:target,mode:mode,opts:opts,answered:false,picked:-1};
       /* ring buffer of the last few targets to avoid the same phrase spamming */
       if(!rsess.recent)rsess.recent=[];
-      rsess.recent.push(target); if(rsess.recent.length>3)rsess.recent.shift();
+      rsess.recent.push(target); var _rcap=(rsess.pool===PHRASES)?5:3; if(rsess.recent.length>_rcap)rsess.recent.shift();
       if(mode==="listen") setTimeout(function(){speak(pool[target].jp);},250);
     }
     if(rsess.teach){
