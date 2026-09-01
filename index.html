@@ -3326,7 +3326,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var jp=''; phrase.parts.forEach(function(w,i){ if(i===q.slot){ var cls='pt-hole'+(q.answered?(w===q.answer?' filled':''):''); jp+='<span class="'+cls+'">'+(q.answered?q.answer:'▢')+'</span>'; } else jp+=w; });
     var h=ptHead();
     h+='<div class="pt-card"><div class="pt-kind">'+t('Which particle goes here?')+'</div>';
-    h+='<div class="pt-cloze mincho">'+jp+'</div>';
+    h+='<div class="pt-cloze mincho">'+((q.answered&&getSweep()&&isAllKana(phrase.jp))?sweepKanaHTML(phrase.jp):jp)+'</div>';
     h+='<div class="pt-clmean">'+(es?phrase.es:phrase.en)+'</div>';
     h+='<div class="pt-opts">';
     q.opts.forEach(function(w){ var cls='pt-opt mincho'; if(q.answered){ if(w===q.answer)cls+=' ok'; else if(w===q.picked)cls+=' bad'; else cls+=' dim'; } h+='<button class="'+cls+'" data-p="'+w+'">'+w+'</button>'; });
@@ -3336,9 +3336,9 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     readingInner.innerHTML=h;
     var c=document.getElementById('rClose'); if(c)c.addEventListener('click',closeReading);
     var nx=document.getElementById('ptNext'); if(nx)nx.addEventListener('click',function(){ ptsess=null; nextReadingQ(); });
-    var csp=document.getElementById('clSpk'); if(csp)csp.addEventListener('click',function(){ speak(phrase.jp); });
+    var csp=document.getElementById('clSpk'); if(csp)csp.addEventListener('click',function(){ speakSweep(phrase.jp, readingInner.querySelector('.sweepline')); });
     if(!q.answered){ readingInner.querySelectorAll('.pt-opt').forEach(function(o){ o.addEventListener('click',function(){ clozeAnswer(o.getAttribute('data-p')); }); }); }
-    else { setTimeout(function(){ speak(phrase.jp); },250); }
+    else { setTimeout(function(){ speakSweep(phrase.jp, readingInner.querySelector('.sweepline')); },250); }
   }
   function clozeAnswer(p){ var q=ptsess; if(!q||q.answered)return; q.answered=true; q.picked=p;
     var pt=ensurePatterns(), pid=q.pid, correct=(p===q.answer), cur=pt.box[pid]||0, td=today();
@@ -3438,7 +3438,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     q.placed.forEach(function(w){ h+='<span class="gb-placed'+(PARTICLES[w]?' pt':'')+'">'+w+'</span>'; });
     if(!q.answered) h+='<span class="gb-caret"></span>';
     h+='</div>';
-    if(q.answered){ h+='<div class="pt-fb" style="border:none;padding-top:8px"><span class="mincho" style="font-size:22px;color:var(--green)">'+q.phrase.jp+'</span></div>'; }
+    if(q.answered){ h+='<div class="pt-fb" style="border:none;padding-top:8px"><span class="mincho" style="font-size:22px;color:var(--green)">'+sweepKanaHTML(q.phrase.jp)+'</span></div>'; }
     else {
       h+='<div class="gb-tray">';
       q.tiles.forEach(function(tl,i){ var cls='gb-tile'+(PARTICLES[tl.w]?' pt':'')+(tl.used?' used':'')+(q.bad===i?' bad':''); h+='<button class="'+cls+'" data-i="'+i+'">'+tl.w+'</button>'; });
@@ -3449,9 +3449,9 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     readingInner.innerHTML=h;
     var c=document.getElementById('rClose'); if(c)c.addEventListener('click',closeReading);
     var nx=document.getElementById('gbNext'); if(nx)nx.addEventListener('click',function(){ ptsess=null; nextReadingQ(); });
-    var gsp=document.getElementById('gbSpk'); if(gsp)gsp.addEventListener('click',function(){ speak(q.phrase.jp); });
+    var gsp=document.getElementById('gbSpk'); if(gsp)gsp.addEventListener('click',function(){ speakSweep(q.phrase.jp, readingInner.querySelector('.sweepline')); });
     if(!q.answered){ readingInner.querySelectorAll('.gb-tile:not(.used)').forEach(function(o){ o.addEventListener('click',function(){ gbTap(parseInt(o.getAttribute('data-i'),10)); }); }); }
-    else { setTimeout(function(){ speak(q.phrase.jp); },250); }
+    else { setTimeout(function(){ speakSweep(q.phrase.jp, readingInner.querySelector('.sweepline')); },250); }
   }
   function gbTap(i){ var q=ptsess; if(!q||q.answered)return; var tl=q.tiles[i]; if(tl.used)return;
     var next=q.phrase.parts[q.placed.length];
@@ -3733,7 +3733,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     if(ex.leech){ ex.leech[key]=correct?0:((ex.leech[key]||0)+1); }
     rsess.done++; if(correct)rsess.correct++; else rsess.wrong++;
     ex.daily[td]=(ex.daily[td]||0)+1; stampDay();
-    Persistence.save(state); speak(pool[q.target].jp); renderReading();
+    Persistence.save(state); renderReading(); speakSweep(pool[q.target].jp, readingInner.querySelector(".sweepline"));
   }
   function renderReading(){
     var pool=rsess.pool,q=rsess.q,it=pool[q.target],es=getLang()==="es",h="";
@@ -3935,14 +3935,14 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     if(w.emoji) h+='<button class="emoji-toggle" id="xEmoji">'+(getEmoji()?"☑":"☐")+' Emojis</button>';
     h+='</div>';
     if(q.done){
-      h+='<div class="rq-fb"><div class="rq-ans"><span class="mincho">'+w.jp+'</span> <span class="rq-rom">'+w.romaji+'</span> — <span class="mean">'+mean+'</span></div></div>';
+      h+='<div class="rq-fb"><div class="rq-ans"><span class="mincho">'+sweepKanaHTML(w.jp)+'</span> <span class="rq-rom">'+w.romaji+'</span> — <span class="mean">'+mean+'</span></div></div>';
       h+='<div class="d-actions"><button class="d-next" id="xNext">'+t("Next →")+'</button></div>';
     }
     readingInner.innerHTML=h; bindBuild();
   }
   function bindBuild(){
     var c=document.getElementById("xClose"); if(c)c.addEventListener("click",closeExtra);
-    var sp=document.getElementById("xSpk"); if(sp)sp.addEventListener("click",function(){ if(bsess&&bsess.q)speak(bsess.q.word.jp); });
+    var sp=document.getElementById("xSpk"); if(sp)sp.addEventListener("click",function(){ if(bsess&&bsess.q)speakSweep(bsess.q.word.jp, readingInner.querySelector(".sweepline")); });
     var rt=document.getElementById("xRom"); if(rt)rt.addEventListener("click",function(){ state.buildRomaji=!(state.buildRomaji!==false); Persistence.save(state); renderBuild(); });
     var et=document.getElementById("xEmoji"); if(et)et.addEventListener("click",function(){ state.emoji=!getEmoji(); Persistence.save(state); renderBuild(); });
     var nx=document.getElementById("xNext"); if(nx)nx.addEventListener("click",function(){ if(csess){ customAfterUnit(); } else if(dsess){ dailyAfterUnit(); } else if(wsess){ wordsAfterUnit(); } else { buildNextQ(); renderBuild(); } });
@@ -4093,7 +4093,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     });
     h+='</div>';
     if(q.done){
-      h+='<div class="rq-fb"><div class="rq-ans"><span class="mincho">'+p.jp+'</span> <span class="rq-rom">'+p.romaji+'</span> — <span class="mean">'+(es?p.es:p.en)+'</span></div>'+(p.note?'<div class="rq-note">'+p.note+'</div>':'')+'</div>';
+      h+='<div class="rq-fb"><div class="rq-ans"><span class="mincho">'+sweepKanaHTML(p.jp)+'</span> <span class="rq-rom">'+p.romaji+'</span> — <span class="mean">'+(es?p.es:p.en)+'</span></div>'+(p.note?'<div class="rq-note">'+p.note+'</div>':'')+'</div>';
       h+='<div class="d-actions"><button class="d-next" id="pbNext">'+t("Next →")+'</button></div>';
     }
     readingInner.innerHTML=h; bindPhraseBuild();
@@ -4119,7 +4119,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   }
   function bindPhraseBuild(){
     var c=document.getElementById("rClose"); if(c)c.addEventListener("click",closeReading);
-    var sp=document.getElementById("pbSpk"); if(sp)sp.addEventListener("click",function(){ if(pbsess)speak(pbsess.phrase.jp); });
+    var sp=document.getElementById("pbSpk"); if(sp)sp.addEventListener("click",function(){ if(pbsess)speakSweep(pbsess.phrase.jp, readingInner.querySelector(".sweepline")); });
     var nx=document.getElementById("pbNext"); if(nx)nx.addEventListener("click",nextReadingQ);
     if(!pbsess.done) readingInner.querySelectorAll(".pb-tile:not(.used)").forEach(function(o){ o.addEventListener("click",function(){ pbTap(parseInt(o.getAttribute("data-i"),10)); }); });
   }
