@@ -584,6 +584,34 @@
   .pt-fb{margin-top:16px;border-top:1px dashed var(--line);padding-top:12px;font-size:14px;color:var(--ink-soft);text-align:center}
   .pt-fb b{color:var(--shu);font-size:20px}
 
+  /* ---- Sweep: ilumina la mora que suena (aditivo, solo kana) ---- */
+  .sweepline .mora{display:inline;transition:color .1s ease, text-shadow .1s ease}
+  .sweepline .mora.lit{color:var(--shu);text-shadow:0 0 12px rgba(178,55,38,.5)}
+  body.dark .sweepline .mora.lit{text-shadow:0 0 12px rgba(209,84,63,.55)}
+
+  /* ---- Engranaje en las cabeceras de práctica ---- */
+  .d-head-l{display:flex;align-items:center;gap:10px}
+  .d-gear{background:none;border:none;font:inherit;font-size:17px;color:var(--ink-soft);
+    cursor:pointer;line-height:1;padding:2px 2px}
+  .d-gear:active{transform:scale(.94)}
+
+  /* ---- Ficha de ajustes (bottom sheet) ---- */
+  .sheet-scrim{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.4)}
+  .sheet-scrim.hidden{display:none}
+  .settings-sheet{position:fixed;left:0;right:0;bottom:0;z-index:71;
+    background:var(--card);border-top:2px solid var(--ink);border-radius:18px 18px 0 0;
+    padding:14px calc(18px + env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) calc(18px + env(safe-area-inset-left,0px));
+    max-width:520px;margin:0 auto;box-shadow:0 -8px 30px var(--shadow)}
+  .settings-sheet.hidden{display:none}
+  .ss-inner{display:flex;flex-direction:column;gap:14px}
+  .ss-head{display:flex;justify-content:space-between;align-items:center}
+  .ss-title{font-family:var(--display-font);font-weight:700;font-size:16px;color:var(--ink)}
+  .ss-x{background:none;border:none;font:inherit;font-size:19px;color:var(--ink-soft);cursor:pointer;line-height:1;padding:2px 6px}
+  .ss-row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .ss-lab{font-size:14px;font-weight:600;color:var(--ink)}
+  .ss-sub{font-size:12px;color:var(--ink-soft);margin-top:1px}
+  .ss-slider{display:flex;align-items:center;gap:10px}
+  .ss-slider input[type=range]{flex:1;accent-color:var(--shu)}
 </style>
 
 <div class="wrap">
@@ -613,6 +641,8 @@
 
 <div class="drill hidden" id="drill"><div class="drill-inner" id="drillInner"></div></div>
 <div class="reading hidden" id="reading"><div class="reading-inner" id="readingInner"></div></div>
+<div class="sheet-scrim hidden" id="sheetScrim"></div>
+<div class="settings-sheet hidden" id="settingsSheet"><div class="ss-inner" id="ssInner"></div></div>
 <div class="custom hidden" id="custom"><div class="custom-inner" id="customInner"></div></div>
 
 <script>
@@ -629,6 +659,19 @@
   function setFont(f){if(f!=="mincho"&&f!=="gothic")return;state.font=f;Persistence.save(state);render();}
   function getTheme(){return (state&&state.theme)?state.theme:"light";}
   function setTheme(th){if(th!=="light"&&th!=="dark")return;state.theme=th;Persistence.save(state);render();}
+  function getSweep(){return !!(state&&state.sweep);}
+  function setSweep(v){state.sweep=!!v;Persistence.save(state);}
+  function getSweepMs(){return (state&&state.sweepMs)?state.sweepMs:260;}
+  function setSweepMs(n){n=parseInt(n,10);if(isNaN(n))return;n=Math.max(120,Math.min(500,n));state.sweepMs=n;Persistence.save(state);}
+  /* Aplica fuente + tema al <body> (clases + barra del PWA). Vive fuera de render()
+     para poder llamarlo también desde la ficha de ajustes durante las prácticas. */
+  function applyDisplaySettings(){
+    var font=getFont(),theme=getTheme();
+    document.body.classList.toggle("font-gothic",font==="gothic");
+    document.body.classList.toggle("dark",theme==="dark");
+    var tcMeta=document.querySelector('meta[name="theme-color"]');
+    if(tcMeta){tcMeta.setAttribute("content",theme==="dark"?"#191510":"#e4ddcc");}
+  }
 
   /* =========================================================================
      1. PLAN CONTENT
@@ -876,11 +919,12 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function nowISO(){return new Date().toISOString();}
   function parse(s){return new Date(s+"T00:00:00");}
   function daysBetween(a,b){return Math.round((parse(b)-parse(a))/86400000);}
-  function emptyState(){return {schema:SCHEMA,lang:detectLang(),font:"mincho",startDate:today(),days:{},exercises:{},aim:null,meta:{updatedAt:nowISO()}};}
+  function emptyState(){return {schema:SCHEMA,lang:detectLang(),font:"mincho",theme:"light",sweep:false,sweepMs:260,startDate:today(),days:{},exercises:{},aim:null,meta:{updatedAt:nowISO()}};}
   function migrate(s){
     if(!s||typeof s!=="object") return null;
     return {schema:SCHEMA,lang:s.lang,font:s.font||"mincho",theme:s.theme||"light",startDate:s.startDate||today(),aim:(s.aim||null),
       phrasesOn:!!s.phrasesOn,kanjiOn:!!s.kanjiOn,emoji:(s.emoji!==false),buildRomaji:(s.buildRomaji!==false),matchSpeak:(s.matchSpeak!==false),
+      sweep:!!s.sweep,sweepMs:(s.sweepMs||260),
       days:(s.days&&typeof s.days==="object")?s.days:{},
       exercises:(s.exercises&&typeof s.exercises==="object")?s.exercises:{},
       meta:(s.meta&&typeof s.meta==="object")?s.meta:{updatedAt:nowISO()}};
@@ -896,6 +940,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       aim:a.aim||b.aim||null,
       phrasesOn:!!(a.phrasesOn||b.phrasesOn),kanjiOn:!!(a.kanjiOn||b.kanjiOn),
       emoji:(a.emoji!==false||b.emoji!==false),buildRomaji:(a.buildRomaji!==false||b.buildRomaji!==false),matchSpeak:(a.matchSpeak!==false||b.matchSpeak!==false),
+      sweep:!!(a.sweep||b.sweep),sweepMs:(a.sweepMs||b.sweepMs||260),
       startDate:(daysBetween(a.startDate,b.startDate)<0?b.startDate:a.startDate),
       days:{},
       exercises:Object.assign({},a.exercises,b.exercises),
@@ -1313,22 +1358,9 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var lang=getLang();
     var font=getFont();
 
-    // Aplicar la fuente al cuerpo del documento
-    if(font==="gothic"){
-      document.body.classList.add("font-gothic");
-    } else {
-      document.body.classList.remove("font-gothic");
-    }
-
-    // Aplicar el tema (claro / oscuro) al cuerpo y a la barra del PWA
+    // Aplicar fuente + tema al <body> y a la barra del PWA (helper reusable)
+    applyDisplaySettings();
     var theme=getTheme();
-    if(theme==="dark"){
-      document.body.classList.add("dark");
-    } else {
-      document.body.classList.remove("dark");
-    }
-    var tcMeta=document.querySelector('meta[name="theme-color"]');
-    if(tcMeta){tcMeta.setAttribute("content",theme==="dark"?"#191510":"#e4ddcc");}
 
     // Nuevo bloque con los botones de Idioma y Fuente
     html+='<div class="lang-switch">';
@@ -1518,6 +1550,139 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       if(jp)u.voice=jp; window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
     }catch(e){}
   }
+
+  /* =========================================================================
+     SWEEP — ilumina la mora que suena mientras se reproduce el audio.
+     Aditivo y honesto: solo actúa sobre kana (donde 1 mora ≈ 1 sonido).
+     El barrido es un metrónomo (no sync real por letra: Web Speech no da
+     eventos por mora en iOS), arranca idealmente en onstart y se apaga
+     cuando el audio termina. Con el ajuste apagado, todo es idéntico a hoy.
+     ========================================================================= */
+  var KANA_SMALL="ゃゅょャュョ"; // yōon: se funden en la mora anterior (きゃ = 1 mora)
+  function splitMora(kana){
+    var units=[],i,ch;
+    for(i=0;i<kana.length;i++){ ch=kana.charAt(i);
+      if(KANA_SMALL.indexOf(ch)>=0 && units.length){ units[units.length-1]+=ch; }
+      else units.push(ch);
+    }
+    return units; // orden lógico = orden de lectura (izq→der, sin shaping)
+  }
+  function isAllKana(s){ return !!s && /^[\u3040-\u30FF]+$/.test(s); }
+  function sweepSpans(kana){
+    var m=splitMora(kana),s="",i;
+    for(i=0;i<m.length;i++) s+='<span class="mora">'+m[i]+'</span>';
+    return '<span class="sweepline">'+s+'</span>';
+  }
+  /* Envuelve kana suelto (p. ej. la palabra-premio) en moras si el sweep está on */
+  function sweepKanaHTML(kana){ return (getSweep()&&isAllKana(kana))? sweepSpans(kana) : kana; }
+  /* Respeta la capa de kanji: solo barre cuando la forma visible ES kana puro */
+  function jpSweepHTML(w){
+    var form=wordFormHTML(w), jp=(typeof w==="string")?w:(w&&w.jp);
+    return (getSweep()&&form===jp&&isAllKana(jp))? sweepSpans(jp) : form;
+  }
+  var _sweepTimers=[];
+  function _clearSweep(){ _sweepTimers.forEach(function(t){clearTimeout(t);}); _sweepTimers=[]; }
+  function runSweep(container){
+    if(!container) return;
+    var spans=[].slice.call(container.querySelectorAll(".mora"));
+    if(!spans.length) return;
+    _clearSweep();
+    spans.forEach(function(s){ s.classList.remove("lit"); });
+    var ms=getSweepMs();
+    spans.forEach(function(s,i){
+      _sweepTimers.push(setTimeout(function(){
+        spans.forEach(function(x){ x.classList.remove("lit"); });
+        s.classList.add("lit");
+      }, i*ms));
+    });
+    _sweepTimers.push(setTimeout(function(){
+      spans.forEach(function(x){ x.classList.remove("lit"); });
+    }, spans.length*ms + 400));
+  }
+  /* Reproduce y barre. Sin sweep (o sin moras en el contenedor) → speak() normal. */
+  function speakSweep(text,container){
+    if(!getSweep() || !container || !container.querySelector(".mora")){ speak(text); return; }
+    try{
+      var synth=window.speechSynthesis;
+      if(!synth){ runSweep(container); return; }
+      var u=new SpeechSynthesisUtterance(text); u.lang="ja-JP"; u.rate=.8;
+      var vs=synth.getVoices(); var jp=vs.filter(function(v){return /ja(-|_)?JP/i.test(v.lang);})[0];
+      if(jp)u.voice=jp;
+      var started=false, go=function(){ if(!started){ started=true; runSweep(container); } };
+      u.onstart=go;
+      u.onend=function(){ _clearSweep(); var ns=container.querySelectorAll(".mora"); [].slice.call(ns).forEach(function(x){x.classList.remove("lit");}); };
+      u.onerror=go;
+      synth.cancel(); synth.speak(u);
+      setTimeout(go,250); // fallback iOS: a veces onstart nunca dispara
+    }catch(e){ runSweep(container); }
+  }
+
+  /* =========================================================================
+     FICHA DE AJUSTES — abrible durante las prácticas (tema / idioma / fuente
+     / resaltado). Es un overlay a nivel de <body>, así render() no la destruye.
+     ========================================================================= */
+  function refreshOpenView(){
+    var d=document.getElementById("drill"), r=document.getElementById("reading");
+    try{ if(d && !d.classList.contains("hidden") && typeof sess!=="undefined" && sess){ renderDrill(); } }catch(e){}
+    try{ if(r && !r.classList.contains("hidden") && typeof rsess!=="undefined" && rsess && rsess.q){ renderReading(); } }catch(e){}
+  }
+  function renderSheet(){
+    var es=getLang()==="es", font=getFont(), lang=getLang(), theme=getTheme(), sw=getSweep(), ms=getSweepMs();
+    var h="";
+    h+='<div class="ss-head"><div class="ss-title">'+(es?"Ajustes":"Settings")+'</div>'+
+       '<button class="ss-x" id="ssX" aria-label="'+(es?"Cerrar":"Close")+'">✕</button></div>';
+    h+='<div class="ss-row"><div class="ss-lab">'+(es?"Fuente":"Font")+'</div><div class="seg-group">'+
+       '<button class="fseg lseg'+(font==="mincho"?" on":"")+'" data-font="mincho" style="font-family:\'Shippori Mincho\',serif;font-size:14px;">あ</button>'+
+       '<button class="fseg lseg'+(font==="gothic"?" on":"")+'" data-font="gothic" style="font-family:\'Noto Sans JP\',sans-serif;font-size:14px;">あ</button>'+
+       '</div></div>';
+    h+='<div class="ss-row"><div class="ss-lab">'+(es?"Idioma":"Language")+'</div><div class="seg-group">'+
+       '<button class="lseg'+(lang==="en"?" on":"")+'" data-lang="en">EN</button>'+
+       '<button class="lseg'+(lang==="es"?" on":"")+'" data-lang="es">ES</button>'+
+       '</div></div>';
+    h+='<div class="ss-row"><div class="ss-lab">'+(es?"Tema":"Theme")+'</div><div class="seg-group">'+
+       '<button class="tseg lseg'+(theme==="light"?" on":"")+'" data-theme="light" style="font-size:13px;">☀</button>'+
+       '<button class="tseg lseg'+(theme==="dark"?" on":"")+'" data-theme="dark" style="font-size:13px;">☾</button>'+
+       '</div></div>';
+    h+='<div style="height:1px;background:var(--line);margin:2px 0"></div>';
+    h+='<div class="ss-row"><div><div class="ss-lab">'+(es?"Resaltar la sílaba que suena":"Highlight the syllable playing")+'</div>'+
+       '<div class="ss-sub">'+(es?"Ilumina cada mora al reproducir el audio":"Lights each mora as the audio plays")+'</div></div>'+
+       '<div class="seg-group">'+
+       '<button class="lseg'+(!sw?" on":"")+'" data-sweep="0">Off</button>'+
+       '<button class="lseg'+(sw?" on":"")+'" data-sweep="1">On</button>'+
+       '</div></div>';
+    if(sw){
+      h+='<div class="ss-slider"><span class="ss-sub">'+(es?"Velocidad":"Speed")+'</span>'+
+         '<input type="range" id="sweepSpeed" min="120" max="500" step="20" value="'+ms+'">'+
+         '<span class="ss-sub" id="sweepSpeedVal">'+ms+'</span></div>';
+    }
+    document.getElementById("ssInner").innerHTML=h;
+    bindSheet();
+  }
+  function bindSheet(){
+    var inr=document.getElementById("ssInner"); if(!inr)return;
+    inr.querySelectorAll("[data-font]").forEach(function(b){ b.onclick=function(){ setFont(b.getAttribute("data-font")); applyDisplaySettings(); renderSheet(); }; });
+    inr.querySelectorAll("[data-lang]").forEach(function(b){ b.onclick=function(){ setLang(b.getAttribute("data-lang")); refreshOpenView(); renderSheet(); }; });
+    inr.querySelectorAll("[data-theme]").forEach(function(b){ b.onclick=function(){ setTheme(b.getAttribute("data-theme")); applyDisplaySettings(); renderSheet(); }; });
+    inr.querySelectorAll("[data-sweep]").forEach(function(b){ b.onclick=function(){ setSweep(b.getAttribute("data-sweep")==="1"); refreshOpenView(); renderSheet(); }; });
+    var sl=document.getElementById("sweepSpeed");
+    if(sl)sl.oninput=function(){ setSweepMs(sl.value); var lv=document.getElementById("sweepSpeedVal"); if(lv)lv.textContent=sl.value; };
+    var x=document.getElementById("ssX"); if(x)x.onclick=closeSheet;
+  }
+  function openSheet(){
+    renderSheet();
+    var sc=document.getElementById("sheetScrim"); if(sc){ sc.classList.remove("hidden"); sc.onclick=closeSheet; }
+    var sh=document.getElementById("settingsSheet"); if(sh)sh.classList.remove("hidden");
+  }
+  function closeSheet(){
+    var sc=document.getElementById("sheetScrim"); if(sc)sc.classList.add("hidden");
+    var sh=document.getElementById("settingsSheet"); if(sh)sh.classList.add("hidden");
+  }
+  /* Engranaje reutilizable para las sub-vistas de práctica + apertura delegada.
+     (El drill y la lectura principal usan sus propios ids dGear/rGear.) */
+  function gearBtn(){ return '<button class="d-gear" data-gear="1" aria-label="'+(getLang()==="es"?"Ajustes":"Settings")+'">⚙</button>'; }
+  document.addEventListener("click",function(e){
+    var t=e.target; if(t && t.closest && t.closest("[data-gear]")){ openSheet(); }
+  });
   function startDrill(){
     ensureKana();
     sess={done:0,correct:0,wrong:0,q:null,hitGoalShown:false,newCount:0,maxNew:5,mode:"quiz",teach:null,force:null};
@@ -1604,7 +1769,8 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var gpct=Math.min(100,dt.done),gtier=dayTier(dt.done);
     var h="";
     h+='<div class="d-sticky">';
-    h+='<div class="d-head"><button class="d-close" id="dClose">✕ '+t("Close")+'</button>'+
+    h+='<div class="d-head"><div class="d-head-l"><button class="d-close" id="dClose">✕ '+t("Close")+'</button>'+
+       '<button class="d-gear" id="dGear" aria-label="'+(getLang()==="es"?"Ajustes":"Settings")+'">⚙</button></div>'+
        '<div class="d-stats">'+
        '<div class="d-stat"><div class="n">'+sess.done+'</div><div class="l">'+t("Done")+'</div></div>'+
        '<div class="d-stat wrong"><div class="n">'+sess.wrong+'</div><div class="l">'+t("Wrong")+'</div></div>'+
@@ -1649,7 +1815,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
         var tgl=glyph(q.target,q.script==="kata"?"kata":"hira");
         h+='<div class="msg '+(correct?"ok":"no")+'">'+(correct?t("Correct!"):t("It was"))+' <span class="gl mincho">'+tgl+'</span> <span class="rm">'+q.target+'</span></div>';
         var word=sess.q.word;
-        if(word) h+='<div class="reward-card"><div class="rw-word mincho">'+word.w+'</div><div class="rw-sub">'+word.r+' — <span class="mean">'+exMean(word)+'</span></div><button class="d-spk-word" id="dSpkWord" aria-label="Play word">🔊 <span>'+t("hear it")+'</span></button></div>';
+        if(word) h+='<div class="reward-card"><div class="rw-word mincho">'+sweepKanaHTML(word.w)+'</div><div class="rw-sub">'+word.r+' — <span class="mean">'+exMean(word)+'</span></div><button class="d-spk-word" id="dSpkWord" aria-label="Play word">🔊 <span>'+t("hear it")+'</span></button></div>';
       }
     }
     h+='</div>';
@@ -3102,7 +3268,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       else { out+='<span class="pt-fix">'+ch+'</span>'; } }
     return out; }
   function launchPatternTeach(pid){ ptsess={mode:'teach',pid:pid,relearn:false}; renderPatternTeach(); readingEl.classList.remove('hidden'); }
-  function ptHead(){ return '<div class="d-sticky"><div class="d-head"><button class="d-close" id="rClose">✕ '+t('Close')+'</button></div>'+wordsGoalHTML()+'</div>'; }
+  function ptHead(){ return '<div class="d-sticky"><div class="d-head"><div class="d-head-l"><button class="d-close" id="rClose">✕ '+t('Close')+'</button>'+gearBtn()+'</div></div>'+wordsGoalHTML()+'</div>'; }
   /* parte pronunciable del molde: las piezas fijas, sin los huecos ｛...｝ */
   function moldSpoken(mold){ var out=''; for(var i=0;i<mold.length;i++){ var ch=mold.charAt(i); if(ch==='｛'){ i=mold.indexOf('｝',i); } else if(ch==='／'){ } else out+=ch; } return out; }
   function spkBtn(say,small){ return '<button class="pt-spk'+(small?' sm':'')+'" data-say="'+say+'" aria-label="'+t('Play')+'">🔊</button>'; }
@@ -3457,7 +3623,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     renderKanji(); readingEl.classList.remove("hidden");
     setTimeout(function(){speak(target.jp);},250); }
 
-  function kanjiHead(){ return '<div class="d-sticky"><div class="d-head"><button class="d-close" id="kClose">✕ '+t("Close")+'</button>'+
+  function kanjiHead(){ return '<div class="d-sticky"><div class="d-head"><div class="d-head-l"><button class="d-close" id="kClose">✕ '+t("Close")+'</button>'+gearBtn()+'</div>'+
     '<div class="d-stats"><div class="d-stat"><div class="n">'+ksess.done+'</div><div class="l">'+t("Done")+'</div></div>'+
     '<div class="d-stat wrong"><div class="n">'+ksess.wrong+'</div><div class="l">'+t("Wrong")+'</div></div>'+
     '<div class="d-stat right"><div class="n">'+ksess.correct+'</div><div class="l">'+t("Correct")+'</div></div></div></div></div>'; }
@@ -3571,7 +3737,8 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   }
   function renderReading(){
     var pool=rsess.pool,q=rsess.q,it=pool[q.target],es=getLang()==="es",h="";
-    var head='<div class="d-sticky"><div class="d-head"><button class="d-close" id="rClose">✕ '+t("Close")+'</button>'+
+    var head='<div class="d-sticky"><div class="d-head"><div class="d-head-l"><button class="d-close" id="rClose">✕ '+t("Close")+'</button>'+
+       '<button class="d-gear" id="rGear" aria-label="'+(getLang()==="es"?"Ajustes":"Settings")+'">⚙</button></div>'+
        '<div class="d-stats"><div class="d-stat"><div class="n">'+rsess.done+'</div><div class="l">'+t("Done")+'</div></div>'+
        '<div class="d-stat wrong"><div class="n">'+rsess.wrong+'</div><div class="l">'+t("Wrong")+'</div></div>'+
        '<div class="d-stat right"><div class="n">'+rsess.correct+'</div><div class="l">'+t("Correct")+'</div></div></div></div>'+wordsGoalHTML()+'</div>';
@@ -3579,7 +3746,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       var em=(getEmoji()&&it.emoji)?'<span class="rq-emoji">'+it.emoji+'</span> ':'';
       readingInner.innerHTML=head+'<div class="rq-prompt teach-word">'+
         '<div class="rq-kind">'+t(rsess.pool===PHRASES?(q.relearn?"Let's review this phrase":"New phrase"):(q.relearn?"Let's review this word":"New word"))+'</div>'+
-        '<div class="rq-jp mincho'+(rsess.pool===PHRASES?' rq-jp-ph':'')+'">'+wordFormHTML(it)+'</div>'+
+        '<div class="rq-jp mincho'+(rsess.pool===PHRASES?' rq-jp-ph':'')+'">'+jpSweepHTML(it)+'</div>'+
         '<div class="tw-rom">'+it.romaji+'</div>'+
         '<div class="rq-mean">'+em+(es?it.es:it.en)+'</div>'+(it.note?'<div class="rq-note">'+it.note+'</div>':'')+'</div>'+
         '<div class="d-actions"><button class="d-spk-word" id="rSpkW">🔊 <span>'+t("hear it")+'</span></button><button class="d-next" id="rGot">'+t("Got it →")+'</button></div>';
@@ -3603,7 +3770,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     if(q.answered){
       var correct=q.picked===q.target;
       h+='<div class="rq-msg '+(correct?"ok":"no")+'">'+t(correct?"Correct!":"It was")+'</div>';
-      h+='<div class="rq-ans">'+(getEmoji()&&it.emoji?'<span class="rq-emoji">'+it.emoji+'</span> ':'')+'<span class="mincho">'+wordFormHTML(it)+'</span> <span class="rq-rom">'+it.romaji+'</span> — <span class="mean">'+(es?it.es:it.en)+'</span> <button class="d-spk-word" id="rSpkW">🔊 <span>'+t("hear it")+'</span></button></div>';
+      h+='<div class="rq-ans">'+(getEmoji()&&it.emoji?'<span class="rq-emoji">'+it.emoji+'</span> ':'')+'<span class="mincho">'+jpSweepHTML(it)+'</span> <span class="rq-rom">'+it.romaji+'</span> — <span class="mean">'+(es?it.es:it.en)+'</span> <button class="d-spk-word" id="rSpkW">🔊 <span>'+t("hear it")+'</span></button></div>';
     }
     h+='</div>';
     if(q.answered) h+='<div class="d-actions"><button class="d-next" id="rNext">'+t("Next →")+'</button></div>';
@@ -3614,9 +3781,10 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function toggleEmoji(){state.emoji=!getEmoji();Persistence.save(state);renderReading();}
   function bindReading(){
     var c=document.getElementById("rClose"); if(c)c.addEventListener("click",closeReading);
+    var rg=document.getElementById("rGear"); if(rg)rg.addEventListener("click",openSheet);
     var nx=document.getElementById("rNext"); if(nx)nx.addEventListener("click",nextReadingQ);
     var sp=document.getElementById("rSpk"); if(sp)sp.addEventListener("click",function(){speak(rsess.pool[rsess.q.target].jp);});
-    var spw=document.getElementById("rSpkW"); if(spw)spw.addEventListener("click",function(){speak(rsess.pool[rsess.q.target].jp);});
+    var spw=document.getElementById("rSpkW"); if(spw)spw.addEventListener("click",function(){speakSweep(rsess.pool[rsess.q.target].jp, readingInner.querySelector(".sweepline"));});
     var rem=document.getElementById("rEmoji"); if(rem)rem.addEventListener("click",toggleEmoji);
     var gt=document.getElementById("rGot"); if(gt)gt.addEventListener("click",teachWordDone);
     if(!rsess.q.answered){ readingInner.querySelectorAll(".ropt").forEach(function(o){ o.addEventListener("click",function(){answerReading(parseInt(o.getAttribute("data-i"),10));}); }); }
@@ -3722,7 +3890,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       '<div class="prog milestones"><i style="width:'+gpct+'%"></i>'+milestoneTicks(dt.done,"drill")+'</div></div>';
   }
   function buildHeaderHTML(s){
-    return '<div class="d-sticky"><div class="d-head"><button class="d-close" id="xClose">✕ '+t("Close")+'</button>'+
+    return '<div class="d-sticky"><div class="d-head"><div class="d-head-l"><button class="d-close" id="xClose">✕ '+t("Close")+'</button>'+gearBtn()+'</div>'+
       '<div class="d-stats">'+
       '<div class="d-stat"><div class="n">'+s.done+'</div><div class="l">'+t("Done")+'</div></div>'+
       '<div class="d-stat wrong"><div class="n">'+s.wrong+'</div><div class="l">'+t("Wrong")+'</div></div>'+
@@ -3831,7 +3999,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   }
   function renderMatch(){
     var mWrong=msess.wrong||0, mDone=msess.done+mWrong;
-    var h='<div class="d-sticky"><div class="d-head"><button class="d-close" id="mClose">✕ '+t("Close")+'</button>'+
+    var h='<div class="d-sticky"><div class="d-head"><div class="d-head-l"><button class="d-close" id="mClose">✕ '+t("Close")+'</button>'+gearBtn()+'</div>'+
       '<div class="d-stats">'+
       '<div class="d-stat"><div class="n">'+mDone+'</div><div class="l">'+t("Done")+'</div></div>'+
       '<div class="d-stat wrong"><div class="n">'+mWrong+'</div><div class="l">'+t("Wrong")+'</div></div>'+
@@ -3899,7 +4067,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     readingEl.classList.remove("hidden"); renderPhraseBuild();
   }
   function pbHeadHTML(){
-    return '<div class="d-sticky"><div class="d-head"><button class="d-close" id="rClose">✕ '+t("Close")+'</button>'+
+    return '<div class="d-sticky"><div class="d-head"><div class="d-head-l"><button class="d-close" id="rClose">✕ '+t("Close")+'</button>'+gearBtn()+'</div>'+
       '<div class="d-stats"><div class="d-stat"><div class="n">'+rsess.done+'</div><div class="l">'+t("Done")+'</div></div>'+
       '<div class="d-stat wrong"><div class="n">'+rsess.wrong+'</div><div class="l">'+t("Wrong")+'</div></div>'+
       '<div class="d-stat right"><div class="n">'+rsess.correct+'</div><div class="l">'+t("Correct")+'</div></div></div></div>'+wordsGoalHTML()+'</div>';
@@ -4214,13 +4382,14 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   }
   function bindDrill(){
     var c=document.getElementById("dClose"); if(c)c.addEventListener("click",closeDrill);
+    var dg=document.getElementById("dGear"); if(dg)dg.addEventListener("click",openSheet);
     var tg=document.getElementById("tGot"); if(tg)tg.addEventListener("click",gotIt);
     var tsp=document.getElementById("tSpk"); if(tsp)tsp.addEventListener("click",function(){ if(sess.teach)speak(glyph(sess.teach.romaji,sess.teach.script)); });
     var tspb=document.getElementById("tSpkBase"); if(tspb)tspb.addEventListener("click",function(){ if(sess.teach){var dv=DEVOICE[sess.teach.romaji]; if(dv)speak(glyph(dv[0],sess.teach.script));} });
     var n=document.getElementById("dNext"); if(n)n.addEventListener("click",nextQuestion);
     var s=document.getElementById("dSkip"); if(s)s.addEventListener("click",function(){buildQuestion();renderDrill();});
     var sp=document.getElementById("dSpk"); if(sp)sp.addEventListener("click",function(){speak(glyph(sess.q.target,sess.q.script));});
-    var spw=document.getElementById("dSpkWord"); if(spw)spw.addEventListener("click",function(){ if(sess.q.word)speak(sess.q.word.w); });
+    var spw=document.getElementById("dSpkWord"); if(spw)spw.addEventListener("click",function(){ if(sess.q.word)speakSweep(sess.q.word.w, drillInner.querySelector(".sweepline")); });
     if(sess.q && !sess.q.answered){
       drillInner.querySelectorAll(".opt").forEach(function(o){
         o.addEventListener("click",function(){answer(o.getAttribute("data-r"));});
