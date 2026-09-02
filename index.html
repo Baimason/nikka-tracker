@@ -588,6 +588,9 @@
   .sweepline .mora{display:inline;transition:color .1s ease, text-shadow .1s ease}
   .sweepline .mora.lit{color:var(--shu);text-shadow:0 0 12px rgba(178,55,38,.5)}
   body.dark .sweepline .mora.lit{text-shadow:0 0 12px rgba(209,84,63,.55)}
+  /* el furigana es chico: glow más ceñido y fuerte para que se note */
+  .sweepline rt .mora.lit{text-shadow:0 0 8px rgba(178,55,38,.9)}
+  body.dark .sweepline rt .mora.lit{text-shadow:0 0 8px rgba(209,84,63,.95)}
 
   /* ---- Engranaje en las cabeceras de práctica ---- */
   .d-head-l{display:flex;align-items:center;gap:10px}
@@ -3062,6 +3065,16 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   /* ---- Render del furigana: los 3 estados de una palabra con kanji ----
      kana puro (no maduró / kanji off) → 学校+がっこう (andamio) → 学校 (desnudo, kanji dominado). */
   function rubyHTML(kf,reading){ return '<ruby>'+kf+'<rt>'+reading+'</rt></ruby>'; }
+  /* Como rubyHTML pero, con el sweep activo, parte la LECTURA (furigana) en moras
+     para poder iluminarla al reproducir el audio. El kanji base queda estático. */
+  function rubySweepHTML(kf,reading){
+    if(getSweep() && isAllKana(reading)){
+      var m=splitMora(reading),rt="",i;
+      for(i=0;i<m.length;i++) rt+='<span class="mora">'+m[i]+'</span>';
+      return '<span class="sweepline"><ruby>'+kf+'<rt>'+rt+'</rt></ruby></span>';
+    }
+    return rubyHTML(kf,reading);
+  }
   function wordFormHTML(w){ var jp=(typeof w==='string')?w:(w&&w.jp);
     if(!kanjiOn())return jp;                     // kanji off → idéntico a hoy
     var kf=kanjiForm(w); if(!kf)return jp;        // sin forma-kanji → kana
@@ -3640,7 +3653,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       h+='<div class="rq-prompt teach-word">'+
          '<div class="rq-kind">'+t("New kanji")+'</div>'+
          '<div class="rq-jp mincho" style="font-size:64px;line-height:1.1">'+q.ch+'</div>'+
-         '<div class="rq-mean">'+t("appears in")+' <span class="mincho">'+rubyHTML(q.kf,ex.jp)+'</span> — '+(es?ex.es:ex.en)+'</div>'+
+         '<div class="rq-mean">'+t("appears in")+' <span class="mincho">'+rubySweepHTML(q.kf,ex.jp)+'</span> — '+(es?ex.es:ex.en)+'</div>'+
          '<div class="rq-note" style="opacity:.65;font-size:13px;margin-top:8px">'+t("The reading shows how it's read in this word — it can change in others.")+'</div></div>'+         '<div class="d-actions"><button class="d-spk-word" id="kSpk">🔊 <span>'+t("hear it")+'</span></button><button class="d-next" id="kGot">'+t("Got it →")+'</button></div>';
       readingInner.innerHTML=h; bindKanji(); return; }
     /* quiz */
@@ -3656,7 +3669,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     h+='<div class="rq-fb">';
     if(q.answered){ var correct=q.opts[q.picked]&&q.opts[q.picked].jp===w.jp;
       h+='<div class="rq-msg '+(correct?"ok":"no")+'">'+t(correct?"Correct!":"It was")+'</div>';
-      h+='<div class="rq-ans"><span class="mincho">'+rubyHTML(kanjiForm(w),w.jp)+'</span> <span class="rq-rom">'+w.romaji+'</span> — <span class="mean">'+(es?w.es:w.en)+'</span> <button class="d-spk-word" id="kSpkW">🔊 <span>'+t("hear it")+'</span></button></div>'; }
+      h+='<div class="rq-ans"><span class="mincho">'+rubySweepHTML(kanjiForm(w),w.jp)+'</span> <span class="rq-rom">'+w.romaji+'</span> — <span class="mean">'+(es?w.es:w.en)+'</span> <button class="d-spk-word" id="kSpkW">🔊 <span>'+t("hear it")+'</span></button></div>'; }
     h+='</div>';
     if(q.answered) h+='<div class="d-actions"><button class="d-next" id="kNext">'+t("Next →")+'</button></div>';
     readingInner.innerHTML=h; bindKanji(); }
@@ -3671,13 +3684,13 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var correct=jp===q.word.jp, kf=kanjiForm(q.word);
     for(var j=0;j<kf.length;j++){ var ch=kf.charAt(j); if(isKanjiChar(ch)&&!kanjiLearned(ch))kanjiCredit(ch,correct); }
     ksess.done++; if(correct)ksess.correct++; else ksess.wrong++;
-    stampDay(); Persistence.save(state); speak(q.word.jp); renderKanji(); }
+    stampDay(); Persistence.save(state); renderKanji(); speakSweep(q.word.jp, readingInner.querySelector(".sweepline")); }
 
   function bindKanji(){ var c=document.getElementById("kClose"); if(c)c.addEventListener("click",kanjiEnd);
     var nx=document.getElementById("kNext"); if(nx)nx.addEventListener("click",kanjiNextUnit);
     var gt=document.getElementById("kGot"); if(gt)gt.addEventListener("click",kanjiTeachDone);
-    var sp=document.getElementById("kSpk"); if(sp)sp.addEventListener("click",function(){speak(ksess.q.ex.jp);});
-    var spw=document.getElementById("kSpkW"); if(spw)spw.addEventListener("click",function(){speak(ksess.q.word.jp);});
+    var sp=document.getElementById("kSpk"); if(sp)sp.addEventListener("click",function(){speakSweep(ksess.q.ex.jp, readingInner.querySelector(".sweepline"));});
+    var spw=document.getElementById("kSpkW"); if(spw)spw.addEventListener("click",function(){speakSweep(ksess.q.word.jp, readingInner.querySelector(".sweepline"));});
     var spq=document.getElementById("kSpkQ"); if(spq)spq.addEventListener("click",function(){speak(ksess.q.word.jp);});    if(ksess.q.mode==="quiz"&&!ksess.q.answered){ readingInner.querySelectorAll(".ropt").forEach(function(o){
       o.addEventListener("click",function(){answerKanji(o.getAttribute("data-jp"));}); }); } }
 
