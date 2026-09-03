@@ -413,8 +413,13 @@
   .phrase-nudge-btn{display:block;width:100%;font:inherit;font-weight:700;font-size:13px;color:var(--card);background:var(--shu);border:none;border-radius:4px;padding:9px 12px;margin-top:8px;cursor:pointer;text-align:center;-webkit-tap-highlight-color:transparent}
   .phrase-nudge-btn:active{transform:translateY(1px)}
   .grow.aimed{border-left:3px solid var(--shu);padding-left:11px}
+  .grow.aimed2{border-left-width:5px}
+  .prog > i.d{background:var(--gold)}
+  .mc-miles{display:flex;gap:14px;font-size:11px;letter-spacing:.02em;margin:1px 0 2px;color:var(--ink-faint)}
+  .mc-miles .ms.on{color:var(--green);font-weight:700}
   .aim-btn{margin-top:8px;font-size:12px;font-weight:700;padding:5px 12px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
   .aim-btn.on{background:var(--shu);color:#fff;border-color:var(--shu)}
+  .aim-btn.on2{background:var(--shu-deep);border-color:var(--shu-deep);box-shadow:0 0 0 2px rgba(178,55,38,.2)}
   .d-aim{font-size:12px;font-weight:700;color:var(--shu);margin-bottom:4px}
   .mastery-card h3{font-family: var(--display-font);font-weight:700;font-size:17px;margin:0}
   .mc-pct{font-family: var(--display-font);font-weight:800;font-size:28px;color:var(--shu);line-height:1}
@@ -922,10 +927,10 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function nowISO(){return new Date().toISOString();}
   function parse(s){return new Date(s+"T00:00:00");}
   function daysBetween(a,b){return Math.round((parse(b)-parse(a))/86400000);}
-  function emptyState(){return {schema:SCHEMA,lang:detectLang(),font:"mincho",theme:"light",sweep:false,sweepMs:260,startDate:today(),days:{},exercises:{},aim:null,meta:{updatedAt:nowISO()}};}
+  function emptyState(){return {schema:SCHEMA,lang:detectLang(),font:"mincho",theme:"light",sweep:false,sweepMs:260,startDate:today(),days:{},exercises:{},aim:null,aimLvl:1,meta:{updatedAt:nowISO()}};}
   function migrate(s){
     if(!s||typeof s!=="object") return null;
-    return {schema:SCHEMA,lang:s.lang,font:s.font||"mincho",theme:s.theme||"light",startDate:s.startDate||today(),aim:(s.aim||null),
+    return {schema:SCHEMA,lang:s.lang,font:s.font||"mincho",theme:s.theme||"light",startDate:s.startDate||today(),aim:(s.aim||null),aimLvl:(s.aimLvl===2?2:1),
       phrasesOn:!!s.phrasesOn,kanjiOn:!!s.kanjiOn,emoji:(s.emoji!==false),buildRomaji:(s.buildRomaji!==false),matchSpeak:(s.matchSpeak!==false),
       sweep:!!s.sweep,sweepMs:(s.sweepMs||260),
       days:(s.days&&typeof s.days==="object")?s.days:{},
@@ -941,6 +946,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       font:a.font||b.font||"mincho", 
       theme:a.theme||b.theme||"light",
       aim:a.aim||b.aim||null,
+      aimLvl:(a.aim?(a.aimLvl||1):(b.aim?(b.aimLvl||1):1)),
       phrasesOn:!!(a.phrasesOn||b.phrasesOn),kanjiOn:!!(a.kanjiOn||b.kanjiOn),
       emoji:(a.emoji!==false||b.emoji!==false),buildRomaji:(a.buildRomaji!==false||b.buildRomaji!==false),matchSpeak:(a.matchSpeak!==false||b.matchSpeak!==false),
       sweep:!!(a.sweep||b.sweep),sweepMs:(a.sweepMs||b.sweepMs||260),
@@ -2771,12 +2777,26 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   /* ---- Aim at a game: bias new-word introductions toward its core vocab ----
      Mixed, not exclusive (AIM_BIAS) and still capped by READ_LEARN_POOL, so it
      prioritises without flooding. state.aim holds one game id at a time. */
+  /* Priority tiers: +1 (focus) keeps the base reserve/bias; +2 (enfoque total)
+     widens the reserve so aim words flood in even when the general pool is full,
+     and leans the intro/review bias harder. It cannot beat the 4-days-per-word
+     honest-signal floor — it just gets you TO it instead of well above it. */
   var AIM_BIAS=0.8, AIM_RESERVE=3, AIM_REVIEW_BIAS=0.45;
+  var AIM_BIAS2=0.95, AIM_RESERVE2=6, AIM_REVIEW_BIAS2=0.65;
+  function aimLevel(){ return (state&&state.aim)?(state.aimLvl===2?2:1):0; }
+  function aimReserve(){ return aimLevel()>=2?AIM_RESERVE2:AIM_RESERVE; }
+  function aimBias(){ return aimLevel()>=2?AIM_BIAS2:AIM_BIAS; }
+  function aimReviewBias(){ return aimLevel()>=2?AIM_REVIEW_BIAS2:AIM_REVIEW_BIAS; }
   function aimedGame(){ if(!state||!state.aim)return null; for(var i=0;i<GAMES.length;i++)if(GAMES[i].id===state.aim)return GAMES[i]; return null; }
   function aimWordSet(){ var g=aimedGame(); if(!g)return null; var m={}; (g.words||[]).forEach(function(w){m[w.jp]=1;}); return m; }
   function aimPhraseSet(){ var g=aimedGame(); if(!g||typeof OPENINGS==='undefined')return null; var o=OPENINGS[g.id]; if(!o)return null; var m={}; (o.phrases||[]).forEach(function(x){m[x.jp]=1;}); return m; }
   function aimSetForPool(pool){ return (typeof PHRASES!=='undefined'&&pool===PHRASES)?aimPhraseSet():aimWordSet(); }
-  function setAim(id){ state.aim=(state.aim===id)?null:id; Persistence.save(state); render(); }
+  function setAim(id){
+    if(state.aim!==id){ state.aim=id; state.aimLvl=1; }      /* aim a new game at +1 */
+    else if((state.aimLvl||1)<2){ state.aimLvl=2; }          /* same game: +1 -> +2 */
+    else { state.aim=null; state.aimLvl=1; }                 /* same game at +2 -> off */
+    Persistence.save(state); render();
+  }
 
   function gameReadiness(g){
     var need = g.kana || READY_KANA_DEFAULT;
@@ -2799,7 +2819,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var es=getLang()==="es";
     if(r.state==='comfy') return { cls:'comfy', badge:(es?'¡Ya podés!':'Ready!'),
       sub:(es?'Menús cubiertos — jugá tranquilo':'Menus covered — go for it') };
-    if(r.state==='dict'){ var falta=r.words.total-r.words.done;
+    if(r.state==='dict'){ var cn=Math.ceil(READY_COMFY*r.words.total), falta=Math.max(1,cn-r.words.done);
       return { cls:'dict', badge:(es?'Jugable con diccionario':'Playable w/ dictionary'),
         sub:(es?('Te faltan '+falta+' palabra'+(falta===1?'':'s')+' para leerlo cómodo')
                :(falta+' word'+(falta===1?'':'s')+' from reading it comfortably')) }; }
@@ -2811,9 +2831,9 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       return { cls:'locked', badge:(es?'Todavía no':'Not yet'),
         sub:(es?'Te falta ':'Need ')+parts.join(es?' y ':' & ') };
     }
-    var f2=r.words.total-r.words.done;
+    var dn=Math.ceil(READY_DICT*r.words.total), f2=Math.max(1,dn-r.words.done);
     return { cls:'locked', badge:(es?'Todavía no':'Not yet'),
-      sub:(es?('Te faltan '+f2+' palabra'+(f2===1?'':'s')+' del menú'):(f2+' menu word'+(f2===1?'':'s')+' to go')) };
+      sub:(es?('Te faltan '+f2+' palabra'+(f2===1?'':'s')+' para jugarlo con diccionario'):(f2+' word'+(f2===1?'':'s')+' from playable w/ dictionary')) };
   }
 
   function gamesCardHTML(){
@@ -2823,16 +2843,29 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     GAMES.forEach(function(g){
       var r=gameReadiness(g), v=gameVerdict(r);
       var pct=Math.round(r.cov*100);
-      var aimed=(state.aim===g.id);
-      var aimLbl=aimed?(es?'🎯 Apuntando':'🎯 Aiming'):(es?'🎯 Apuntar a este':'🎯 Aim at this');
-      h+='<div class="grow'+(aimed?' aimed':'')+'">'+
+      var alvl=(state.aim===g.id)?(state.aimLvl||1):0, aimed=alvl>0;
+      var aimLbl=alvl>=2?(es?'🎯🎯 Enfoque total':'🎯🎯 Full focus')
+               :alvl>=1?(es?'🎯 Apuntando':'🎯 Aiming')
+               :(es?'🎯 Apuntar a este':'🎯 Aim at this');
+      /* double-progress milestones: same axis (% menú dominado), two honest goals */
+      var dictNeed=Math.ceil(READY_DICT*r.words.total), comfyNeed=Math.ceil(READY_COMFY*r.words.total);
+      var okDict=r.cov>=READY_DICT, okComfy=r.cov>=READY_COMFY;
+      var msDict=okDict?(es?'✓ jugable':'✓ playable')
+                       :(es?('jugable: '+(dictNeed-r.words.done)+' más'):('playable: '+(dictNeed-r.words.done)+' more'));
+      var msComfy=okComfy?(es?'✓ cómodo':'✓ comfy')
+                         :(es?('cómodo: '+(comfyNeed-r.words.done)+' más'):('comfy: '+(comfyNeed-r.words.done)+' more'));
+      h+='<div class="grow'+(aimed?' aimed':'')+(alvl>=2?' aimed2':'')+'">'+
            '<div class="grow-top"><span class="grow-name">'+gamePick(g.name)+
              ' <span class="grow-mode">'+gamePick(g.mode)+'</span></span>'+
              '<span class="gbadge '+v.cls+'">'+v.badge+'</span></div>'+
-           '<div class="prog"><i class="'+(r.state==='comfy'?'g':'')+'" style="width:'+pct+'%"></i></div>'+
+           '<div class="prog milestones"><i class="'+(r.state==='comfy'?'g':(r.state==='dict'?'d':''))+'" style="width:'+pct+'%"></i>'+
+             '<span class="tick'+(okDict?' on':'')+'" style="left:'+Math.round(READY_DICT*100)+'%"></span>'+
+             '<span class="tick'+(okComfy?' on':'')+'" style="left:'+Math.round(READY_COMFY*100)+'%"></span></div>'+
+           '<div class="mc-miles"><span class="ms'+(okDict?' on':'')+'">'+msDict+'</span>'+
+             '<span class="ms'+(okComfy?' on':'')+'">'+msComfy+'</span></div>'+
            '<div class="mc-sub">'+r.words.done+' / '+r.words.total+' '+(es?'palabras del menú':'menu words')+'</div>'+
            '<div class="mc-goal">'+v.sub+'</div>'+
-           '<button class="aim-btn'+(aimed?' on':'')+'" data-aim="'+g.id+'">'+aimLbl+'</button>'+
+           '<button class="aim-btn'+(aimed?' on':'')+(alvl>=2?' on2':'')+'" data-aim="'+g.id+'">'+aimLbl+'</button>'+
          '</div>';
     });
     h+='</div>';
@@ -3511,7 +3544,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
          (box<4) so they actually surface today and can take their one daily box-step.
          Moderate bias — enough to guarantee they show up, not enough to drown the rest. */
       if(aimS){ var aimDue=setIdx.filter(function(i){return aimS[pool[i].jp] && (box[pool[i].jp]||0)<4;});
-        if(aimDue.length && Math.random()<AIM_REVIEW_BIAS) useIdx=aimDue; }
+        if(aimDue.length && Math.random()<aimReviewBias()) useIdx=aimDue; }
       var target=weightedPick(pool,box,useIdx,rsess.recent||[]);
       var distSrc=(readable.length>=6?readable:all).filter(function(i){return i!==target;});
       shuffle(distSrc); var opts=shuffle(distSrc.slice(0,5).concat([target]));
@@ -3538,7 +3571,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       if(aimS){
         var aimUnseen=unseen.filter(function(i){return aimS[pool[i].jp];});
         var aimInFlight=seenSet.filter(function(i){return aimS[pool[i].jp] && (box[pool[i].jp]||0)<WORD_PROMOTE_AT;}).length;
-        if(aimUnseen.length && aimInFlight<AIM_RESERVE){
+        if(aimUnseen.length && aimInFlight<aimReserve()){
           var ta=aimUnseen[Math.floor(Math.random()*aimUnseen.length)];
           rsess.q={target:ta,mode:"teach",relearn:false,opts:[],answered:false,picked:-1};
           setTimeout(function(){speak(pool[ta].jp);},250); return; }
@@ -3549,7 +3582,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       if(unseen.length && (inFlight < _cap || seenSet.length===0)){
         var tn;
         if(aimS){ var aimU=unseen.filter(function(i){return aimS[pool[i].jp];});
-          if(aimU.length && Math.random()<AIM_BIAS) tn=aimU[Math.floor(Math.random()*aimU.length)]; }
+          if(aimU.length && Math.random()<aimBias()) tn=aimU[Math.floor(Math.random()*aimU.length)]; }
         if(tn===undefined) tn=unseen[Math.floor(Math.random()*unseen.length)];
         rsess.q={target:tn,mode:"teach",relearn:false,opts:[],answered:false,picked:-1};
         setTimeout(function(){speak(pool[tn].jp);},250); return; }
