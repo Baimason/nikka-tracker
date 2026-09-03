@@ -620,7 +620,16 @@
   .ss-sub{font-size:12px;color:var(--ink-soft);margin-top:1px}
   .ss-slider{display:flex;align-items:center;gap:10px}
   .ss-slider input[type=range]{flex:1;accent-color:var(--shu)}
-</style>
+
+  /* N5 progress bar — línea muda que revela % · N5 al tocar (auto-oculta) */
+  .n5-wrap{position:relative;margin:2px 0 20px;padding:20px 0 6px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .n5-track{height:4px;background:var(--ink);opacity:.14;border-radius:2px;overflow:hidden}
+  .n5-track i{display:block;height:100%;width:0;background:var(--shu);border-radius:2px;transition:width .6s ease}
+  .n5-tip{position:absolute;left:0;right:0;top:0;display:flex;justify-content:space-between;
+    font-family:var(--display-font);font-weight:800;font-size:12px;letter-spacing:.14em;color:var(--shu);
+    opacity:0;transform:translateY(4px);transition:opacity .28s ease,transform .28s ease;pointer-events:none}
+  .n5-wrap.show .n5-tip{opacity:1;transform:translateY(0)}
+  </style>
 
 <div class="wrap">
   <header>
@@ -1416,14 +1425,14 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       html+='<div class="stop '+st+'"><div class="rail"><div class="dot"></div><div class="bar"></div></div>'+
         '<div class="rt"><div class="lbl">'+t(n.lbl)+'</div><div class="ds">'+t(n.ds)+'</div></div>'+badge+'</div>';});
     html+='</div>';
-    html+='<div class="sec-h mincho">'+t("Last 4 weeks")+'</div>'+calendarHTML();
+    html+='<div class="sec-h mincho">'+t("Last 4 weeks")+'</div>'+calendarHTML()+n5BarHTML();
     html+='<div class="sec-h mincho">'+t("All resources")+'</div><div class="res">'+
       resLink(LINKS.hira,"Hiragana")+resLink(LINKS.kata,"Katakana")+resLink(LINKS.anki,t("Install Anki"))+
       resLink(LINKS.ankiweb,"AnkiWeb")+resLink(LINKS.kaishi,t("Kaishi deck"))+resLink(LINKS.taekim,t("Grammar (Tae Kim)"))+
       resLink(LINKS.hello,"HelloTalk")+'</div>';
     html+=dataPanelHTML();
     app.innerHTML=html;
-    bindMain();
+    bindMain(); bindN5Bar();
   }
 
   /* =========================================================================
@@ -2649,6 +2658,45 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     {jp:"いつつ",romaji:"itsutsu",es:"cinco (cosas)",en:"five (things)",emoji:""}
   ];
   var WORD_POOL=(function(){ var seen={},out=[]; EXTRA_WORDS.forEach(function(o){ if(!seen[o.jp]){seen[o.jp]=1;out.push({jp:o.jp,romaji:o.romaji,es:o.es,en:o.en,emoji:(EMOJI[o.jp]||"")});} }); for(var k in WORDS){ WORDS[k].forEach(function(o){ if(!seen[o.w]){ seen[o.w]=1; out.push({jp:o.w,romaji:o.r,en:o.m,es:(MEANINGS_ES[o.m]||o.m),emoji:(EMOJI[o.w]||"")}); } }); } MORE_WORDS.forEach(function(o){ if(!seen[o.jp]){ seen[o.jp]=1; out.push({jp:o.jp,romaji:o.romaji,es:o.es,en:o.en,emoji:(EMOJI[o.jp]||"")}); } }); N5_WORDS.forEach(function(o){ if(!seen[o.jp]){ seen[o.jp]=1; out.push({jp:o.jp,romaji:o.romaji,es:o.es,en:o.en,emoji:(o.emoji||EMOJI[o.jp]||"")}); } }); N5_WORDS2.forEach(function(o){ if(!seen[o.jp]){ seen[o.jp]=1; out.push({jp:o.jp,romaji:o.romaji,es:o.es,en:o.en,emoji:(o.emoji||EMOJI[o.jp]||"")}); } }); return out; })();
+
+  /* ===================== N5 PROGRESS — barra hacia N5 =====================
+     Denominador fijo y honesto: 665 lecturas N5 + 79 kanji (lista Waller/
+     tanos.co.uk, CC-BY, formas corregidas con JMdict; NO existe lista oficial
+     de N5 — es el estándar de facto de la comunidad). Membresía por lectura
+     kana. Segundo énfasis de la app: sin juego apuntado, N5 es el target por
+     defecto del aim (ver aimWordSet). La barra compone 4 patas; la gramática
+     queda cerca de 0 hasta que exista el motor del Stage 6 = techo honesto.
+     No agrega estado persistido: todo se deriva del SRS que ya existe. */
+  var N5_READINGS=new Set(["あう","あお","あおい","あか","あかい","あかるい","あき","あく","あける","あげる","あさ","あさごはん","あさって","あし","あした","あそこ","あそぶ","あたたかい","あたま","あたらしい","あちら","あつい","あっち","あと","あなた","あに","あね","あの","アパート","あびる","あぶない","あまい","あまり","あめ","あらう","ある","あるく","あれ","いい","よい","いいえ","いう","いえ","いかが","いく","いくつ","いくら","いけ","いしゃ","いす","いそがしい","いたい","いち","いちにち","いちばん","いつ","いつか","いっしょ","いつつ","いつも","いぬ","いま","いみ","いもうと","いや","いりぐち","いる","いれる","いろ","いろいろ","うえ","うしろ","うすい","うた","うたう","うまれる","うみ","うる","うるさい","うわぎ","え","えいが","えいがかん","えいご","ええ","えき","エレベーター","えんぴつ","おいしい","おおい","おおきい","おおきな","おおぜい","おかあさん","おかし","おかね","おきる","おく","おくさん","おさけ","おさら","おじいさん","おしえる","おじさん","おす","おそい","おちゃ","おてあらい","おとうさん","おとうと","おとこ","おとこのこ","おととい","おととし","おとな","おなか","おなじ","おにいさん","おねえさん","おばあさん","おばさん","おふろ","おべんとう","おぼえる","おまわりさん","おもい","おもしろい","およぐ","おりる","おわる","おんがく","おんな","おんなのこ","がいこく","がいこくじん","かいしゃ","かいだん","かいもの","かう","かえす","かえる","かかる","かぎ","かく","がくせい","かける","かさ","かす","かぜ","かぞく","かた","がっこう","カップ","かてい","かど","かばん","かびん","かみ","カメラ","かようび","からい","からだ","かりる","かるい","カレー","カレンダー","かわ","かわいい","かんじ","き","きいろ","きいろい","きえる","きく","きた","ギター","きたない","きっさてん","きって","きっぷ","きのう","きゅう","く","ぎゅうにく","ぎゅうにゅう","きょう","きょうしつ","きょうだい","きょねん","きらい","きる","きれい","キロ","キログラム","キロメートル","ぎんこう","きんようび","くすり","ください","くだもの","くち","くつ","くつした","くに","くもり","くもる","くらい","クラス","グラム","くる","くるま","くろ","くろい","けいかん","けさ","けす","けっこう","けっこん","げつようび","げんかん","げんき","ご","こうえん","こうさてん","こうちゃ","こうばん","こえ","コート","コーヒー","ここ","ごご","ここのか","ここのつ","ごぜん","こたえる","こちら","こっち","コップ","ことし","ことば","こども","この","ごはん","コピーする","こまる","これ","こんげつ","こんしゅう","こんな","こんばん","さあ","さいふ","さかな","さき","さく","さくぶん","さす","ざっし","さとう","さむい","さらいねん","さん","さんぽする","し","よん","しお","しかし","じかん","しごと","じしょ","しずか","した","しち","なな","しつもん","じてんしゃ","じどうしゃ","しぬ","じびき","じぶん","しまる","しめる","じゃ","じゃあ","しゃしん","シャツ","シャワー","じゅう とお","じゅぎょう","しゅくだい","じょうず","じょうぶ","しょうゆ","しょくどう","しる","しろ","しろい","しんぶん","すいようび","すう","スカート","すき","すくない","すぐに","すこし","すずしい","ストーブ","スプーン","スポーツ","ズボン","すむ","スリッパ","する","すわる","せ","せいと","セーター","せっけん","せびろ","せまい","ゼロ","せん","せんげつ","せんしゅう","せんせい","せんたく","ぜんぶ","そうじする","そうして","そして","そこ","そちら","そっち","そと","その","そば","そら","それ","それから","それでは","だいがく","たいしかん","だいじょうぶ","だいすき","たいせつ","だいどころ","たいへん","たかい","たくさん","タクシー","だす","たつ","たて","たてもの","たのしい","たのむ","たばこ","たぶん","たべもの","たべる","たまご","だれ","だれか","たんじょうび","だんだん","ちいさい","ちいさな","ちかい","ちがう","ちかく","ちかてつ","ちず","ちゃいろ","ちゃわん","ちょうど","ちょっと","ついたち","つかう","つかれる","つぎ","つく","つくえ","つくる","つける","つとめる","つまらない","つめたい","つよい","て","テープ","テーブル","テープレコーダー","でかける","てがみ","できる","でぐち","テスト","では","デパート","でも","でる","テレビ","てんき","でんき","でんしゃ","でんわ","と","ドア","トイレ","どう","どうして","どうぞ","どうぶつ","どうも","とおい","とおか","ときどき","とけい","どこ","ところ","とし","としょかん","どちら","どっち","とても","どなた","となり","どの","とぶ","とまる","ともだち","どようび","とり","とりにく","とる","どれ","ナイフ","なか","ながい","なく","なくす","なぜ","なつ","なつやすみ","など","ななつ","なのか","なまえ","ならう","ならぶ","ならべる","なる","なん","なに","に","にぎやか","にく","にし","にちようび","にもつ","ニュース","にわ","ぬぐ","ぬるい","ネクタイ","ねこ","ねる","ノート","のぼる","のみもの","のむ","のる","は","パーティー","はい","はいざら","はいる","はがき","はく","はこ","はし","はじまる","はじめ","はじめて","はしる","バス","バター","はたち","はたらく","はち","はつか","はな","はなし","はなす","はやい","はる","はれ","はれる","はん","ばん","パン","ハンカチ","ばんごう","ばんごはん","はんぶん","ひがし","ひく","ひくい","ひこうき","ひだり","ひと","ひとつ","ひとつき","ひとり","ひま","ひゃく","びょういん","びょうき","ひる","ひるごはん","ひろい","フィルム","ふうとう","プール","フォーク","ふく","ふたつ","ぶたにく","ふたり","ふつか","ふとい","ふゆ","ふる","ふるい","ふろ","ぶんしょう","ページ","へた","ベッド","ペット","へや","へん","ペン","べんきょうする","べんり","ぼうし","ボールペン","ほか","ポケット","ほしい","ポスト","ほそい","ボタン","ホテル","ほん","ほんだな","ほんとう","まいあさ","まいげつ","まいつき","まいしゅう","まいにち","まいねん","まいとし","まいばん","まえ","まがる","まずい","また","まだ","まち","まつ","まっすぐ","マッチ","まど","まるい","まん","まんねんひつ","みがく","みぎ","みじかい","みず","みせ","みせる","みち","みっか","みっつ","みどり","みなさん","みなみ","みみ","みる","みんな","むいか","むこう","むずかしい","むっつ","むら","め","メートル","めがね","もう","もういちど","もくようび","もつ","もっと","もの","もん","もんだい","やおや","やさい","やさしい","やすい","やすみ","やすむ","やっつ","やま","やる","ゆうがた","ゆうはん","ゆうびんきょく","ゆうべ","ゆうめい","ゆき","ゆく","ゆっくりと","ようか","ようふく","よく","よこ","よっか","よっつ","よぶ","よむ","よる","よわい","らいげつ","らいしゅう","らいねん","ラジオ","ラジカセ","ラジオカセット","りっぱ","りゅうがくせい","りょうしん","りょうり","りょこう","れい","れいぞうこ","レコード","レストラン","れんしゅうする","ろうか","ろく","ワイシャツ","わかい","わかる","わすれる","わたくし","わたし","わたす","わたる","わるい","より","ほう"]);
+  var N5_KANJI=new Set("日一国人年大十二本中長出三時行見月後前生五間上東四今金九入学高円子外八六下来気小七山話女北午百書先名川千水半男西電校語土木聞食車何南万毎白天母火右読友左休父雨".split(""));
+  var N5_VOCAB_TOTAL=665, N5_KANJI_TOTAL=79, N5_GRAMMAR_TOTAL=80;
+  var N5_W={kana:0.15,vocab:0.30,kanji:0.20,gram:0.35};
+  var _n5WordSet=null;
+  function n5WordSet(){ if(_n5WordSet)return _n5WordSet; var m={};
+    for(var i=0;i<WORD_POOL.length;i++){ var jp=WORD_POOL[i].jp; if(N5_READINGS.has(jp))m[jp]=1; }
+    _n5WordSet=m; return m; }
+  function n5KanaPillar(){ var k=ensureKana(), keys=BASE_KEYS.concat(DAK_KEYS), tot=keys.length*2, s=0;
+    keys.forEach(function(r){ if((k.box[r]||0)>=4)s++; if((k.kbox[r]||0)>=4)s++; }); return tot?s/tot:0; }
+  function n5VocabPillar(){ var b=ensureWords().box,n=0; for(var jp in b){ if((b[jp]||0)>=4&&N5_READINGS.has(jp))n++; }
+    return Math.min(1,n/N5_VOCAB_TOTAL); }
+  function n5KanjiPillar(){ var L=ensureKanji().learned||{},n=0; for(var ch in L){ if(L[ch]&&N5_KANJI.has(ch))n++; }
+    return Math.min(1,n/N5_KANJI_TOTAL); }
+  function n5GramPillar(){ if(typeof PHRASES==='undefined')return 0; var b=ensurePhrases().box,pats={},n=0;
+    for(var i=0;i<PHRASES.length;i++){ var p=PHRASES[i]; if(p.pattern && (b[p.jp]||0)>=4) pats[p.pattern]=1; }
+    for(var k in pats)n++; return Math.min(1,n/N5_GRAMMAR_TOTAL); }
+  function n5Progress(){ var w=N5_W;
+    var v=n5KanaPillar()*w.kana + n5VocabPillar()*w.vocab + n5KanjiPillar()*w.kanji + n5GramPillar()*w.gram;
+    return Math.max(0,Math.min(1,v)); }
+  function n5BarHTML(){ var pct=Math.round(n5Progress()*100);
+    return '<div class="n5-wrap" id="n5bar" role="button" tabindex="0" aria-label="N5" data-pct="'+pct+'">'
+      +'<div class="n5-tip"><span class="n5-pct">'+pct+'%</span><span class="n5-goal">N5</span></div>'
+      +'<div class="n5-track"><i style="width:'+pct+'%"></i></div></div>'; }
+  var _n5TipT=null;
+  function n5Reveal(el){ if(!el)return; el.classList.add('show');
+    if(_n5TipT)clearTimeout(_n5TipT); _n5TipT=setTimeout(function(){ el.classList.remove('show'); },4000); }
+  function bindN5Bar(){ var el=document.getElementById('n5bar'); if(!el)return;
+    el.addEventListener('click',function(){ n5Reveal(el); });
+    el.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); n5Reveal(el); } }); }
   
   /* =========================================================================
      READINESS — "¿Qué puedo jugar?"  (playable-games ladder)
@@ -2788,7 +2836,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function aimBias(){ return aimLevel()>=2?AIM_BIAS2:AIM_BIAS; }
   function aimReviewBias(){ return aimLevel()>=2?AIM_REVIEW_BIAS2:AIM_REVIEW_BIAS; }
   function aimedGame(){ if(!state||!state.aim)return null; for(var i=0;i<GAMES.length;i++)if(GAMES[i].id===state.aim)return GAMES[i]; return null; }
-  function aimWordSet(){ var g=aimedGame(); if(!g)return null; var m={}; (g.words||[]).forEach(function(w){m[w.jp]=1;}); return m; }
+  function aimWordSet(){ var g=aimedGame(); if(g){ var m={}; (g.words||[]).forEach(function(w){m[w.jp]=1;}); return m; } return (typeof n5WordSet==='function')?n5WordSet():null; }
   function aimPhraseSet(){ var g=aimedGame(); if(!g||typeof OPENINGS==='undefined')return null; var o=OPENINGS[g.id]; if(!o)return null; var m={}; (o.phrases||[]).forEach(function(x){m[x.jp]=1;}); return m; }
   function aimSetForPool(pool){ return (typeof PHRASES!=='undefined'&&pool===PHRASES)?aimPhraseSet():aimWordSet(); }
   function setAim(id){
