@@ -746,6 +746,52 @@
     ba:["ば","バ"],bi:["び","ビ"],bu:["ぶ","ブ"],be:["べ","ベ"],bo:["ぼ","ボ"],
     pa:["ぱ","パ"],pi:["ぴ","ピ"],pu:["ぷ","プ"],pe:["ぺ","ペ"],po:["ぽ","ポ"]
   };
+  /* YŌON 拗音 — contracted sounds: an -i kana + a small ya/yu/yo fused into ONE
+     mora with its own sound (きょ = "kyo", NOT ki+yo). Voiced ones (ja/gya/bya/pya)
+     ride on the dakuten kana, so they're only taught after dakuten. Keyed by romaji
+     so they reuse the exact same SRS boxes / glyph()/ isLearned machinery as base kana. */
+  var KANA_YOON = {
+    kya:["きゃ","キャ"],kyu:["きゅ","キュ"],kyo:["きょ","キョ"],
+    sha:["しゃ","シャ"],shu:["しゅ","シュ"],sho:["しょ","ショ"],
+    cha:["ちゃ","チャ"],chu:["ちゅ","チュ"],cho:["ちょ","チョ"],
+    nya:["にゃ","ニャ"],nyu:["にゅ","ニュ"],nyo:["にょ","ニョ"],
+    hya:["ひゃ","ヒャ"],hyu:["ひゅ","ヒュ"],hyo:["ひょ","ヒョ"],
+    mya:["みゃ","ミャ"],myu:["みゅ","ミュ"],myo:["みょ","ミョ"],
+    rya:["りゃ","リャ"],ryu:["りゅ","リュ"],ryo:["りょ","リョ"],
+    gya:["ぎゃ","ギャ"],gyu:["ぎゅ","ギュ"],gyo:["ぎょ","ギョ"],
+    ja:["じゃ","ジャ"],ju:["じゅ","ジュ"],jo:["じょ","ジョ"],
+    bya:["びゃ","ビャ"],byu:["びゅ","ビュ"],byo:["びょ","ビョ"],
+    pya:["ぴゃ","ピャ"],pyu:["ぴゅ","ピュ"],pyo:["ぴょ","ピョ"]
+  };
+  var YOON_KEYS=Object.keys(KANA_YOON);
+  var YOON_VOICED={gya:1,gyu:1,gyo:1,ja:1,ju:1,jo:1,bya:1,byu:1,byo:1,pya:1,pyu:1,pyo:1};
+  var SMALL_YA="ゃゅょャュョ";
+  var CHOON_MARK="ー";
+  /* glyph(2 chars) -> {romaji, script} for tokenizing yōon out of a word */
+  var YOON_REV=(function(){ var m={}; for(var r in KANA_YOON){ m[KANA_YOON[r][0]]={romaji:r,script:"hira"}; m[KANA_YOON[r][1]]={romaji:r,script:"kata"}; } return m; })();
+  function isYoonRomaji(r){ return !!KANA_YOON[r]; }
+  /* Decompose a yōon into its taught pieces (base -i kana + the small kana). */
+  function yoonParts(romaji,script){ var g=KANA_YOON[romaji]; if(!g)return null; var gg=g[script==="kata"?1:0]; var base=gg.charAt(0),small=gg.charAt(1); var br=(typeof KANA_REV!=="undefined"&&KANA_REV[base])?KANA_REV[base].romaji:base; return {glyph:gg,base:base,small:small,baseRomaji:br}; }
+  /* Tokenize a kana string into reading UNITS (the honest reading is per-unit, not
+     per-character). This is what stops wordReadable() from silently skipping the
+     small kana: きょう -> [yoon きょ][base う]; きって -> [base き][sokuon][base て];
+     コーヒー -> [base コ][choon][base ヒ][choon]. */
+  function readUnits(str){
+    var out=[],i=0,n=str.length;
+    while(i<n){
+      var ch=str.charAt(i), nx=(i+1<n)?str.charAt(i+1):"";
+      if(nx && SMALL_YA.indexOf(nx)>=0){
+        var pair=ch+nx, y=YOON_REV[pair];
+        if(y){ out.push({kind:"yoon",romaji:y.romaji,script:y.script,ch:pair}); i+=2; continue; }
+      }
+      if(ch==="っ"||ch==="ッ"){ out.push({kind:"sokuon",ch:ch}); i++; continue; }
+      if(ch===CHOON_MARK){ out.push({kind:"choon",ch:ch}); i++; continue; }
+      var e=(typeof KANA_REV!=="undefined")?KANA_REV[ch]:null;
+      if(e){ out.push({kind:"base",romaji:e.romaji,script:e.script,ch:ch}); i++; continue; }
+      out.push({kind:"other",ch:ch}); i++;
+    }
+    return out;
+  }
   // reward words (each contains the target kana) — curated for everyday frequency + reading
   var WORDS = {
     a:[{w:"あさ",r:"asa",m:"morning"},{w:"あたま",r:"atama",m:"head"},{w:"あお",r:"ao",m:"blue"},{w:"あめ",r:"ame",m:"rain"}],
@@ -914,6 +960,11 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       if(es) return bg+" ("+base+") + la marca "+sym+" → "+g+" ("+romaji+"). "+(mark==="p"?"El circulito":"Las dos rayitas")+" cambian el sonido.";
       return bg+" ("+base+") + the "+sym+" mark → "+g+" ("+romaji+"). "+(mark==="p"?"The little circle":"The two dashes")+" voice the sound.";
     }
+    if(isYoonRomaji(romaji)){
+      var yp=yoonParts(romaji,script),g2=glyph(romaji,script);
+      if(es) return yp.base+" ("+yp.baseRomaji+") + "+yp.small+" chiquito → "+g2+" ('"+romaji+"'). Es UN solo sonido y una sola mora — no se lee '"+yp.baseRomaji+"-"+yp.small+"'.";
+      return yp.base+" ("+yp.baseRomaji+") + small "+yp.small+" → "+g2+" ('"+romaji+"'). It's ONE sound, one mora — not '"+yp.baseRomaji+"-"+yp.small+"'.";
+    }
     if(script==="kata"){
       var hg=glyph(romaji,"hira");
       if(es) return glyph(romaji,"kata")+" es '"+romaji+"' en katakana — mismo sonido que "+hg+".";
@@ -922,7 +973,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var m=MNEM[romaji];
     return m?(es?m.es:m.en):((es?"El sonido ":"The sound ")+"'"+romaji+"'.");
   }
-  var ALL = {}; BASE_KEYS.forEach(function(k){ALL[k]=KANA_BASE[k];}); DAK_KEYS.forEach(function(k){ALL[k]=KANA_DAKUTEN[k];});
+  var ALL = {}; BASE_KEYS.forEach(function(k){ALL[k]=KANA_BASE[k];}); DAK_KEYS.forEach(function(k){ALL[k]=KANA_DAKUTEN[k];}); YOON_KEYS.forEach(function(k){ALL[k]=KANA_YOON[k];});
   function glyph(romaji,script){ var p=ALL[romaji]; return p?p[script==="kata"?1:0]:romaji; }
   function pickWord(r){ var a=WORDS[r]; return (a&&a.length)?a[Math.floor(Math.random()*a.length)]:null; }
 
@@ -989,7 +1040,11 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     if(typeof k.scope.kdak!=="boolean")k.scope.kdak=false;
     if(!k.scope.hira&&!k.scope.kata)k.scope.hira=true;
     if(!k.level)k.level=k.scope.kata?3:(k.scope.hdak?2:1);
-    if(k.level>4)k.level=4;
+    /* one-time remap: old 4-level ladder (…katakana=3, katakana+dak=4) → new 6-level
+       ladder that inserts yōon (…hira yōon=3, katakana=4, kata+dak=5, kata yōon=6).
+       Guarded by k.yoonSchema so new-scheme levels are never touched again. */
+    if(!k.yoonSchema){ if(k.level===4)k.level=5; else if(k.level===3)k.level=4; k.yoonSchema=true; }
+    if(k.level>6)k.level=6; if(k.level<1)k.level=1;
     /* one-time katakana split: give katakana its own box, and re-teach it
        (old builds auto-marked all katakana as "learned" sharing hiragana's SRS) */
     if(!k.kbox){
@@ -999,6 +1054,15 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       k.kataIntroSeen=false;
     }
     if(typeof k.kataIntroSeen!=="boolean")k.kataIntroSeen=false;
+    /* yōon in scope once its level is reached; sokuon/chōon are rule-gates unlocked
+       by their own teach cards (default off so their words stay honestly locked until taught) */
+    if(typeof k.scope.hyoon!=="boolean")k.scope.hyoon=(k.level>=3);
+    if(typeof k.scope.kyoon!=="boolean")k.scope.kyoon=(k.level>=6);
+    if(typeof k.scope.sokuon!=="boolean")k.scope.sokuon=false;
+    if(typeof k.scope.choon!=="boolean")k.scope.choon=false;
+    if(typeof k.sokuonSeen!=="boolean")k.sokuonSeen=!!k.scope.sokuon;
+    if(typeof k.choonSeen!=="boolean")k.choonSeen=!!k.scope.choon;
+    if(typeof k.yoonIntroSeen!=="boolean")k.yoonIntroSeen=false;
     if(typeof k.declined!=="boolean")k.declined=false;
     /* seed stageMax from what already exists so old installs don't "forget"
        stages they had unlocked before this field existed */
@@ -1060,7 +1124,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   }
 
   var justLeveled=0;
-  var LEVEL_NAMES={1:"Hiragana",2:"Hiragana + dakuten",3:"Katakana",4:"Katakana + dakuten"};
+  var LEVEL_NAMES={1:"Hiragana",2:"Hiragana + dakuten",3:"Hiragana + yōon",4:"Katakana",5:"Katakana + dakuten",6:"Katakana + yōon"};
   var TIER_LABEL=["Streak","Solid","Great","Perfect"];
   function dayTier(done){ if(done>=100)return 3; if(done>=50)return 2; if(done>=30)return 1; if(done>=15)return 0; return -1; }
   var STAGES=[
@@ -1121,28 +1185,39 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     }
     return T;
   }
-  function levelScope(l){ if(l>=4)return {hira:true,kata:true,hdak:true,kdak:true}; if(l===3)return {hira:true,kata:true,hdak:true,kdak:false}; if(l===2)return {hira:true,kata:false,hdak:true,kdak:false}; return {hira:true,kata:false,hdak:false,kdak:false}; }
-  function nextTarget(l){ return l===1?"dakuten":l===2?"katakana":l===3?"katakana dakuten":null; }
+  /* Character scope per level (rule flags sokuon/choon live outside this and are
+     preserved by the Object.assign in levelUp, so leveling never wipes them). */
+  function levelScope(l){ var s={hira:true,kata:false,hdak:false,kdak:false,hyoon:false,kyoon:false};
+    if(l>=2)s.hdak=true; if(l>=3)s.hyoon=true; if(l>=4)s.kata=true; if(l>=5)s.kdak=true; if(l>=6)s.kyoon=true; return s; }
+  function nextTarget(l){ return l===1?"dakuten":l===2?"yōon":l===3?"katakana":l===4?"katakana dakuten":l===5?"katakana yōon":null; }
   function masteryOf(keys){ var k=ensureKana(),solid=0; keys.forEach(function(r){ if((k.box[r]||0)>=4)solid++; }); return {solid:solid,total:keys.length,ratio:keys.length?solid/keys.length:0}; }
-  function canAdvance(){ var k=ensureKana(); if(k.level>=4)return false; var box=k.level<=2?k.box:k.kbox, set=k.level===2?DAK_KEYS:BASE_KEYS; return setRatio(box,set)>=0.9; }
-  function levelUp(){ var k=ensureKana(); if(k.level>=4)return; k.level++; k.scope=levelScope(k.level); k.declined=false; justLeveled=k.level; Persistence.save(state); render(); }
+  /* set to master before each unlock: L1 hira base, L2 hira dak, L3 hira yōon,
+     L4 kata base, L5 kata dak (L6 kata yōon is the top, nothing after). */
+  function levelSet(l){ return (l===1||l===4)?BASE_KEYS:(l===2||l===5)?DAK_KEYS:YOON_KEYS; }
+  function canAdvance(){ var k=ensureKana(); if(k.level>=6)return false; var box=k.level<=3?k.box:k.kbox; return setRatio(box,levelSet(k.level))>=0.9; }
+  function levelUp(){ var k=ensureKana(); if(k.level>=6)return; k.level++; k.scope=Object.assign({},k.scope,levelScope(k.level)); k.declined=false; justLeveled=k.level; Persistence.save(state); render(); }
   function declineLevel(){ var k=ensureKana(); k.declined=true; Persistence.save(state); render(); }
   function boxFor(sc){ var k=ensureKana(); return sc==="kata"?k.kbox:k.box; }
-  function poolForScript(sc){ var k=ensureKana(),keys=BASE_KEYS.slice(); if(sc==="kata"?k.scope.kdak:k.scope.hdak)keys=keys.concat(DAK_KEYS); return keys; }
+  function poolForScript(sc){ var k=ensureKana(),keys=BASE_KEYS.slice(); if(sc==="kata"?k.scope.kdak:k.scope.hdak)keys=keys.concat(DAK_KEYS); if(sc==="kata"?k.scope.kyoon:k.scope.hyoon)keys=keys.concat(YOON_KEYS); return keys; }
   function activePairs(){ var k=ensureKana(),p=[];
-    if(k.scope.hira){ BASE_KEYS.forEach(function(r){p.push({script:"hira",romaji:r});}); if(k.scope.hdak)DAK_KEYS.forEach(function(r){p.push({script:"hira",romaji:r});}); }
-    if(k.scope.kata){ BASE_KEYS.forEach(function(r){p.push({script:"kata",romaji:r});}); if(k.scope.kdak)DAK_KEYS.forEach(function(r){p.push({script:"kata",romaji:r});}); }
+    if(k.scope.hira){ BASE_KEYS.forEach(function(r){p.push({script:"hira",romaji:r});}); if(k.scope.hdak)DAK_KEYS.forEach(function(r){p.push({script:"hira",romaji:r});}); if(k.scope.hyoon)YOON_KEYS.forEach(function(r){p.push({script:"hira",romaji:r});}); }
+    if(k.scope.kata){ BASE_KEYS.forEach(function(r){p.push({script:"kata",romaji:r});}); if(k.scope.kdak)DAK_KEYS.forEach(function(r){p.push({script:"kata",romaji:r});}); if(k.scope.kyoon)YOON_KEYS.forEach(function(r){p.push({script:"kata",romaji:r});}); }
     if(!p.length)BASE_KEYS.forEach(function(r){p.push({script:"hira",romaji:r});});
     return p; }
-  function teachOrder(p){ return (p.script==="kata"?2:0)+(DEVOICE[p.romaji]?1:0); }
+  /* teach order within a script: base (0) → dakuten (1) → yōon (2); katakana +3 */
+  function teachOrder(p){ var tier=isYoonRomaji(p.romaji)?2:(DEVOICE[p.romaji]?1:0); return (p.script==="kata"?3:0)+tier; }
   function isKataStr(s){ return /[\u30A0-\u30FF]/.test(s); }
   function pickWordFor(r,script,mode){ return pickExample(r, script==="kata"?"kata":"hira", mode||"teach"); }
-  function advMsg(lvl){ return lvl===1?t("You've got hiragana down! Ready to add dakuten?"):lvl===2?t("Dakuten mastered! Ready for katakana?"):t("Katakana down! Ready for katakana dakuten?"); }
+  function advMsg(lvl){ var es=getLang()==="es";
+    var ES={1:"¡Dominás el hiragana! ¿Listo para sumar el dakuten?",2:"¡Dominaste el dakuten! ¿Listo para el yōon (きゃ, しゃ, りょ…)?",3:"¡Yōon dominado! ¿Vamos con el katakana?",4:"¡Katakana listo! ¿Sumamos su dakuten?",5:"¡Katakana dakuten listo! Último paso: el yōon del katakana."};
+    var EN={1:"You've got hiragana down! Ready to add dakuten?",2:"Dakuten mastered! Ready for yōon (きゃ, しゃ, りょ…)?",3:"Yōon mastered! Ready for katakana?",4:"Katakana down! Add its dakuten?",5:"Katakana dakuten down! Last step: katakana yōon."};
+    return (es?ES:EN)[lvl]||""; }
   function curKanaScript(){ return curStage()>=3?"kata":"hira"; }
   function scriptMastery(script){
     var k=ensureKana(),box=script==="kata"?k.kbox:k.box;
-    var dakReached=script==="kata"?(k.level>=4):(k.level>=2);
-    var keys=BASE_KEYS.slice(); if(dakReached)keys=keys.concat(DAK_KEYS);
+    var dakReached=script==="kata"?(k.level>=5):(k.level>=2);
+    var yoonReached=script==="kata"?(k.level>=6):(k.level>=3);
+    var keys=BASE_KEYS.slice(); if(dakReached)keys=keys.concat(DAK_KEYS); if(yoonReached)keys=keys.concat(YOON_KEYS);
     var sum=0,solid=0,weak=[];
     keys.forEach(function(r){var b=Math.min(5,box[r]||0);sum+=b;if(b>=4)solid++;else weak.push({r:r,b:b});});
     weak.sort(function(a,b){return a.b-b.b;});
@@ -1209,7 +1284,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var lvl=k.level, canAdv=canAdvance(), nxt=nextTarget(lvl);
     var lvlBlock='<div class="level-row"><span class="lvl-tag">'+t("Level")+' '+lvl+'</span><span class="lvl-name">'+LEVEL_NAMES[lvl]+'</span></div>';
     if(canAdv&&nxt){
-      if(!k.declined){ lvlBlock+='<div class="advance"><div class="adv-msg">'+(lvl===1?t("You've got hiragana down! Ready to add dakuten?"):t("Dakuten mastered! Ready for katakana?"))+'</div><div class="adv-btns"><button class="adv-yes" id="lvUp">'+t("Yes, unlock")+'</button><button class="adv-no" id="lvNo">'+t("Not yet")+'</button></div></div>'; }
+      if(!k.declined){ lvlBlock+='<div class="advance"><div class="adv-msg">'+advMsg(lvl)+'</div><div class="adv-btns"><button class="adv-yes" id="lvUp">'+t("Yes, unlock")+'</button><button class="adv-no" id="lvNo">'+t("Not yet")+'</button></div></div>'; }
       else { lvlBlock+='<button class="unlock-pill" id="lvUp">'+t("Unlock")+' '+nxt+' →</button>'; }
     }
     var wasLeveled=justLeveled; if(justLeveled){ lvlBlock='<div class="leveled">'+t("済 Unlocked!")+' '+t("Level")+' '+justLeveled+' · '+LEVEL_NAMES[justLeveled]+'</div>'+lvlBlock; justLeveled=0; }
@@ -1496,9 +1571,12 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function dueLeech(){ var k=ensureKana(),best=null,bv=LEECH_AT-1; activePairs().forEach(function(p){ if(!isLearned(p.script,p.romaji))return; var v=k.leech[schedKey(p.script,p.romaji)]||0; if(v>bv){bv=v;best=p;} }); return best; }
 
   /* --- Confusable-aware distractors: bias the wrong options toward look-alikes --- */
+  /* yōon confusables: same romaji keys work for both scripts. The real confusion when
+     reading is the vowel inside a family (kya/kyu/kyo) plus the sh/ch/j mix. */
+  var YOON_CONFUSE=[["kya","kyu","kyo"],["sha","shu","sho"],["cha","chu","cho"],["nya","nyu","nyo"],["hya","hyu","hyo"],["mya","myu","myo"],["rya","ryu","ryo"],["gya","gyu","gyo"],["ja","ju","jo"],["bya","byu","byo"],["pya","pyu","pyo"],["sha","cha","ja"],["shu","chu","ju"],["sho","cho","jo"]];
   var CONFUSE_GROUPS={
-    hira:[["a","o"],["ki","sa","chi"],["nu","me"],["ne","re","wa"],["ru","ro"],["ha","ho","ma"],["ma","mo"],["i","ri"],["ta","na"],["su","mu"]],
-    kata:[["shi","tsu","so","n"],["ku","ta","ke","ka"],["u","wa","ku","fu"],["no","me","nu"],["chi","te"],["ra","fu"],["ko","ro"],["a","ma"],["ha","ho"],["na","me"]]
+    hira:[["a","o"],["ki","sa","chi"],["nu","me"],["ne","re","wa"],["ru","ro"],["ha","ho","ma"],["ma","mo"],["i","ri"],["ta","na"],["su","mu"]].concat(YOON_CONFUSE),
+    kata:[["shi","tsu","so","n"],["ku","ta","ke","ka"],["u","wa","ku","fu"],["no","me","nu"],["chi","te"],["ra","fu"],["ko","ro"],["a","ma"],["ha","ho"],["na","me"]].concat(YOON_CONFUSE)
   };
   var CONFUSE=(function(){ var out={hira:{},kata:{}}; ["hira","kata"].forEach(function(sc){ CONFUSE_GROUPS[sc].forEach(function(g){ g.forEach(function(r){ out[sc][r]=out[sc][r]||{}; g.forEach(function(o){ if(o!==r)out[sc][r][o]=1; }); }); }); }); return out; })();
   function distractors(target,script,n){
@@ -1535,6 +1613,17 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var canTeach=learningPoolCount()<LEARN_POOL;
     if(canTeach && !k.kataIntroSeen && unlearned.some(function(p){return p.script==="kata";})){
       sess.mode="teach"; sess.teach={intro:"kata"}; sess.q=null; return;
+    }
+    /* teach the yōon concept once, right before the first yōon character */
+    if(canTeach && (k.scope.hyoon||k.scope.kyoon) && !k.yoonIntroSeen && unlearned.some(function(p){return isYoonRomaji(p.romaji);})){
+      sess.mode="teach"; sess.teach={intro:"yoon"}; sess.q=null; return;
+    }
+    /* reading-rule cards, once hiragana yōon are learned (small-kana concept in place) */
+    if(canTeach && k.level>=3 && !k.sokuonSeen && !unlearned.some(function(p){return p.script==="hira"&&isYoonRomaji(p.romaji);})){
+      sess.mode="teach"; sess.teach={intro:"sokuon"}; sess.q=null; return;
+    }
+    if(canTeach && k.level>=3 && k.sokuonSeen && !k.choonSeen){
+      sess.mode="teach"; sess.teach={intro:"choon"}; sess.q=null; return;
     }
     if(unlearned.length && canTeach){
       unlearned.sort(function(a,b){return teachOrder(a)-teachOrder(b);});
@@ -1744,7 +1833,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   }
   function gotIt(){
     var k=ensureKana(),c=sess.teach; if(!c)return;
-    if(c.intro){ if(c.intro==="kata")k.kataIntroSeen=true; Persistence.save(state); buildQuestion(); renderDrill(); return; }
+    if(c.intro){ if(c.intro==="kata")k.kataIntroSeen=true; else if(c.intro==="yoon")k.yoonIntroSeen=true; else if(c.intro==="sokuon"){k.sokuonSeen=true;k.scope.sokuon=true;} else if(c.intro==="choon"){k.choonSeen=true;k.scope.choon=true;} Persistence.save(state); buildQuestion(); renderDrill(); return; }
     if(c.relearn)clearLeech(c.script,c.romaji);
     k.learned[learnedKey(c.script,c.romaji)]=true; sess.newCount++;
     sess.force={romaji:c.romaji,script:c.script};
@@ -1761,6 +1850,27 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
         '<div class="teach-mn">'+body+'</div></div>'+
         '<div class="d-actions"><button class="d-next" id="tGot">'+t("Got it →")+'</button></div>';
     }
+    if(c.intro==="yoon"){
+      var yb=es?"Los <b>yōon</b> (拗音) juntan un kana de la columna -i (き, し, ち, り…) con un <b>ゃ / ゅ / ょ</b> chiquito para formar <b>un solo sonido</b>: き + ゃ = きゃ (<i>kya</i>), no 'ki-ya'. El segundo kana va más pequeño — por eso es fácil reconocerlos.":"<b>Yōon</b> (拗音) fuse an -i kana (き, し, ち, り…) with a small <b>ゃ / ゅ / ょ</b> into <b>one sound</b>: き + ゃ = きゃ (<i>kya</i>), not 'ki-ya'. The second kana is written smaller, which makes them easy to spot.";
+      return '<div class="teach"><div class="teach-tag">'+(es?"Sonidos nuevos":"New sounds")+'</div>'+
+        '<div class="teach-glyph mincho">きゃ</div><div class="teach-rom">yōon</div>'+
+        '<div class="teach-mn">'+yb+'</div></div>'+
+        '<div class="d-actions"><button class="d-next" id="tGot">'+t("Got it →")+'</button></div>';
+    }
+    if(c.intro==="sokuon"){
+      var sb=es?"La <b>っ</b> chiquita (<b>sokuon</b>) no suena sola: <b>duplica la consonante siguiente</b> y mete una pausa corta. きって = '<i>kit-te</i>' (no 'ki-te'); ちょっと = '<i>chot-to</i>'. Ojo: la っ es más pequeña que la つ normal.":"The small <b>っ</b> (<b>sokuon</b>) has no sound of its own: it <b>doubles the next consonant</b> and adds a short pause. きって = '<i>kit-te</i>' (not 'ki-te'); ちょっと = '<i>chot-to</i>'. Note: っ is smaller than a normal つ.";
+      return '<div class="teach"><div class="teach-tag">'+(es?"Regla de lectura":"Reading rule")+'</div>'+
+        '<div class="teach-glyph mincho">っ</div><div class="teach-rom">'+(es?"consonante doble":"double consonant")+'</div>'+
+        '<div class="teach-mn">'+sb+'</div></div>'+
+        '<div class="d-actions"><button class="d-next" id="tGot">'+t("Got it →")+'</button></div>';
+    }
+    if(c.intro==="choon"){
+      var cb=es?"<b>Vocal larga</b> (<b>chōon</b>): en katakana la marca <b>ー</b> alarga la vocal de antes — コーヒー = '<i>kōhī</i>', ラーメン = '<i>rāmen</i>'. En hiragana se alarga repitiendo la vocal (おう, ええ). El sonido se sostiene el doble.":"<b>Long vowels</b> (<b>chōon</b>): in katakana the mark <b>ー</b> lengthens the vowel before it — コーヒー = '<i>kōhī</i>', ラーメン = '<i>rāmen</i>'. In hiragana you lengthen by repeating the vowel (おう, ええ). You hold the sound about twice as long.";
+      return '<div class="teach"><div class="teach-tag">'+(es?"Regla de lectura":"Reading rule")+'</div>'+
+        '<div class="teach-glyph mincho">ー</div><div class="teach-rom">'+(es?"vocal larga":"long vowel")+'</div>'+
+        '<div class="teach-mn">'+cb+'</div></div>'+
+        '<div class="d-actions"><button class="d-next" id="tGot">'+t("Got it →")+'</button></div>';
+    }
     var g=glyph(c.romaji,c.script),word=pickWordFor(c.romaji,c.script);
     var h='<div class="teach"><div class="teach-tag">'+t(c.relearn?"Let's review this one":"New character")+'</div>';
     var dv=DEVOICE[c.romaji];
@@ -1773,6 +1883,15 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
          '</div>';
       h+='<div class="teach-mn big">'+bg+' ('+base+') + '+sym+' → '+g+' ('+c.romaji+')</div>';
       h+='<div class="teach-mn-sub">'+(es?((dv[1]==="p"?"El círculo ゜ cambia el sonido":"Las dos rayitas ゛ sonorizan el sonido")+": de "+base+" pasa a "+c.romaji+"."):((dv[1]==="p"?"The circle ゜ changes the sound":"The two dashes ゛ voice the sound")+": "+base+" becomes "+c.romaji+"."))+'</div>';
+    } else if(isYoonRomaji(c.romaji)){
+      var yp=yoonParts(c.romaji,c.script);
+      h+='<div class="teach-compare">'+
+         '<div class="tc-side"><div class="tc-glyph mincho">'+yp.base+'</div><div class="tc-rom">'+yp.baseRomaji+'</div></div>'+
+         '<div class="tc-arrow">+ '+yp.small+' →</div>'+
+         '<div class="tc-side new"><div class="tc-glyph mincho">'+g+'</div><div class="tc-rom">'+c.romaji+'</div><button class="d-spk sm" id="tSpk" aria-label="Play sound">🔊</button></div>'+
+         '</div>';
+      h+='<div class="teach-mn big">'+yp.base+' ('+yp.baseRomaji+') + '+yp.small+' → '+g+' ('+c.romaji+')</div>';
+      h+='<div class="teach-mn-sub">'+mnemonicFor(c.script,c.romaji)+'</div>';
     } else {
       h+='<div class="teach-glyph mincho">'+g+'</div><div class="teach-rom">'+c.romaji+'</div>'+
          '<button class="d-spk" id="tSpk" aria-label="Play sound">🔊</button>'+
@@ -2675,7 +2794,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function n5WordSet(){ if(_n5WordSet)return _n5WordSet; var m={};
     for(var i=0;i<WORD_POOL.length;i++){ var jp=WORD_POOL[i].jp; if(N5_READINGS.has(jp))m[jp]=1; }
     _n5WordSet=m; return m; }
-  function n5KanaPillar(){ var k=ensureKana(), keys=BASE_KEYS.concat(DAK_KEYS), tot=keys.length*2, s=0;
+  function n5KanaPillar(){ var k=ensureKana(), keys=BASE_KEYS.concat(DAK_KEYS).concat(YOON_KEYS), tot=keys.length*2, s=0;
     keys.forEach(function(r){ if((k.box[r]||0)>=4)s++; if((k.kbox[r]||0)>=4)s++; }); return tot?s/tot:0; }
   function n5VocabPillar(){ var b=ensureWords().box,n=0; for(var jp in b){ if((b[jp]||0)>=4&&N5_READINGS.has(jp))n++; }
     return Math.min(1,n/N5_VOCAB_TOTAL); }
@@ -3000,8 +3119,20 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   }
   var KANA_REV=(function(){ var m={}; for(var r in KANA_BASE){m[KANA_BASE[r][0]]={romaji:r,script:"hira"};m[KANA_BASE[r][1]]={romaji:r,script:"kata"};} for(var r2 in KANA_DAKUTEN){m[KANA_DAKUTEN[r2][0]]={romaji:r2,script:"hira"};m[KANA_DAKUTEN[r2][1]]={romaji:r2,script:"kata"};} return m; })();
   var SMALL_KANA="ぁぃぅぇぉっゃゅょゎァィゥェォッャュョヮー・、。 ";
+  function sokuonReady(){ return !!ensureKana().scope.sokuon; }
+  function choonReady(){ return !!ensureKana().scope.choon; }
+  /* A word is readable only when EVERY reading unit has been genuinely taught:
+     base/dakuten kana learned, yōon learned as its own unit, and the sokuon (っ) /
+     chōon (ー) reading rules unlocked. This is what closes the old false-positive
+     hole where きょう passed just by knowing き and う. */
   function wordReadable(jp){
-    for(var i=0;i<jp.length;i++){ var ch=jp.charAt(i); if(SMALL_KANA.indexOf(ch)>=0)continue; var e=KANA_REV[ch]; if(!e)continue; if(!isLearned(e.script,e.romaji))return false; }
+    var u=readUnits(jp);
+    for(var i=0;i<u.length;i++){ var x=u[i];
+      if(x.kind==="base"||x.kind==="yoon"){ if(!isLearned(x.script,x.romaji))return false; }
+      else if(x.kind==="sokuon"){ if(!sokuonReady())return false; }
+      else if(x.kind==="choon"){ if(!choonReady())return false; }
+      /* "other" = small vowels / punctuation → not gated (see extended-katakana note) */
+    }
     return true;
   }
   function readableIdx(pool){ var out=[]; for(var i=0;i<pool.length;i++) if(wordReadable(pool[i].jp)) out.push(i); return out; }
@@ -3172,7 +3303,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     function push(w,r,m,es){
       if(!w||seen[w])return; seen[w]=1;
       var sc=isKataStr(w)?"kata":"hira", map=IDX[sc], obj={w:w,r:r,m:m,es:es||null}, used={};
-      for(var i=0;i<w.length;i++){ var ch=w.charAt(i); if(SMALL_KANA.indexOf(ch)>=0)continue; var e=KANA_REV[ch]; if(e&&e.script===sc&&!used[e.romaji]){ used[e.romaji]=1; (map[e.romaji]=map[e.romaji]||[]).push(obj); } }
+      readUnits(w).forEach(function(un){ if((un.kind==="base"||un.kind==="yoon")&&un.script===sc&&!used[un.romaji]){ used[un.romaji]=1; (map[un.romaji]=map[un.romaji]||[]).push(obj); } });
     }
     var k;
     for(k in WORDS) WORDS[k].forEach(function(o){ push(o.w,o.r,o.m,MEANINGS_ES[o.m]); });
@@ -3191,7 +3322,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     mode=mode||"teach"; var target=glyph(key,script);
     var scored=bag.map(function(o){
       var unknown=0,len=0;
-      for(var i=0;i<o.w.length;i++){ var ch=o.w.charAt(i); if(SMALL_KANA.indexOf(ch)>=0)continue; var e=KANA_REV[ch]; if(!e)continue; len++; if(!isLearned(e.script,e.romaji))unknown++; }
+      readUnits(o.w).forEach(function(un){ if(un.kind==="base"||un.kind==="yoon"){ len++; if(!isLearned(un.script,un.romaji))unknown++; } else if(un.kind==="sokuon"){ len++; if(!sokuonReady())unknown++; } else if(un.kind==="choon"){ len++; if(!choonReady())unknown++; } });
       var pos=o.w.indexOf(target); if(pos<0)pos=9;
       var score=0;
       if(mode==="reward") score += (unknown===0?30:-unknown*6);
