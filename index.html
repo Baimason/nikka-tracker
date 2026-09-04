@@ -420,6 +420,33 @@
   .aim-btn{margin-top:8px;font-size:12px;font-weight:700;padding:5px 12px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
   .aim-btn.on{background:var(--shu);color:#fff;border-color:var(--shu)}
   .aim-btn.on2{background:var(--shu-deep);border-color:var(--shu-deep);box-shadow:0 0 0 2px rgba(178,55,38,.2)}
+  /* ---- ficha de soporte (cheat sheet por juego) ---- */
+  .grow-btns{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .ficha-btn{margin-top:8px;font-size:12px;font-weight:700;padding:5px 12px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
+  .ficha-btn:active{background:var(--box-hover)}
+  .fx-intro{font-size:13px;color:var(--ink-soft);margin:2px 0 6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .fx-legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--ink-soft);margin:2px 0 6px}
+  .fx-legend b{font-style:normal;margin-right:2px}
+  .fx-legend b.ok,.fx-mk.ok{color:var(--green)}
+  .fx-legend b.prog,.fx-mk.prog{color:var(--shu)}
+  .fx-legend b.lock{opacity:.7}
+  .fx-cat{font-family:var(--display-font);font-weight:700;font-size:13px;color:var(--ink);margin:16px 0 8px;padding-bottom:3px;border-bottom:1.5px solid var(--ink)}
+  .fx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+  .fx-chip{text-align:center;font:inherit;background:var(--card);border:1.5px solid var(--line);border-radius:4px;padding:9px 6px 8px;cursor:pointer;display:flex;flex-direction:column;gap:2px;min-width:0}
+  .fx-chip.mastered{border-color:var(--green)}
+  .fx-chip.progress{border-color:var(--shu)}
+  .fx-chip.locked{opacity:.55}
+  .fx-chip:active{transform:translateY(1px)}
+  .fx-hd{display:flex;align-items:center;justify-content:center;gap:4px}
+  .fx-em{font-size:15px}
+  .fx-jp{font-size:19px;color:var(--ink);line-height:1.2;word-break:break-all}
+  .fx-jp rt{font-size:9px}
+  .fx-mk{font-size:12px;font-weight:700;color:var(--ink-faint)}
+  .fx-mk.lock{font-size:11px}
+  .fx-ro{font-size:11px;color:var(--ink-soft)}
+  .fx-gl{font-size:11px;color:var(--ink);line-height:1.15}
+  .fx-hint{font-size:9px;color:var(--shu);opacity:.85}
+  .fx-foot{font-size:11px;color:var(--ink-soft);margin:22px 0 6px;line-height:1.5;border-top:1px dashed var(--rule,#d8cfc0);padding-top:12px}
   .d-aim{font-size:12px;font-weight:700;color:var(--shu);margin-bottom:4px}
   .mastery-card h3{font-family: var(--display-font);font-weight:700;font-size:17px;margin:0}
   .mc-pct{font-family: var(--display-font);font-weight:800;font-size:28px;color:var(--shu);line-height:1}
@@ -661,6 +688,7 @@
 <div class="sheet-scrim hidden" id="sheetScrim"></div>
 <div class="settings-sheet hidden" id="settingsSheet"><div class="ss-inner" id="ssInner"></div></div>
 <div class="custom hidden" id="custom"><div class="custom-inner" id="customInner"></div></div>
+<div class="custom hidden" id="ficha"><div class="custom-inner" id="fichaInner"></div></div>
 
 <script>
 (function(){
@@ -2860,30 +2888,30 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       mode:{ es:'kana + diccionario',          en:'kana + dictionary' },
       // kana:{hira:85,kata:85}  // optional per-game override (else default)
       words:[
-        {jp:'たたかう',romaji:'tatakau',es:'pelear',en:'fight',emoji:'⚔️'},
-        {jp:'どうぐ',romaji:'dougu',es:'objetos (mochila)',en:'items',emoji:'🎒'},
-        {jp:'ポケモン',romaji:'pokemon',es:'pokémon',en:'pokémon',emoji:'🔴'},
-        {jp:'にげる',romaji:'nigeru',es:'huir',en:'run',emoji:'🏃'},
-        {jp:'わざ',romaji:'waza',es:'movimiento',en:'move',emoji:'✨'},
-        {jp:'つかう',romaji:'tsukau',es:'usar',en:'use',emoji:'🖐️'},
-        {jp:'こうげき',romaji:'kougeki',es:'ataque',en:'attack',emoji:'💥'},
-        {jp:'ぼうぎょ',romaji:'bougyo',es:'defensa',en:'defense',emoji:'🛡️'},
-        {jp:'すばやさ',romaji:'subayasa',es:'velocidad',en:'speed',emoji:'💨'},
-        {jp:'とくしゅ',romaji:'tokushu',es:'especial',en:'special',emoji:'🔮'},
-        {jp:'かいふく',romaji:'kaifuku',es:'curar',en:'heal',emoji:'💊'},
-        {jp:'レベル',romaji:'reberu',es:'nivel',en:'level',emoji:'🔼'},
-        {jp:'なまえ',romaji:'namae',es:'nombre',en:'name',emoji:'🏷️'},
-        {jp:'ずかん',romaji:'zukan',es:'pokédex (enciclopedia)',en:'pokédex',emoji:'📖'},
-        {jp:'モンスターボール',romaji:'monsutaabooru',es:'poké ball',en:'poké ball',emoji:'⚪'},
-        {jp:'キズぐすり',romaji:'kizugusuri',es:'poción (キズ+ぐすり)',en:'potion',emoji:'🧴'},
-        {jp:'はい',romaji:'hai',es:'sí',en:'yes',emoji:'✅'},
-        {jp:'いいえ',romaji:'iie',es:'no',en:'no',emoji:'❌'},
-        {jp:'つづきから',romaji:'tsuzukikara',es:'continuar',en:'continue',emoji:'▶️'},
-        {jp:'さいしょから',romaji:'saishokara',es:'empezar de nuevo',en:'new game',emoji:'🆕'},
-        {jp:'せつめい',romaji:'setsumei',es:'instrucciones',en:'instructions',emoji:'📋'},
-        {jp:'ポケットモンスター',romaji:'pokettomonsutaa',es:'Pocket Monsters (título)',en:'Pocket Monsters',emoji:'🎮'},
-        {jp:'じてんしゃ',romaji:'jitensha',es:'bicicleta',en:'bike',emoji:'🚲'},
-        {jp:'どく',romaji:'doku',es:'veneno (estado)',en:'poison',emoji:'☠️'}
+        {jp:'たたかう',cat:'combat',romaji:'tatakau',es:'pelear',en:'fight',emoji:'⚔️'},
+        {jp:'どうぐ',cat:'menu',romaji:'dougu',es:'objetos (mochila)',en:'items',emoji:'🎒'},
+        {jp:'ポケモン',cat:'world',romaji:'pokemon',es:'pokémon',en:'pokémon',emoji:'🔴'},
+        {jp:'にげる',cat:'combat',romaji:'nigeru',es:'huir',en:'run',emoji:'🏃'},
+        {jp:'わざ',cat:'combat',romaji:'waza',es:'movimiento',en:'move',emoji:'✨'},
+        {jp:'つかう',cat:'menu',romaji:'tsukau',es:'usar',en:'use',emoji:'🖐️'},
+        {jp:'こうげき',cat:'combat',romaji:'kougeki',es:'ataque',en:'attack',emoji:'💥'},
+        {jp:'ぼうぎょ',cat:'combat',romaji:'bougyo',es:'defensa',en:'defense',emoji:'🛡️'},
+        {jp:'すばやさ',cat:'stats',romaji:'subayasa',es:'velocidad',en:'speed',emoji:'💨'},
+        {jp:'とくしゅ',cat:'combat',romaji:'tokushu',es:'especial',en:'special',emoji:'🔮'},
+        {jp:'かいふく',cat:'combat',romaji:'kaifuku',es:'curar',en:'heal',emoji:'💊'},
+        {jp:'レベル',cat:'stats',romaji:'reberu',es:'nivel',en:'level',emoji:'🔼'},
+        {jp:'なまえ',cat:'menu',romaji:'namae',es:'nombre',en:'name',emoji:'🏷️'},
+        {jp:'ずかん',cat:'menu',romaji:'zukan',es:'pokédex (enciclopedia)',en:'pokédex',emoji:'📖'},
+        {jp:'モンスターボール',cat:'item',romaji:'monsutaabooru',es:'poké ball',en:'poké ball',emoji:'⚪'},
+        {jp:'キズぐすり',cat:'item',romaji:'kizugusuri',es:'poción (キズ+ぐすり)',en:'potion',emoji:'🧴'},
+        {jp:'はい',cat:'menu',romaji:'hai',es:'sí',en:'yes',emoji:'✅'},
+        {jp:'いいえ',cat:'menu',romaji:'iie',es:'no',en:'no',emoji:'❌'},
+        {jp:'つづきから',cat:'menu',romaji:'tsuzukikara',es:'continuar',en:'continue',emoji:'▶️'},
+        {jp:'さいしょから',cat:'menu',romaji:'saishokara',es:'empezar de nuevo',en:'new game',emoji:'🆕'},
+        {jp:'せつめい',cat:'menu',romaji:'setsumei',es:'instrucciones',en:'instructions',emoji:'📋'},
+        {jp:'ポケットモンスター',cat:'world',romaji:'pokettomonsutaa',es:'Pocket Monsters (título)',en:'Pocket Monsters',emoji:'🎮'},
+        {jp:'じてんしゃ',cat:'item',romaji:'jitensha',es:'bicicleta',en:'bike',emoji:'🚲'},
+        {jp:'どく',cat:'status',romaji:'doku',es:'veneno (estado)',en:'poison',emoji:'☠️'}
       ]
     },
     {
@@ -2892,29 +2920,29 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       mode:{ es:'kana + diccionario',          en:'kana + dictionary' },
       words:[
         /* sistema / menú */
-        {jp:'はい',romaji:'hai',es:'sí',en:'yes',emoji:'✅'},
-        {jp:'いいえ',romaji:'iie',es:'no',en:'no',emoji:'❌'},
-        {jp:'セーブ',romaji:'seebu',es:'guardar',en:'save',emoji:'💾'},
-        {jp:'つづきから',romaji:'tsuzukikara',es:'continuar',en:'continue',emoji:'▶️'},
-        {jp:'アイテム',romaji:'aitemu',es:'objeto (menú)',en:'item',emoji:'🎒'},
+        {jp:'はい',cat:'menu',romaji:'hai',es:'sí',en:'yes',emoji:'✅'},
+        {jp:'いいえ',cat:'menu',romaji:'iie',es:'no',en:'no',emoji:'❌'},
+        {jp:'セーブ',cat:'menu',romaji:'seebu',es:'guardar',en:'save',emoji:'💾'},
+        {jp:'つづきから',cat:'menu',romaji:'tsuzukikara',es:'continuar',en:'continue',emoji:'▶️'},
+        {jp:'アイテム',cat:'menu',romaji:'aitemu',es:'objeto (menú)',en:'item',emoji:'🎒'},
         /* ítems — verificados (guías Shogakukan / tabla interna DX / Zelda Wiki) */
-        {jp:'けん',romaji:'ken',es:'espada',en:'sword',emoji:'⚔️'},        /* 剣 — a veces se lee つるぎ */
-        {jp:'たて',romaji:'tate',es:'escudo',en:'shield',emoji:'🛡️'},        /* 盾 */
-        {jp:'ばくだん',romaji:'bakudan',es:'bomba',en:'bomb',emoji:'💣'},      /* 爆弾 */
-        {jp:'ゆみや',romaji:'yumiya',es:'arco y flechas',en:'bow & arrow',emoji:'🏹'}, /* 弓矢 */
-        {jp:'ブーメラン',romaji:'buumeran',es:'boomerang',en:'boomerang',emoji:'🪃'},
-        {jp:'オカリナ',romaji:'okarina',es:'ocarina',en:'ocarina',emoji:'🎶'},
-        {jp:'フックショット',romaji:'fukkushotto',es:'gancho',en:'hookshot',emoji:'🪝'},
-        {jp:'かぎ',romaji:'kagi',es:'llave',en:'key',emoji:'🔑'},          /* 鍵 */
-        {jp:'マップ',romaji:'mappu',es:'mapa',en:'map',emoji:'🗺️'},
-        {jp:'コンパス',romaji:'konpasu',es:'brújula',en:'compass',emoji:'🧭'},
-        {jp:'ハート',romaji:'haato',es:'corazón (vida)',en:'heart',emoji:'❤️'},
-        {jp:'ルピー',romaji:'rupii',es:'rupia',en:'rupee',emoji:'💎'},
-        {jp:'ようせい',romaji:'yousei',es:'hada',en:'fairy',emoji:'🧚'},      /* 妖精 */
-        {jp:'たからばこ',romaji:'takarabako',es:'cofre del tesoro',en:'treasure chest',emoji:'🧰'}, /* 宝箱 */
-        {jp:'ダンジョン',romaji:'danjon',es:'mazmorra',en:'dungeon',emoji:'🏰'},
-        {jp:'リンク',romaji:'rinku',es:'Link (protagonista)',en:'Link',emoji:'🗡️'},
-        {jp:'マリン',romaji:'marin',es:'Marin (personaje)',en:'Marin',emoji:'👧'}
+        {jp:'けん',cat:'item',romaji:'ken',es:'espada',en:'sword',emoji:'⚔️'},        /* 剣 — a veces se lee つるぎ */
+        {jp:'たて',cat:'item',romaji:'tate',es:'escudo',en:'shield',emoji:'🛡️'},        /* 盾 */
+        {jp:'ばくだん',cat:'item',romaji:'bakudan',es:'bomba',en:'bomb',emoji:'💣'},      /* 爆弾 */
+        {jp:'ゆみや',cat:'item',romaji:'yumiya',es:'arco y flechas',en:'bow & arrow',emoji:'🏹'}, /* 弓矢 */
+        {jp:'ブーメラン',cat:'item',romaji:'buumeran',es:'boomerang',en:'boomerang',emoji:'🪃'},
+        {jp:'オカリナ',cat:'item',romaji:'okarina',es:'ocarina',en:'ocarina',emoji:'🎶'},
+        {jp:'フックショット',cat:'item',romaji:'fukkushotto',es:'gancho',en:'hookshot',emoji:'🪝'},
+        {jp:'かぎ',cat:'item',romaji:'kagi',es:'llave',en:'key',emoji:'🔑'},          /* 鍵 */
+        {jp:'マップ',cat:'item',romaji:'mappu',es:'mapa',en:'map',emoji:'🗺️'},
+        {jp:'コンパス',cat:'item',romaji:'konpasu',es:'brújula',en:'compass',emoji:'🧭'},
+        {jp:'ハート',cat:'item',romaji:'haato',es:'corazón (vida)',en:'heart',emoji:'❤️'},
+        {jp:'ルピー',cat:'item',romaji:'rupii',es:'rupia',en:'rupee',emoji:'💎'},
+        {jp:'ようせい',cat:'world',romaji:'yousei',es:'hada',en:'fairy',emoji:'🧚'},      /* 妖精 */
+        {jp:'たからばこ',cat:'item',romaji:'takarabako',es:'cofre del tesoro',en:'treasure chest',emoji:'🧰'}, /* 宝箱 */
+        {jp:'ダンジョン',cat:'world',romaji:'danjon',es:'mazmorra',en:'dungeon',emoji:'🏰'},
+        {jp:'リンク',cat:'people',romaji:'rinku',es:'Link (protagonista)',en:'Link',emoji:'🗡️'},
+        {jp:'マリン',cat:'people',romaji:'marin',es:'Marin (personaje)',en:'Marin',emoji:'👧'}
       ]
     },
     {
@@ -2923,24 +2951,24 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       mode: { es: 'N4 + vocabulario legal', en: 'N4 + legal vocabulary' },
       words: [
         /* Jerga de la corte */
-        {jp: 'さいばん', romaji: 'saiban', es: 'juicio', en: 'trial', emoji: '⚖️'},
-        {jp: 'べんごし', romaji: 'bengoshi', es: 'abogado defensor', en: 'defense attorney', emoji: '💼'},
-        {jp: 'けんじ', romaji: 'kenji', es: 'fiscal', en: 'prosecutor', emoji: '🍷'},
-        {jp: 'さいばんちょう', romaji: 'saibanchou', es: 'juez', en: 'judge', emoji: '👨‍⚖️'},
-        {jp: 'しょうこ', romaji: 'shouko', es: 'prueba / evidencia', en: 'evidence', emoji: '📁'},
-        {jp: 'しょうげん', romaji: 'shougen', es: 'testimonio', en: 'testimony', emoji: '🗣️'},
-        {jp: 'しょうにん', romaji: 'shounin', es: 'testigo', en: 'witness', emoji: '👁️'},
-        {jp: 'むじゅん', romaji: 'mujun', es: 'contradicción', en: 'contradiction', emoji: '❌'},
-        {jp: 'うそ', romaji: 'uso', es: 'mentira', en: 'lie', emoji: '🤥'},
+        {jp: 'さいばん', cat:'court',romaji: 'saiban', es: 'juicio', en: 'trial', emoji: '⚖️'},
+        {jp: 'べんごし', cat:'court',romaji: 'bengoshi', es: 'abogado defensor', en: 'defense attorney', emoji: '💼'},
+        {jp: 'けんじ', cat:'court',romaji: 'kenji', es: 'fiscal', en: 'prosecutor', emoji: '🍷'},
+        {jp: 'さいばんちょう', cat:'court',romaji: 'saibanchou', es: 'juez', en: 'judge', emoji: '👨‍⚖️'},
+        {jp: 'しょうこ', cat:'court',romaji: 'shouko', es: 'prueba / evidencia', en: 'evidence', emoji: '📁'},
+        {jp: 'しょうげん', cat:'court',romaji: 'shougen', es: 'testimonio', en: 'testimony', emoji: '🗣️'},
+        {jp: 'しょうにん', cat:'court',romaji: 'shounin', es: 'testigo', en: 'witness', emoji: '👁️'},
+        {jp: 'むじゅん', cat:'court',romaji: 'mujun', es: 'contradicción', en: 'contradiction', emoji: '❌'},
+        {jp: 'うそ', cat:'court',romaji: 'uso', es: 'mentira', en: 'lie', emoji: '🤥'},
         /* Jerga de crimen */
-        {jp: 'じけん', romaji: 'jiken', es: 'caso / incidente', en: 'case / incident', emoji: '🚨'},
-        {jp: 'はんにん', romaji: 'hannin', es: 'culpable / criminal', en: 'culprit', emoji: '👤'},
-        {jp: 'ひがいしゃ', romaji: 'higaisha', es: 'víctima', en: 'victim', emoji: '🩸'},
-        {jp: 'ひこくにん', romaji: 'hikokunin', es: 'acusado', en: 'defendant', emoji: '😨'},
-        {jp: 'ゆうざい', romaji: 'yuuzai', es: 'culpable (veredicto)', en: 'guilty', emoji: '🔨'},
-        {jp: 'むざい', romaji: 'muzai', es: 'inocente (veredicto)', en: 'not guilty', emoji: '🕊️'},
-        {jp: 'きおく', romaji: 'kioku', es: 'memoria / recuerdos', en: 'memory', emoji: '🧠'},
-        {jp: 'いと', romaji: 'ito', es: 'intención', en: 'intent', emoji: '💭'}
+        {jp: 'じけん', cat:'crime',romaji: 'jiken', es: 'caso / incidente', en: 'case / incident', emoji: '🚨'},
+        {jp: 'はんにん', cat:'crime',romaji: 'hannin', es: 'culpable / criminal', en: 'culprit', emoji: '👤'},
+        {jp: 'ひがいしゃ', cat:'crime',romaji: 'higaisha', es: 'víctima', en: 'victim', emoji: '🩸'},
+        {jp: 'ひこくにん', cat:'crime',romaji: 'hikokunin', es: 'acusado', en: 'defendant', emoji: '😨'},
+        {jp: 'ゆうざい', cat:'crime',romaji: 'yuuzai', es: 'culpable (veredicto)', en: 'guilty', emoji: '🔨'},
+        {jp: 'むざい', cat:'crime',romaji: 'muzai', es: 'inocente (veredicto)', en: 'not guilty', emoji: '🕊️'},
+        {jp: 'きおく', cat:'crime',romaji: 'kioku', es: 'memoria / recuerdos', en: 'memory', emoji: '🧠'},
+        {jp: 'いと', cat:'crime',romaji: 'ito', es: 'intención', en: 'intent', emoji: '💭'}
       ]
     }
     /* ── add more games here: paste an object with its own word list ── */
@@ -3050,12 +3078,96 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
              '<span class="ms'+(okComfy?' on':'')+'">'+msComfy+'</span></div>'+
            '<div class="mc-sub">'+r.words.done+' / '+r.words.total+' '+(es?'palabras del menú':'menu words')+'</div>'+
            '<div class="mc-goal">'+v.sub+'</div>'+
-           '<button class="aim-btn'+(aimed?' on':'')+(alvl>=2?' on2':'')+'" data-aim="'+g.id+'">'+aimLbl+'</button>'+
+           '<div class="grow-btns">'+
+             '<button class="aim-btn'+(aimed?' on':'')+(alvl>=2?' on2':'')+'" data-aim="'+g.id+'">'+aimLbl+'</button>'+
+             '<button class="ficha-btn" data-ficha="'+g.id+'">📖 '+(es?'Ficha':'Cheat sheet')+'</button>'+
+           '</div>'+
          '</div>';
     });
     h+='</div>';
     return h;
   }
+
+  /* =========================================================================
+     FICHA DE SOPORTE POR JUEGO — cheat sheet, NO diccionario genérico.
+     -------------------------------------------------------------------------
+     Un panel de referencia por juego: el vocabulario curado del menú agrupado
+     por categoría, cada palabra con su estado REAL de tu SRS. Es un "diccionario
+     acotado" al juego: honesto (refleja tu dominio, nunca un %), respeta
+     "solo lo ya aprendido" (marca 🔒 lo que aún no podés leer y explica por qué),
+     y NO agrega estado persistido (todo se deriva de ensureWords()/wordReadable()).
+     El texto dinámico (diálogo/historia) sigue siendo trabajo de un diccionario
+     externo (Jisho/Yomitan) — eso Nikka no lo clona; solo te sube la lectura
+     hasta que ese diccionario te sea usable. Nada más que tocar para sumar juegos:
+     el campo opcional .cat de cada palabra decide su grupo (sin cat -> "general"). */
+  var CAT_LABELS={
+    menu:{es:'Menús y sistema',en:'Menus & system'},
+    item:{es:'Objetos',en:'Items'},
+    combat:{es:'Combate',en:'Combat'},
+    stats:{es:'Estadísticas',en:'Stats'},
+    status:{es:'Estados',en:'Status'},
+    world:{es:'Mundo y lugares',en:'World & places'},
+    people:{es:'Personajes',en:'Characters'},
+    court:{es:'En la corte',en:'In court'},
+    crime:{es:'Crimen',en:'Crime'},
+    general:{es:'General',en:'General'}
+  };
+  function catLabel(c){ var o=CAT_LABELS[c]; return o?(getLang()==='es'?o.es:o.en):c; }
+  /* Estado honesto por palabra, derivado del SRS existente. */
+  function fichaState(jp){ var b=ensureWords().box[jp]||0;
+    if(b>=4) return 'mastered';                 /* dominada = correcta en 4 días distintos */
+    if(b>=1) return 'progress';                 /* vista, subiendo */
+    if(wordReadable(jp)) return 'readable';     /* podés sonarla, aún sin practicar */
+    return 'locked'; }                          /* su kana todavía no se aprendió */
+  function fichaGroups(g){ var order=[],map={};
+    (g.words||[]).forEach(function(w){ var c=w.cat||'general'; if(!map[c]){map[c]=[];order.push(c);} map[c].push(w); });
+    return {order:order,map:map}; }
+  function fichaChipHTML(w){
+    var es=getLang()==='es', st=fichaState(w.jp), gl=es?(w.es||w.en):(w.en||w.es);
+    var mark = st==='mastered'?'<span class="fx-mk ok">✓</span>'
+             : st==='progress'?'<span class="fx-mk prog">◐</span>'
+             : st==='locked'  ?'<span class="fx-mk lock">🔒</span>'
+             :                  '<span class="fx-mk">·</span>';
+    var em = w.emoji?('<span class="fx-em">'+w.emoji+'</span>'):'';
+    return '<button class="fx-chip '+st+'" data-say="'+w.jp+'">'+
+      '<div class="fx-hd">'+em+'<span class="fx-jp mincho">'+wordFormHTML(w)+'</span>'+mark+'</div>'+
+      '<div class="fx-ro">'+(w.romaji||'')+'</div>'+
+      '<div class="fx-gl">'+gl+'</div>'+
+      (st==='locked'?'<div class="fx-hint">'+(es?'aún no leés su kana':'kana not learned yet')+'</div>':'')+
+      '</button>';
+  }
+  var fichaGameId=null;
+  function renderFicha(){
+    var g=null,i; for(i=0;i<GAMES.length;i++) if(GAMES[i].id===fichaGameId) g=GAMES[i];
+    var inner=document.getElementById('fichaInner'); if(!g||!inner)return;
+    var es=getLang()==='es', r=gameReadiness(g), v=gameVerdict(r);
+    var prog=(g.words||[]).filter(function(w){return fichaState(w.jp)==='progress';}).length;
+    var h='<div class="d-sticky"><div class="d-head"><button class="d-close" id="fxClose">✕ '+t("Back")+'</button>'+
+          '<span class="cx-title mincho">📖 '+gamePick(g.name)+'</span></div></div>';
+    h+='<div class="fx-intro"><span class="grow-mode">'+gamePick(g.mode)+'</span> · '+
+        r.words.done+' / '+r.words.total+' '+(es?'dominadas':'mastered')+
+        (prog?(' · '+prog+(es?' en progreso':' in progress')):'')+
+        ' <span class="gbadge '+v.cls+'">'+v.badge+'</span></div>';
+    h+='<div class="fx-legend"><span><b class="ok">✓</b>'+(es?'dominada':'mastered')+'</span>'+
+        '<span><b class="prog">◐</b>'+(es?'en progreso':'in progress')+'</span>'+
+        '<span><b>·</b>'+(es?'legible':'readable')+'</span>'+
+        '<span><b class="lock">🔒</b>'+(es?'bloqueada':'locked')+'</span></div>';
+    var grp=fichaGroups(g);
+    grp.order.forEach(function(c){
+      h+='<div class="fx-cat">'+catLabel(c)+'</div><div class="fx-grid">';
+      grp.map[c].forEach(function(w){ h+=fichaChipHTML(w); });
+      h+='</div>';
+    });
+    h+='<div class="fx-foot">'+(es
+        ?'El diálogo y la historia no están acá: para eso usá un diccionario externo (Jisho, Yomitan). Nikka te sube la lectura hasta que ese diccionario te sea usable.'
+        :'Story dialogue lives elsewhere: use an external dictionary (Jisho, Yomitan) for that. Nikka raises your reading until that dictionary becomes usable.')+'</div>';
+    inner.innerHTML=h;
+    var c=document.getElementById('fxClose'); if(c)c.addEventListener('click',closeFicha);
+    inner.querySelectorAll('.fx-chip[data-say]').forEach(function(b){
+      b.addEventListener('click',function(){ speak(b.getAttribute('data-say')); }); });
+  }
+  function openFicha(id){ var el=document.getElementById('ficha'); if(!el)return; fichaGameId=id; el.classList.remove('hidden'); renderFicha(); try{window.scrollTo(0,0);}catch(e){} }
+  function closeFicha(){ var el=document.getElementById('ficha'); if(el)el.classList.add('hidden'); fichaGameId=null; }
 
   var readingEl=document.getElementById("reading"), readingInner=document.getElementById("readingInner");
   var rsess=null;
@@ -4625,6 +4737,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
 
     var wd=app.querySelector(".wotd[data-say]"); if(wd)wd.addEventListener("click",function(){speak(wd.getAttribute("data-say"));});
     app.querySelectorAll("[data-aim]").forEach(function(b){ b.addEventListener("click",function(){ setAim(b.getAttribute("data-aim")); }); });
+    app.querySelectorAll("[data-ficha]").forEach(function(b){ b.addEventListener("click",function(){ openFicha(b.getAttribute("data-ficha")); }); });
 
     // Conectar los botones de "Enfócate en" para lanzar el entrenamiento
     app.querySelectorAll(".focus-btn").forEach(function(btn){
