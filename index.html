@@ -2192,6 +2192,27 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     {jp:'とうきょうからですか',romaji:'toukyou kara desu ka',es:'¿sos de Tokio?',en:'are you from Tokyo?',parts:['とうきょう','から','ですか'],pattern:'q-from',note:'X から ですか = «¿sos de X?»'},
     {jp:'よろしくおねがいします',romaji:'yoroshiku onegaishimasu',es:'mucho gusto / encantado',en:'nice to meet you'},
     {jp:'おだいじに',romaji:'odaiji ni',es:'que te mejores',en:'take care, get well'},
+    // ===== Stage 9: formas verbales (mismas que en los textos de juego) =====
+    // ～た : pasado (verbos る = quitá る + た)
+    {jp:'ドアをあけた',romaji:'doa o aketa',es:'abrí la puerta',en:'opened the door',parts:['ドア','を','あけた'],pattern:'v-past',note:'あける→あけた: la ～た marca que ya pasó'},
+    {jp:'テレビをみた',romaji:'terebi o mita',es:'vi la tele',en:'watched TV',parts:['テレビ','を','みた'],pattern:'v-past',note:'みる→みた'},
+    {jp:'パンをたべた',romaji:'pan o tabeta',es:'comí pan',en:'ate bread',parts:['パン','を','たべた'],pattern:'v-past',note:'たべる→たべた'},
+    // ～ない : negativo
+    {jp:'テレビをみない',romaji:'terebi o minai',es:'no veo la tele',en:'don\u2019t watch TV',parts:['テレビ','を','みない'],pattern:'v-neg',note:'みる→みない: ～ない = no lo hace'},
+    {jp:'パンをたべない',romaji:'pan o tabenai',es:'no como pan',en:'don\u2019t eat bread',parts:['パン','を','たべない'],pattern:'v-neg',note:'たべる→たべない'},
+    {jp:'ドアをあけない',romaji:'doa o akenai',es:'no abro la puerta',en:'don\u2019t open the door',parts:['ドア','を','あけない'],pattern:'v-neg',note:'あける→あけない'},
+    // ～て ください : pedir / unir
+    {jp:'みてください',romaji:'mite kudasai',es:'mirá, por favor',en:'please look',parts:['みて','ください'],pattern:'v-te',note:'みる→みて + ください'},
+    {jp:'ドアをあけてください',romaji:'doa o akete kudasai',es:'abrí la puerta, por favor',en:'please open the door',parts:['ドア','を','あけて','ください'],pattern:'v-te',note:'あける→あけて + ください'},
+    {jp:'パンをたべてください',romaji:'pan o tabete kudasai',es:'comé pan, por favor',en:'please eat bread',parts:['パン','を','たべて','ください'],pattern:'v-te',note:'たべる→たべて + ください'},
+    // ～ている : acción en curso
+    {jp:'パンをたべている',romaji:'pan o tabete iru',es:'está comiendo pan',en:'is eating bread',parts:['パン','を','たべている'],pattern:'v-teiru',note:'～ている = acción en curso'},
+    {jp:'テレビをみている',romaji:'terebi o mite iru',es:'está viendo la tele',en:'is watching TV',parts:['テレビ','を','みている'],pattern:'v-teiru',note:'みる→みている'},
+    {jp:'にほんごをおしえている',romaji:'nihongo o oshiete iru',es:'está enseñando japonés',en:'is teaching Japanese',parts:['にほんご','を','おしえている'],pattern:'v-teiru',note:'おしえる→おしえている'},
+    // ～ことができる : poder hacer (la forma de los libros-tutorial)
+    {jp:'ほんをよむことができる',romaji:'hon o yomu koto ga dekiru',es:'puede leer libros',en:'can read books',parts:['ほん','を','よむ','ことができる'],pattern:'v-koto-dekiru',note:'verbo (forma dicc.) + ことができる = «poder ~». Cortés: ～ことができます'},
+    {jp:'ちずをみることができる',romaji:'chizu o miru koto ga dekiru',es:'puede ver el mapa',en:'can see the map',parts:['ちず','を','みる','ことができる'],pattern:'v-koto-dekiru',note:'みる + ことができる'},
+    {jp:'にほんごをはなすことができる',romaji:'nihongo o hanasu koto ga dekiru',es:'puede hablar japonés',en:'can speak Japanese',parts:['にほんご','を','はなす','ことができる'],pattern:'v-koto-dekiru',note:'はなす + ことができる'},
   ];
 
   /* =========================================================================
@@ -4029,7 +4050,12 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     {id:'loc-ni',    order:13, needs:['exist-iru'],intro:['に'],      mold:'｛lugar｝にいる／ある',      gloss:'«estar/haber en X» — に marca el lugar'},
     {id:'poss-no',   order:14, needs:['cop-da'],   intro:['の'],      mold:'｛A｝の｛B｝',              gloss:'«el B de A» / «mi B» — の conecta'},
     {id:'q-interr',  order:15, needs:['q-desu'],   intro:[],          mold:'｛qué／dónde／quién｝ですか', gloss:'preguntar con なん／どこ／だれ + ですか'},
-    {id:'q-from',    order:16, needs:['q-desu'],   intro:['から'],    mold:'｛lugar｝からですか',       gloss:'«¿de dónde?» / «¿sos de X?» — から marca el origen'}
+    {id:'q-from',    order:16, needs:['q-desu'],   intro:['から'],    mold:'｛lugar｝からですか',       gloss:'«¿de dónde?» / «¿sos de X?» — から marca el origen'},
+    {id:'v-past',        order:17, needs:['obj-wo'],           intro:[], mold:'｛cosa｝を｛verbo-た｝',    gloss:'«hizo V» — la ～た al final marca que YA pasó (verbos る: quitá る y poné た)'},
+    {id:'v-neg',         order:18, needs:['obj-wo'],           intro:[], mold:'｛cosa｝を｛verbo-ない｝',  gloss:'«no V» — ～ない = no lo hace (verbos る: quitá る y poné ない)'},
+    {id:'v-te',          order:19, needs:['v-past'],           intro:[], mold:'｛verbo-て｝ください',      gloss:'la ～て une acciones y sirve para pedir: «～て ください» = «hacé ~, por favor»'},
+    {id:'v-teiru',       order:20, needs:['v-te','exist-iru'], intro:[], mold:'｛verbo-て｝いる',          gloss:'«está V-ando» — ～ている = la acción está en curso ahora'},
+    {id:'v-koto-dekiru', order:21, needs:['obj-wo','exist-aru'],intro:[],mold:'｛verbo｝ことができる',      gloss:'«poder V» — verbo (forma diccionario) + ことができる. Cortés: ～ことができます'}
   ];
   var PATTERN_BY_ID=(function(){ var m={}; PATTERNS.forEach(function(p){m[p.id]=p;}); return m; })();
 
