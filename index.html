@@ -455,6 +455,7 @@
   .mc-goal{font-size:12px;color:var(--shu);font-weight:700;margin:2px 0 4px}
   .mc-verdict{font-size:13px;color:var(--ink);line-height:1.5;margin-top:8px}
   .mc-verdict.ok{color:var(--green);font-weight:600}
+  .mc-verdict.gap{color:var(--shu);font-weight:600}
   .weak-head{font-size:13px;color:var(--ink);margin-top:12px}
   .weak-head b{color:var(--shu);font-weight:800}
   .focus-all-btn{width:100%;margin-top:11px;font:inherit;font-weight:700;font-size:14px;color:var(--card);background:var(--shu);border:none;border-radius:3px;padding:11px;cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -1345,10 +1346,24 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       '</details></div>';
   }
   function masteryCardHTML(){
-    var script=curKanaScript(),m=scriptMastery(script),ratio=m.total?m.solid/m.total:0,ready=ratio>=0.9,close=ratio>=0.55,isKata=script==="kata";
+    /* Gap-aware: if an earlier rung (1-6) isn't solid, the card must speak for the
+       script that owns that gap — never bless a later script as "kana done". Kills
+       the false positive where someone who drilled katakana but skipped hiragana
+       yōon was told "you've got your kana, move to grammar". */
+    var gap=firstKanaGap();
+    var script=gap?(gap>=4?"kata":"hira"):curKanaScript();
+    var m=scriptMastery(script),ratio=m.total?m.solid/m.total:0,ready=ratio>=0.9,close=ratio>=0.55,isKata=script==="kata";
     var title=t(isKata?"Katakana mastery":"Hiragana mastery");
     var verdict,vcls="";
-    if(!m.solid){verdict=t("Do a few drills and your mastery shows up here.");}
+    if(gap){
+      var _ges=getLang()==="es",_rung=t(stageName(gap)),_rp=stagePct(gap);
+      verdict=(_ges
+        ?("Todavía no cerraste <b>"+_rung+"</b> ("+_rp+"%). Saltaste ese escalón — el kana no está terminado hasta afianzarlo, y la práctica diaria ya lo prioriza sola.")
+        :("You haven't locked in <b>"+_rung+"</b> yet ("+_rp+"%). You skipped that rung — kana isn't done until it's solid, and the daily drill already prioritizes it."))
+        +'<button class="focus-all-btn" data-fn="startDrill" style="margin-top:10px">'+(_ges?("Practicá "+_rung+" ahora →"):("Drill "+_rung+" now →"))+'</button>';
+      vcls="gap";
+    }
+    else if(!m.solid){verdict=t("Do a few drills and your mastery shows up here.");}
     else if(ready){ if(isKata){verdict=t("済 You've got your kana. It's logical to move on — make grammar + Anki your main focus and keep drills as warm-ups.");} else {verdict=t("済 Hiragana solid! Move on to katakana — keep hiragana as warm-up.");} vcls="ok";}
     else if(close){verdict=t("Almost there — a few more sessions and kana will feel automatic.");}
     else{verdict=t("Building your foundation — keep the daily drill going.");}
