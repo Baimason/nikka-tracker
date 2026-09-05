@@ -2275,6 +2275,19 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     {jp:'しごとをした',romaji:'shigoto o shita',es:'hice el trabajo',en:'I did the work',parts:['しごと','を','した'],pattern:'v-irregular',note:'する→した (irregular)'},
     {jp:'うちにきた',romaji:'uchi ni kita',es:'vine a casa',en:'I came home',parts:['うち','に','きた'],pattern:'v-irregular',note:'くる→きた (irregular)'},
     {jp:'がっこうへいった',romaji:'gakkou e itta',es:'fui a la escuela',en:'I went to school',parts:['がっこう','へ','いった'],pattern:'v-irregular',note:'いく→いった (excepcion)'},
+    // ===== Stage 9 bloque 8: cierre final (estado, necesidad, causa) =====
+    // ～てある : estado resultante (como かいてある en el juego)
+    {jp:'てがみがかいてある',romaji:'tegami ga kaite aru',es:'la carta esta escrita',en:'the letter is written',parts:['てがみ','が','かいてある'],pattern:'v-tearu',note:'かく→かいて + ある = quedo escrito'},
+    {jp:'ほんがおいてある',romaji:'hon ga oite aru',es:'el libro esta puesto ahi',en:'the book is placed there',parts:['ほん','が','おいてある'],pattern:'v-tearu',note:'おく→おいて + ある'},
+    {jp:'ドアがあけてある',romaji:'doa ga akete aru',es:'la puerta esta abierta',en:'the door is left open',parts:['ドア','が','あけてある'],pattern:'v-tearu',note:'あける→あけて + ある'},
+    // ～なくてもよい : no hace falta
+    {jp:'ほんをよまなくてもよい',romaji:'hon o yomanakutemo yoi',es:'no hace falta leer el libro',en:'you do not need to read the book',parts:['ほん','を','よまなくてもよい'],pattern:'conn-nakutemo',note:'よむ→よまない→よまなくても + よい'},
+    {jp:'みずをのまなくてもよい',romaji:'mizu o nomanakutemo yoi',es:'no hace falta tomar agua',en:'you do not need to drink water',parts:['みず','を','のまなくてもよい'],pattern:'conn-nakutemo',note:'のむ→のまなくても + よい'},
+    {jp:'テレビをみなくてもよい',romaji:'terebi o minakutemo yoi',es:'no hace falta ver la tele',en:'you do not need to watch TV',parts:['テレビ','を','みなくてもよい'],pattern:'conn-nakutemo',note:'みる→みない→みなくても + よい'},
+    // ～から : causa (porque)
+    {jp:'あめだから',romaji:'ame da kara',es:'porque llueve',en:'because it rains',parts:['あめ','だ','から'],pattern:'conn-kara-cause',note:'～だから = porque (razon)'},
+    {jp:'これはほんだから',romaji:'kore wa hon da kara',es:'porque esto es un libro',en:'because this is a book',parts:['これ','は','ほん','だ','から'],pattern:'conn-kara-cause',note:'frase + から = porque'},
+    {jp:'ねこだから',romaji:'neko da kara',es:'porque es un gato',en:'because it is a cat',parts:['ねこ','だ','から'],pattern:'conn-kara-cause',note:'～だから = razon'},
   ];
 
   /* =========================================================================
@@ -4138,7 +4151,10 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     {id:'conn-tekara',  order:35, needs:['v-te-u'],       intro:[],     mold:'｛verbo-て｝から',          gloss:'«después de V» — ～て + から encadena: primero esto, luego lo otro'},
     {id:'conn-younninaru',order:36,needs:['v-koto-dekiru'],intro:[],    mold:'｛verbo｝ようになる',        gloss:'«llegar a / empezar a V» — un cambio: antes no, ahora sí'},
     {id:'quote-to-omou',order:37, needs:['fp-yo'],        intro:['と'], mold:'｛frase｝とおもう',          gloss:'«creo que ~» — と marca la cita/pensamiento + おもう (pensar)'},
-    {id:'v-irregular',  order:38, needs:['v-past-u'],     intro:[],     mold:'する→した · くる→きた · いく→いった', gloss:'verbos irregulares: no siguen las reglas de sonido. Memorizá: する→した, くる→きた, y la excepción いく→いった'}
+    {id:'v-irregular',  order:38, needs:['v-past-u'],     intro:[],     mold:'する→した · くる→きた · いく→いった', gloss:'verbos irregulares: no siguen las reglas de sonido. Memorizá: する→した, くる→きた, y la excepción いく→いった'},
+    {id:'v-tearu',       order:39, needs:['v-te-u','exist-aru'], intro:[], mold:'｛cosa｝が｛verbo-て｝ある', gloss:'«está V-ado» — ～て + ある = algo quedó hecho y sigue así (estado resultante). Ej: かいてある = «está escrito»'},
+    {id:'conn-nakutemo', order:40, needs:['v-neg-u'],            intro:[], mold:'｛cosa｝を｛verbo-なくてもよい｝', gloss:'«no hace falta V» — del negativo ～ない → ～なくても + よい/いい'},
+    {id:'conn-kara-cause',order:41,needs:['cop-da'],             intro:[], mold:'｛frase｝から',              gloss:'«porque ~» — から tras una frase plana marca la RAZÓN (distinto de から = «desde/origen»)'}
   ];
   var PATTERN_BY_ID=(function(){ var m={}; PATTERNS.forEach(function(p){m[p.id]=p;}); return m; })();
 
