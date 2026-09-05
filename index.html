@@ -2226,6 +2226,55 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     {jp:'みずをのまない',romaji:'mizu o nomanai',es:'no tomo agua',en:'don\u2019t drink water',parts:['みず','を','のまない'],pattern:'v-neg-u',note:'のむ→のまない (む→ま+ない)'},
     {jp:'てがみをかかない',romaji:'tegami o kakanai',es:'no escribo la carta',en:'don\u2019t write the letter',parts:['てがみ','を','かかない'],pattern:'v-neg-u',note:'かく→かかない (く→か+ない)'},
     {jp:'ほんをかわない',romaji:'hon o kawanai',es:'no compro el libro',en:'don\u2019t buy the book',parts:['ほん','を','かわない'],pattern:'v-neg-u',note:'かう→かわない (う→わ+ない)'},
+    // ===== Stage 9 bloque 3: condicional (mismas formas que おせば / まよったら) =====
+    // ～たら : «cuando/si» = pasado + ら
+    {jp:'みずをのんだら',romaji:'mizu o nondara',es:'cuando/si tomás agua',en:'when/if you drink water',parts:['みず','を','のんだら'],pattern:'v-cond-tara',note:'のむ→のんだ→のんだら (pasado + ら)'},
+    {jp:'ほんをよんだら',romaji:'hon o yondara',es:'cuando/si leés el libro',en:'when/if you read the book',parts:['ほん','を','よんだら'],pattern:'v-cond-tara',note:'よむ→よんだ→よんだら'},
+    {jp:'テレビをみたら',romaji:'terebi o mitara',es:'cuando/si ves la tele',en:'when/if you watch TV',parts:['テレビ','を','みたら'],pattern:'v-cond-tara',note:'みる→みた→みたら'},
+    // ～ば : «si» (provisional)
+    {jp:'みずをのめば',romaji:'mizu o nomeba',es:'si tomás agua',en:'if you drink water',parts:['みず','を','のめば'],pattern:'v-cond-ba',note:'のむ→のめば (む→め+ば)'},
+    {jp:'ほんをよめば',romaji:'hon o yomeba',es:'si leés el libro',en:'if you read the book',parts:['ほん','を','よめば'],pattern:'v-cond-ba',note:'よむ→よめば'},
+    {jp:'テレビをみれば',romaji:'terebi o mireba',es:'si ves la tele',en:'if you watch TV',parts:['テレビ','を','みれば'],pattern:'v-cond-ba',note:'みる→みれば (る→れば)'},
+    // ===== Stage 9 bloque 4: partículas finales (tono) =====
+    {jp:'これはねこだよ',romaji:'kore wa neko da yo',es:'esto es un gato (te aviso)',en:'this is a cat, you know',parts:['これ','は','ねこ','だ','よ'],pattern:'fp-yo',note:'～よ = te aviso algo nuevo'},
+    {jp:'みずをのむよ',romaji:'mizu o nomu yo',es:'voy a tomar agua (te aviso)',en:'I will drink water',parts:['みず','を','のむ','よ'],pattern:'fp-yo',note:'～よ = énfasis / aviso'},
+    {jp:'パンをたべたよ',romaji:'pan o tabeta yo',es:'comí pan (te cuento)',en:'I ate bread',parts:['パン','を','たべた','よ'],pattern:'fp-yo',note:'pasado + よ'},
+    {jp:'これはほんだね',romaji:'kore wa hon da ne',es:'esto es un libro, no?',en:'this is a book, right',parts:['これ','は','ほん','だ','ね'],pattern:'fp-ne',note:'～ね = buscás confirmación'},
+    {jp:'みずをのむね',romaji:'mizu o nomu ne',es:'vas a tomar agua, si?',en:'you will drink water, ok',parts:['みず','を','のむ','ね'],pattern:'fp-ne',note:'～ね = no? verdad?'},
+    {jp:'テレビをみたね',romaji:'terebi o mita ne',es:'viste la tele, no?',en:'you watched TV, right',parts:['テレビ','を','みた','ね'],pattern:'fp-ne',note:'pasado + ね'},
+    {jp:'これはおもいぞ',romaji:'kore wa omoi zo',es:'esto esta pesado (ojo!)',en:'this is heavy',parts:['これ','は','おもい','ぞ'],pattern:'fp-zo',note:'～ぞ = énfasis fuerte'},
+    {jp:'みずをのむぞ',romaji:'mizu o nomu zo',es:'voy a tomar agua (decidido)',en:'I am gonna drink water',parts:['みず','を','のむ','ぞ'],pattern:'fp-zo',note:'～ぞ = énfasis masculino'},
+    {jp:'みちがあるぞ',romaji:'michi ga aru zo',es:'hay un camino (mira!)',en:'there is a road',parts:['みち','が','ある','ぞ'],pattern:'fp-zo',note:'～ぞ = te lo remarco'},
+    // ===== Stage 9 bloque 5: potencial (forma corta de poder) =====
+    {jp:'ほんがよめる',romaji:'hon ga yomeru',es:'puedo leer el libro',en:'I can read the book',parts:['ほん','が','よめる'],pattern:'v-potential',note:'よむ→よめる (う→える)'},
+    {jp:'みずがのめる',romaji:'mizu ga nomeru',es:'puedo tomar agua',en:'I can drink water',parts:['みず','が','のめる'],pattern:'v-potential',note:'のむ→のめる'},
+    {jp:'テレビがみられる',romaji:'terebi ga mirareru',es:'puedo ver la tele',en:'I can watch TV',parts:['テレビ','が','みられる'],pattern:'v-potential',note:'みる→みられる (る→られる)'},
+    // ===== Stage 9 bloque 6: modalidad (matiz) =====
+    {jp:'あめみたい',romaji:'ame mitai',es:'parece lluvia',en:'seems like rain',parts:['あめ','みたい'],pattern:'mod-mitai',note:'～みたい = parece que'},
+    {jp:'パンをたべたみたい',romaji:'pan o tabeta mitai',es:'parece que comio pan',en:'seems he ate bread',parts:['パン','を','たべた','みたい'],pattern:'mod-mitai',note:'pasado + みたい'},
+    {jp:'ねこみたい',romaji:'neko mitai',es:'parece un gato / como un gato',en:'like a cat',parts:['ねこ','みたい'],pattern:'mod-mitai',note:'sustantivo + みたい'},
+    {jp:'あめらしい',romaji:'ame rashii',es:'segun dicen, llueve',en:'apparently it rains',parts:['あめ','らしい'],pattern:'mod-rashii',note:'～らしい = segun oi'},
+    {jp:'パンをたべたらしい',romaji:'pan o tabeta rashii',es:'parece que comio pan (segun oi)',en:'apparently he ate bread',parts:['パン','を','たべた','らしい'],pattern:'mod-rashii',note:'pasado + らしい'},
+    {jp:'ほんをよんだらしい',romaji:'hon o yonda rashii',es:'parece que leyo el libro',en:'apparently he read the book',parts:['ほん','を','よんだ','らしい'],pattern:'mod-rashii',note:'よむ→よんだ + らしい'},
+    {jp:'パンをたべたわけだ',romaji:'pan o tabeta wake da',es:'o sea, comio pan',en:'so, he ate bread',parts:['パン','を','たべた','わけだ'],pattern:'mod-wake',note:'～わけだ = conclusion logica'},
+    {jp:'みずをのんだわけだ',romaji:'mizu o nonda wake da',es:'resulta que tomo agua',en:'so it turns out he drank water',parts:['みず','を','のんだ','わけだ'],pattern:'mod-wake',note:'のむ→のんだ + わけだ'},
+    {jp:'テレビをみたわけだ',romaji:'terebi o mita wake da',es:'o sea, vio la tele',en:'so he watched TV',parts:['テレビ','を','みた','わけだ'],pattern:'mod-wake',note:'pasado + わけだ'},
+    // ===== Stage 9 bloque 7: cierre (volitivo, conectores, cita, irregulares) =====
+    {jp:'ほんをよもう',romaji:'hon o yomou',es:'leamos el libro',en:'let us read the book',parts:['ほん','を','よもう'],pattern:'v-volitional',note:'よむ→よもう (う→おう)'},
+    {jp:'みずをのもう',romaji:'mizu o nomou',es:'tomemos agua',en:'let us drink water',parts:['みず','を','のもう'],pattern:'v-volitional',note:'のむ→のもう'},
+    {jp:'テレビをみよう',romaji:'terebi o miyou',es:'veamos la tele',en:'let us watch TV',parts:['テレビ','を','みよう'],pattern:'v-volitional',note:'みる→みよう (る→よう)'},
+    {jp:'ほんをよんでから',romaji:'hon o yonde kara',es:'despues de leer el libro',en:'after reading the book',parts:['ほん','を','よんでから'],pattern:'conn-tekara',note:'よむ→よんで + から'},
+    {jp:'みずをのんでから',romaji:'mizu o nonde kara',es:'despues de tomar agua',en:'after drinking water',parts:['みず','を','のんでから'],pattern:'conn-tekara',note:'のむ→のんで + から'},
+    {jp:'パンをたべてから',romaji:'pan o tabete kara',es:'despues de comer pan',en:'after eating bread',parts:['パン','を','たべてから'],pattern:'conn-tekara',note:'たべる→たべて + から'},
+    {jp:'ほんをよむようになる',romaji:'hon o yomu you ni naru',es:'empezar a leer libros',en:'to start reading books',parts:['ほん','を','よむ','ようになる'],pattern:'conn-younninaru',note:'verbo + ようになる = llegar a'},
+    {jp:'テレビをみるようになる',romaji:'terebi o miru you ni naru',es:'empezar a ver la tele',en:'to start watching TV',parts:['テレビ','を','みる','ようになる'],pattern:'conn-younninaru',note:'cambio: antes no, ahora si'},
+    {jp:'にほんごをはなすようになる',romaji:'nihongo o hanasu you ni naru',es:'llegar a hablar japones',en:'to come to speak Japanese',parts:['にほんご','を','はなす','ようになる'],pattern:'conn-younninaru',note:'はなす + ようになる'},
+    {jp:'あめだとおもう',romaji:'ame da to omou',es:'creo que llueve',en:'I think it rains',parts:['あめ','だ','と','おもう'],pattern:'quote-to-omou',note:'と marca la cita + おもう'},
+    {jp:'ねこだとおもう',romaji:'neko da to omou',es:'creo que es un gato',en:'I think it is a cat',parts:['ねこ','だ','と','おもう'],pattern:'quote-to-omou',note:'～と おもう = creo que'},
+    {jp:'パンをたべたとおもう',romaji:'pan o tabeta to omou',es:'creo que comio pan',en:'I think he ate bread',parts:['パン','を','たべた','と','おもう'],pattern:'quote-to-omou',note:'pasado + と おもう'},
+    {jp:'しごとをした',romaji:'shigoto o shita',es:'hice el trabajo',en:'I did the work',parts:['しごと','を','した'],pattern:'v-irregular',note:'する→した (irregular)'},
+    {jp:'うちにきた',romaji:'uchi ni kita',es:'vine a casa',en:'I came home',parts:['うち','に','きた'],pattern:'v-irregular',note:'くる→きた (irregular)'},
+    {jp:'がっこうへいった',romaji:'gakkou e itta',es:'fui a la escuela',en:'I went to school',parts:['がっこう','へ','いった'],pattern:'v-irregular',note:'いく→いった (excepcion)'},
   ];
 
   /* =========================================================================
@@ -4045,7 +4094,11 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     'に':{read:'ni',                 fn:'lugar — dónde está algo'},
     'の':{read:'no',                 fn:'de — conecta o posee'},
     'か':{read:'ka',                 fn:'convierte la frase en pregunta'},
-    'から':{read:'kara',               fn:'desde — el origen, de dónde venís'}
+    'から':{read:'kara',               fn:'desde — el origen, de dónde venís'},
+    'よ':{read:'yo',                 fn:'al final: te aviso / enfatizo (info nueva para quien escucha)'},
+    'ね':{read:'ne',                 fn:'al final: ¿no? / ¿verdad? — buscás confirmación'},
+    'ぞ':{read:'zo',                 fn:'al final: énfasis fuerte (masculino, informal)'},
+    'と':{read:'to',                 fn:'con / y — o marca una cita: «que…»'}
   };
   var PATTERNS=[
     {id:'cop-da',    order:1,  needs:[],           intro:['は','だ'], mold:'｛tema｝は｛qué es｝だ',   gloss:'«X es Y» — decir qué es algo (casual)'},
@@ -4071,12 +4124,26 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     {id:'v-koto-dekiru', order:21, needs:['obj-wo','exist-aru'],intro:[],mold:'｛verbo｝ことができる',      gloss:'«poder V» — verbo (forma diccionario) + ことができる. Cortés: ～ことができます'},
     {id:'v-past-u',  order:22, needs:['v-past'],           intro:[], mold:'｛cosa｝を｛verbo う→た｝',   gloss:'«hizo V» en verbos う — la terminación cambia de sonido: く→いた · ぐ→いだ · む/ぶ/ぬ→んだ · す→した · つ/る/う→った. (excepción: いく→いった)'},
     {id:'v-te-u',    order:23, needs:['v-past-u','v-te'],  intro:[], mold:'｛verbo う→て｝ください',       gloss:'igual pero con て/で: く→いて · ぐ→いで · む/ぶ/ぬ→んで · す→して · つ/る/う→って. «～て ください» = pedir'},
-    {id:'v-neg-u',   order:24, needs:['v-neg'],            intro:[], mold:'｛cosa｝を｛verbo う→あ＋ない｝', gloss:'«no V» en verbos う — la última sílaba pasa a la fila あ + ない: のむ→のまない · かく→かかない · はなす→はなさない. (う→わ: かう→かわない)'}
+    {id:'v-neg-u',   order:24, needs:['v-neg'],            intro:[], mold:'｛cosa｝を｛verbo う→あ＋ない｝', gloss:'«no V» en verbos う — la última sílaba pasa a la fila あ + ない: のむ→のまない · かく→かかない · はなす→はなさない. (う→わ: かう→かわない)'},
+    {id:'v-cond-tara',order:25, needs:['v-past-u'],       intro:[], mold:'｛cosa｝を｛verbo-たら｝', gloss:'«cuando/si (hacés) V» — es la forma ～た (pasado) + ら. Presenta una condición: «si pasa esto…»'},
+    {id:'v-cond-ba',  order:26, needs:['v-cond-tara'],    intro:[], mold:'｛cosa｝を｛verbo-ば｝',   gloss:'«si V» — verbos う: última sílaba a la fila え + ば (のむ→のめば); verbos る: る→れば (みる→みれば)'},
+    {id:'fp-yo',        order:27, needs:['cop-da'],       intro:['よ'], mold:'｛frase｝よ',              gloss:'«～よ» al final = te aviso / enfatizo (info nueva para quien escucha)'},
+    {id:'fp-ne',        order:28, needs:['cop-da'],       intro:['ね'], mold:'｛frase｝ね',              gloss:'«～ね» al final = ¿no? / ¿verdad? — buscás que el otro confirme'},
+    {id:'fp-zo',        order:29, needs:['fp-yo'],        intro:['ぞ'], mold:'｛frase｝ぞ',              gloss:'«～ぞ» al final = énfasis fuerte, tono masculino e informal'},
+    {id:'v-potential',  order:30, needs:['v-cond-ba'],    intro:[],     mold:'｛cosa｝が｛verbo→える/られる｝', gloss:'«poder V» (forma corta) — verbos う: う→える (のむ→のめる); verbos る: る→られる (みる→みられる). El objeto suele ir con が'},
+    {id:'mod-mitai',    order:31, needs:['v-past-u'],     intro:[],     mold:'｛frase｝みたい',           gloss:'«～みたい» = parece que / como si. Va tras sustantivo o verbo en forma plana'},
+    {id:'mod-rashii',   order:32, needs:['mod-mitai'],    intro:[],     mold:'｛frase｝らしい',           gloss:'«～らしい» = según dicen / parece (info que oíste de afuera)'},
+    {id:'mod-wake',     order:33, needs:['mod-rashii'],   intro:[],     mold:'｛frase｝わけだ',           gloss:'«～わけだ» = o sea / resulta que — conclusión lógica de lo dicho'},
+    {id:'v-volitional', order:34, needs:['v-past-u'],     intro:[],     mold:'｛cosa｝を｛verbo→よう/おう｝',  gloss:'«hagamos / voy a V» (intención) — verbos る: る→よう (みる→みよう); verbos う: う→おう (よむ→よもう)'},
+    {id:'conn-tekara',  order:35, needs:['v-te-u'],       intro:[],     mold:'｛verbo-て｝から',          gloss:'«después de V» — ～て + から encadena: primero esto, luego lo otro'},
+    {id:'conn-younninaru',order:36,needs:['v-koto-dekiru'],intro:[],    mold:'｛verbo｝ようになる',        gloss:'«llegar a / empezar a V» — un cambio: antes no, ahora sí'},
+    {id:'quote-to-omou',order:37, needs:['fp-yo'],        intro:['と'], mold:'｛frase｝とおもう',          gloss:'«creo que ~» — と marca la cita/pensamiento + おもう (pensar)'},
+    {id:'v-irregular',  order:38, needs:['v-past-u'],     intro:[],     mold:'する→した · くる→きた · いく→いった', gloss:'verbos irregulares: no siguen las reglas de sonido. Memorizá: する→した, くる→きた, y la excepción いく→いった'}
   ];
   var PATTERN_BY_ID=(function(){ var m={}; PATTERNS.forEach(function(p){m[p.id]=p;}); return m; })();
 
   /* Distractores de partícula confundible (espeja CONFUSE_GROUPS del kana). */
-  var PARTICLE_CONFUSE=[['は','が','を'],['へ','に','で'],['の','は','が'],['か','ね','よ']];
+  var PARTICLE_CONFUSE=[['は','が','を'],['へ','に','で'],['の','は','が'],['か','ね','よ','ぞ']];
   var PCONF=(function(){ var out={}; PARTICLE_CONFUSE.forEach(function(g){ g.forEach(function(p){ out[p]=out[p]||{}; g.forEach(function(o){ if(o!==p)out[p][o]=1; }); }); }); return out; })();
 
   /* ---- SRS de patrones (mismo intervalo que el kana) ---- */
