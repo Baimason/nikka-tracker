@@ -2213,6 +2213,19 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     {jp:'ほんをよむことができる',romaji:'hon o yomu koto ga dekiru',es:'puede leer libros',en:'can read books',parts:['ほん','を','よむ','ことができる'],pattern:'v-koto-dekiru',note:'verbo (forma dicc.) + ことができる = «poder ~». Cortés: ～ことができます'},
     {jp:'ちずをみることができる',romaji:'chizu o miru koto ga dekiru',es:'puede ver el mapa',en:'can see the map',parts:['ちず','を','みる','ことができる'],pattern:'v-koto-dekiru',note:'みる + ことができる'},
     {jp:'にほんごをはなすことができる',romaji:'nihongo o hanasu koto ga dekiru',es:'puede hablar japonés',en:'can speak Japanese',parts:['にほんご','を','はなす','ことができる'],pattern:'v-koto-dekiru',note:'はなす + ことができる'},
+    // ===== Stage 9 bloque 2: verbos う (cambios de sonido / 音便) =====
+    // pasado ～た : く→いた · む→んだ · う→った
+    {jp:'てがみをかいた',romaji:'tegami o kaita',es:'escribí la carta',en:'wrote the letter',parts:['てがみ','を','かいた'],pattern:'v-past-u',note:'かく→かいた (く→いた)'},
+    {jp:'みずをのんだ',romaji:'mizu o nonda',es:'tomé agua',en:'drank water',parts:['みず','を','のんだ'],pattern:'v-past-u',note:'のむ→のんだ (む→んだ)'},
+    {jp:'ほんをかった',romaji:'hon o katta',es:'compré el libro',en:'bought the book',parts:['ほん','を','かった'],pattern:'v-past-u',note:'かう→かった (う→った)'},
+    // ～て ください (verbos う)
+    {jp:'てがみをかいてください',romaji:'tegami o kaite kudasai',es:'escribí la carta, por favor',en:'please write the letter',parts:['てがみ','を','かいて','ください'],pattern:'v-te-u',note:'かく→かいて'},
+    {jp:'みずをのんでください',romaji:'mizu o nonde kudasai',es:'tomá agua, por favor',en:'please drink water',parts:['みず','を','のんで','ください'],pattern:'v-te-u',note:'のむ→のんで'},
+    {jp:'ほんをかってください',romaji:'hon o katte kudasai',es:'comprá el libro, por favor',en:'please buy the book',parts:['ほん','を','かって','ください'],pattern:'v-te-u',note:'かう→かって'},
+    // negativo ～ない (verbos う)
+    {jp:'みずをのまない',romaji:'mizu o nomanai',es:'no tomo agua',en:'don\u2019t drink water',parts:['みず','を','のまない'],pattern:'v-neg-u',note:'のむ→のまない (む→ま+ない)'},
+    {jp:'てがみをかかない',romaji:'tegami o kakanai',es:'no escribo la carta',en:'don\u2019t write the letter',parts:['てがみ','を','かかない'],pattern:'v-neg-u',note:'かく→かかない (く→か+ない)'},
+    {jp:'ほんをかわない',romaji:'hon o kawanai',es:'no compro el libro',en:'don\u2019t buy the book',parts:['ほん','を','かわない'],pattern:'v-neg-u',note:'かう→かわない (う→わ+ない)'},
   ];
 
   /* =========================================================================
@@ -4055,7 +4068,10 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     {id:'v-neg',         order:18, needs:['obj-wo'],           intro:[], mold:'｛cosa｝を｛verbo-ない｝',  gloss:'«no V» — ～ない = no lo hace (verbos る: quitá る y poné ない)'},
     {id:'v-te',          order:19, needs:['v-past'],           intro:[], mold:'｛verbo-て｝ください',      gloss:'la ～て une acciones y sirve para pedir: «～て ください» = «hacé ~, por favor»'},
     {id:'v-teiru',       order:20, needs:['v-te','exist-iru'], intro:[], mold:'｛verbo-て｝いる',          gloss:'«está V-ando» — ～ている = la acción está en curso ahora'},
-    {id:'v-koto-dekiru', order:21, needs:['obj-wo','exist-aru'],intro:[],mold:'｛verbo｝ことができる',      gloss:'«poder V» — verbo (forma diccionario) + ことができる. Cortés: ～ことができます'}
+    {id:'v-koto-dekiru', order:21, needs:['obj-wo','exist-aru'],intro:[],mold:'｛verbo｝ことができる',      gloss:'«poder V» — verbo (forma diccionario) + ことができる. Cortés: ～ことができます'},
+    {id:'v-past-u',  order:22, needs:['v-past'],           intro:[], mold:'｛cosa｝を｛verbo う→た｝',   gloss:'«hizo V» en verbos う — la terminación cambia de sonido: く→いた · ぐ→いだ · む/ぶ/ぬ→んだ · す→した · つ/る/う→った. (excepción: いく→いった)'},
+    {id:'v-te-u',    order:23, needs:['v-past-u','v-te'],  intro:[], mold:'｛verbo う→て｝ください',       gloss:'igual pero con て/で: く→いて · ぐ→いで · む/ぶ/ぬ→んで · す→して · つ/る/う→って. «～て ください» = pedir'},
+    {id:'v-neg-u',   order:24, needs:['v-neg'],            intro:[], mold:'｛cosa｝を｛verbo う→あ＋ない｝', gloss:'«no V» en verbos う — la última sílaba pasa a la fila あ + ない: のむ→のまない · かく→かかない · はなす→はなさない. (う→わ: かう→かわない)'}
   ];
   var PATTERN_BY_ID=(function(){ var m={}; PATTERNS.forEach(function(p){m[p.id]=p;}); return m; })();
 
