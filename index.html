@@ -437,6 +437,21 @@
   .fx-chip.progress{border-color:var(--shu)}
   .fx-chip.locked{opacity:.55}
   .fx-chip:active{transform:translateY(1px)}
+  .kx-tabs{display:flex;gap:8px;margin-top:8px}
+  .kx-tab{font:inherit;font-size:13px;font-family:var(--display-font);background:var(--card);border:1.5px solid var(--line);border-radius:4px;padding:5px 15px;color:var(--ink-soft);cursor:pointer}
+  .kx-tab.on{border-color:var(--ink);color:var(--ink);font-weight:700}
+  .kx-grid{display:grid;gap:6px;margin-bottom:2px}
+  .kx-grid.kx-c5{grid-template-columns:repeat(5,1fr)}
+  .kx-grid.kx-c3{grid-template-columns:repeat(3,1fr);max-width:62%}
+  .kx-cell{display:flex;flex-direction:column;align-items:center;gap:1px;background:var(--card);border:1.5px solid var(--line);border-radius:4px;padding:6px 2px 4px;cursor:pointer;font:inherit;min-width:0}
+  .kx-cell.mastered{border-color:var(--green)}
+  .kx-cell.progress{border-color:var(--shu)}
+  .kx-cell.new{opacity:.6}
+  .kx-cell.empty{background:none;border:none;pointer-events:none}
+  .kx-cell:active{transform:translateY(1px)}
+  .kx-g{font-size:22px;line-height:1.05;color:var(--ink)}
+  .kx-r{font-size:10px;letter-spacing:.03em;color:var(--ink-soft)}
+  @media(max-width:480px){.kx-g{font-size:19px}.kx-grid.kx-c3{max-width:100%}}
   .fx-hd{display:flex;align-items:center;justify-content:center;gap:4px}
   .fx-em{font-size:15px}
   .fx-jp{font-size:19px;color:var(--ink);line-height:1.2;word-break:break-all}
@@ -3479,7 +3494,63 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
         {jp:'ほうほう',cat:'menu',romaji:'houhou',es:'método / manera',en:'method',emoji:'📖'},
         {jp:'たとえば',cat:'story',romaji:'tatoeba',es:'por ejemplo',en:'for example',emoji:'👉'},
         {jp:'それぞれ',cat:'story',romaji:'sorezore',es:'cada uno',en:'each',emoji:'🔀'},
-        {jp:'フクロウ',cat:'people',romaji:'fukurou',es:'búho',en:'owl',emoji:'🦉'}
+        {jp:'フクロウ',cat:'people',romaji:'fukurou',es:'búho',en:'owl',emoji:'🦉'},
+        /* --- lote biblioteca / escudo / mapa (sesión kana Zelda) --- */
+        /* combate */
+        {jp:'ちから',cat:'combat',romaji:'chikara',es:'fuerza / poder',en:'power / strength',emoji:'💪'},        /* 力 */
+        {jp:'ためる',cat:'combat',romaji:'tameru',es:'acumular / cargar',en:'charge up / store',emoji:'🔋'},
+        {jp:'たまる',cat:'combat',romaji:'tamaru',es:'acumularse / llenarse',en:'build up (intr.)',emoji:'📈'},
+        {jp:'ふせぐ',cat:'combat',romaji:'fusegu',es:'defender / bloquear',en:'block / defend',emoji:'🛡️'},      /* 防ぐ */
+        {jp:'はじく',cat:'combat',romaji:'hajiku',es:'repeler / rechazar',en:'repel / flick away',emoji:'💥'},   /* 弾く */
+        {jp:'ビーム',cat:'combat',romaji:'biimu',es:'rayo / haz',en:'beam',emoji:'🔆'},
+        {jp:'ひけん',cat:'combat',romaji:'hiken',es:'espada secreta',en:'secret sword art',emoji:'🗡️'},         /* 秘剣 */
+        {jp:'かいてんぎり',cat:'combat',romaji:'kaitengiri',es:'corte giratorio',en:'spin slash',emoji:'🌀'},     /* 回転斬り (técnica) */
+        /* objetos */
+        {jp:'かがみ',cat:'item',romaji:'kagami',es:'espejo',en:'mirror',emoji:'🪞'},                            /* 鏡 */
+        {jp:'レンズ',cat:'item',romaji:'renzu',es:'lente',en:'lens',emoji:'🔍'},
+        {jp:'みとおし',cat:'item',romaji:'mitooshi',es:'ver a través / visión',en:'see-through / clear view',emoji:'👁️'}, /* 見通し */
+        /* menú / sistema */
+        {jp:'つかいかた',cat:'menu',romaji:'tsukaikata',es:'modo de uso',en:'how to use',emoji:'📖'},            /* 使い方 */
+        {jp:'しらべる',cat:'menu',romaji:'shiraberu',es:'consultar / investigar',en:'look up / check',emoji:'🔎'}, /* 調べる */
+        {jp:'つづける',cat:'menu',romaji:'tsuzukeru',es:'seguir / continuar',en:'keep doing / continue',emoji:'⏩'}, /* 続ける */
+        {jp:'うごかす',cat:'menu',romaji:'ugokasu',es:'mover (algo)',en:'move (something)',emoji:'🕹️'},          /* 動かす */
+        /* mundo y lugares */
+        {jp:'タンス',cat:'world',romaji:'tansu',es:'cómoda / mueble',en:'dresser / chest',emoji:'🗄️'},          /* 箪笥 */
+        {jp:'ちめい',cat:'world',romaji:'chimei',es:'nombre de lugar',en:'place name',emoji:'🗺️'},              /* 地名 */
+        {jp:'コホリント',cat:'world',romaji:'kohorinto',es:'Koholint (isla)',en:'Koholint (island)',emoji:'🏝️'},
+        /* historia e intro */
+        {jp:'さらに',cat:'story',romaji:'sarani',es:'además / más aún',en:'furthermore',emoji:'➕'},             /* 更に */
+        {jp:'はたして',cat:'story',romaji:'hatashite',es:'de veras / acaso',en:'indeed / really',emoji:'❓'},     /* 果たして */
+        {jp:'いちぞく',cat:'story',romaji:'ichizoku',es:'clan / linaje',en:'clan / family line',emoji:'👪'},      /* 一族 */
+        {jp:'ひみつ',cat:'story',romaji:'himitsu',es:'secreto',en:'secret',emoji:'🤫'},                          /* 秘密 */
+        {jp:'つたわる',cat:'story',romaji:'tsutawaru',es:'transmitirse / heredarse',en:'be handed down',emoji:'📜'}, /* 伝わる */
+        {jp:'ひでん',cat:'story',romaji:'hiden',es:'arte secreto',en:'secret art',emoji:'🎴'},                   /* 秘伝 */
+        {jp:'ゴメン',cat:'story',romaji:'gomen',es:'perdón / disculpá',en:'sorry',emoji:'🙏'},
+        /* --- lote niños de la biblioteca / letreros / tienda --- */
+        /* menú / sistema */
+        {jp:'セレクト',cat:'menu',romaji:'serekuto',es:'Select (botón)',en:'Select (button)',emoji:'🎮'},
+        {jp:'どうじに',cat:'menu',romaji:'doujini',es:'al mismo tiempo',en:'at the same time',emoji:'⏱️'},   /* 同時に */
+        {jp:'さいご',cat:'menu',romaji:'saigo',es:'lo último / el final',en:'last / the end',emoji:'🔚'},      /* 最後 */
+        {jp:'たりる',cat:'menu',romaji:'tariru',es:'alcanzar / ser suficiente',en:'be enough',emoji:'⚖️'},   /* 足りる */
+        {jp:'なくなる',cat:'menu',romaji:'nakunaru',es:'acabarse / agotarse',en:'run out / be gone',emoji:'💨'}, /* 無くなる */
+        /* objetos */
+        {jp:'スコップ',cat:'item',romaji:'sukoppu',es:'pala',en:'shovel',emoji:'⛏️'},
+        /* mundo y lugares */
+        {jp:'どうくつ',cat:'world',romaji:'doukutsu',es:'cueva',en:'cave',emoji:'🕳️'},                       /* 洞窟 */
+        {jp:'でいりぐち',cat:'world',romaji:'deiriguchi',es:'entrada / puerta',en:'doorway / entrance',emoji:'🚪'}, /* 出入り口 */
+        {jp:'くぐる',cat:'world',romaji:'kuguru',es:'pasar por debajo / atravesar',en:'pass under / through',emoji:'⛩️'}, /* 潜る */
+        {jp:'そうげん',cat:'world',romaji:'sougen',es:'llanura / pradera',en:'prairie / grassland',emoji:'🌾'}, /* 草原 */
+        {jp:'ウクク',cat:'world',romaji:'ukuku',es:'Ukuku (pradera)',en:'Ukuku (prairie)',emoji:'🗺️'},
+        {jp:'どうぶつむら',cat:'world',romaji:'doubutsumura',es:'Villa Animal',en:'Animal Village',emoji:'🐾'}, /* 動物村 */
+        /* personajes */
+        {jp:'にいちゃん',cat:'people',romaji:'niichan',es:'hermano mayor / muchacho',en:'big bro / young man',emoji:'🧑'}, /* 兄ちゃん */
+        /* historia e intro (registro casual/rústico) */
+        {jp:'おいら',cat:'story',romaji:'oira',es:'yo (informal, rústico)',en:'I / me (rough, casual)',emoji:'🧒'},
+        {jp:'さっぱり',cat:'story',romaji:'sappari',es:'para nada / ni idea',en:'not at all',emoji:'🤷'},
+        {jp:'ふしぎ',cat:'story',romaji:'fushigi',es:'misterio / raro',en:'mysterious / wonder',emoji:'🔮'},  /* 不思議 */
+        {jp:'ほんの',cat:'story',romaji:'honno',es:'apenas / un simple',en:'just a mere',emoji:'🤏'},
+        {jp:'でなおす',cat:'story',romaji:'denaosu',es:'volver a pasar / volver luego',en:'come back again',emoji:'🔁'}, /* 出直す */
+        {jp:'こ',cat:'menu',romaji:'ko',es:'unidades (contador 個)',en:'counter for items (個)',emoji:'🔢'}
       ]
     },
     {
@@ -3622,6 +3693,19 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
          '</div>';
     });
     h+='</div>';
+    /* Tarjeta de referencia rápida: cheat sheet de kana + notas generales (data-driven). */
+    h+='<div class="mastery-card"><div class="mc-top"><h3>'+(es?'Referencia rápida':'Quick reference')+'</h3></div>';
+    h+='<div class="grow"><div class="grow-top"><span class="grow-name">'+(es?'Silabario (kana)':'Kana chart')+
+         ' <span class="grow-mode">'+(es?'consulta al instante':'instant lookup')+'</span></span></div>'+
+       '<div class="mc-goal">'+(es?'Cualquier kana que dudés, confirmalo acá. Muestra tu dominio real y suena al tocarlo.':'Any kana you are unsure about, confirm it here. It shows your real mastery and speaks on tap.')+'</div>'+
+       '<div class="grow-btns"><button class="ficha-btn" data-ficha="__kana__">🈂️ '+(es?'Abrir silabario':'Open chart')+'</button></div></div>';
+    NOTES.forEach(function(n){
+      h+='<div class="grow"><div class="grow-top"><span class="grow-name">'+(es?n.cardEs:n.cardEn)+
+           ' <span class="grow-mode">'+(es?'nota general':'general note')+'</span></span></div>'+
+         '<div class="mc-goal">'+(es?n.subEs:n.subEn)+'</div>'+
+         '<div class="grow-btns"><button class="ficha-btn" data-ficha="__note:'+n.id+'">📝 '+(es?'Abrir nota':'Open note')+'</button></div></div>';
+    });
+    h+='</div>';
     return h;
   }
 
@@ -3675,7 +3759,160 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       '</button>';
   }
   var fichaGameId=null;
+  /* =========================================================================
+     NOTAS GENERALES DE LECTURA — registro de fichas NO atadas a un juego.
+     Cada nota es solo datos {id, card*, sub*, title*, intro*, sections[]};
+     agregar una futura = un objeto más en NOTES. Se pintan en el overlay
+     #ficha (reusa d-sticky/fx-cat/fx-foot) vía el id '__note:<id>'. Aparte,
+     '__kana__' abre el cheat sheet de kana (renderKanaSheet). */
+  var NOTES=[
+    { id:'punct',
+      cardEs:'Signos y espacios', cardEn:'Punctuation & spacing',
+      subEs:'Por qué ves ？！ por todo lado, qué significan los … y por qué el kana lleva espacios.',
+      subEn:'Why ？！ are everywhere, what … means, and why kana text has spaces.',
+      titleEs:'Signos y espacios en los juegos', titleEn:'Punctuation & spacing in games',
+      introEs:'Referencia general para leer cualquier juego en japonés. No es de un juego en particular.',
+      introEn:'General reference for reading any Japanese game. Not tied to one title.',
+      sections:[
+        { tEs:'? y ! son prestados de Occidente',
+          tEn:'? and ! are borrowed from the West',
+          bEs:'El japonés formal no necesita ？: la pregunta ya la marca la partícula か al final. Por eso en los juegos ves か？ juntos — か pone la gramática y ？ le pone el tono de voz. ！ es puro énfasis, también importado. En los libros de texto casi no salen; en juegos, manga y diálogo casual, están por todo lado.',
+          bEn:'Formal Japanese does not need ？: the question is already marked by the particle か at the end. That is why games show か？ together — か carries the grammar and ？ adds the spoken tone. ！ is pure emphasis, also imported. Textbooks rarely use them; games, manga and casual dialogue use them everywhere.' },
+        { tEs:', y . sí son japoneses de nacimiento',
+          tEn:', and . are natively Japanese',
+          bEs:'Ojo con el mito: 、(coma) y 。(punto) NO son la coma y el punto occidentales — son signos propios del japonés. Lo que llegó de Occidente (era Meiji) fue la costumbre de puntuar: el japonés clásico casi no usaba signos ni espacios. Los glifos son japoneses; lo importado es el hábito de usarlos.',
+          bEn:'Watch the myth: 、(comma) and 。(period) are NOT the Western comma and period — they are native Japanese marks. What came from the West (Meiji era) was the habit of punctuating at all: classical Japanese used almost no marks and no spaces. The glyphs are Japanese; the imported part is the habit of using them.' },
+        { tEs:'... es silencio, no falta de texto',
+          tEn:'... is silence, not missing text',
+          bEs:'Los puntos suspensivos (…, a veces una fila entera de puntos) marcan pausa, duda o el silencio de un personaje. En estos juegos salen mucho: alguien que se queda callado, un momento de tensión. No es que falte diálogo — el silencio ES el mensaje.',
+          bEn:'The ellipsis (…, sometimes a whole row of dots) marks a pause, hesitation or a character going silent. These games use it a lot: someone falling quiet, a tense beat. It is not missing dialogue — the silence IS the message.' },
+        { tEs:'La nakaguro separa palabras en katakana',
+          tEn:'The nakaguro separates katakana words',
+          bEs:'El puntito medio ・ (nakaguro) separa partes de una palabra extranjera o ítems de una lista: フック・ショット. No se lee; solo divide.',
+          bEn:'The middle dot ・ (nakaguro) separates parts of a foreign word or list items: フック・ショット. It is not pronounced; it only divides.' },
+        { tEs:'Los espacios son una muleta de lectura (la más útil)',
+          tEn:'Spaces are a reading crutch (the most useful one)',
+          bEs:'El japonés normal NO lleva espacios: las palabras se separan solas porque el kanji corta la vista. Pero un juego en puro kana (como este, en modo fácil) SÍ mete espacios para marcar dónde empieza y termina cada palabra. Sin kanji, un muro de kana es ilegible, y el espacio es la ayuda. Cuando tu lectura ya lleve kanji, esos espacios desaparecen — y no los vas a extrañar.',
+          bEn:'Normal Japanese has NO spaces: words separate on their own because kanji cut the line visually. But a pure-kana game (like this one, in easy mode) DOES insert spaces to mark where each word starts and ends. Without kanji a wall of kana is unreadable, so the space is the aid. Once your reading carries kanji, those spaces vanish — and you will not miss them.' }
+      ] },
+    { id:'register',
+      cardEs:'Cómo hablan los personajes', cardEn:'How characters talk',
+      subEs:'Por qué casi ningún NPC habla como el libro de texto.',
+      subEn:'Why almost no NPC talks like your textbook.',
+      titleEs:'Cómo hablan los personajes', titleEn:'How characters talk',
+      introEs:'En japonés, la FORMA de hablar te dice quién es el personaje: edad, actitud, si es rudo o educado. Los juegos lo explotan a fondo. Reconocer el registro te deja captar el tono aunque no caces cada palabra.',
+      introEn:'In Japanese, HOW someone talks tells you who they are: age, attitude, rough or polite. Games lean on this hard. Reading the register lets you catch the tone even when you miss words.',
+      sections:[
+        { tEs:'La forma de hablar ES caracterización (yakuwarigo)',
+          tEn:'The way of speaking IS characterization (yakuwarigo)',
+          bEs:'El japonés tiene "lenguaje de rol" (yakuwarigo): patrones de habla que el oyente asocia a un tipo de personaje — el viejo sabio, la niña, el matón, el robot. No siempre es como habla la gente real; es un código para pintar al personaje rápido. Por eso el mismo "yo" o el mismo "no" cambian de forma según quién lo diga.',
+          bEn:'Japanese has role language (yakuwarigo): speech patterns a listener ties to a character type — the wise elder, the little kid, the thug, the robot. It is not always how real people talk; it is a code that paints the character fast. That is why the same word for I, or the same no, changes shape depending on who says it.' },
+        { tEs:'Neutro cortés — です・ます (el del libro)',
+          tEn:'Polite neutral — です・ます (the textbook one)',
+          bEs:'Terminaciones です / ます / ません. Es lo primero que se enseña, y lo usan tutoriales, carteles y NPCs "de servicio" (tenderos formales, guías). Educado y seguro. Si una oración termina en です o ます, estás en terreno de textbook.',
+          bEn:'Endings です / ます / ません. It is what gets taught first, and it is used by tutorials, signs and service NPCs (formal shopkeepers, guides). Polite and safe. If a sentence ends in です or ます, you are on textbook ground.' },
+        { tEs:'Plano / casual — だ y verbos planos (entre iguales)',
+          tEn:'Plain / casual — だ and plain verbs (between equals)',
+          bEs:'です→だ (o nada), verbos en forma de diccionario (する, いく, たべる), y partículas finales よ / ね / な. Es como hablan amigos, familia y el monólogo interno del héroe. La mayoría del diálogo de juego vive acá.',
+          bEn:'です becomes だ (or nothing), verbs stay in dictionary form (する, いく, たべる), and final particles よ / ね / な show up. This is how friends, family and the hero inner monologue talk. Most game dialogue lives here.' },
+        { tEs:'Rudo / rústico / infantil (sabor de personaje)',
+          tEn:'Rough / rustic / childish (character flavor)',
+          bEs:'Acá el personaje se pinta solo. Pronombres de "yo": おれ (rudo, masc), おいら (rústico, pueblerino), あたし (femenino casual), ぼく (suave, masc). Contracciones que comen sílabas: わからない→わかんない, しかたない→しかたねー. Imperativos rudos: ～ておくれ→～ておくんな. Y colas como や, ぜ, だぜ, o ってさ / だってさ ("dizque…", rumor). Un tendero gruñón o un chiquillo se reconocen SOLO por esto.',
+          bEn:'Here the character paints itself. Words for I: おれ (rough, male), おいら (rustic, country), あたし (casual, female), ぼく (soft, male). Contractions that eat syllables: わからない becomes わかんない, しかたない becomes しかたねー. Rough commands: ～ておくれ becomes ～ておくんな. And tails like や, ぜ, だぜ, or ってさ / だってさ (they say that...). A grumpy shopkeeper or a little kid is recognized by this alone.' },
+        { tEs:'Pista rápida: mirá el final de la oración',
+          tEn:'Quick tell: look at the sentence ending',
+          bEs:'La terminación canta el registro: です・ます = cortés; だ o verbo plano + よ/ね = casual; ～ねー / ～ぜ / ～や / ～おくんな = rudo o rústico. Y el pronombre de "yo" va de わたし (cortés) → ぼく → おれ → おいら (cada vez más informal, masculino, tosco). Con eso ubicás el tono antes de traducir una sola palabra.',
+          bEn:'The ending sings the register: です・ます = polite; だ or a plain verb + よ/ね = casual; ～ねー / ～ぜ / ～や / ～おくんな = rough or rustic. And the word for I runs わたし (polite) → ぼく → おれ → おいら (more and more informal, male, rough). With that you place the tone before translating a single word.' }
+      ] }
+  ];
+  function renderNote(id){
+    var inner=document.getElementById('fichaInner'); if(!inner)return;
+    var es=getLang()==='es', n=null,i;
+    for(i=0;i<NOTES.length;i++) if(NOTES[i].id===id) n=NOTES[i];
+    if(!n)return;
+    var h='<div class="d-sticky"><div class="d-head"><button class="d-close" id="fxClose">✕ '+t("Back")+'</button>'+
+          '<span class="cx-title mincho">📝 '+(es?n.titleEs:n.titleEn)+'</span></div></div>';
+    h+='<div class="fx-intro">'+(es?n.introEs:n.introEn)+'</div>';
+    n.sections.forEach(function(s){
+      h+='<div class="fx-cat">'+(es?s.tEs:s.tEn)+'</div>'+
+         '<div class="fx-foot" style="margin:6px 0 16px">'+(es?s.bEs:s.bEn)+'</div>';
+    });
+    inner.innerHTML=h;
+    var c=document.getElementById('fxClose'); if(c)c.addEventListener('click',closeFicha);
+  }
+  /* ---- Cheat sheet de kana: consulta rápida + estado SRS real por celda ---- */
+  var kanaSheetScript='hira';
+  var KX_BASE_ROWS=[
+    {c:'',ks:['a','i','u','e','o']},
+    {c:'K',ks:['ka','ki','ku','ke','ko']},
+    {c:'S',ks:['sa','shi','su','se','so']},
+    {c:'T',ks:['ta','chi','tsu','te','to']},
+    {c:'N',ks:['na','ni','nu','ne','no']},
+    {c:'H',ks:['ha','hi','fu','he','ho']},
+    {c:'M',ks:['ma','mi','mu','me','mo']},
+    {c:'Y',ks:['ya',null,'yu',null,'yo']},
+    {c:'R',ks:['ra','ri','ru','re','ro']},
+    {c:'W',ks:['wa',null,null,null,'wo']},
+    {c:'',ks:['n',null,null,null,null]}
+  ];
+  var KX_DAK_ROWS=[
+    {c:'G',ks:['ga','gi','gu','ge','go']},
+    {c:'Z',ks:['za','ji','zu','ze','zo']},
+    {c:'D',ks:['da',null,null,'de','do']},
+    {c:'B',ks:['ba','bi','bu','be','bo']},
+    {c:'P',ks:['pa','pi','pu','pe','po']}
+  ];
+  var KX_YOON_ROWS=[
+    {c:'K',ks:['kya','kyu','kyo']},{c:'S',ks:['sha','shu','sho']},
+    {c:'T',ks:['cha','chu','cho']},{c:'N',ks:['nya','nyu','nyo']},
+    {c:'H',ks:['hya','hyu','hyo']},{c:'M',ks:['mya','myu','myo']},
+    {c:'R',ks:['rya','ryu','ryo']},{c:'G',ks:['gya','gyu','gyo']},
+    {c:'Z',ks:['ja','ju','jo']},{c:'B',ks:['bya','byu','byo']},
+    {c:'P',ks:['pya','pyu','pyo']}
+  ];
+  var KX_CONFUSE={
+    hira:['は / ほ','ぬ / め / ね','わ / れ / ね','る / ろ','さ / き','こ / て','し / も / つ'],
+    kata:['ソ / ン','シ / ツ','ノ / メ / ヌ','ク / ワ / ケ','ア / マ','ウ / ワ','ロ / コ']
+  };
+  function kxState(romaji){
+    var k=ensureKana(), box=(kanaSheetScript==='kata')?k.kbox:k.box, b=box[romaji]||0;
+    return b>=4?'mastered':(b>=1?'progress':'new');
+  }
+  function kxGrid(rows,cols,tbl){
+    var idx=(kanaSheetScript==='kata')?1:0, h='<div class="kx-grid kx-c'+cols+'">';
+    rows.forEach(function(row){ row.ks.forEach(function(r){
+      if(!r){ h+='<span class="kx-cell empty"></span>'; return; }
+      var g=tbl[r]?tbl[r][idx]:''; if(!g){ h+='<span class="kx-cell empty"></span>'; return; }
+      h+='<button class="kx-cell '+kxState(r)+'" data-say="'+g+'"><span class="kx-g mincho">'+g+'</span><span class="kx-r">'+r+'</span></button>';
+    }); });
+    return h+'</div>';
+  }
+  function renderKanaSheet(){
+    var inner=document.getElementById('fichaInner'); if(!inner)return;
+    var es=getLang()==='es', hira=(kanaSheetScript!=='kata');
+    var h='<div class="d-sticky"><div class="d-head"><button class="d-close" id="fxClose">✕ '+t("Back")+'</button>'+
+          '<span class="cx-title mincho">🈂️ '+(es?'Silabario — consulta rápida':'Kana — quick lookup')+'</span></div>'+
+          '<div class="kx-tabs">'+
+            '<button class="kx-tab'+(hira?' on':'')+'" data-kx="hira">ひらがな</button>'+
+            '<button class="kx-tab'+(!hira?' on':'')+'" data-kx="kata">カタカナ</button>'+
+          '</div></div>';
+    h+='<div class="fx-intro">'+(es
+        ?'Tocá cualquier kana para oírlo. El borde muestra tu dominio real: verde = dominado, naranja = en progreso, tenue = sin practicar.'
+        :'Tap any kana to hear it. The border shows your real mastery: green = mastered, orange = in progress, faint = not practiced.')+'</div>';
+    h+='<div class="fx-cat">'+(es?'Base (gojūon)':'Base (gojūon)')+'</div>'+kxGrid(KX_BASE_ROWS,5,KANA_BASE);
+    h+='<div class="fx-cat">'+(es?'Con dakuten / handakuten':'With dakuten / handakuten')+'</div>'+kxGrid(KX_DAK_ROWS,5,KANA_DAKUTEN);
+    h+='<div class="fx-cat">'+(es?'Yōon (sonidos contraídos)':'Yōon (contracted sounds)')+'</div>'+kxGrid(KX_YOON_ROWS,3,KANA_YOON);
+    var conf=KX_CONFUSE[hira?'hira':'kata'];
+    h+='<div class="fx-cat">'+(es?'Parecidas — ojo':'Look-alikes — watch out')+'</div>'+
+       '<div class="fx-foot" style="margin:6px 0 16px"><span class="mincho" style="font-size:17px">'+conf.join('</span>&nbsp;&nbsp;<span class="mincho" style="font-size:17px">')+'</span></div>';
+    inner.innerHTML=h;
+    var c=document.getElementById('fxClose'); if(c)c.addEventListener('click',closeFicha);
+    inner.querySelectorAll('.kx-cell[data-say]').forEach(function(b){ b.addEventListener('click',function(){ speak(b.getAttribute('data-say')); }); });
+    inner.querySelectorAll('.kx-tab[data-kx]').forEach(function(b){ b.addEventListener('click',function(){ kanaSheetScript=b.getAttribute('data-kx'); renderKanaSheet(); }); });
+  }
   function renderFicha(){
+    if(fichaGameId==='__kana__'){ renderKanaSheet(); return; }
+    if(fichaGameId&&fichaGameId.indexOf('__note:')===0){ renderNote(fichaGameId.slice(7)); return; }
     var g=null,i; for(i=0;i<GAMES.length;i++) if(GAMES[i].id===fichaGameId) g=GAMES[i];
     var inner=document.getElementById('fichaInner'); if(!g||!inner)return;
     var es=getLang()==='es', r=gameReadiness(g), v=gameVerdict(r);
