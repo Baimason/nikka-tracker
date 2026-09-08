@@ -2283,7 +2283,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function examBuildQ(){
     var rung=X_RUNGS[xsess.ri], target=xsess.queue[xsess.qi];
     xsess.q={target:target,script:rung.script,opts:examOpts(target,rung),answered:false,picked:null};
-    if(!xsess.__silent) setTimeout(function(){ try{speak(glyph(target,rung.script));}catch(e){} },220);
+    /* no audio on show — in a READING test the sound would give away the answer */
   }
 
   function examAnswer(pick){
@@ -2295,6 +2295,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     else { xsess.missed[rung.script][q.target]=1; }
     renderExam();
     if(!xsess.__silent){
+      if(correct){ try{speak(glyph(q.target,rung.script));}catch(e){} }  /* sound only as a reward, never before answering */
       if(xsess.advTimer)clearTimeout(xsess.advTimer);
       xsess.advTimer=setTimeout(function(){ if(xsess&&!xsess.done)examNext(); }, correct?520:900);
     }
