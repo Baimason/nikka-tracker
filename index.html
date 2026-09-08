@@ -422,6 +422,11 @@
   .phrase-nudge-btn:active{transform:translateY(1px)}
   .grow.aimed{border-left:3px solid var(--shu);padding-left:11px}
   .grow.aimed2{border-left-width:5px}
+  .games-head{cursor:pointer;user-select:none}
+  .games-head .gh-chev{font-size:12px;opacity:.5;line-height:1;display:inline-block;transition:transform .18s ease}
+  .games-head.open .gh-chev{transform:rotate(90deg)}
+  .games-hint{font-size:12px;color:var(--ink-soft);margin:6px 0 0}
+  .games-hint .gh-aim{color:var(--shu);font-weight:700}
   .prog > i.d{background:var(--gold)}
   .mc-miles{display:flex;gap:14px;font-size:11px;letter-spacing:.02em;margin:1px 0 2px;color:var(--ink-faint)}
   .mc-miles .ms.on{color:var(--green);font-weight:700}
@@ -4062,25 +4067,24 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       sub:(es?('Te faltan '+f2+' palabra'+(f2===1?'':'s')+' para jugarlo con diccionario'):(f2+' word'+(f2===1?'':'s')+' from playable w/ dictionary')) };
   }
 
-  function gamesCardHTML(){
-    if(!GAMES.length) return "";
+  /* Un juego de la lista "¿Qué puedo jugar?" como bloque .grow. Extraído de
+     gamesCardHTML para poder pintar la lista completa o solo el target. */
+  function growHTML(g){
     var es=getLang()==="es";
-    var h='<div class="mastery-card"><div class="mc-top"><h3>'+(es?'¿Qué puedo jugar?':'What can I play?')+'</h3></div>';
-    GAMES.forEach(function(g){
-      var r=gameReadiness(g), v=gameVerdict(r);
-      var pct=Math.round(r.cov*100);
-      var alvl=(state.aim===g.id)?(state.aimLvl||1):0, aimed=alvl>0;
-      var aimLbl=alvl>=2?(es?'🎯🎯 Enfoque total':'🎯🎯 Full focus')
-               :alvl>=1?(es?'🎯 Apuntando':'🎯 Aiming')
-               :(es?'🎯 Apuntar a este':'🎯 Aim at this');
-      /* double-progress milestones: same axis (% menú dominado), two honest goals */
-      var dictNeed=Math.ceil(READY_DICT*r.words.total), comfyNeed=Math.ceil(READY_COMFY*r.words.total);
-      var okDict=r.cov>=READY_DICT, okComfy=r.cov>=READY_COMFY;
-      var msDict=okDict?(es?'✓ jugable':'✓ playable')
-                       :(es?('jugable: '+(dictNeed-r.words.done)+' más'):('playable: '+(dictNeed-r.words.done)+' more'));
-      var msComfy=okComfy?(es?'✓ cómodo':'✓ comfy')
-                         :(es?('cómodo: '+(comfyNeed-r.words.done)+' más'):('comfy: '+(comfyNeed-r.words.done)+' more'));
-      h+='<div class="grow'+(aimed?' aimed':'')+(alvl>=2?' aimed2':'')+'">'+
+    var r=gameReadiness(g), v=gameVerdict(r);
+    var pct=Math.round(r.cov*100);
+    var alvl=(state.aim===g.id)?(state.aimLvl||1):0, aimed=alvl>0;
+    var aimLbl=alvl>=2?(es?'🎯🎯 Enfoque total':'🎯🎯 Full focus')
+             :alvl>=1?(es?'🎯 Apuntando':'🎯 Aiming')
+             :(es?'🎯 Apuntar a este':'🎯 Aim at this');
+    /* double-progress milestones: same axis (% menú dominado), two honest goals */
+    var dictNeed=Math.ceil(READY_DICT*r.words.total), comfyNeed=Math.ceil(READY_COMFY*r.words.total);
+    var okDict=r.cov>=READY_DICT, okComfy=r.cov>=READY_COMFY;
+    var msDict=okDict?(es?'✓ jugable':'✓ playable')
+                     :(es?('jugable: '+(dictNeed-r.words.done)+' más'):('playable: '+(dictNeed-r.words.done)+' more'));
+    var msComfy=okComfy?(es?'✓ cómodo':'✓ comfy')
+                       :(es?('cómodo: '+(comfyNeed-r.words.done)+' más'):('comfy: '+(comfyNeed-r.words.done)+' more'));
+    return '<div class="grow'+(aimed?' aimed':'')+(alvl>=2?' aimed2':'')+'">'+
            '<div class="grow-top"><span class="grow-name">'+gamePick(g.name)+
              ' <span class="grow-mode">'+gamePick(g.mode)+'</span></span>'+
              '<span class="gbadge '+v.cls+'">'+v.badge+'</span></div>'+
@@ -4096,7 +4100,37 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
              '<button class="ficha-btn" data-ficha="'+g.id+'">📖 '+(es?'Ficha':'Cheat sheet')+'</button>'+
            '</div>'+
          '</div>';
-    });
+  }
+
+  /* Estado de UI efímero: la lista de juegos arranca "encogida". No se persiste
+     (al recargar vuelve a plegarse) para que la pantalla arranque compacta. */
+  var gamesOpen=false;
+  function toggleGames(){ gamesOpen=!gamesOpen; render(); }
+
+  function gamesCardHTML(){
+    if(!GAMES.length) return "";
+    var es=getLang()==="es";
+    var aimG=aimedGame();  /* juego apuntado, o null si no hay target */
+    var h='<div class="mastery-card">'+
+          '<div class="mc-top games-head'+(gamesOpen?' open':'')+'" data-fn="toggleGames">'+
+            '<h3>'+(es?'¿Qué puedo jugar?':'What can I play?')+'</h3>'+
+            '<span class="gh-chev">▸</span>'+
+          '</div>';
+    /* Pista contextual solo cuando está plegado: dice qué hay detrás del toque. */
+    if(!gamesOpen){
+      if(aimG){
+        h+='<div class="games-hint"><span class="gh-aim">🎯 '+(es?'Apuntás a ':'Aiming at ')+gamePick(aimG.name)+'</span> · '+(es?'tocá para ver los demás':'tap to see the rest')+'</div>';
+      } else {
+        h+='<div class="games-hint">'+(es?'Tocá para ver los juegos y elegir uno':'Tap to see the games and pick one')+'</div>';
+      }
+    }
+    /* Cuerpo: expandido -> todos; plegado con target -> solo el target;
+       plegado sin target -> nada (menú pequeño, solo el header). */
+    if(gamesOpen){
+      GAMES.forEach(function(g){ h+=growHTML(g); });
+    } else if(aimG){
+      h+=growHTML(aimG);
+    }
     h+='</div>';
     /* Tarjeta de referencia rápida: cheat sheet de kana + notas generales (data-driven). */
     h+='<div class="mastery-card"><div class="mc-top"><h3>'+(es?'Referencia rápida':'Quick reference')+'</h3></div>';
@@ -5958,7 +5992,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   }
 
   function bindMain(){
-    app.querySelectorAll("[data-fn]").forEach(function(b){var fn=b.getAttribute("data-fn");b.addEventListener("click",function(){if(fn==="startDrill")startDrill();else if(fn==="startGap")startGapDrill();else if(fn==="startDaily")startDaily();else if(fn==="startWords")startWords();else if(fn==="startPhrases")startPhrases();else if(fn==="startBuild")startBuild();else if(fn==="startMatch")startMatch();else if(fn==="openCustom")openCustom();else if(fn==="startKanji")startKanji();else if(fn==="activateKanji")activateKanji();else if(fn==="activatePhrases")activatePhrases();else if(fn==="startPlacement")startPlacement();});});
+    app.querySelectorAll("[data-fn]").forEach(function(b){var fn=b.getAttribute("data-fn");b.addEventListener("click",function(){if(fn==="startDrill")startDrill();else if(fn==="startGap")startGapDrill();else if(fn==="startDaily")startDaily();else if(fn==="startWords")startWords();else if(fn==="startPhrases")startPhrases();else if(fn==="startBuild")startBuild();else if(fn==="startMatch")startMatch();else if(fn==="openCustom")openCustom();else if(fn==="startKanji")startKanji();else if(fn==="activateKanji")activateKanji();else if(fn==="activatePhrases")activatePhrases();else if(fn==="startPlacement")startPlacement();else if(fn==="toggleGames")toggleGames();});});
 
     var wd=app.querySelector(".wotd[data-say]"); if(wd)wd.addEventListener("click",function(){speak(wd.getAttribute("data-say"));});
     app.querySelectorAll("[data-aim]").forEach(function(b){ b.addEventListener("click",function(){ setAim(b.getAttribute("data-aim")); }); });
