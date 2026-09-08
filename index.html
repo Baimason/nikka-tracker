@@ -706,7 +706,20 @@
     font-family:var(--display-font);font-weight:800;font-size:12px;letter-spacing:.14em;color:var(--shu);
     opacity:0;transform:translateY(4px);transition:opacity .28s ease,transform .28s ease;pointer-events:none}
   .n5-wrap.show .n5-tip{opacity:1;transform:translateY(0)}
-  </style>
+  
+  .fx-tools{margin:8px 0 2px}
+  .fx-srow{display:flex;gap:6px;align-items:center}
+  .fx-search{flex:1;min-width:0;font:inherit;font-size:14px;background:var(--card);color:var(--ink);border:1.5px solid var(--line);border-radius:6px;padding:8px 10px;outline:none}
+  .fx-search:focus{border-color:var(--ink-soft)}
+  .fx-clear{flex:0 0 auto;background:var(--card);border:1.5px solid var(--line);border-radius:6px;color:var(--ink-soft);padding:8px 11px;cursor:pointer;font:inherit}
+  .fx-index{display:flex;gap:6px;overflow-x:auto;padding:7px 0 2px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .fx-index::-webkit-scrollbar{display:none}
+  .fx-pill{flex:0 0 auto;white-space:nowrap;font-family:var(--display-font);font-size:11.5px;font-weight:700;padding:4px 10px;border:1.2px solid var(--line);border-radius:20px;background:var(--card);color:var(--ink-soft);cursor:pointer}
+  .fx-pill b{color:var(--ink);font-weight:800;margin-left:3px}
+  .fx-pill.dim{opacity:.32}
+  .fx-empty{color:var(--ink-soft);font-size:14px;padding:22px 4px;text-align:center}
+  .fx-cat{scroll-margin-top:150px}
+</style>
 
 <div class="wrap">
   <header>
@@ -4060,14 +4073,14 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
         {jp:'まんたんのくすり',cat:'item',tier:2,romaji:'mantan no kusuri',es:'restaura todo',en:'Full Restore'},
         {jp:'すごいキズぐすり',cat:'item',tier:2,romaji:'sugoi kizugusuri',es:'hiperpoción',en:'Hyper Potion'},
         {jp:'いいキズぐすり',cat:'item',tier:2,romaji:'ii kizugusuri',es:'superpoción',en:'Super Potion'},
-        {jp:'グレーバッジ',cat:'world',tier:2,romaji:'guree bajji',es:'medalla gris (Roca)',en:'Boulder Badge'},
-        {jp:'ブルーバッジ',cat:'world',tier:2,romaji:'buruu bajji',es:'medalla azul (Cascada)',en:'Cascade Badge'},
-        {jp:'オレンジバッジ',cat:'world',tier:2,romaji:'orenji bajji',es:'medalla naranja (Trueno)',en:'Thunder Badge'},
-        {jp:'レインボーバッジ',cat:'world',tier:2,romaji:'reinboo bajji',es:'medalla arco iris (Arco Iris)',en:'Rainbow Badge'},
-        {jp:'ピンクバッジ',cat:'world',tier:2,romaji:'pinku bajji',es:'medalla rosa (Alma)',en:'Soul Badge'},
-        {jp:'ゴールドバッジ',cat:'world',tier:2,romaji:'goorudo bajji',es:'medalla dorada (Pantano)',en:'Marsh Badge'},
-        {jp:'クりムゾンバッジ',cat:'world',tier:2,romaji:'kurimuzon bajji',es:'medalla carmesí (Volcán)',en:'Volcano Badge'},
-        {jp:'グりーンバッジ',cat:'world',tier:2,romaji:'guriin bajji',es:'medalla verde (Tierra)',en:'Earth Badge'},
+        {jp:'グレーバッジ',cat:'badge',tier:2,romaji:'guree bajji',es:'medalla gris (Roca)',en:'Boulder Badge'},
+        {jp:'ブルーバッジ',cat:'badge',tier:2,romaji:'buruu bajji',es:'medalla azul (Cascada)',en:'Cascade Badge'},
+        {jp:'オレンジバッジ',cat:'badge',tier:2,romaji:'orenji bajji',es:'medalla naranja (Trueno)',en:'Thunder Badge'},
+        {jp:'レインボーバッジ',cat:'badge',tier:2,romaji:'reinboo bajji',es:'medalla arco iris (Arco Iris)',en:'Rainbow Badge'},
+        {jp:'ピンクバッジ',cat:'badge',tier:2,romaji:'pinku bajji',es:'medalla rosa (Alma)',en:'Soul Badge'},
+        {jp:'ゴールドバッジ',cat:'badge',tier:2,romaji:'goorudo bajji',es:'medalla dorada (Pantano)',en:'Marsh Badge'},
+        {jp:'クりムゾンバッジ',cat:'badge',tier:2,romaji:'kurimuzon bajji',es:'medalla carmesí (Volcán)',en:'Volcano Badge'},
+        {jp:'グりーンバッジ',cat:'badge',tier:2,romaji:'guriin bajji',es:'medalla verde (Tierra)',en:'Earth Badge'},
         {jp:'むしよけスプレー',cat:'item',tier:2,romaji:'mushiyoke supuree',es:'repelente',en:'Repel'},
         {jp:'ひみつのコハク',cat:'item',tier:2,romaji:'himitsu no kohaku',es:'ámbar viejo',en:'Old Amber'},
         {jp:'ほのおのいし',cat:'item',tier:2,romaji:'honoo no ishi',es:'piedra fuego',en:'Fire Stone'},
@@ -4360,16 +4373,20 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var need = g.kana || READY_KANA_DEFAULT;
     var hira = scriptMastery('hira').pct, kata = scriptMastery('kata').pct;
     var kanaOK = (hira >= (need.hira||0)) && (kata >= (need.kata||0));
-    var core = (g.words||[]).filter(function(w){ return (w.tier==null||w.tier<=1); }).map(function(w){ return w.jp; });
-    var have = core.filter(isWordMastered).length;
-    var cov  = core.length ? have/core.length : 1;
+    var vital = (g.words||[]).filter(function(w){ return (w.tier==null||w.tier<=1); }).map(function(w){ return w.jp; });
+    var t0    = (g.words||[]).filter(function(w){ return (w.tier==null||w.tier===0); }).map(function(w){ return w.jp; });
+    var haveV = vital.filter(isWordMastered).length;
+    var have0 = t0.filter(isWordMastered).length;
+    var covV  = vital.length ? haveV/vital.length : 1;
+    var cov0  = t0.length ? have0/t0.length : 1;
     var st;
-    if(!kanaOK || cov < READY_DICT) st='locked';
-    else if(cov < READY_COMFY)      st='dict';
-    else                            st='comfy';
-    return { state:st, cov:cov,
+    if(!kanaOK || cov0 < READY_DICT) st='locked';   /* jugable = capa arranque (tier 0) */
+    else if(covV < READY_COMFY)      st='dict';     /* cómodo  = capa vital (tier 0+1)   */
+    else                             st='comfy';
+    return { state:st, cov:covV, cov0:cov0,
       kana:{ ok:kanaOK, hira:hira, kata:kata, needHira:(need.hira||0), needKata:(need.kata||0) },
-      words:{ done:have, total:core.length } };
+      words:{ done:haveV, total:vital.length },
+      t0:{ done:have0, total:t0.length } };
   }
 
   /* What to show under a game: verdict badge + the honest "te falta" line. */
@@ -4389,7 +4406,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       return { cls:'locked', badge:(es?'Todavía no':'Not yet'),
         sub:(es?'Te falta ':'Need ')+parts.join(es?' y ':' & ') };
     }
-    var dn=Math.ceil(READY_DICT*r.words.total), f2=Math.max(1,dn-r.words.done);
+    var dn=Math.ceil(READY_DICT*r.t0.total), f2=Math.max(1,dn-r.t0.done);
     return { cls:'locked', badge:(es?'Todavía no':'Not yet'),
       sub:(es?('Te faltan '+f2+' palabra'+(f2===1?'':'s')+' para jugarlo con diccionario'):(f2+' word'+(f2===1?'':'s')+' from playable w/ dictionary')) };
   }
@@ -4405,18 +4422,19 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
              :alvl>=1?(es?'🎯 Apuntando':'🎯 Aiming')
              :(es?'🎯 Apuntar a este':'🎯 Aim at this');
     /* double-progress milestones: same axis (% menú dominado), two honest goals */
-    var dictNeed=Math.ceil(READY_DICT*r.words.total), comfyNeed=Math.ceil(READY_COMFY*r.words.total);
-    var okDict=r.cov>=READY_DICT, okComfy=r.cov>=READY_COMFY;
+    var dictNeed=Math.ceil(READY_DICT*r.t0.total), comfyNeed=Math.ceil(READY_COMFY*r.words.total);
+    var okDict=r.cov0>=READY_DICT, okComfy=r.cov>=READY_COMFY;
+    var dictLeft=Math.max(1,dictNeed-r.t0.done), comfyLeft=Math.max(1,comfyNeed-r.words.done);
     var msDict=okDict?(es?'✓ jugable':'✓ playable')
-                     :(es?('jugable: '+(dictNeed-r.words.done)+' más'):('playable: '+(dictNeed-r.words.done)+' more'));
+                     :(es?('jugable: '+dictLeft+' más'):('playable: '+dictLeft+' more'));
     var msComfy=okComfy?(es?'✓ cómodo':'✓ comfy')
-                       :(es?('cómodo: '+(comfyNeed-r.words.done)+' más'):('comfy: '+(comfyNeed-r.words.done)+' more'));
+                       :(es?('cómodo: '+comfyLeft+' más'):('comfy: '+comfyLeft+' more'));
     return '<div class="grow'+(aimed?' aimed':'')+(alvl>=2?' aimed2':'')+'">'+
            '<div class="grow-top"><span class="grow-name">'+gamePick(g.name)+
              ' <span class="grow-mode">'+gamePick(g.mode)+'</span></span>'+
              '<span class="gbadge '+v.cls+'">'+v.badge+'</span></div>'+
            '<div class="prog milestones"><i class="'+(r.state==='comfy'?'g':(r.state==='dict'?'d':''))+'" style="width:'+pct+'%"></i>'+
-             '<span class="tick'+(okDict?' on':'')+'" style="left:'+Math.round(READY_DICT*100)+'%"></span>'+
+             '<span class="tick'+(okDict?' on':'')+'" style="left:'+Math.round(READY_DICT*(r.t0.total/Math.max(1,r.words.total))*100)+'%"></span>'+
              '<span class="tick'+(okComfy?' on':'')+'" style="left:'+Math.round(READY_COMFY*100)+'%"></span></div>'+
            '<div class="mc-miles"><span class="ms'+(okDict?' on':'')+'">'+msDict+'</span>'+
              '<span class="ms'+(okComfy?' on':'')+'">'+msComfy+'</span></div>'+
@@ -4501,6 +4519,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     court:{es:'En la corte',en:'In court'},
     crime:{es:'Crimen',en:'Crime'},
     move:{es:'Movimientos',en:'Moves'},
+    badge:{es:'Medallas',en:'Badges'},
     shop:{es:'Tienda',en:'Shop'},
     hm:{es:'Técnicas de campo (MO)',en:'Field moves (HM)'},
     place:{es:'Rumbos y pisos',en:'Directions & floors'},
@@ -4513,8 +4532,17 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     if(b>=1) return 'progress';                 /* vista, subiendo */
     if(wordReadable(jp)) return 'readable';     /* podés sonarla, aún sin practicar */
     return 'locked'; }                          /* su kana todavía no se aprendió */
-  function fichaGroups(g){ var order=[],map={};
-    (g.words||[]).forEach(function(w){ var c=w.cat||'general'; if(!map[c]){map[c]=[];order.push(c);} map[c].push(w); });
+  function kataToHira(s){ return (s||'').replace(/[\u30a1-\u30f6]/g,function(ch){return String.fromCharCode(ch.charCodeAt(0)-0x60);}); }
+  function fxHay(w){ var s=((w.jp||'')+' '+(w.romaji||'')+' '+(w.es||'')+' '+(w.en||'')).toLowerCase(); return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+  function fichaGroups(g){ var order=[],map={},idx={};
+    (g.words||[]).forEach(function(w){ var c=w.cat||'general'; if(!map[c]){map[c]=[];idx[c]=order.length;order.push(c);} map[c].push(w); });
+    var BULK={item:1,move:2,badge:3};   /* secciones grandes de referencia van al final */
+    function minTier(c){ var m=99; map[c].forEach(function(w){ var t=(w.tier==null?0:w.tier); if(t<m)m=t; }); return m; }
+    order.sort(function(a,b){
+      var ba=BULK[a]||0, bb=BULK[b]||0; if(ba!==bb) return ba-bb;
+      var ta=minTier(a), tb=minTier(b); if(ta!==tb) return ta-tb;
+      return idx[a]-idx[b];
+    });
     return {order:order,map:map}; }
   function fichaChipHTML(w){
     var es=getLang()==='es', st=fichaState(w.jp), gl=es?(w.es||w.en):(w.en||w.es);
@@ -4523,7 +4551,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
              : st==='locked'  ?'<span class="fx-mk lock">🔒</span>'
              :                  '<span class="fx-mk">·</span>';
     var em = w.emoji?('<span class="fx-em">'+w.emoji+'</span>'):'';
-    return '<button class="fx-chip '+st+'" data-say="'+w.jp+'">'+
+    return '<button class="fx-chip '+st+'" data-say="'+w.jp+'" data-search="'+fxHay(w)+'">'+
       '<div class="fx-hd">'+em+'<span class="fx-jp mincho">'+wordFormHTML(w)+'</span>'+mark+'</div>'+
       '<div class="fx-ro">'+(w.romaji||'')+'</div>'+
       '<div class="fx-gl">'+gl+'</div>'+
@@ -4689,8 +4717,15 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var inner=document.getElementById('fichaInner'); if(!g||!inner)return;
     var es=getLang()==='es', r=gameReadiness(g), v=gameVerdict(r);
     var prog=(g.words||[]).filter(function(w){return fichaState(w.jp)==='progress';}).length;
+    var grp=fichaGroups(g);
     var h='<div class="d-sticky"><div class="d-head"><button class="d-close" id="fxClose">✕ '+t("Back")+'</button>'+
-          '<span class="cx-title mincho">📖 '+gamePick(g.name)+'</span></div></div>';
+          '<span class="cx-title mincho">📖 '+gamePick(g.name)+'</span></div>'+
+          '<div class="fx-tools"><div class="fx-srow">'+
+            '<input id="fxSearch" class="fx-search" type="search" lang="ja" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="'+(es?'Buscar: kana, rōmaji o español…':'Search: kana, rōmaji or Spanish…')+'">'+
+            '<button id="fxClear" class="fx-clear" title="'+(es?'Limpiar':'Clear')+'">✕</button></div>'+
+            '<div class="fx-index" id="fxIndex">'+grp.order.map(function(c){return '<button class="fx-pill" data-jump="fxsec-'+c+'">'+catLabel(c)+' <b>'+grp.map[c].length+'</b></button>';}).join('')+'</div>'+
+          '</div>'+
+          '</div>';
     h+='<div class="fx-intro"><span class="grow-mode">'+gamePick(g.mode)+'</span> · '+
         r.words.done+' / '+r.words.total+' '+(es?'dominadas':'mastered')+
         (prog?(' · '+prog+(es?' en progreso':' in progress')):'')+
@@ -4699,12 +4734,12 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
         '<span><b class="prog">◐</b>'+(es?'en progreso':'in progress')+'</span>'+
         '<span><b>·</b>'+(es?'legible':'readable')+'</span>'+
         '<span><b class="lock">🔒</b>'+(es?'bloqueada':'locked')+'</span></div>';
-    var grp=fichaGroups(g);
     grp.order.forEach(function(c){
-      h+='<div class="fx-cat">'+catLabel(c)+'</div><div class="fx-grid">';
+      h+='<div class="fx-cat" id="fxsec-'+c+'">'+catLabel(c)+'</div><div class="fx-grid">';
       grp.map[c].forEach(function(w){ h+=fichaChipHTML(w); });
       h+='</div>';
     });
+    h+='<div class="fx-empty" id="fxEmpty" style="display:none">'+(es?'Sin resultados. Probá con rōmaji o el significado.':'No matches. Try rōmaji or the meaning.')+'</div>';
     h+='<div class="fx-foot">'+(es
         ?'El diálogo y la historia no están acá: para eso usá un diccionario externo (Jisho, Yomitan). Nikka te sube la lectura hasta que ese diccionario te sea usable.'
         :'Story dialogue lives elsewhere: use an external dictionary (Jisho, Yomitan) for that. Nikka raises your reading until that dictionary becomes usable.')+'</div>';
@@ -4712,6 +4747,33 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var c=document.getElementById('fxClose'); if(c)c.addEventListener('click',closeFicha);
     inner.querySelectorAll('.fx-chip[data-say]').forEach(function(b){
       b.addEventListener('click',function(){ speak(b.getAttribute('data-say')); }); });
+    (function(){
+      var sEl=document.getElementById('fxSearch'), clr=document.getElementById('fxClear'), emptyEl=document.getElementById('fxEmpty');
+      function norm(x){ return kataToHira((x||'').toLowerCase()); }
+      function applyFilter(){
+        var q=norm(sEl?sEl.value.trim():''), any=false, live={};
+        inner.querySelectorAll('.fx-grid').forEach(function(grid){
+          var shown=0;
+          grid.querySelectorAll('.fx-chip').forEach(function(chip){
+            var ok=!q || norm(chip.getAttribute('data-search')||'').indexOf(q)>=0;
+            chip.style.display=ok?'':'none'; if(ok)shown++;
+          });
+          var lab=grid.previousElementSibling;
+          grid.style.display=shown?'':'none';
+          if(lab&&lab.classList&&lab.classList.contains('fx-cat')){ lab.style.display=shown?'':'none'; live[lab.id]=shown>0; }
+          if(shown)any=true;
+        });
+        if(emptyEl)emptyEl.style.display=any?'none':'';
+        inner.querySelectorAll('.fx-pill[data-jump]').forEach(function(p){
+          var id=p.getAttribute('data-jump'); p.classList.toggle('dim', !!q && live[id]===false);
+        });
+      }
+      if(sEl)sEl.addEventListener('input',applyFilter);
+      if(clr)clr.addEventListener('click',function(){ if(sEl){sEl.value='';sEl.focus();} applyFilter(); });
+      inner.querySelectorAll('.fx-pill[data-jump]').forEach(function(p){
+        p.addEventListener('click',function(){ var el=document.getElementById(p.getAttribute('data-jump')); if(el)el.scrollIntoView({behavior:'smooth',block:'start'}); });
+      });
+    })();
   }
   /* Accesos rápidos del header: abren fichas directas (silabario, notas, ficha
      del juego apuntado) sin scrollear. Reusan data-ficha -> openFicha. */
