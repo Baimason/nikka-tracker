@@ -2267,7 +2267,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function startPlacement(silent){
     ensureKana();
     xsess={ri:0,queue:[],qi:0,q:null,rungCorrect:0,rungShown:0,
-           results:[],passed:0,correctKeys:{hira:{},kata:{}},done:false,
+           results:[],passed:0,correctKeys:{hira:{},kata:{}},missed:{hira:{},kata:{}},done:false,
            seedInfo:null,advTimer:null,__silent:!!silent};
     examLoadRung();
     drillEl.classList.remove("hidden");
@@ -2292,6 +2292,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var correct=pick===q.target, rung=X_RUNGS[xsess.ri];
     xsess.rungShown++;
     if(correct){ xsess.rungCorrect++; xsess.correctKeys[rung.script][q.target]=1; }
+    else { xsess.missed[rung.script][q.target]=1; }
     renderExam();
     if(!xsess.__silent){
       if(xsess.advTimer)clearTimeout(xsess.advTimer);
@@ -2331,10 +2332,14 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var seededSolid=0, seededWarm=0;
     /* 1) passed rungs → seed the WHOLE rung solid (box 4), additively */
     for(var i=0;i<xsess.passed;i++){
-      var R=X_RUNGS[i], box=boxFor(R.script);
+      var R=X_RUNGS[i], box=boxFor(R.script), miss=xsess.missed[R.script]||{};
       R.keys.forEach(function(r){
-        if((box[r]||0)<4){ box[r]=4; k.learned[learnedKey(R.script,r)]=true;
-          k.due[learnedKey(R.script,r)]=examDueDays(2,9); seededSolid++; }
+        var cur=box[r]||0; if(cur>=4)return;
+        var fumbled=!!miss[r];
+        box[r]=fumbled?Math.max(cur,2):4;
+        k.learned[learnedKey(R.script,r)]=true;
+        k.due[learnedKey(R.script,r)]=examDueDays(fumbled?1:2, fumbled?4:9);
+        if(fumbled)seededWarm++; else seededSolid++;
       });
     }
     /* 2) the failing rung → seed only chars answered right, to box 3
@@ -5858,6 +5863,11 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
          '<span class="cx-sub">'+t("mastery check — write the rōmaji yourself")+'</span></span>'+
          '<span class="cx-pill'+(k.produce?" on":"")+'">'+(k.produce?"✓":"")+'</span></button>';
     }
+    h+='<div class="ex-sep">'+(lang==="es"?"Nivelaci\u00f3n":"Placement")+'</div>';
+    h+='<button class="cx-toggle" id="cxPlacement"><span class="cx-main">'+
+       '<span class="cx-label">\ud83c\udf93 '+(lang==="es"?"Prueba de nivelaci\u00f3n":"Placement test")+'</span>'+
+       '<span class="cx-sub">'+(lang==="es"?"re-ub\u00edcate \u2014 mide qu\u00e9 kana ya le\u00e9s":"re-place \u2014 measures which kana you already read")+'</span></span>'+
+       '<span class="cx-pill">\u2192</span></button>';
     h+='<div class="ex-sep">'+t("Focus on a game")+'</div>';
     if(g){ h+=cxToggle("useAim","🎯 "+(g.name&&g.name[lang]?g.name[lang]:g.id),{ok:true},t("biases new words toward this game")); }
     else { h+='<div class="cx-toggle off"><span class="cx-main"><span class="cx-label">🎯 '+t("Focus on a game")+'</span><span class="cx-sub">'+t("aim at a game first")+'</span></span><span class="cx-pill lock">🔒</span></div>'; }
@@ -5875,6 +5885,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       b.addEventListener("click",function(){ setSeg(b.getAttribute("data-cxseg"),1); renderCustom(); }); });
     customInner.querySelectorAll("[data-cxproduce]").forEach(function(b){
       b.addEventListener("click",function(){ var kk=ensureKana(); kk.produce=!kk.produce; Persistence.save(state); renderCustom(); }); });
+    var cxp=document.getElementById("cxPlacement"); if(cxp)cxp.addEventListener("click",function(){ closeCustom(true); startPlacement(); });
     var s=document.getElementById("cxStart"); if(s&&!s.disabled)s.addEventListener("click",startCustom);
   }
   function startCustom(){
