@@ -423,10 +423,30 @@
   .grow.aimed{border-left:3px solid var(--shu);padding-left:11px}
   .grow.aimed2{border-left-width:5px}
   .games-head,.road-head,.res-head{cursor:pointer;user-select:none}
-  .gh-chev{font-size:12px;opacity:.5;line-height:1;display:inline-block;transition:transform .18s ease}
+  .gh-chev{font-size:12px;opacity:.5;line-height:1;display:inline-block;transition:transform .2s ease}
   .games-head.open .gh-chev,.road-head.open .gh-chev,.res-head.open .gh-chev{transform:rotate(90deg)}
   .games-hint{font-size:12px;color:var(--ink-soft);margin:6px 0 0}
   .games-hint .gh-aim{color:var(--shu);font-weight:700}
+  .res-hint{font-size:12px;color:var(--ink-soft);margin:6px 0 0}
+  .games-head.open + .games-hint,.res-head.open + .res-hint{display:none}
+  /* smooth collapse — animate height so open/close glides */
+  .games-list .grow{transition:max-height .34s ease,opacity .26s ease,padding .3s ease}
+  .games-list .grow:not(.aimed){max-height:420px;overflow:hidden}
+  .games-list:not(.open) .grow:not(.aimed){max-height:0;opacity:0;padding-top:0;padding-bottom:0;pointer-events:none}
+  .road .stop:not(.rd-cur){max-height:220px;overflow:hidden;transition:max-height .32s ease,opacity .26s ease}
+  .road:not(.open) .stop:not(.rd-cur){max-height:0;opacity:0;pointer-events:none}
+  .res{overflow:hidden;transition:max-height .34s ease,opacity .26s ease}
+  .res.open{max-height:600px;opacity:1}
+  .res:not(.open){max-height:0;opacity:0}
+  /* quick-reference chips (header) */
+  .rom-row{display:flex;justify-content:space-between;align-items:center;gap:8px 14px;flex-wrap:wrap}
+  .quickref{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .qr-chip{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:700;
+    padding:3px 9px;border:1.2px solid var(--line);border-radius:20px;background:transparent;
+    color:var(--ink-soft);cursor:pointer;white-space:nowrap;max-width:150px;overflow:hidden;
+    text-overflow:ellipsis;line-height:1.6}
+  .qr-chip:hover{border-color:var(--ink-faint);color:var(--ink)}
+  .qr-chip.qr-aim{border-color:var(--shu);color:var(--shu)}
   .prog > i.d{background:var(--gold)}
   .mc-miles{display:flex;gap:14px;font-size:11px;letter-spacing:.02em;margin:1px 0 2px;color:var(--ink-faint)}
   .mc-miles .ms.on{color:var(--green);font-weight:700}
@@ -699,7 +719,10 @@
         <div class="streak-meta" id="streakMeta"></div>
       </div>
     </div>
-    <div class="rom" id="romSub">Nikka · daily practice</div>
+    <div class="rom-row">
+      <div class="rom" id="romSub">Nikka · daily practice</div>
+      <div class="quickref" id="quickRef"></div>
+    </div>
   </header>
   <div id="app"><div class="loading">Loading your progress…</div></div>
   <footer>
@@ -1314,18 +1337,20 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     } else if(pct!==null){
       badge='<span class="stg-badge">'+pct+'%</span>';
     }
-    return '<div class="stop '+st+'"><div class="rail"><div class="dot"></div><div class="bar"></div></div>'+
+    return '<div class="stop '+st+(num===_cs?' rd-cur':'')+'"><div class="rail"><div class="dot"></div><div class="bar"></div></div>'+
       '<div class="rt"><div class="lbl">'+t(n.lbl)+'</div><div class="ds">'+t(n.ds)+'</div></div>'+badge+'</div>';
   }
   /* Estado de UI efímero: "El camino" arranca plegado mostrando solo el paso
      actual. No se persiste (al recargar vuelve a plegarse). */
+  /* Los toggles cambian solo la clase .open (en la cabecera y en la lista), sin
+     re-render, para que la transición CSS de altura se anime. El flag sigue el
+     estado lógico; un render() posterior por otra causa lo respeta. */
+  function setOpen(sel,on){ var e=app&&app.querySelector(sel); if(e)e.classList.toggle("open",on); }
   var roadOpen=false;
-  function toggleRoad(){ roadOpen=!roadOpen; render(); }
+  function toggleRoad(){ roadOpen=!roadOpen; setOpen(".road-head",roadOpen); setOpen(".road",roadOpen); }
 
-  /* Estado de UI efímero: "Todos los recursos" arranca plegado (solo el
-     encabezado). Sin elemento "actual" que mostrar, plegado = header + pista. */
   var resOpen=false;
-  function toggleRes(){ resOpen=!resOpen; render(); }
+  function toggleRes(){ resOpen=!resOpen; setOpen(".res-head",resOpen); setOpen(".res",resOpen); }
   function tasksForStage(st){
     var T=[];
     if(st<=6){
@@ -1619,6 +1644,10 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     document.getElementById("streakNum").textContent=strk;
     document.getElementById("streakMeta").innerHTML='<b>'+(strk===1?t("day"):t("days"))+'</b> 連続 · '+computeTotal(state.days)+' '+t("total");
     document.getElementById("romSub").textContent="Nikka · "+t("daily practice");
+    var _qr=document.getElementById("quickRef");
+    if(_qr){ _qr.innerHTML=quickRefHTML();
+      _qr.querySelectorAll("[data-ficha]").forEach(function(b){ b.addEventListener("click",function(){ openFicha(b.getAttribute("data-ficha")); }); });
+    }
     document.getElementById("startedLabel").textContent=t("Started")+" "+state.startDate+" · "+t("week")+" "+wk;
     document.getElementById("resetBtn").textContent=t("Reset all progress");
     var cs0=curStage(); var _gap=firstKanaGap(); var _fs=_gap||cs0; var focus="<b>"+t(stageName(_fs))+"</b> — "+t(STAGES[_fs-1].ds);
@@ -1662,24 +1691,16 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     html+=readingMasteryCardHTML();
     html+=gamesCardHTML();
 
-    html+='<div class="sec-h mincho road-head'+(roadOpen?' open':'')+'" data-fn="toggleRoad">'+t("The path")+'<span class="gh-chev">▸</span></div><div class="road">';
-    if(roadOpen){
-      STAGES.forEach(function(n,i){ html+=roadStopHTML(i); });
-    } else {
-      var _ci=Math.max(0,Math.min(STAGES.length-1,curStage()-1));
-      html+=roadStopHTML(_ci);
-    }
+    html+='<div class="sec-h mincho road-head'+(roadOpen?' open':'')+'" data-fn="toggleRoad">'+t("The path")+'<span class="gh-chev">▸</span></div><div class="road'+(roadOpen?' open':'')+'">';
+    STAGES.forEach(function(n,i){ html+=roadStopHTML(i); });
     html+='</div>';
     html+='<div class="sec-h mincho">'+t("Last 4 weeks")+'</div>'+calendarHTML()+n5BarHTML();
     html+='<div class="sec-h mincho res-head'+(resOpen?' open':'')+'" data-fn="toggleRes">'+t("All resources")+'<span class="gh-chev">▸</span></div>';
-    if(resOpen){
-      html+='<div class="res">'+
-        resLink(LINKS.hira,"Hiragana")+resLink(LINKS.kata,"Katakana")+resLink(LINKS.anki,t("Install Anki"))+
-        resLink(LINKS.ankiweb,"AnkiWeb")+resLink(LINKS.kaishi,t("Kaishi deck"))+resLink(LINKS.taekim,t("Grammar (Tae Kim)"))+
-        resLink(LINKS.hello,"HelloTalk")+'</div>';
-    } else {
-      html+='<div class="games-hint" style="margin-bottom:24px">'+(getLang()==="es"?"Tocá para ver los enlaces":"Tap to see the links")+'</div>';
-    }
+    html+='<div class="res-hint">'+(getLang()==="es"?"Tocá para ver los enlaces":"Tap to see the links")+'</div>';
+    html+='<div class="res'+(resOpen?' open':'')+'">'+
+      resLink(LINKS.hira,"Hiragana")+resLink(LINKS.kata,"Katakana")+resLink(LINKS.anki,t("Install Anki"))+
+      resLink(LINKS.ankiweb,"AnkiWeb")+resLink(LINKS.kaishi,t("Kaishi deck"))+resLink(LINKS.taekim,t("Grammar (Tae Kim)"))+
+      resLink(LINKS.hello,"HelloTalk")+'</div>';
     html+=dataPanelHTML();
     app.innerHTML=html;
     bindMain(); bindN5Bar();
@@ -4127,7 +4148,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   /* Estado de UI efímero: la lista de juegos arranca "encogida". No se persiste
      (al recargar vuelve a plegarse) para que la pantalla arranque compacta. */
   var gamesOpen=false;
-  function toggleGames(){ gamesOpen=!gamesOpen; render(); }
+  function toggleGames(){ gamesOpen=!gamesOpen; setOpen(".games-head",gamesOpen); setOpen(".games-list",gamesOpen); }
 
   function gamesCardHTML(){
     if(!GAMES.length) return "";
@@ -4138,21 +4159,23 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
             '<h3>'+(es?'¿Qué puedo jugar?':'What can I play?')+'</h3>'+
             '<span class="gh-chev">▸</span>'+
           '</div>';
-    /* Pista contextual solo cuando está plegado: dice qué hay detrás del toque. */
-    if(!gamesOpen){
-      if(aimG){
-        h+='<div class="games-hint"><span class="gh-aim">🎯 '+(es?'Apuntás a ':'Aiming at ')+gamePick(aimG.name)+'</span> · '+(es?'tocá para ver los demás':'tap to see the rest')+'</div>';
-      } else {
-        h+='<div class="games-hint">'+(es?'Tocá para ver los juegos y elegir uno':'Tap to see the games and pick one')+'</div>';
-      }
+    /* Pista contextual: visible cuando está plegado (CSS la oculta al abrir). */
+    if(aimG){
+      h+='<div class="games-hint"><span class="gh-aim">🎯 '+(es?'Apuntás a ':'Aiming at ')+gamePick(aimG.name)+'</span> · '+(es?'tocá para ver los demás':'tap to see the rest')+'</div>';
+    } else {
+      h+='<div class="games-hint">'+(es?'Tocá para ver los juegos y elegir uno':'Tap to see the games and pick one')+'</div>';
     }
-    /* Cuerpo: expandido -> todos; plegado con target -> solo el target;
-       plegado sin target -> nada (menú pequeño, solo el header). */
-    if(gamesOpen){
-      GAMES.forEach(function(g){ h+=growHTML(g); });
-    } else if(aimG){
+    /* Todos los juegos siempre en el DOM. El apuntado (.aimed) queda visible al
+       plegar; los demás colapsan por CSS. Con target, lo pongo primero para que
+       sea lo único que se ve arriba cuando está cerrado. */
+    h+='<div class="games-list'+(gamesOpen?' open':'')+'">';
+    if(aimG){
       h+=growHTML(aimG);
+      GAMES.forEach(function(g){ if(g.id!==aimG.id) h+=growHTML(g); });
+    } else {
+      GAMES.forEach(function(g){ h+=growHTML(g); });
     }
+    h+='</div>';
     h+='</div>';
     /* Tarjeta de referencia rápida: cheat sheet de kana + notas generales (data-driven). */
     h+='<div class="mastery-card"><div class="mc-top"><h3>'+(es?'Referencia rápida':'Quick reference')+'</h3></div>';
@@ -4227,7 +4250,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
      #ficha (reusa d-sticky/fx-cat/fx-foot) vía el id '__note:<id>'. Aparte,
      '__kana__' abre el cheat sheet de kana (renderKanaSheet). */
   var NOTES=[
-    { id:'punct',
+    { id:'punct', tagEs:'Signos', tagEn:'Marks',
       cardEs:'Signos y espacios', cardEn:'Punctuation & spacing',
       subEs:'Por qué ves ？！ por todo lado, qué significan los … y por qué el kana lleva espacios.',
       subEn:'Why ？！ are everywhere, what … means, and why kana text has spaces.',
@@ -4256,7 +4279,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
           bEs:'El japonés normal NO lleva espacios: las palabras se separan solas porque el kanji corta la vista. Pero un juego en puro kana (como este, en modo fácil) SÍ mete espacios para marcar dónde empieza y termina cada palabra. Sin kanji, un muro de kana es ilegible, y el espacio es la ayuda. Cuando tu lectura ya lleve kanji, esos espacios desaparecen — y no los vas a extrañar.',
           bEn:'Normal Japanese has NO spaces: words separate on their own because kanji cut the line visually. But a pure-kana game (like this one, in easy mode) DOES insert spaces to mark where each word starts and ends. Without kanji a wall of kana is unreadable, so the space is the aid. Once your reading carries kanji, those spaces vanish — and you will not miss them.' }
       ] },
-    { id:'register',
+    { id:'register', tagEs:'Registro', tagEn:'Register',
       cardEs:'Cómo hablan los personajes', cardEn:'How characters talk',
       subEs:'Por qué casi ningún NPC habla como el libro de texto.',
       subEn:'Why almost no NPC talks like your textbook.',
@@ -4401,6 +4424,19 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var c=document.getElementById('fxClose'); if(c)c.addEventListener('click',closeFicha);
     inner.querySelectorAll('.fx-chip[data-say]').forEach(function(b){
       b.addEventListener('click',function(){ speak(b.getAttribute('data-say')); }); });
+  }
+  /* Accesos rápidos del header: abren fichas directas (silabario, notas, ficha
+     del juego apuntado) sin scrollear. Reusan data-ficha -> openFicha. */
+  function quickRefHTML(){
+    var es=getLang()==='es', h='';
+    h+='<button class="qr-chip" data-ficha="__kana__" title="'+(es?'Silabario':'Kana chart')+'">🈂️ '+(es?'Silabario':'Kana')+'</button>';
+    (typeof NOTES!=='undefined'?NOTES:[]).forEach(function(n){
+      var lbl=es?(n.tagEs||n.cardEs):(n.tagEn||n.cardEn);
+      h+='<button class="qr-chip" data-ficha="__note:'+n.id+'" title="'+(es?n.cardEs:n.cardEn)+'">📝 '+lbl+'</button>';
+    });
+    var g=aimedGame();
+    if(g){ h+='<button class="qr-chip qr-aim" data-ficha="'+g.id+'" title="'+gamePick(g.name)+'">🎯 '+gamePick(g.name)+'</button>'; }
+    return h;
   }
   function openFicha(id){ var el=document.getElementById('ficha'); if(!el)return; fichaGameId=id; el.classList.remove('hidden'); renderFicha(); try{window.scrollTo(0,0);}catch(e){} }
   function closeFicha(){ var el=document.getElementById('ficha'); if(el)el.classList.add('hidden'); fichaGameId=null; }
