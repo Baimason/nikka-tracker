@@ -422,9 +422,9 @@
   .phrase-nudge-btn:active{transform:translateY(1px)}
   .grow.aimed{border-left:3px solid var(--shu);padding-left:11px}
   .grow.aimed2{border-left-width:5px}
-  .games-head{cursor:pointer;user-select:none}
-  .games-head .gh-chev{font-size:12px;opacity:.5;line-height:1;display:inline-block;transition:transform .18s ease}
-  .games-head.open .gh-chev{transform:rotate(90deg)}
+  .games-head,.road-head,.res-head{cursor:pointer;user-select:none}
+  .gh-chev{font-size:12px;opacity:.5;line-height:1;display:inline-block;transition:transform .18s ease}
+  .games-head.open .gh-chev,.road-head.open .gh-chev,.res-head.open .gh-chev{transform:rotate(90deg)}
   .games-hint{font-size:12px;color:var(--ink-soft);margin:6px 0 0}
   .games-hint .gh-aim{color:var(--shu);font-weight:700}
   .prog > i.d{background:var(--gold)}
@@ -1299,6 +1299,33 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function kanaComplete(){ return firstKanaGap()===0; }
   function advanceStage(){ var k=ensureKana(),c=curStage(); if(c>=11)return; k.stageManual=c+1; k.stageMax=Math.max(k.stageMax||0,c+1); Persistence.save(state); render(); }
   function retreatStage(){ var k=ensureKana(),c=curStage(),nv=c-1; k.stageManual=nv<=6?0:nv; Persistence.save(state); render(); }
+
+  /* Un paso de "El camino" (índice 0-based en STAGES) como bloque .stop.
+     Extraído del render principal para poder pintar la lista entera o solo el
+     paso actual. Mantiene la misma lógica de estado/badge que antes. */
+  function roadStopHTML(i){
+    var n=STAGES[i], num=i+1, pct=stagePct(num), st, badge='', _cs=curStage();
+    if(num<=6){ st=(typeof pct==="number"&&pct>=90)?"done":(num===_cs?"on":""); }
+    else { st=stageState(i); }
+    if(pct && typeof pct==="object"){
+      badge='<span class="stg-badge">'+pct.count+' '+pct.label+'</span>';
+    } else if(st==="done"){
+      badge='<span class="stg-badge done">'+(pct!==null?pct+'% ':'')+'✓</span>';
+    } else if(pct!==null){
+      badge='<span class="stg-badge">'+pct+'%</span>';
+    }
+    return '<div class="stop '+st+'"><div class="rail"><div class="dot"></div><div class="bar"></div></div>'+
+      '<div class="rt"><div class="lbl">'+t(n.lbl)+'</div><div class="ds">'+t(n.ds)+'</div></div>'+badge+'</div>';
+  }
+  /* Estado de UI efímero: "El camino" arranca plegado mostrando solo el paso
+     actual. No se persiste (al recargar vuelve a plegarse). */
+  var roadOpen=false;
+  function toggleRoad(){ roadOpen=!roadOpen; render(); }
+
+  /* Estado de UI efímero: "Todos los recursos" arranca plegado (solo el
+     encabezado). Sin elemento "actual" que mostrar, plegado = header + pista. */
+  var resOpen=false;
+  function toggleRes(){ resOpen=!resOpen; render(); }
   function tasksForStage(st){
     var T=[];
     if(st<=6){
@@ -1635,29 +1662,24 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     html+=readingMasteryCardHTML();
     html+=gamesCardHTML();
 
-    html+='<div class="sec-h mincho">'+t("The path")+'</div><div class="road">';
-    var _cs=curStage();
-    STAGES.forEach(function(n,i){var num=i+1,pct=stagePct(num),st,badge='';
-      /* Kana rungs (1-6) show their true mastery so yōon rungs read as unfinished
-         even for users who "completed" the old 4-step ladder — honest backfill.
-         Words/Phrases+ keep the ordinal done/on flow. */
-      if(num<=6){ st=(typeof pct==="number"&&pct>=90)?"done":(num===_cs?"on":""); }
-      else { st=stageState(i); }
-      if(pct && typeof pct==="object"){
-        badge='<span class="stg-badge">'+pct.count+' '+pct.label+'</span>';
-      } else if(st==="done"){
-        badge='<span class="stg-badge done">'+(pct!==null?pct+'% ':'')+'✓</span>';
-      } else if(pct!==null){
-        badge='<span class="stg-badge">'+pct+'%</span>';
-      }
-      html+='<div class="stop '+st+'"><div class="rail"><div class="dot"></div><div class="bar"></div></div>'+
-        '<div class="rt"><div class="lbl">'+t(n.lbl)+'</div><div class="ds">'+t(n.ds)+'</div></div>'+badge+'</div>';});
+    html+='<div class="sec-h mincho road-head'+(roadOpen?' open':'')+'" data-fn="toggleRoad">'+t("The path")+'<span class="gh-chev">▸</span></div><div class="road">';
+    if(roadOpen){
+      STAGES.forEach(function(n,i){ html+=roadStopHTML(i); });
+    } else {
+      var _ci=Math.max(0,Math.min(STAGES.length-1,curStage()-1));
+      html+=roadStopHTML(_ci);
+    }
     html+='</div>';
     html+='<div class="sec-h mincho">'+t("Last 4 weeks")+'</div>'+calendarHTML()+n5BarHTML();
-    html+='<div class="sec-h mincho">'+t("All resources")+'</div><div class="res">'+
-      resLink(LINKS.hira,"Hiragana")+resLink(LINKS.kata,"Katakana")+resLink(LINKS.anki,t("Install Anki"))+
-      resLink(LINKS.ankiweb,"AnkiWeb")+resLink(LINKS.kaishi,t("Kaishi deck"))+resLink(LINKS.taekim,t("Grammar (Tae Kim)"))+
-      resLink(LINKS.hello,"HelloTalk")+'</div>';
+    html+='<div class="sec-h mincho res-head'+(resOpen?' open':'')+'" data-fn="toggleRes">'+t("All resources")+'<span class="gh-chev">▸</span></div>';
+    if(resOpen){
+      html+='<div class="res">'+
+        resLink(LINKS.hira,"Hiragana")+resLink(LINKS.kata,"Katakana")+resLink(LINKS.anki,t("Install Anki"))+
+        resLink(LINKS.ankiweb,"AnkiWeb")+resLink(LINKS.kaishi,t("Kaishi deck"))+resLink(LINKS.taekim,t("Grammar (Tae Kim)"))+
+        resLink(LINKS.hello,"HelloTalk")+'</div>';
+    } else {
+      html+='<div class="games-hint" style="margin-bottom:24px">'+(getLang()==="es"?"Tocá para ver los enlaces":"Tap to see the links")+'</div>';
+    }
     html+=dataPanelHTML();
     app.innerHTML=html;
     bindMain(); bindN5Bar();
@@ -5992,7 +6014,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   }
 
   function bindMain(){
-    app.querySelectorAll("[data-fn]").forEach(function(b){var fn=b.getAttribute("data-fn");b.addEventListener("click",function(){if(fn==="startDrill")startDrill();else if(fn==="startGap")startGapDrill();else if(fn==="startDaily")startDaily();else if(fn==="startWords")startWords();else if(fn==="startPhrases")startPhrases();else if(fn==="startBuild")startBuild();else if(fn==="startMatch")startMatch();else if(fn==="openCustom")openCustom();else if(fn==="startKanji")startKanji();else if(fn==="activateKanji")activateKanji();else if(fn==="activatePhrases")activatePhrases();else if(fn==="startPlacement")startPlacement();else if(fn==="toggleGames")toggleGames();});});
+    app.querySelectorAll("[data-fn]").forEach(function(b){var fn=b.getAttribute("data-fn");b.addEventListener("click",function(){if(fn==="startDrill")startDrill();else if(fn==="startGap")startGapDrill();else if(fn==="startDaily")startDaily();else if(fn==="startWords")startWords();else if(fn==="startPhrases")startPhrases();else if(fn==="startBuild")startBuild();else if(fn==="startMatch")startMatch();else if(fn==="openCustom")openCustom();else if(fn==="startKanji")startKanji();else if(fn==="activateKanji")activateKanji();else if(fn==="activatePhrases")activatePhrases();else if(fn==="startPlacement")startPlacement();else if(fn==="toggleGames")toggleGames();else if(fn==="toggleRoad")toggleRoad();else if(fn==="toggleRes")toggleRes();});});
 
     var wd=app.querySelector(".wotd[data-say]"); if(wd)wd.addEventListener("click",function(){speak(wd.getAttribute("data-say"));});
     app.querySelectorAll("[data-aim]").forEach(function(b){ b.addEventListener("click",function(){ setAim(b.getAttribute("data-aim")); }); });
