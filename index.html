@@ -719,6 +719,15 @@
   .fx-pill.dim{opacity:.32}
   .fx-empty{color:var(--ink-soft);font-size:14px;padding:22px 4px;text-align:center}
   .fx-cat{scroll-margin-top:150px}
+
+  .custom .d-sticky{margin-top:calc(-20px - env(safe-area-inset-top,0px));padding-top:calc(20px + env(safe-area-inset-top,0px) + 6px)}
+  .qr-row{display:flex;gap:6px;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:1px 0}
+  .qr-row::-webkit-scrollbar{display:none}
+  .qr-ico{font-size:15px;padding:4px 10px}
+  .qr-aim{gap:4px}
+  .qr-aim .qr-lbl{display:inline-block;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom}
+  .qr-in{animation:qrIn .34s ease both}
+  @keyframes qrIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 </style>
 
 <div class="wrap">
@@ -3824,7 +3833,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   var GAMES = [
     {
       id:'pkmn-gen1', rung:1,
-      name:{ es:'Pokémon Rojo/Azul/Amarillo', en:'Pokémon Red/Blue/Yellow' },
+      name:{ es:'Pokémon Rojo/Verde', en:'Pokémon Red/Green' },
       mode:{ es:'kana + diccionario',          en:'kana + dictionary' },
       // kana:{hira:85,kata:85}  // optional per-game override (else default)
       words:[
@@ -4721,7 +4730,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var h='<div class="d-sticky"><div class="d-head"><button class="d-close" id="fxClose">✕ '+t("Back")+'</button>'+
           '<span class="cx-title mincho">📖 '+gamePick(g.name)+'</span></div>'+
           '<div class="fx-tools"><div class="fx-srow">'+
-            '<input id="fxSearch" class="fx-search" type="search" lang="ja" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="'+(es?'Buscar: kana, rōmaji o español…':'Search: kana, rōmaji or Spanish…')+'">'+
+            '<input id="fxSearch" class="fx-search" type="search" lang="ja" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="'+(es?'Buscar: kana, rōmaji o español…':'Search: kana, rōmaji or English…')+'">'+
             '<button id="fxClear" class="fx-clear" title="'+(es?'Limpiar':'Clear')+'">✕</button></div>'+
             '<div class="fx-index" id="fxIndex">'+grp.order.map(function(c){return '<button class="fx-pill" data-jump="fxsec-'+c+'">'+catLabel(c)+' <b>'+grp.map[c].length+'</b></button>';}).join('')+'</div>'+
           '</div>'+
@@ -4778,15 +4787,15 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   /* Accesos rápidos del header: abren fichas directas (silabario, notas, ficha
      del juego apuntado) sin scrollear. Reusan data-ficha -> openFicha. */
   function quickRefHTML(){
-    var es=getLang()==='es', h='';
-    h+='<button class="qr-chip" data-ficha="__kana__" title="'+(es?'Silabario':'Kana chart')+'">🈂️ '+(es?'Silabario':'Kana')+'</button>';
+    var es=getLang()==='es', first=!window.__qrSeen; window.__qrSeen=true;
+    var h='<button class="qr-chip qr-ico" data-ficha="__kana__" title="'+(es?'Silabario':'Kana chart')+'" aria-label="'+(es?'Silabario':'Kana chart')+'">🈂️</button>';
     (typeof NOTES!=='undefined'?NOTES:[]).forEach(function(n){
-      var lbl=es?(n.tagEs||n.cardEs):(n.tagEn||n.cardEn);
-      h+='<button class="qr-chip" data-ficha="__note:'+n.id+'" title="'+(es?n.cardEs:n.cardEn)+'">📝 '+lbl+'</button>';
+      var lbl=es?n.cardEs:n.cardEn, ic=(n.id==='punct'?'⁉️':n.id==='register'?'🗣️':'📝');
+      h+='<button class="qr-chip qr-ico" data-ficha="__note:'+n.id+'" title="'+lbl+'" aria-label="'+lbl+'">'+ic+'</button>';
     });
     var g=aimedGame();
-    if(g){ h+='<button class="qr-chip qr-aim" data-ficha="'+g.id+'" title="'+gamePick(g.name)+'">🎯 '+gamePick(g.name)+'</button>'; }
-    return h;
+    if(g){ h+='<button class="qr-chip qr-aim" data-ficha="'+g.id+'" title="'+gamePick(g.name)+'">🎯 <span class="qr-lbl">'+gamePick(g.name)+'</span></button>'; }
+    return '<div class="qr-row'+(first?' qr-in':'')+'">'+h+'</div>';
   }
   function openFicha(id){ var el=document.getElementById('ficha'); if(!el)return; fichaGameId=id; el.classList.remove('hidden'); renderFicha(); try{window.scrollTo(0,0);}catch(e){} }
   function closeFicha(){ var el=document.getElementById('ficha'); if(el)el.classList.add('hidden'); fichaGameId=null; }
