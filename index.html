@@ -4147,170 +4147,191 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       mode:{ es:'kana + diccionario',          en:'kana + dictionary' },
       words:[
         /* sistema / menú */
-        {jp:'はい',cat:'menu',romaji:'hai',es:'sí',en:'yes',emoji:'✅'},
-        {jp:'いいえ',cat:'menu',romaji:'iie',es:'no',en:'no',emoji:'❌'},
-        {jp:'セーブ',cat:'menu',romaji:'seebu',es:'guardar',en:'save',emoji:'💾'},
-        {jp:'つづきから',cat:'menu',romaji:'tsuzukikara',es:'continuar',en:'continue',emoji:'▶️'},
-        {jp:'アイテム',cat:'menu',romaji:'aitemu',es:'objeto (menú)',en:'item',emoji:'🎒'},
+        {jp:'はい',cat:'menu',tier:0,romaji:'hai',es:'sí',en:'yes',emoji:'✅'},
+        {jp:'いいえ',cat:'menu',tier:0,romaji:'iie',es:'no',en:'no',emoji:'❌'},
+        {jp:'セーブ',cat:'menu',tier:0,romaji:'seebu',es:'guardar',en:'save',emoji:'💾'},
+        {jp:'つづきから',cat:'menu',tier:0,romaji:'tsuzukikara',es:'continuar',en:'continue',emoji:'▶️'},
+        {jp:'アイテム',cat:'menu',tier:0,romaji:'aitemu',es:'objeto (menú)',en:'item',emoji:'🎒'},
         /* ítems — verificados (guías Shogakukan / tabla interna DX / Zelda Wiki) */
-        {jp:'けん',cat:'item',romaji:'ken',es:'espada',en:'sword',emoji:'⚔️'},        /* 剣 — a veces se lee つるぎ */
-        {jp:'たて',cat:'item',romaji:'tate',es:'escudo',en:'shield',emoji:'🛡️'},        /* 盾 */
-        {jp:'ばくだん',cat:'item',romaji:'bakudan',es:'bomba',en:'bomb',emoji:'💣'},      /* 爆弾 */
-        {jp:'ゆみや',cat:'item',romaji:'yumiya',es:'arco y flechas',en:'bow & arrow',emoji:'🏹'}, /* 弓矢 */
-        {jp:'ブーメラン',cat:'item',romaji:'buumeran',es:'boomerang',en:'boomerang',emoji:'🪃'},
-        {jp:'オカリナ',cat:'item',romaji:'okarina',es:'ocarina',en:'ocarina',emoji:'🎶'},
-        {jp:'フックショット',cat:'item',romaji:'fukkushotto',es:'gancho',en:'hookshot',emoji:'🪝'},
-        {jp:'かぎ',cat:'item',romaji:'kagi',es:'llave',en:'key',emoji:'🔑'},          /* 鍵 */
-        {jp:'マップ',cat:'item',romaji:'mappu',es:'mapa',en:'map',emoji:'🗺️'},
-        {jp:'コンパス',cat:'item',romaji:'konpasu',es:'brújula',en:'compass',emoji:'🧭'},
-        {jp:'ハート',cat:'item',romaji:'haato',es:'corazón (vida)',en:'heart',emoji:'❤️'},
-        {jp:'ルピー',cat:'item',romaji:'rupii',es:'rupia',en:'rupee',emoji:'💎'},
-        {jp:'ようせい',cat:'world',romaji:'yousei',es:'hada',en:'fairy',emoji:'🧚'},      /* 妖精 */
-        {jp:'たからばこ',cat:'item',romaji:'takarabako',es:'cofre del tesoro',en:'treasure chest',emoji:'🧰'}, /* 宝箱 */
-        {jp:'ダンジョン',cat:'world',romaji:'danjon',es:'mazmorra',en:'dungeon',emoji:'🏰'},
-        {jp:'リンク',cat:'people',romaji:'rinku',es:'Link (protagonista)',en:'Link',emoji:'🗡️'},
-        {jp:'マリン',cat:'people',romaji:'marin',es:'Marin (personaje)',en:'Marin',emoji:'👧'},
-        {jp:'なまえ',cat:'story',romaji:'namae',es:'nombre',en:'name',emoji:'🔤'},
-        {jp:'だれ',cat:'story',romaji:'dare',es:'quién',en:'who',emoji:'🙋'},
-        {jp:'する',cat:'story',romaji:'suru',es:'hacer',en:'to do',emoji:'⚙️'},
-        {jp:'きめる',cat:'story',romaji:'kimeru',es:'decidir',en:'to decide',emoji:'🎯'},
-        {jp:'でんせつ',cat:'story',romaji:'densetsu',es:'leyenda',en:'legend',emoji:'📜'},
-        {jp:'ゆめ',cat:'story',romaji:'yume',es:'sueño',en:'dream',emoji:'💭'},
-        {jp:'みる',cat:'story',romaji:'miru',es:'ver / mirar',en:'to see',emoji:'👀'},
-        {jp:'しま',cat:'story',romaji:'shima',es:'isla',en:'island',emoji:'🏝️'},
-        {jp:'けす',cat:'menu',romaji:'kesu',es:'borrar',en:'to erase',emoji:'🗑️'},
-        {jp:'うつす',cat:'menu',romaji:'utsusu',es:'copiar',en:'to copy',emoji:'📋'},
-        {jp:'わたし',cat:'story',romaji:'watashi',es:'yo',en:'I / me',emoji:'👤'},
-        {jp:'おもう',cat:'story',romaji:'omou',es:'pensar / creer',en:'to think',emoji:'🤔'},
-        {jp:'ちがう',cat:'story',romaji:'chigau',es:'ser distinto / equivocarse',en:'to differ',emoji:'❌'},
-        {jp:'こわい',cat:'story',romaji:'kowai',es:'aterrador / de miedo',en:'scary',emoji:'😱'},
-        {jp:'だめ',cat:'story',romaji:'dame',es:'no sirve / mal',en:'no good',emoji:'🚫'},
-        {jp:'おもい',cat:'story',romaji:'omoi',es:'pesado',en:'heavy',emoji:'🏋️'},
-        {jp:'むり',cat:'story',romaji:'muri',es:'imposible',en:'impossible',emoji:'🙅'},
-        {jp:'みち',cat:'story',romaji:'michi',es:'camino',en:'road',emoji:'🛣️'},
-        {jp:'みなみ',cat:'story',romaji:'minami',es:'sur',en:'south',emoji:'⬇️'},
-        {jp:'あるく',cat:'story',romaji:'aruku',es:'caminar',en:'to walk',emoji:'🚶'},
-        {jp:'あなた',cat:'story',romaji:'anata',es:'vos / tú',en:'you',emoji:'🫵'},
-        {jp:'くる',cat:'story',romaji:'kuru',es:'venir',en:'to come',emoji:'⬅️'},
-        {jp:'いく',cat:'story',romaji:'iku',es:'ir',en:'to go',emoji:'➡️'},
-        {jp:'かいぶつ',cat:'story',romaji:'kaibutsu',es:'monstruo',en:'monster',emoji:'👹'},
-        {jp:'おきる',cat:'story',romaji:'okiru',es:'levantarse / despertar',en:'to wake up',emoji:'⏰'},
-        {jp:'わかる',cat:'story',romaji:'wakaru',es:'entender / saber',en:'to understand',emoji:'💡'},
-        {jp:'どうして',cat:'story',romaji:'doushite',es:'por qué',en:'why',emoji:'❔'},
-        {jp:'かく',cat:'story',romaji:'kaku',es:'escribir',en:'to write',emoji:'✏️'},
-        {jp:'ボタン',cat:'menu',romaji:'botan',es:'botón',en:'button',emoji:'🔘'},
-        {jp:'おす',cat:'menu',romaji:'osu',es:'presionar / empujar',en:'to press',emoji:'👆'},
-        {jp:'むら',cat:'story',romaji:'mura',es:'aldea',en:'village',emoji:'🏘️'},
-        {jp:'ひと',cat:'story',romaji:'hito',es:'persona',en:'person',emoji:'🧑'},
-        {jp:'どこ',cat:'story',romaji:'doko',es:'dónde',en:'where',emoji:'📍'},
-        {jp:'おぼえる',cat:'story',romaji:'oboeru',es:'aprender / memorizar',en:'to memorize',emoji:'🧠'},
-        {jp:'ほか',cat:'story',romaji:'hoka',es:'otro / además',en:'other',emoji:'➕'},
-        {jp:'もの',cat:'story',romaji:'mono',es:'cosa',en:'thing',emoji:'📦'},
-        {jp:'ある',cat:'story',romaji:'aru',es:'haber / estar',en:'to exist',emoji:'✔️'},
-        {jp:'なる',cat:'story',romaji:'naru',es:'volverse',en:'to become',emoji:'🔄'},
-        {jp:'てき',cat:'combat',romaji:'teki',es:'enemigo',en:'enemy',emoji:'👾'},
-        {jp:'もどる',cat:'story',romaji:'modoru',es:'volver / regresar',en:'to return',emoji:'↩️'},
-        {jp:'さがす',cat:'story',romaji:'sagasu',es:'buscar',en:'to search',emoji:'🔍'},
-        {jp:'こと',cat:'story',romaji:'koto',es:'cosa / asunto',en:'matter',emoji:'💬'},
-        {jp:'あいだ',cat:'story',romaji:'aida',es:'entre / mientras',en:'between',emoji:'↔️'},
-        {jp:'そら',cat:'story',romaji:'sora',es:'cielo',en:'sky',emoji:'☁️'},
-        {jp:'とぶ',cat:'story',romaji:'tobu',es:'volar',en:'to fly',emoji:'🕊️'},
-        {jp:'ほしい',cat:'story',romaji:'hoshii',es:'querer / desear',en:'to want',emoji:'🙏'},
-        {jp:'もつ',cat:'story',romaji:'motsu',es:'tener / sostener',en:'to hold',emoji:'✋'},
-        {jp:'ください',cat:'menu',romaji:'kudasai',es:'por favor',en:'please',emoji:'🥺'},
-        {jp:'ぜんぶ',cat:'story',romaji:'zenbu',es:'todo',en:'all',emoji:'💯'},
-        {jp:'こども',cat:'story',romaji:'kodomo',es:'niño',en:'child',emoji:'🧒'},
-        {jp:'でも',cat:'story',romaji:'demo',es:'pero',en:'but',emoji:'↪️'},
-        {jp:'おなじ',cat:'story',romaji:'onaji',es:'igual / mismo',en:'same',emoji:'🟰'},
-        {jp:'かお',cat:'story',romaji:'kao',es:'cara',en:'face',emoji:'😀'},
-        {jp:'よっつ',cat:'story',romaji:'yottsu',es:'cuatro (cosas)',en:'four',emoji:'4️⃣'},
-        {jp:'むずかしい',cat:'story',romaji:'muzukashii',es:'difícil',en:'difficult',emoji:'🧩'},
-        {jp:'とる',cat:'story',romaji:'toru',es:'agarrar / tomar',en:'to take',emoji:'✊'},
-        {jp:'やま',cat:'story',romaji:'yama',es:'montaña',en:'mountain',emoji:'⛰️'},
-        {jp:'たのむ',cat:'story',romaji:'tanomu',es:'pedir / encargar',en:'to ask',emoji:'🤝'},
-        {jp:'でんわ',cat:'story',romaji:'denwa',es:'teléfono',en:'phone',emoji:'☎️'},
-        {jp:'どうぞ',cat:'menu',romaji:'douzo',es:'adelante / por favor',en:'go ahead',emoji:'🫴'},
-        {jp:'げんき',cat:'story',romaji:'genki',es:'ánimo / bien',en:'healthy',emoji:'💪'},
-        {jp:'とき',cat:'story',romaji:'toki',es:'cuando / momento',en:'time',emoji:'🕐'},
-        {jp:'まよう',cat:'story',romaji:'mayou',es:'perderse / dudar',en:'to get lost',emoji:'🌀'},
-        {jp:'ゲーム',cat:'story',romaji:'geemu',es:'videojuego',en:'game',emoji:'🎮'},
-        {jp:'だいすき',cat:'story',romaji:'daisuki',es:'encantar / gustar mucho',en:'to love',emoji:'😍'},
-        {jp:'かわいい',cat:'story',romaji:'kawaii',es:'lindo / mono',en:'cute',emoji:'🥰'},
-        {jp:'おかね',cat:'story',romaji:'okane',es:'dinero',en:'money',emoji:'💰'},
-        {jp:'また',cat:'story',romaji:'mata',es:'otra vez / de nuevo',en:'again',emoji:'🔁'},
-        {jp:'けっこう',cat:'menu',romaji:'kekkou',es:'está bien / no gracias',en:'no thanks',emoji:'🙆'},
-        {jp:'どう',cat:'story',romaji:'dou',es:'cómo / qué tal',en:'how',emoji:'🤷'},
-        {jp:'うち',cat:'story',romaji:'uchi',es:'casa / lo mío',en:'home',emoji:'🏠'},
-        {jp:'バクダン',cat:'combat',romaji:'bakudan',es:'bomba',en:'bomb',emoji:'💣'},
-        {jp:'なげる',cat:'combat',romaji:'nageru',es:'lanzar / tirar',en:'to throw',emoji:'🤾'},
-        {jp:'かつぐ',cat:'combat',romaji:'katsugu',es:'cargar (al hombro)',en:'to shoulder',emoji:'🎒'},
-        {jp:'ワープ',cat:'world',romaji:'waapu',es:'teletransporte',en:'warp',emoji:'🌠'},
-        {jp:'あな',cat:'world',romaji:'ana',es:'agujero / hoyo',en:'hole',emoji:'🕳️'},
-        {jp:'とびこむ',cat:'world',romaji:'tobikomu',es:'saltar dentro',en:'to jump in',emoji:'🤸'},
-        {jp:'あわせる',cat:'menu',romaji:'awaseru',es:'alinear / ajustar',en:'to align',emoji:'📐'},
-        {jp:'カーソル',cat:'menu',romaji:'kaasoru',es:'cursor',en:'cursor',emoji:'🔳'},
-        {jp:'メッセージ',cat:'menu',romaji:'messeeji',es:'mensaje',en:'message',emoji:'📨'},
-        {jp:'がめん',cat:'menu',romaji:'gamen',es:'pantalla',en:'screen',emoji:'🖥️'},
-        {jp:'ほうほう',cat:'menu',romaji:'houhou',es:'método / manera',en:'method',emoji:'📖'},
-        {jp:'たとえば',cat:'story',romaji:'tatoeba',es:'por ejemplo',en:'for example',emoji:'👉'},
-        {jp:'それぞれ',cat:'story',romaji:'sorezore',es:'cada uno',en:'each',emoji:'🔀'},
-        {jp:'フクロウ',cat:'people',romaji:'fukurou',es:'búho',en:'owl',emoji:'🦉'},
+        {jp:'けん',cat:'item',tier:1,romaji:'ken',es:'espada',en:'sword',emoji:'⚔️'},        /* 剣 — a veces se lee つるぎ */
+        {jp:'たて',cat:'item',tier:1,romaji:'tate',es:'escudo',en:'shield',emoji:'🛡️'},        /* 盾 */
+        {jp:'ばくだん',cat:'item',tier:1,romaji:'bakudan',es:'bomba',en:'bomb',emoji:'💣'},      /* 爆弾 */
+        {jp:'ゆみや',cat:'item',tier:1,romaji:'yumiya',es:'arco y flechas',en:'bow & arrow',emoji:'🏹'}, /* 弓矢 */
+        {jp:'ブーメラン',cat:'item',tier:2,romaji:'buumeran',es:'boomerang',en:'boomerang',emoji:'🪃'},
+        {jp:'オカリナ',cat:'item',tier:1,romaji:'okarina',es:'ocarina',en:'ocarina',emoji:'🎶'},
+        {jp:'フックショット',cat:'item',tier:2,romaji:'fukkushotto',es:'gancho',en:'hookshot',emoji:'🪝'},
+        {jp:'かぎ',cat:'item',tier:1,romaji:'kagi',es:'llave',en:'key',emoji:'🔑'},          /* 鍵 */
+        {jp:'マップ',cat:'item',tier:1,romaji:'mappu',es:'mapa',en:'map',emoji:'🗺️'},
+        {jp:'コンパス',cat:'item',tier:1,romaji:'konpasu',es:'brújula',en:'compass',emoji:'🧭'},
+        {jp:'ハート',cat:'item',tier:1,romaji:'haato',es:'corazón (vida)',en:'heart',emoji:'❤️'},
+        {jp:'ルピー',cat:'item',tier:1,romaji:'rupii',es:'rupia',en:'rupee',emoji:'💎'},
+        {jp:'ようせい',cat:'world',tier:2,romaji:'yousei',es:'hada',en:'fairy',emoji:'🧚'},      /* 妖精 */
+        {jp:'たからばこ',cat:'item',tier:1,romaji:'takarabako',es:'cofre del tesoro',en:'treasure chest',emoji:'🧰'}, /* 宝箱 */
+        {jp:'ダンジョン',cat:'world',tier:1,romaji:'danjon',es:'mazmorra',en:'dungeon',emoji:'🏰'},
+        {jp:'リンク',cat:'people',tier:1,romaji:'rinku',es:'Link (protagonista)',en:'Link',emoji:'🗡️'},
+        {jp:'マリン',cat:'people',tier:1,romaji:'marin',es:'Marin (personaje)',en:'Marin',emoji:'👧'},
+        {jp:'なまえ',cat:'story',tier:0,romaji:'namae',es:'nombre',en:'name',emoji:'🔤'},
+        {jp:'だれ',cat:'story',tier:1,romaji:'dare',es:'quién',en:'who',emoji:'🙋'},
+        {jp:'する',cat:'story',tier:1,romaji:'suru',es:'hacer',en:'to do',emoji:'⚙️'},
+        {jp:'きめる',cat:'story',tier:1,romaji:'kimeru',es:'decidir',en:'to decide',emoji:'🎯'},
+        {jp:'でんせつ',cat:'story',tier:2,romaji:'densetsu',es:'leyenda',en:'legend',emoji:'📜'},
+        {jp:'ゆめ',cat:'story',tier:1,romaji:'yume',es:'sueño',en:'dream',emoji:'💭'},
+        {jp:'みる',cat:'story',tier:1,romaji:'miru',es:'ver / mirar',en:'to see',emoji:'👀'},
+        {jp:'しま',cat:'story',tier:1,romaji:'shima',es:'isla',en:'island',emoji:'🏝️'},
+        {jp:'けす',cat:'menu',tier:0,romaji:'kesu',es:'borrar',en:'to erase',emoji:'🗑️'},
+        {jp:'うつす',cat:'menu',tier:0,romaji:'utsusu',es:'copiar',en:'to copy',emoji:'📋'},
+        {jp:'わたし',cat:'story',tier:1,romaji:'watashi',es:'yo',en:'I / me',emoji:'👤'},
+        {jp:'おもう',cat:'story',tier:1,romaji:'omou',es:'pensar / creer',en:'to think',emoji:'🤔'},
+        {jp:'ちがう',cat:'story',tier:1,romaji:'chigau',es:'ser distinto / equivocarse',en:'to differ',emoji:'❌'},
+        {jp:'こわい',cat:'story',tier:2,romaji:'kowai',es:'aterrador / de miedo',en:'scary',emoji:'😱'},
+        {jp:'だめ',cat:'story',tier:1,romaji:'dame',es:'no sirve / mal',en:'no good',emoji:'🚫'},
+        {jp:'おもい',cat:'story',tier:2,romaji:'omoi',es:'pesado',en:'heavy',emoji:'🏋️'},
+        {jp:'むり',cat:'story',tier:2,romaji:'muri',es:'imposible',en:'impossible',emoji:'🙅'},
+        {jp:'みち',cat:'story',tier:1,romaji:'michi',es:'camino',en:'road',emoji:'🛣️'},
+        {jp:'みなみ',cat:'story',tier:1,romaji:'minami',es:'sur',en:'south',emoji:'⬇️'},
+        {jp:'あるく',cat:'story',tier:1,romaji:'aruku',es:'caminar',en:'to walk',emoji:'🚶'},
+        {jp:'あなた',cat:'story',tier:1,romaji:'anata',es:'vos / tú',en:'you',emoji:'🫵'},
+        {jp:'くる',cat:'story',tier:1,romaji:'kuru',es:'venir',en:'to come',emoji:'⬅️'},
+        {jp:'いく',cat:'story',tier:1,romaji:'iku',es:'ir',en:'to go',emoji:'➡️'},
+        {jp:'かいぶつ',cat:'story',tier:1,romaji:'kaibutsu',es:'monstruo',en:'monster',emoji:'👹'},
+        {jp:'おきる',cat:'story',tier:1,romaji:'okiru',es:'levantarse / despertar',en:'to wake up',emoji:'⏰'},
+        {jp:'わかる',cat:'story',tier:1,romaji:'wakaru',es:'entender / saber',en:'to understand',emoji:'💡'},
+        {jp:'どうして',cat:'story',tier:1,romaji:'doushite',es:'por qué',en:'why',emoji:'❔'},
+        {jp:'かく',cat:'story',tier:1,romaji:'kaku',es:'escribir',en:'to write',emoji:'✏️'},
+        {jp:'ボタン',cat:'menu',tier:0,romaji:'botan',es:'botón',en:'button',emoji:'🔘'},
+        {jp:'おす',cat:'menu',tier:0,romaji:'osu',es:'presionar / empujar',en:'to press',emoji:'👆'},
+        {jp:'むら',cat:'story',tier:1,romaji:'mura',es:'aldea',en:'village',emoji:'🏘️'},
+        {jp:'ひと',cat:'story',tier:1,romaji:'hito',es:'persona',en:'person',emoji:'🧑'},
+        {jp:'どこ',cat:'story',tier:1,romaji:'doko',es:'dónde',en:'where',emoji:'📍'},
+        {jp:'おぼえる',cat:'story',tier:1,romaji:'oboeru',es:'aprender / memorizar',en:'to memorize',emoji:'🧠'},
+        {jp:'ほか',cat:'story',tier:2,romaji:'hoka',es:'otro / además',en:'other',emoji:'➕'},
+        {jp:'もの',cat:'story',tier:1,romaji:'mono',es:'cosa',en:'thing',emoji:'📦'},
+        {jp:'ある',cat:'story',tier:1,romaji:'aru',es:'haber / estar',en:'to exist',emoji:'✔️'},
+        {jp:'なる',cat:'story',tier:1,romaji:'naru',es:'volverse',en:'to become',emoji:'🔄'},
+        {jp:'てき',cat:'combat',tier:1,romaji:'teki',es:'enemigo',en:'enemy',emoji:'👾'},
+        {jp:'もどる',cat:'story',tier:1,romaji:'modoru',es:'volver / regresar',en:'to return',emoji:'↩️'},
+        {jp:'さがす',cat:'story',tier:1,romaji:'sagasu',es:'buscar',en:'to search',emoji:'🔍'},
+        {jp:'こと',cat:'story',tier:1,romaji:'koto',es:'cosa / asunto',en:'matter',emoji:'💬'},
+        {jp:'あいだ',cat:'story',tier:2,romaji:'aida',es:'entre / mientras',en:'between',emoji:'↔️'},
+        {jp:'そら',cat:'story',tier:1,romaji:'sora',es:'cielo',en:'sky',emoji:'☁️'},
+        {jp:'とぶ',cat:'story',tier:1,romaji:'tobu',es:'volar',en:'to fly',emoji:'🕊️'},
+        {jp:'ほしい',cat:'story',tier:1,romaji:'hoshii',es:'querer / desear',en:'to want',emoji:'🙏'},
+        {jp:'もつ',cat:'story',tier:1,romaji:'motsu',es:'tener / sostener',en:'to hold',emoji:'✋'},
+        {jp:'ください',cat:'menu',tier:0,romaji:'kudasai',es:'por favor',en:'please',emoji:'🥺'},
+        {jp:'ぜんぶ',cat:'story',tier:2,romaji:'zenbu',es:'todo',en:'all',emoji:'💯'},
+        {jp:'こども',cat:'story',tier:1,romaji:'kodomo',es:'niño',en:'child',emoji:'🧒'},
+        {jp:'でも',cat:'story',tier:1,romaji:'demo',es:'pero',en:'but',emoji:'↪️'},
+        {jp:'おなじ',cat:'story',tier:2,romaji:'onaji',es:'igual / mismo',en:'same',emoji:'🟰'},
+        {jp:'かお',cat:'story',tier:2,romaji:'kao',es:'cara',en:'face',emoji:'😀'},
+        {jp:'よっつ',cat:'story',tier:2,romaji:'yottsu',es:'cuatro (cosas)',en:'four',emoji:'4️⃣'},
+        {jp:'むずかしい',cat:'story',tier:2,romaji:'muzukashii',es:'difícil',en:'difficult',emoji:'🧩'},
+        {jp:'とる',cat:'story',tier:1,romaji:'toru',es:'agarrar / tomar',en:'to take',emoji:'✊'},
+        {jp:'やま',cat:'story',tier:1,romaji:'yama',es:'montaña',en:'mountain',emoji:'⛰️'},
+        {jp:'たのむ',cat:'story',tier:1,romaji:'tanomu',es:'pedir / encargar',en:'to ask',emoji:'🤝'},
+        {jp:'でんわ',cat:'story',tier:1,romaji:'denwa',es:'teléfono',en:'phone',emoji:'☎️'},
+        {jp:'どうぞ',cat:'menu',tier:0,romaji:'douzo',es:'adelante / por favor',en:'go ahead',emoji:'🫴'},
+        {jp:'げんき',cat:'story',tier:2,romaji:'genki',es:'ánimo / bien',en:'healthy',emoji:'💪'},
+        {jp:'とき',cat:'story',tier:1,romaji:'toki',es:'cuando / momento',en:'time',emoji:'🕐'},
+        {jp:'まよう',cat:'story',tier:2,romaji:'mayou',es:'perderse / dudar',en:'to get lost',emoji:'🌀'},
+        {jp:'ゲーム',cat:'story',tier:2,romaji:'geemu',es:'videojuego',en:'game',emoji:'🎮'},
+        {jp:'だいすき',cat:'story',tier:2,romaji:'daisuki',es:'encantar / gustar mucho',en:'to love',emoji:'😍'},
+        {jp:'かわいい',cat:'story',tier:2,romaji:'kawaii',es:'lindo / mono',en:'cute',emoji:'🥰'},
+        {jp:'おかね',cat:'story',tier:1,romaji:'okane',es:'dinero',en:'money',emoji:'💰'},
+        {jp:'また',cat:'story',tier:1,romaji:'mata',es:'otra vez / de nuevo',en:'again',emoji:'🔁'},
+        {jp:'けっこう',cat:'menu',tier:0,romaji:'kekkou',es:'está bien / no gracias',en:'no thanks',emoji:'🙆'},
+        {jp:'どう',cat:'story',tier:1,romaji:'dou',es:'cómo / qué tal',en:'how',emoji:'🤷'},
+        {jp:'うち',cat:'story',tier:1,romaji:'uchi',es:'casa / lo mío',en:'home',emoji:'🏠'},
+        {jp:'バクダン',cat:'combat',tier:1,romaji:'bakudan',es:'bomba',en:'bomb',emoji:'💣'},
+        {jp:'なげる',cat:'combat',tier:1,romaji:'nageru',es:'lanzar / tirar',en:'to throw',emoji:'🤾'},
+        {jp:'かつぐ',cat:'combat',tier:2,romaji:'katsugu',es:'cargar (al hombro)',en:'to shoulder',emoji:'🎒'},
+        {jp:'ワープ',cat:'world',tier:1,romaji:'waapu',es:'teletransporte',en:'warp',emoji:'🌠'},
+        {jp:'あな',cat:'world',tier:1,romaji:'ana',es:'agujero / hoyo',en:'hole',emoji:'🕳️'},
+        {jp:'とびこむ',cat:'world',tier:2,romaji:'tobikomu',es:'saltar dentro',en:'to jump in',emoji:'🤸'},
+        {jp:'あわせる',cat:'menu',tier:0,romaji:'awaseru',es:'alinear / ajustar',en:'to align',emoji:'📐'},
+        {jp:'カーソル',cat:'menu',tier:0,romaji:'kaasoru',es:'cursor',en:'cursor',emoji:'🔳'},
+        {jp:'メッセージ',cat:'menu',tier:0,romaji:'messeeji',es:'mensaje',en:'message',emoji:'📨'},
+        {jp:'がめん',cat:'menu',tier:0,romaji:'gamen',es:'pantalla',en:'screen',emoji:'🖥️'},
+        {jp:'ほうほう',cat:'menu',tier:2,romaji:'houhou',es:'método / manera',en:'method',emoji:'📖'},
+        {jp:'たとえば',cat:'story',tier:2,romaji:'tatoeba',es:'por ejemplo',en:'for example',emoji:'👉'},
+        {jp:'それぞれ',cat:'story',tier:2,romaji:'sorezore',es:'cada uno',en:'each',emoji:'🔀'},
+        {jp:'フクロウ',cat:'people',tier:1,romaji:'fukurou',es:'búho',en:'owl',emoji:'🦉'},
         /* --- lote biblioteca / escudo / mapa (sesión kana Zelda) --- */
         /* combate */
-        {jp:'ちから',cat:'combat',romaji:'chikara',es:'fuerza / poder',en:'power / strength',emoji:'💪'},        /* 力 */
-        {jp:'ためる',cat:'combat',romaji:'tameru',es:'acumular / cargar',en:'charge up / store',emoji:'🔋'},
-        {jp:'たまる',cat:'combat',romaji:'tamaru',es:'acumularse / llenarse',en:'build up (intr.)',emoji:'📈'},
-        {jp:'ふせぐ',cat:'combat',romaji:'fusegu',es:'defender / bloquear',en:'block / defend',emoji:'🛡️'},      /* 防ぐ */
-        {jp:'はじく',cat:'combat',romaji:'hajiku',es:'repeler / rechazar',en:'repel / flick away',emoji:'💥'},   /* 弾く */
-        {jp:'ビーム',cat:'combat',romaji:'biimu',es:'rayo / haz',en:'beam',emoji:'🔆'},
-        {jp:'ひけん',cat:'combat',romaji:'hiken',es:'espada secreta',en:'secret sword art',emoji:'🗡️'},         /* 秘剣 */
-        {jp:'かいてんぎり',cat:'combat',romaji:'kaitengiri',es:'corte giratorio',en:'spin slash',emoji:'🌀'},     /* 回転斬り (técnica) */
+        {jp:'ちから',cat:'combat',tier:2,romaji:'chikara',es:'fuerza / poder',en:'power / strength',emoji:'💪'},        /* 力 */
+        {jp:'ためる',cat:'combat',tier:2,romaji:'tameru',es:'acumular / cargar',en:'charge up / store',emoji:'🔋'},
+        {jp:'たまる',cat:'combat',tier:2,romaji:'tamaru',es:'acumularse / llenarse',en:'build up (intr.)',emoji:'📈'},
+        {jp:'ふせぐ',cat:'combat',tier:1,romaji:'fusegu',es:'defender / bloquear',en:'block / defend',emoji:'🛡️'},      /* 防ぐ */
+        {jp:'はじく',cat:'combat',tier:2,romaji:'hajiku',es:'repeler / rechazar',en:'repel / flick away',emoji:'💥'},   /* 弾く */
+        {jp:'ビーム',cat:'combat',tier:2,romaji:'biimu',es:'rayo / haz',en:'beam',emoji:'🔆'},
+        {jp:'ひけん',cat:'combat',tier:2,romaji:'hiken',es:'espada secreta',en:'secret sword art',emoji:'🗡️'},         /* 秘剣 */
+        {jp:'かいてんぎり',cat:'combat',tier:2,romaji:'kaitengiri',es:'corte giratorio',en:'spin slash',emoji:'🌀'},     /* 回転斬り (técnica) */
         /* objetos */
-        {jp:'かがみ',cat:'item',romaji:'kagami',es:'espejo',en:'mirror',emoji:'🪞'},                            /* 鏡 */
-        {jp:'レンズ',cat:'item',romaji:'renzu',es:'lente',en:'lens',emoji:'🔍'},
-        {jp:'みとおし',cat:'item',romaji:'mitooshi',es:'ver a través / visión',en:'see-through / clear view',emoji:'👁️'}, /* 見通し */
+        {jp:'かがみ',cat:'item',tier:2,romaji:'kagami',es:'espejo',en:'mirror',emoji:'🪞'},                            /* 鏡 */
+        {jp:'レンズ',cat:'item',tier:2,romaji:'renzu',es:'lente',en:'lens',emoji:'🔍'},
+        {jp:'みとおし',cat:'item',tier:2,romaji:'mitooshi',es:'ver a través / visión',en:'see-through / clear view',emoji:'👁️'}, /* 見通し */
         /* menú / sistema */
-        {jp:'つかいかた',cat:'menu',romaji:'tsukaikata',es:'modo de uso',en:'how to use',emoji:'📖'},            /* 使い方 */
-        {jp:'しらべる',cat:'menu',romaji:'shiraberu',es:'consultar / investigar',en:'look up / check',emoji:'🔎'}, /* 調べる */
-        {jp:'つづける',cat:'menu',romaji:'tsuzukeru',es:'seguir / continuar',en:'keep doing / continue',emoji:'⏩'}, /* 続ける */
-        {jp:'うごかす',cat:'menu',romaji:'ugokasu',es:'mover (algo)',en:'move (something)',emoji:'🕹️'},          /* 動かす */
+        {jp:'つかいかた',cat:'menu',tier:2,romaji:'tsukaikata',es:'modo de uso',en:'how to use',emoji:'📖'},            /* 使い方 */
+        {jp:'しらべる',cat:'menu',tier:2,romaji:'shiraberu',es:'consultar / investigar',en:'look up / check',emoji:'🔎'}, /* 調べる */
+        {jp:'つづける',cat:'menu',tier:2,romaji:'tsuzukeru',es:'seguir / continuar',en:'keep doing / continue',emoji:'⏩'}, /* 続ける */
+        {jp:'うごかす',cat:'menu',tier:2,romaji:'ugokasu',es:'mover (algo)',en:'move (something)',emoji:'🕹️'},          /* 動かす */
         /* mundo y lugares */
-        {jp:'タンス',cat:'world',romaji:'tansu',es:'cómoda / mueble',en:'dresser / chest',emoji:'🗄️'},          /* 箪笥 */
-        {jp:'ちめい',cat:'world',romaji:'chimei',es:'nombre de lugar',en:'place name',emoji:'🗺️'},              /* 地名 */
-        {jp:'コホリント',cat:'world',romaji:'kohorinto',es:'Koholint (isla)',en:'Koholint (island)',emoji:'🏝️'},
+        {jp:'タンス',cat:'world',tier:2,romaji:'tansu',es:'cómoda / mueble',en:'dresser / chest',emoji:'🗄️'},          /* 箪笥 */
+        {jp:'ちめい',cat:'world',tier:2,romaji:'chimei',es:'nombre de lugar',en:'place name',emoji:'🗺️'},              /* 地名 */
+        {jp:'コホリント',cat:'world',tier:2,romaji:'kohorinto',es:'Koholint (isla)',en:'Koholint (island)',emoji:'🏝️'},
         /* historia e intro */
-        {jp:'さらに',cat:'story',romaji:'sarani',es:'además / más aún',en:'furthermore',emoji:'➕'},             /* 更に */
-        {jp:'はたして',cat:'story',romaji:'hatashite',es:'de veras / acaso',en:'indeed / really',emoji:'❓'},     /* 果たして */
-        {jp:'いちぞく',cat:'story',romaji:'ichizoku',es:'clan / linaje',en:'clan / family line',emoji:'👪'},      /* 一族 */
-        {jp:'ひみつ',cat:'story',romaji:'himitsu',es:'secreto',en:'secret',emoji:'🤫'},                          /* 秘密 */
-        {jp:'つたわる',cat:'story',romaji:'tsutawaru',es:'transmitirse / heredarse',en:'be handed down',emoji:'📜'}, /* 伝わる */
-        {jp:'ひでん',cat:'story',romaji:'hiden',es:'arte secreto',en:'secret art',emoji:'🎴'},                   /* 秘伝 */
-        {jp:'ゴメン',cat:'story',romaji:'gomen',es:'perdón / disculpá',en:'sorry',emoji:'🙏'},
+        {jp:'さらに',cat:'story',tier:2,romaji:'sarani',es:'además / más aún',en:'furthermore',emoji:'➕'},             /* 更に */
+        {jp:'はたして',cat:'story',tier:2,romaji:'hatashite',es:'de veras / acaso',en:'indeed / really',emoji:'❓'},     /* 果たして */
+        {jp:'いちぞく',cat:'story',tier:2,romaji:'ichizoku',es:'clan / linaje',en:'clan / family line',emoji:'👪'},      /* 一族 */
+        {jp:'ひみつ',cat:'story',tier:2,romaji:'himitsu',es:'secreto',en:'secret',emoji:'🤫'},                          /* 秘密 */
+        {jp:'つたわる',cat:'story',tier:2,romaji:'tsutawaru',es:'transmitirse / heredarse',en:'be handed down',emoji:'📜'}, /* 伝わる */
+        {jp:'ひでん',cat:'story',tier:2,romaji:'hiden',es:'arte secreto',en:'secret art',emoji:'🎴'},                   /* 秘伝 */
+        {jp:'ゴメン',cat:'story',tier:1,romaji:'gomen',es:'perdón / disculpá',en:'sorry',emoji:'🙏'},
         /* --- lote niños de la biblioteca / letreros / tienda --- */
         /* menú / sistema */
-        {jp:'セレクト',cat:'menu',romaji:'serekuto',es:'Select (botón)',en:'Select (button)',emoji:'🎮'},
-        {jp:'どうじに',cat:'menu',romaji:'doujini',es:'al mismo tiempo',en:'at the same time',emoji:'⏱️'},   /* 同時に */
-        {jp:'さいご',cat:'menu',romaji:'saigo',es:'lo último / el final',en:'last / the end',emoji:'🔚'},      /* 最後 */
-        {jp:'たりる',cat:'menu',romaji:'tariru',es:'alcanzar / ser suficiente',en:'be enough',emoji:'⚖️'},   /* 足りる */
-        {jp:'なくなる',cat:'menu',romaji:'nakunaru',es:'acabarse / agotarse',en:'run out / be gone',emoji:'💨'}, /* 無くなる */
+        {jp:'セレクト',cat:'menu',tier:0,romaji:'serekuto',es:'Select (botón)',en:'Select (button)',emoji:'🎮'},
+        {jp:'どうじに',cat:'menu',tier:2,romaji:'doujini',es:'al mismo tiempo',en:'at the same time',emoji:'⏱️'},   /* 同時に */
+        {jp:'さいご',cat:'menu',tier:2,romaji:'saigo',es:'lo último / el final',en:'last / the end',emoji:'🔚'},      /* 最後 */
+        {jp:'たりる',cat:'menu',tier:2,romaji:'tariru',es:'alcanzar / ser suficiente',en:'be enough',emoji:'⚖️'},   /* 足りる */
+        {jp:'なくなる',cat:'menu',tier:2,romaji:'nakunaru',es:'acabarse / agotarse',en:'run out / be gone',emoji:'💨'}, /* 無くなる */
         /* objetos */
-        {jp:'スコップ',cat:'item',romaji:'sukoppu',es:'pala',en:'shovel',emoji:'⛏️'},
+        {jp:'スコップ',cat:'item',tier:2,romaji:'sukoppu',es:'pala',en:'shovel',emoji:'⛏️'},
         /* mundo y lugares */
-        {jp:'どうくつ',cat:'world',romaji:'doukutsu',es:'cueva',en:'cave',emoji:'🕳️'},                       /* 洞窟 */
-        {jp:'でいりぐち',cat:'world',romaji:'deiriguchi',es:'entrada / puerta',en:'doorway / entrance',emoji:'🚪'}, /* 出入り口 */
-        {jp:'くぐる',cat:'world',romaji:'kuguru',es:'pasar por debajo / atravesar',en:'pass under / through',emoji:'⛩️'}, /* 潜る */
-        {jp:'そうげん',cat:'world',romaji:'sougen',es:'llanura / pradera',en:'prairie / grassland',emoji:'🌾'}, /* 草原 */
-        {jp:'ウクク',cat:'world',romaji:'ukuku',es:'Ukuku (pradera)',en:'Ukuku (prairie)',emoji:'🗺️'},
-        {jp:'どうぶつむら',cat:'world',romaji:'doubutsumura',es:'Villa Animal',en:'Animal Village',emoji:'🐾'}, /* 動物村 */
+        {jp:'どうくつ',cat:'world',tier:1,romaji:'doukutsu',es:'cueva',en:'cave',emoji:'🕳️'},                       /* 洞窟 */
+        {jp:'でいりぐち',cat:'world',tier:2,romaji:'deiriguchi',es:'entrada / puerta',en:'doorway / entrance',emoji:'🚪'}, /* 出入り口 */
+        {jp:'くぐる',cat:'world',tier:2,romaji:'kuguru',es:'pasar por debajo / atravesar',en:'pass under / through',emoji:'⛩️'}, /* 潜る */
+        {jp:'そうげん',cat:'world',tier:2,romaji:'sougen',es:'llanura / pradera',en:'prairie / grassland',emoji:'🌾'}, /* 草原 */
+        {jp:'ウクク',cat:'world',tier:2,romaji:'ukuku',es:'Ukuku (pradera)',en:'Ukuku (prairie)',emoji:'🗺️'},
+        {jp:'どうぶつむら',cat:'world',tier:2,romaji:'doubutsumura',es:'Villa Animal',en:'Animal Village',emoji:'🐾'}, /* 動物村 */
         /* personajes */
-        {jp:'にいちゃん',cat:'people',romaji:'niichan',es:'hermano mayor / muchacho',en:'big bro / young man',emoji:'🧑'}, /* 兄ちゃん */
+        {jp:'にいちゃん',cat:'people',tier:2,romaji:'niichan',es:'hermano mayor / muchacho',en:'big bro / young man',emoji:'🧑'}, /* 兄ちゃん */
         /* historia e intro (registro casual/rústico) */
-        {jp:'おいら',cat:'story',romaji:'oira',es:'yo (informal, rústico)',en:'I / me (rough, casual)',emoji:'🧒'},
-        {jp:'さっぱり',cat:'story',romaji:'sappari',es:'para nada / ni idea',en:'not at all',emoji:'🤷'},
-        {jp:'ふしぎ',cat:'story',romaji:'fushigi',es:'misterio / raro',en:'mysterious / wonder',emoji:'🔮'},  /* 不思議 */
-        {jp:'ほんの',cat:'story',romaji:'honno',es:'apenas / un simple',en:'just a mere',emoji:'🤏'},
-        {jp:'でなおす',cat:'story',romaji:'denaosu',es:'volver a pasar / volver luego',en:'come back again',emoji:'🔁'}, /* 出直す */
-        {jp:'こ',cat:'menu',romaji:'ko',es:'unidades (contador 個)',en:'counter for items (個)',emoji:'🔢'}
+        {jp:'おいら',cat:'story',tier:2,romaji:'oira',es:'yo (informal, rústico)',en:'I / me (rough, casual)',emoji:'🧒'},
+        {jp:'さっぱり',cat:'story',tier:2,romaji:'sappari',es:'para nada / ni idea',en:'not at all',emoji:'🤷'},
+        {jp:'ふしぎ',cat:'story',tier:2,romaji:'fushigi',es:'misterio / raro',en:'mysterious / wonder',emoji:'🔮'},  /* 不思議 */
+        {jp:'ほんの',cat:'story',tier:2,romaji:'honno',es:'apenas / un simple',en:'just a mere',emoji:'🤏'},
+        {jp:'でなおす',cat:'story',tier:2,romaji:'denaosu',es:'volver a pasar / volver luego',en:'come back again',emoji:'🔁'}, /* 出直す */
+        {jp:'こ',cat:'menu',tier:2,romaji:'ko',es:'unidades (contador 個)',en:'counter for items (個)',emoji:'🔢'},
+        /* --- lote scripts LA: dar/recibir + trading quest + registro (sesión scripts) --- */
+        {jp:'くれる',cat:'story',tier:1,romaji:'kureru',es:'dar (hacia mí/nosotros)',en:'to give (to me)',emoji:'🎁'},
+        {jp:'もらう',cat:'story',tier:1,romaji:'morau',es:'recibir',en:'to receive',emoji:'📥'},
+        {jp:'おねがい',cat:'menu',tier:1,romaji:'onegai',es:'por favor / petición',en:'please / a favor',emoji:'🙏'},
+        {jp:'めざめる',cat:'story',tier:1,romaji:'mezameru',es:'despertar',en:'to awaken',emoji:'🌅'},
+        {jp:'こうかん',cat:'story',tier:2,romaji:'koukan',es:'intercambio',en:'exchange',emoji:'🔄'},
+        {jp:'つれる',cat:'story',tier:2,romaji:'tsureru',es:'llevar (a alguien)',en:'to bring (a person) along',emoji:'👥'},
+        {jp:'やむ',cat:'story',tier:2,romaji:'yamu',es:'cesar / parar (lluvia)',en:'to cease / let up',emoji:'🌤️'},
+        {jp:'ホウキ',cat:'item',tier:2,romaji:'houki',es:'escoba',en:'broom',emoji:'🧹'},
+        {jp:'ウロコ',cat:'item',tier:2,romaji:'uroko',es:'escama',en:'(fish) scale',emoji:'🐟'},
+        {jp:'キノコ',cat:'item',tier:2,romaji:'kinoko',es:'hongo / seta',en:'mushroom',emoji:'🍄'},
+        {jp:'フエ',cat:'item',tier:2,romaji:'fue',es:'flauta / silbato',en:'whistle / flute',emoji:'🎵'},
+        {jp:'ニワトリ',cat:'item',tier:2,romaji:'niwatori',es:'gallina',en:'chicken',emoji:'🐔'},
+        {jp:'マモノ',cat:'combat',tier:1,romaji:'mamono',es:'monstruo / criatura',en:'monster / demon',emoji:'😈'},
+        {jp:'オレ',cat:'story',tier:2,romaji:'ore',es:'yo (masc., brusco)',en:'I / me (rough male)',emoji:'😤'},
+        {jp:'わし',cat:'story',tier:2,romaji:'washi',es:'yo (de anciano)',en:'I / me (old man)',emoji:'👴'},
+        {jp:'あんた',cat:'story',tier:2,romaji:'anta',es:'vos / tú (brusco)',en:'you (rough)',emoji:'😠'},
+        {jp:'キサマ',cat:'story',tier:2,romaji:'kisama',es:'tú (hostil / despectivo)',en:'you (hostile)',emoji:'😡'},
+        {jp:'ヤツ',cat:'story',tier:2,romaji:'yatsu',es:'tipo / ese',en:'guy / that one',emoji:'🫥'},
+        {jp:'じいさん',cat:'people',tier:2,romaji:'jiisan',es:'viejo / abuelo',en:'old man',emoji:'🧓'},
+
       ]
     },
     {
