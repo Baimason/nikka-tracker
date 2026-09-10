@@ -494,6 +494,8 @@
   .fx-ro{font-size:11px;color:var(--ink-soft)}
   .fx-gl{font-size:11px;color:var(--ink);line-height:1.15}
   .fx-hint{font-size:9px;color:var(--shu);opacity:.85}
+  .fx-reg{align-self:center;margin-top:3px;font-size:9px;color:var(--gold);border:1px solid var(--line);border-radius:999px;padding:1px 7px;line-height:1.35;cursor:pointer;white-space:nowrap}
+  .fx-reg:active{transform:translateY(1px);border-color:var(--gold)}
   .fx-foot{font-size:11px;color:var(--ink-soft);margin:22px 0 6px;line-height:1.5;border-top:1px dashed var(--rule,#d8cfc0);padding-top:12px}
   .d-aim{font-size:12px;font-weight:700;color:var(--shu);margin-bottom:4px}
   .mastery-card h3{font-family: var(--display-font);font-weight:700;font-size:17px;margin:0}
@@ -4180,7 +4182,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
         {jp:'しま',cat:'story',tier:1,romaji:'shima',es:'isla',en:'island',emoji:'🏝️'},
         {jp:'けす',cat:'menu',tier:0,romaji:'kesu',es:'borrar',en:'to erase',emoji:'🗑️'},
         {jp:'うつす',cat:'menu',tier:0,romaji:'utsusu',es:'copiar',en:'to copy',emoji:'📋'},
-        {jp:'わたし',cat:'story',tier:1,romaji:'watashi',es:'yo',en:'I / me',emoji:'👤'},
+        {jp:'わたし',cat:'story',tier:1,romaji:'watashi',es:'yo',en:'I / me',emoji:'👤',reg:{es:'yo · cortés',en:'I · polite'}},
         {jp:'おもう',cat:'story',tier:1,romaji:'omou',es:'pensar / creer',en:'to think',emoji:'🤔'},
         {jp:'ちがう',cat:'story',tier:1,romaji:'chigau',es:'ser distinto / equivocarse',en:'to differ',emoji:'❌'},
         {jp:'こわい',cat:'story',tier:2,romaji:'kowai',es:'aterrador / de miedo',en:'scary',emoji:'😱'},
@@ -4190,7 +4192,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
         {jp:'みち',cat:'story',tier:1,romaji:'michi',es:'camino',en:'road',emoji:'🛣️'},
         {jp:'みなみ',cat:'story',tier:1,romaji:'minami',es:'sur',en:'south',emoji:'⬇️'},
         {jp:'あるく',cat:'story',tier:1,romaji:'aruku',es:'caminar',en:'to walk',emoji:'🚶'},
-        {jp:'あなた',cat:'story',tier:1,romaji:'anata',es:'vos / tú',en:'you',emoji:'🫵'},
+        {jp:'あなた',cat:'story',tier:1,romaji:'anata',es:'vos / tú',en:'you',emoji:'🫵',reg:{es:'tú · neutro',en:'you · neutral'}},
         {jp:'くる',cat:'story',tier:1,romaji:'kuru',es:'venir',en:'to come',emoji:'⬅️'},
         {jp:'いく',cat:'story',tier:1,romaji:'iku',es:'ir',en:'to go',emoji:'➡️'},
         {jp:'かいぶつ',cat:'story',tier:1,romaji:'kaibutsu',es:'monstruo',en:'monster',emoji:'👹'},
@@ -4303,9 +4305,9 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
         {jp:'ウクク',cat:'world',tier:2,romaji:'ukuku',es:'Ukuku (pradera)',en:'Ukuku (prairie)',emoji:'🗺️'},
         {jp:'どうぶつむら',cat:'world',tier:2,romaji:'doubutsumura',es:'Villa Animal',en:'Animal Village',emoji:'🐾'}, /* 動物村 */
         /* personajes */
-        {jp:'にいちゃん',cat:'people',tier:2,romaji:'niichan',es:'hermano mayor / muchacho',en:'big bro / young man',emoji:'🧑'}, /* 兄ちゃん */
+        {jp:'にいちゃん',cat:'people',tier:2,romaji:'niichan',es:'hermano mayor / muchacho',en:'big bro / young man',emoji:'🧑',reg:{es:'trato · joven',en:'address · young man'}}, /* 兄ちゃん */
         /* historia e intro (registro casual/rústico) */
-        {jp:'おいら',cat:'story',tier:2,romaji:'oira',es:'yo (informal, rústico)',en:'I / me (rough, casual)',emoji:'🧒'},
+        {jp:'おいら',cat:'story',tier:2,romaji:'oira',es:'yo (informal, rústico)',en:'I / me (rough, casual)',emoji:'🧒',reg:{es:'yo · rústico',en:'I · rustic'}},
         {jp:'さっぱり',cat:'story',tier:2,romaji:'sappari',es:'para nada / ni idea',en:'not at all',emoji:'🤷'},
         {jp:'ふしぎ',cat:'story',tier:2,romaji:'fushigi',es:'misterio / raro',en:'mysterious / wonder',emoji:'🔮'},  /* 不思議 */
         {jp:'ほんの',cat:'story',tier:2,romaji:'honno',es:'apenas / un simple',en:'just a mere',emoji:'🤏'},
@@ -4325,12 +4327,12 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
         {jp:'フエ',cat:'item',tier:2,romaji:'fue',es:'flauta / silbato',en:'whistle / flute',emoji:'🎵'},
         {jp:'ニワトリ',cat:'item',tier:2,romaji:'niwatori',es:'gallina',en:'chicken',emoji:'🐔'},
         {jp:'マモノ',cat:'combat',tier:1,romaji:'mamono',es:'monstruo / criatura',en:'monster / demon',emoji:'😈'},
-        {jp:'オレ',cat:'story',tier:2,romaji:'ore',es:'yo (masc., brusco)',en:'I / me (rough male)',emoji:'😤'},
-        {jp:'わし',cat:'story',tier:2,romaji:'washi',es:'yo (de anciano)',en:'I / me (old man)',emoji:'👴'},
-        {jp:'あんた',cat:'story',tier:2,romaji:'anta',es:'vos / tú (brusco)',en:'you (rough)',emoji:'😠'},
-        {jp:'キサマ',cat:'story',tier:2,romaji:'kisama',es:'tú (hostil / despectivo)',en:'you (hostile)',emoji:'😡'},
-        {jp:'ヤツ',cat:'story',tier:2,romaji:'yatsu',es:'tipo / ese',en:'guy / that one',emoji:'🫥'},
-        {jp:'じいさん',cat:'people',tier:2,romaji:'jiisan',es:'viejo / abuelo',en:'old man',emoji:'🧓'},
+        {jp:'オレ',cat:'story',tier:2,romaji:'ore',es:'yo (masc., brusco)',en:'I / me (rough male)',emoji:'😤',reg:{es:'yo · rudo (m)',en:'I · rough (m)'}},
+        {jp:'わし',cat:'story',tier:2,romaji:'washi',es:'yo (de anciano)',en:'I / me (old man)',emoji:'👴',reg:{es:'yo · de anciano',en:'I · old man'}},
+        {jp:'あんた',cat:'story',tier:2,romaji:'anta',es:'vos / tú (brusco)',en:'you (rough)',emoji:'😠',reg:{es:'tú · brusco',en:'you · rough'}},
+        {jp:'キサマ',cat:'story',tier:2,romaji:'kisama',es:'tú (hostil / despectivo)',en:'you (hostile)',emoji:'😡',reg:{es:'tú · hostil',en:'you · hostile'}},
+        {jp:'ヤツ',cat:'story',tier:2,romaji:'yatsu',es:'tipo / ese',en:'guy / that one',emoji:'🫥',reg:{es:'ese · despectivo',en:'that guy · dismissive'}},
+        {jp:'じいさん',cat:'people',tier:2,romaji:'jiisan',es:'viejo / abuelo',en:'old man',emoji:'🧓',reg:{es:'trato · anciano',en:'address · old man'}},
 
       ]
     },
@@ -4586,6 +4588,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       '<div class="fx-hd">'+em+'<span class="fx-jp mincho">'+wordFormHTML(w)+'</span>'+mark+'</div>'+
       '<div class="fx-ro">'+(w.romaji||'')+'</div>'+
       '<div class="fx-gl">'+gl+'</div>'+
+      (w.reg?'<span class="fx-reg" data-open-note="register">🗣 '+(es?w.reg.es:w.reg.en)+'</span>':'')+
       (st==='locked'?'<div class="fx-hint">'+(es?'aún no leés su kana':'kana not learned yet')+'</div>':'')+
       '</button>';
   }
@@ -4652,8 +4655,8 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
           bEn:'Here the character paints itself. Words for I: おれ (rough, male), おいら (rustic, country), あたし (casual, female), ぼく (soft, male). Contractions that eat syllables: わからない becomes わかんない, しかたない becomes しかたねー. Rough commands: ～ておくれ becomes ～ておくんな. And tails like や, ぜ, だぜ, or ってさ / だってさ (they say that...). A grumpy shopkeeper or a little kid is recognized by this alone.' },
         { tEs:'Pista rápida: mirá el final de la oración',
           tEn:'Quick tell: look at the sentence ending',
-          bEs:'La terminación canta el registro: です・ます = cortés; だ o verbo plano + よ/ね = casual; ～ねー / ～ぜ / ～や / ～おくんな = rudo o rústico. Y el pronombre de "yo" va de わたし (cortés) → ぼく → おれ → おいら (cada vez más informal, masculino, tosco). Con eso ubicás el tono antes de traducir una sola palabra.',
-          bEn:'The ending sings the register: です・ます = polite; だ or a plain verb + よ/ね = casual; ～ねー / ～ぜ / ～や / ～おくんな = rough or rustic. And the word for I runs わたし (polite) → ぼく → おれ → おいら (more and more informal, male, rough). With that you place the tone before translating a single word.' }
+          bEs:'La terminación canta el registro: です・ます = cortés; だ o verbo plano + よ/ね = casual; ～ねー / ～ぜ / ～や / ～おくんな = rudo o rústico. Y el pronombre de "yo" va de わたし (cortés) → ぼく → おれ → おいら/わし (cada vez más informal, masculino o de viejo). El "tú" tiene su propia escalera: あなた (neutro) → あんた (brusco) → きさま／おまえ (hostil). Con eso ubicás el tono antes de traducir una sola palabra.',
+          bEn:'The ending sings the register: です・ます = polite; だ or a plain verb + よ/ね = casual; ～ねー / ～ぜ / ～や / ～おくんな = rough or rustic. And the word for I runs わたし (polite) → ぼく → おれ → おいら/わし (more and more informal, male or elderly). The word for you has its own ladder: あなた (neutral) → あんた (rough) → きさま／おまえ (hostile). With that you place the tone before translating a single word.' }
       ] }
   ];
   function renderNote(id){
@@ -4777,7 +4780,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     inner.innerHTML=h;
     var c=document.getElementById('fxClose'); if(c)c.addEventListener('click',closeFicha);
     inner.querySelectorAll('.fx-chip[data-say]').forEach(function(b){
-      b.addEventListener('click',function(){ speak(b.getAttribute('data-say')); }); });
+      b.addEventListener('click',function(ev){ var t=(ev&&ev.target&&ev.target.closest)?ev.target.closest('[data-open-note]'):null; if(t){ if(ev.stopPropagation)ev.stopPropagation(); openFicha('__note:'+t.getAttribute('data-open-note')); return; } speak(b.getAttribute('data-say')); }); });
     (function(){
       var sEl=document.getElementById('fxSearch'), clr=document.getElementById('fxClear'), emptyEl=document.getElementById('fxEmpty');
       function norm(x){ return kataToHira((x||'').toLowerCase()); }
@@ -5334,7 +5337,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       var nu=nextPatternToTeach(); if(nu){ launchPatternTeach(nu.id); return true; }
     }
     // 3) patrón joven -> constructor guiado (afianza antes de reconocer)
-    var bp=nextBuildPhrase();
+    var bp=nextBuildPhrase(true);
     if(bp){ var mature=phraseReadyIdxMature(PHRASES).length>0;
       if(!mature || Math.random()<GUIDED_PROB){ launchGuidedBuild(bp); return true; } }
     // 4) refuerzo ocasional: cloze de un patrón ya visto
@@ -5446,7 +5449,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   /* frase construible sólo si su patrón ya fue enseñado (o no tiene patrón) */
   function buildableGate(p){ var pid=patternOf(p); if(!pid||!PATTERN_BY_ID[pid])return true; return !!ensurePatterns().seen[pid]; }
   /* próxima frase a construir: patrón de menor order primero, y dentro, la menos construida */
-  function nextBuildPhrase(){ var ph=ensurePhrases();
+  function nextBuildPhrase(skipRecent){ var ph=ensurePhrases();
     var blt=function(p){ return (ph.built&&ph.built[p.jp])||0; };
     var ord=function(p){ var pp=patternOf(p); return (pp&&PATTERN_BY_ID[pp])?PATTERN_BY_ID[pp].order:99; };
     /* construible = legible (kana aprendido) + patrón enseñado + no madura.
@@ -5454,6 +5457,11 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
        vista y el molde recién explicado, ES la forma de aprender ese vocab. */
     var cand=PHRASES.filter(function(p){ return p.parts && wordReadable(p.jp) && buildableGate(p) && !phraseMature(p); });
     if(!cand.length)return null;
+    /* anti-repetición: no re-servir una frase recién construida (evita que un
+       pool minúsculo — a veces una sola frase — repita el mismo build 3-4 veces
+       seguidas). Sólo en la ruta de servir (skipRecent); la de disponibilidad
+       (anyPhraseWork) sigue viéndola para no cortar la sesión. */
+    if(skipRecent){ var fresh=cand.filter(function(p){ return gbRecent.indexOf(p.jp)<0; }); if(fresh.length){ cand=fresh; } else { return null; } }
     cand.sort(function(a,b){ return (ord(a)-ord(b)) || (blt(a)-blt(b)); });
     var bo=ord(cand[0]), bb=blt(cand[0]);
     var top=cand.filter(function(p){ return ord(p)===bo && blt(p)===bb; });
@@ -5506,6 +5514,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       if(pool.length){ shuffle(pool); tiles.push({w:pool[0],used:false,distractor:true}); } }
     shuffle(tiles);
     ptsess={mode:'build',pid:pid,phrase:phrase,tiles:tiles,placed:[],answered:false,bad:-1};
+    gbRecent.push(phrase.jp); if(gbRecent.length>2) gbRecent.shift();
     renderGuidedBuild(); readingEl.classList.remove('hidden');
   }
   function renderGuidedBuild(){
@@ -5625,7 +5634,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     }
     quiz(tgtSet);
   }
-  function startQuiz(pool,ex,teach){ pbsess=null; pbRecent=[]; rsess={pool:pool,box:ex.box,ex:ex,done:0,correct:0,wrong:0,q:null,teach:!!teach,newIntro:0}; buildReadingQ(); readingEl.classList.remove("hidden"); renderReading(); }
+  function startQuiz(pool,ex,teach){ pbsess=null; pbRecent=[]; gbRecent=[]; rsess={pool:pool,box:ex.box,ex:ex,done:0,correct:0,wrong:0,q:null,teach:!!teach,newIntro:0}; buildReadingQ(); readingEl.classList.remove("hidden"); renderReading(); }
   function startWords(){ startWordsMix(); }
   var wsess=null, WORDS_BUILD_PROB=0.35;
   function wordsGoalHTML(){ var reps=todayReps(),gpct=Math.min(100,reps),gtier=dayTier(reps);
@@ -6116,7 +6125,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
      mirroring the words+build (wsess+bsess) seam. Never punitive: a wrong tile
      just flags red; only a completed build advances SRS. Tunable: PHRASE_BUILD_PROB.
      ========================================================================= */
-  var pbsess=null, PHRASE_BUILD_PROB=0.34, pbRecent=[];
+  var pbsess=null, PHRASE_BUILD_PROB=0.34, pbRecent=[], gbRecent=[];
   function phraseDecoyUniverse(){ var u={}; PHRASES.forEach(function(p){ if(p.parts)p.parts.forEach(function(w){u[w]=1;}); }); return Object.keys(u); }
   function phraseBuildPool(){
     if(!rsess||rsess.pool!==PHRASES)return [];
