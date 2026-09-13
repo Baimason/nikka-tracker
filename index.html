@@ -250,14 +250,16 @@
   .drill{position:fixed;inset:0;z-index:60;overflow-y:auto;overscroll-behavior:contain;min-height:100%;
     background:linear-gradient(var(--grid) 1px, transparent 1px) 0 0/100% 34px, var(--paper);
     padding:0 calc(18px + env(safe-area-inset-right,0px)) calc(30px + env(safe-area-inset-bottom,0px)) calc(18px + env(safe-area-inset-left,0px));display:flex;flex-direction:column}
-  .drill.hidden{display:none}
   .drill-inner{max-width:520px;margin:0 auto;width:100%;display:flex;flex-direction:column;flex:1}
   .reading{position:fixed;inset:0;z-index:60;overflow-y:auto;overscroll-behavior:contain;min-height:100%;background:linear-gradient(var(--grid) 1px, transparent 1px) 0 0/100% 34px, var(--paper);padding:0 calc(18px + env(safe-area-inset-right,0px)) calc(30px + env(safe-area-inset-bottom,0px)) calc(18px + env(safe-area-inset-left,0px));display:flex;flex-direction:column}
-  .reading.hidden{display:none}
   .ex-custom-btn{width:100%;font:inherit;font-weight:700;font-size:14px;color:var(--ink);background:var(--card);border:1.3px solid var(--ink);border-radius:3px;padding:11px 14px;margin-top:12px;cursor:pointer;text-align:center;-webkit-tap-highlight-color:transparent}
   .ex-custom-btn:active{transform:translateY(1px)}
   .custom{position:fixed;inset:0;z-index:61;overflow-y:auto;background:linear-gradient(var(--grid) 1px, transparent 1px) 0 0/100% 34px, var(--paper);padding:0 calc(18px + env(safe-area-inset-right,0px)) calc(30px + env(safe-area-inset-bottom,0px)) calc(18px + env(safe-area-inset-left,0px));display:flex;flex-direction:column}
-  .custom.hidden{display:none}
+  /* Entran deslizándose desde abajo (push nativo) en vez de aparecer de golpe. */
+  .drill,.reading,.custom{transform:translateY(0);opacity:1;visibility:visible;
+    transition:transform .32s cubic-bezier(.32,.72,0,1),opacity .22s ease,visibility 0s linear 0s}
+  .drill.hidden,.reading.hidden,.custom.hidden{transform:translateY(100%);opacity:0;visibility:hidden;pointer-events:none;
+    transition:transform .32s cubic-bezier(.32,.72,0,1),opacity .22s ease,visibility 0s linear .32s}
   .custom-inner{max-width:520px;margin:0 auto;width:100%;display:flex;flex-direction:column;flex:1}
   .ob-dots{display:flex;gap:6px;justify-content:center;margin:6px 0 18px}
   .ob-dot{width:7px;height:7px;border-radius:50%;background:var(--line)}
@@ -320,7 +322,7 @@
   .mrow-pct{font-family: var(--display-font);font-weight:800;font-size:18px;color:var(--shu)}
   .mrow-pct.ok{color:var(--green)}
   .mrow-mo{font-size:12px;font-weight:700;color:var(--green);margin:2px 0 4px;letter-spacing:.01em}
-  .d-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+  .d-head{display:flex;flex-direction:row-reverse;justify-content:space-between;align-items:center;margin-bottom:6px}
   .d-close{background:none;border:none;font:inherit;font-size:13px;color:var(--ink-soft);cursor:pointer;
     text-transform:uppercase;letter-spacing:.1em;font-weight:700}
   .d-stats{display:flex;gap:22px}
@@ -447,7 +449,7 @@
   .res:not(.open){max-height:0;opacity:0}
   /* quick-reference chips (header) */
   .rom-row{display:flex;justify-content:space-between;align-items:center;gap:8px 14px;flex-wrap:wrap}
-  .quickref{display:flex;gap:6px;flex-wrap:wrap;align-items:center;position:relative}
+  .quickref{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
   .qr-chip{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:700;
     padding:3px 9px;border:1.2px solid var(--line);border-radius:20px;background:transparent;
     color:var(--ink-soft);cursor:pointer;white-space:nowrap;max-width:150px;overflow:hidden;
@@ -733,13 +735,21 @@
   .drill-inner>:first-child:not(.d-sticky),.reading-inner>:first-child:not(.d-sticky),.custom-inner>:first-child:not(.d-sticky){margin-top:calc(20px + env(safe-area-inset-top,0px))}
   .qr-row{display:flex;gap:6px;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:1px 0}
   .qr-row::-webkit-scrollbar{display:none}
-  .qr-toggle{font-size:12.5px}
-  .qr-panel{position:absolute;top:calc(100% + 6px);left:0;z-index:20;display:flex;flex-direction:column;gap:5px;
-    min-width:180px;max-width:min(280px,calc(100vw - 40px));background:var(--card);border:1.3px solid var(--line);
-    border-radius:10px;padding:8px;box-shadow:0 6px 18px rgba(0,0,0,.22);
-    opacity:0;pointer-events:none;transform:translateY(-4px);transition:opacity .16s ease,transform .16s ease}
-  .qr-panel.open{opacity:1;pointer-events:auto;transform:none}
-  .qr-panel .qr-chip{width:100%;justify-content:flex-start;border-radius:6px;padding:7px 9px;font-size:12.5px}
+  .qr-toggle{display:inline-flex;align-items:center;gap:4px}
+  .qr-toggle .gh-chev{font-size:11px;opacity:.55;display:inline-block;transition:transform .2s ease}
+  .qr-toggle.open .gh-chev{transform:rotate(90deg)}
+  /* Grid de 0fr→1fr en vez de max-height: así el acordeón se abre y se
+     cierra con la misma animación pareja (max-height + flex es inconsistente
+     en Safari/iOS al cerrar). */
+  .qr-list{display:grid;grid-template-rows:0fr;transition:grid-template-rows .34s cubic-bezier(.32,.72,0,1)}
+  .qr-list.open{grid-template-rows:1fr}
+  .qr-list-inner{overflow:hidden;min-height:0}
+  .qr-item{display:flex;align-items:center;gap:9px;width:100%;text-align:left;
+    background:transparent;border:none;border-top:1px solid var(--line);color:var(--ink);
+    font:inherit;font-weight:700;font-size:13.5px;cursor:pointer;-webkit-tap-highlight-color:transparent;
+    padding:10px 2px}
+  .qr-item-aim{color:var(--shu)}
+  .qr-item .qr-ic{font-size:16px}
   .qr-ico{font-size:15px;padding:4px 10px}
   .qr-aim{gap:4px}
   .qr-aim .qr-lbl{display:inline-block;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom}
@@ -762,6 +772,7 @@
       <div class="rom" id="romSub">Nikka · daily practice</div>
       <div class="quickref" id="quickRef"></div>
     </div>
+    <div class="qr-list" id="qrList"></div>
   </header>
   <div id="app"><div class="loading">Loading your progress…</div></div>
   <footer>
@@ -1688,8 +1699,12 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     document.getElementById("romSub").textContent="Nikka · "+t("daily practice");
     var _qr=document.getElementById("quickRef");
     if(_qr){ _qr.innerHTML=quickRefHTML();
-      _qr.querySelectorAll("[data-ficha]").forEach(function(b){ b.addEventListener("click",function(){ closeQr(); openFicha(b.getAttribute("data-ficha")); }); });
+      _qr.querySelectorAll("[data-ficha]").forEach(function(b){ b.addEventListener("click",function(){ openFicha(b.getAttribute("data-ficha")); }); });
       var _qt=document.getElementById("qrToggle"); if(_qt)_qt.addEventListener("click",toggleQr);
+    }
+    var _ql=document.getElementById("qrList");
+    if(_ql){ _ql.innerHTML=qrListHTML(); if(qrOpen)_ql.classList.add("open");
+      _ql.querySelectorAll("[data-ficha]").forEach(function(b){ b.addEventListener("click",function(){ closeQr(); openFicha(b.getAttribute("data-ficha")); }); });
     }
     document.getElementById("startedLabel").textContent=t("Started")+" "+state.startDate+" · "+t("week")+" "+wk;
     document.getElementById("resetBtn").textContent=t("Reset all progress");
@@ -4829,28 +4844,32 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     })();
   }
   /* Accesos rápidos del header: silabario + notas (signos, registro) viven
-     colapsados detrás de un botón "⋯" para no ocupar toda la cabecera; el
-     juego apuntado se queda visible afuera porque es estado, no un lookup. */
+     colapsados detrás de un botón "⋯ Accesos", igual que "El camino" / "Qué
+     puedo jugar" — se despliegan como renglón debajo de la cabecera, no como
+     panel flotante. El juego apuntado se queda siempre visible porque es
+     estado, no un lookup. Usa las etiquetas cortas (tagEs/tagEn) para que
+     no se corten al mostrarse en una fila. */
   var qrOpen=false;
-  function toggleQr(e){ if(e){e.stopPropagation();} qrOpen=!qrOpen;
-    var p=document.getElementById("qrPanel"), b=document.getElementById("qrToggle");
-    if(p)p.classList.toggle("open",qrOpen); if(b)b.setAttribute("aria-expanded",qrOpen?"true":"false"); }
-  function closeQr(){ if(!qrOpen)return; qrOpen=false;
-    var p=document.getElementById("qrPanel"); if(p)p.classList.remove("open");
-    var b=document.getElementById("qrToggle"); if(b)b.setAttribute("aria-expanded","false"); }
-  document.addEventListener("click",function(e){ if(qrOpen && !(e.target.closest && e.target.closest(".quickref"))) closeQr(); });
+  function toggleQr(){ qrOpen=!qrOpen; setQrOpen(); }
+  function closeQr(){ if(!qrOpen)return; qrOpen=false; setQrOpen(); }
+  function setQrOpen(){
+    var b=document.getElementById("qrToggle"), l=document.getElementById("qrList");
+    if(b)b.classList.toggle("open",qrOpen); if(l)l.classList.toggle("open",qrOpen);
+    if(b)b.setAttribute("aria-expanded",qrOpen?"true":"false");
+  }
   function quickRefHTML(){
     var es=getLang()==='es';
-    var icons='<button class="qr-chip qr-ico" data-ficha="__kana__">🈂️ '+(es?'Silabario':'Kana chart')+'</button>';
+    return '<button class="qr-chip qr-toggle'+(qrOpen?' open':'')+'" id="qrToggle" aria-expanded="'+(qrOpen?'true':'false')+'">'+(es?'Accesos':'Quick refs')+' <span class="gh-chev">▸</span></button>';
+  }
+  function qrListHTML(){
+    var es=getLang()==='es', g=aimedGame(), h='';
+    if(g){ h+='<button class="qr-item qr-item-aim" data-ficha="'+g.id+'"><span class="qr-ic">🎯</span>'+gamePick(g.name)+'</button>'; }
+    h+='<button class="qr-item" data-ficha="__kana__"><span class="qr-ic">🈂️</span>'+(es?'Silabario':'Kana chart')+'</button>';
     (typeof NOTES!=='undefined'?NOTES:[]).forEach(function(n){
-      var lbl=es?n.cardEs:n.cardEn, ic=(n.id==='punct'?'⁉️':n.id==='register'?'🗣️':'📝');
-      icons+='<button class="qr-chip qr-ico" data-ficha="__note:'+n.id+'">'+ic+' '+lbl+'</button>';
+      var lbl=es?n.tagEs:n.tagEn, ic=(n.id==='punct'?'⁉️':n.id==='register'?'🗣️':'📝');
+      h+='<button class="qr-item" data-ficha="__note:'+n.id+'"><span class="qr-ic">'+ic+'</span>'+lbl+'</button>';
     });
-    var g=aimedGame();
-    var aim=g?('<button class="qr-chip qr-aim" data-ficha="'+g.id+'" title="'+gamePick(g.name)+'">🎯 <span class="qr-lbl">'+gamePick(g.name)+'</span></button>'):'';
-    var h='<button class="qr-chip qr-toggle" id="qrToggle" aria-expanded="'+(qrOpen?'true':'false')+'" aria-label="'+(es?'Accesos rápidos':'Quick refs')+'">⋯ '+(es?'Accesos':'Refs')+'</button>'+aim;
-    h+='<div class="qr-panel'+(qrOpen?' open':'')+'" id="qrPanel">'+icons+'</div>';
-    return h;
+    return '<div class="qr-list-inner">'+h+'</div>';
   }
   function openFicha(id){ var el=document.getElementById('ficha'); if(!el)return; fichaGameId=id; el.classList.remove('hidden'); renderFicha(); try{window.scrollTo(0,0);}catch(e){} }
   function closeFicha(){ var el=document.getElementById('ficha'); if(el)el.classList.add('hidden'); fichaGameId=null; }
@@ -6471,7 +6490,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function closeOnboard(silent){ onboardEl.classList.add("hidden"); state.onboardSeen=true; Persistence.save(state); if(!silent)render(); }
   function renderOnboard(){
     var n=obStepCount(), s=OB_STEPS[obStep], last=(obStep===n-1), i;
-    var h='<div class="d-sticky"><div class="d-head"><span class="cx-title mincho">日課 · Nikka</span><button class="d-close" id="obClose">'+t("Skip")+' ✕</button></div></div>';
+    var h='<div class="d-sticky"><div class="d-head"><button class="d-close" id="obClose">'+t("Skip")+' ✕</button><span class="cx-title mincho">日課 · Nikka</span></div></div>';
     h+='<div class="ob-dots">'; for(i=0;i<n;i++){ h+='<span class="ob-dot'+(i===obStep?" on":"")+'"></span>'; } h+='</div>';
     h+='<div class="ob-body"><h2 class="mincho">'+s.ti()+'</h2><div class="ob-txt">'+s.bo()+'</div></div>';
     if(last){
