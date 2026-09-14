@@ -505,6 +505,10 @@
   .fx-hint{font-size:9px;color:var(--shu);opacity:.85}
   .fx-reg{align-self:center;margin-top:3px;font-size:9px;color:var(--gold);border:1px solid var(--line);border-radius:999px;padding:1px 7px;line-height:1.35;cursor:pointer;white-space:nowrap}
   .fx-reg:active{transform:translateY(1px);border-color:var(--gold)}
+  .fx-parts{font-size:9.5px;color:var(--ink-soft);margin-top:5px;padding-top:5px;border-top:1px dashed var(--line);line-height:1.55;text-align:left}
+  .fx-part-a{color:var(--shu);font-weight:700}
+  .fx-part-b{color:var(--green);font-weight:700}
+  .fx-part-sep{color:var(--ink-faint);padding:0 2px}
   .fx-foot{font-size:11px;color:var(--ink-soft);margin:22px 0 6px;line-height:1.5;border-top:1px dashed var(--rule,#d8cfc0);padding-top:12px}
   .d-aim{font-size:12px;font-weight:700;color:var(--shu);margin-bottom:4px}
   .mastery-card h3{font-family: var(--display-font);font-weight:700;font-size:17px;margin:0}
@@ -2582,6 +2586,24 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     {jp:"これはいぬだ",romaji:"kore wa inu da",es:"esto es un perro",en:"this is a dog",parts:["これ","は","いぬ","だ"],note:"X は Y だ = «X es Y»"},
     {jp:"それはみずだ",romaji:"sore wa mizu da",es:"eso es agua",en:"that is water",parts:["それ","は","みず","だ"],note:"それ = «eso» · は · だ"},
     {jp:"それはほんだ",romaji:"sore wa hon da",es:"eso es un libro",en:"that is a book",parts:["それ","は","ほん","だ"],note:"X は Y だ = «X es Y»"},
+    // X は Y じゃない  (negativo casual de la copula)
+    {jp:"これはねこじゃない",romaji:"kore wa neko janai",es:"esto no es un gato",en:"this is not a cat",parts:["これ","は","ねこ","じゃない"],pattern:"cop-neg",note:"じゃない niega だ: «no es»"},
+    {jp:"それはほんじゃない",romaji:"sore wa hon janai",es:"eso no es un libro",en:"that is not a book",parts:["それ","は","ほん","じゃない"],pattern:"cop-neg",note:"X は Y じゃない = «X no es Y»"},
+    // X は Y だった  (pasado casual de la copula)
+    {jp:"わたしはがくせいだった",romaji:"watashi wa gakusei datta",es:"yo era estudiante",en:"I was a student",parts:["わたし","は","がくせい","だった"],pattern:"cop-past",note:"だった es el pasado de だ"},
+    {jp:"これはほんだった",romaji:"kore wa hon datta",es:"esto era un libro",en:"this was a book",parts:["これ","は","ほん","だった"],pattern:"cop-past",note:"X は Y だった = «X era Y»"},
+    // X は Y じゃなかった  (negativo pasado casual de la copula)
+    {jp:"わたしはがくせいじゃなかった",romaji:"watashi wa gakusei janakatta",es:"yo no era estudiante",en:"I was not a student",parts:["わたし","は","がくせい","じゃなかった"],pattern:"cop-negpast",note:"じゃなかった = negativo + pasado juntos"},
+    {jp:"これはねこじゃなかった",romaji:"kore wa neko janakatta",es:"esto no era un gato",en:"this was not a cat",parts:["これ","は","ねこ","じゃなかった"],pattern:"cop-negpast",note:"X は Y じゃなかった = «X no era Y»"},
+    // X は adj-い→くない  (negativo casual de adjetivos い)
+    {jp:"これはたかくない",romaji:"kore wa takakunai",es:"esto no es caro",en:"this is not expensive",parts:["これ","は","たかくない"],pattern:"adj-ineg",note:"たかい→たかくない: los adjetivos い no llevan だ"},
+    {jp:"それはさむくない",romaji:"sore wa samukunai",es:"eso no esta frio",en:"that is not cold",parts:["それ","は","さむくない"],pattern:"adj-ineg",note:"さむい→さむくない"},
+    // X は adj-い→かった  (pasado casual de adjetivos い)
+    {jp:"これはたかかった",romaji:"kore wa takakatta",es:"esto era caro",en:"this was expensive",parts:["これ","は","たかかった"],pattern:"adj-ipast",note:"たかい→たかかった"},
+    {jp:"それはおいしかった",romaji:"sore wa oishikatta",es:"eso estaba rico",en:"that was delicious",parts:["それ","は","おいしかった"],pattern:"adj-ipast",note:"おいしい→おいしかった"},
+    // X は adj-い→くなかった  (negativo pasado casual de adjetivos い)
+    {jp:"これはたかくなかった",romaji:"kore wa takakunakatta",es:"esto no era caro",en:"this was not expensive",parts:["これ","は","たかくなかった"],pattern:"adj-inegpast",note:"たかい→たかくなかった: junta las dos reglas"},
+    {jp:"それはさむくなかった",romaji:"sore wa samukunakatta",es:"eso no estaba frio",en:"that was not cold",parts:["それ","は","さむくなかった"],pattern:"adj-inegpast",note:"さむい→さむくなかった"},
     // X は Y です  (versión cortés de lo mismo)
     {jp:"これはペンです",romaji:"kore wa pen desu",es:"esto es un bolígrafo",en:"this is a pen",parts:["これ","は","ペン","です"],note:"です = «es» (cortés). Mismo molde que だ"},
     {jp:"わたしはがくせいです",romaji:"watashi wa gakusei desu",es:"soy estudiante",en:"I am a student",parts:["わたし","は","がくせい","です"],note:"わたし は X です = «yo soy X»"},
@@ -3950,17 +3972,17 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
         {jp:'タウンマップ',cat:'item',tier:2,romaji:'taun mappu',es:'mapa del pueblo',en:'town map',emoji:'🗺️'},
         {jp:'はたく',cat:'move',tier:2,romaji:'hataku',es:'destructor (golpe)',en:'Pound'},
         {jp:'からてチョップ',cat:'move',tier:2,romaji:'karate choppu',es:'golpe kárate',en:'Karate Chop'},
-        {jp:'おうふくビンタ',cat:'move',tier:2,romaji:'oufuku binta',es:'doble bofetón',en:'Double Slap'},
-        {jp:'れんぞくパンチ',cat:'move',tier:2,romaji:'renzoku panchi',es:'puño cometa',en:'Comet Punch'},
+        {jp:'おうふくビンタ',cat:'move',tier:2,romaji:'oufuku binta',es:'doble bofetón',en:'Double Slap',morph:[{jp:'おうふく',ro:'oufuku',es:'ida y vuelta',en:'round trip'},{jp:'ビンタ',ro:'binta',es:'bofetada',en:'slap'}]},
+        {jp:'れんぞくパンチ',cat:'move',tier:2,romaji:'renzoku panchi',es:'puño cometa',en:'Comet Punch',morph:[{jp:'れんぞく',ro:'renzoku',es:'consecutivo, seguido',en:'consecutive'},{jp:'パンチ',ro:'panchi',es:'puño (préstamo)',en:'punch (loanword)'}]},
         {jp:'メガトンパンチ',cat:'move',tier:2,romaji:'megaton panchi',es:'megapuño',en:'Mega Punch'},
-        {jp:'ネコにこばん',cat:'move',tier:2,romaji:'neko ni koban',es:'día de pago (monedas)',en:'Pay Day'},
+        {jp:'ネコにこばん',cat:'move',tier:2,romaji:'neko ni koban',es:'día de pago (monedas)',en:'Pay Day',morph:[{jp:'ネコ',ro:'neko',es:'gato',en:'cat'},{jp:'にこばん',ro:'ni koban',es:'con moneda de oro (dicho: como perlas a los cerdos)',en:'gold coin, idiom for wasted value'}]},
         {jp:'ほのおのパンチ',cat:'move',tier:2,romaji:'honoo no panchi',es:'puño fuego',en:'Fire Punch'},
         {jp:'れいとうパンチ',cat:'move',tier:2,romaji:'reitou panchi',es:'puño hielo',en:'Ice Punch'},
         {jp:'かみなりパンチ',cat:'move',tier:2,romaji:'kaminari panchi',es:'puño trueno',en:'Thunder Punch'},
         {jp:'ひっかく',cat:'move',tier:2,romaji:'hikkaku',es:'arañazo',en:'Scratch'},
         {jp:'はさむ',cat:'move',tier:2,romaji:'hasamu',es:'agarre (pinza)',en:'Vise Grip'},
-        {jp:'ハサミギロチン',cat:'move',tier:2,romaji:'hasami girochin',es:'guillotina',en:'Guillotine'},
-        {jp:'かまいたち',cat:'move',tier:2,romaji:'kamaitachi',es:'viento cortante',en:'Razor Wind'},
+        {jp:'ハサミギロチン',cat:'move',tier:2,romaji:'hasami girochin',es:'guillotina',en:'Guillotine',morph:[{jp:'ハサミ',ro:'hasami',es:'pinza',en:'pincer'},{jp:'ギロチン',ro:'girochin',es:'guillotina (préstamo)',en:'guillotine (loanword)'}]},
+        {jp:'かまいたち',cat:'move',tier:2,romaji:'kamaitachi',es:'viento cortante',en:'Razor Wind',morph:[{jp:'かま',ro:'kama',es:'hoz',en:'sickle'},{jp:'いたち',ro:'itachi',es:'comadreja (criatura del folclore)',en:'weasel (folklore creature)'}]},
         {jp:'つるぎのまい',cat:'move',tier:2,romaji:'tsurugi no mai',es:'danza espada',en:'Swords Dance'},
         {jp:'かぜおこし',cat:'move',tier:2,romaji:'kaze okoshi',es:'tornado (ráfaga)',en:'Gust'},
         {jp:'つばさでうつ',cat:'move',tier:2,romaji:'tsubasa de utsu',es:'ataque ala',en:'Wing Attack'},
@@ -3983,7 +4005,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
         {jp:'まきつく',cat:'move',tier:2,romaji:'makitsuku',es:'constricción',en:'Wrap'},
         {jp:'とっしん',cat:'move',tier:2,romaji:'tosshin',es:'derribo',en:'Take Down'},
         {jp:'あばれる',cat:'move',tier:2,romaji:'abareru',es:'embiste (rabia)',en:'Thrash'},
-        {jp:'すてみタックル',cat:'move',tier:2,romaji:'sutemi takkuru',es:'doble filo',en:'Double-Edge'},
+        {jp:'すてみタックル',cat:'move',tier:2,romaji:'sutemi takkuru',es:'doble filo',en:'Double-Edge',morph:[{jp:'すてみ',ro:'sutemi',es:'sacrificar el cuerpo',en:'body sacrifice'},{jp:'タックル',ro:'takkuru',es:'placaje (préstamo)',en:'tackle (loanword)'}]},
         {jp:'しっぽをふる',cat:'move',tier:2,romaji:'shippo o furu',es:'látigo cola',en:'Tail Whip'},
         {jp:'どくばり',cat:'move',tier:2,romaji:'dokubari',es:'picotazo veneno',en:'Poison Sting'},
         {jp:'ダブルニードル',cat:'move',tier:2,romaji:'daburu niidoru',es:'doble aguja',en:'Twineedle'},
@@ -3995,7 +4017,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
         {jp:'うたう',cat:'move',tier:2,romaji:'utau',es:'canto',en:'Sing'},
         {jp:'ちょうおんぱ',cat:'move',tier:2,romaji:'chouonpa',es:'supersónico',en:'Supersonic'},
         {jp:'ソニックブーム',cat:'move',tier:2,romaji:'sonikku buumu',es:'bomba sónica',en:'Sonic Boom'},
-        {jp:'かなしばり',cat:'move',tier:2,romaji:'kanashibari',es:'anulación',en:'Disable'},
+        {jp:'かなしばり',cat:'move',tier:2,romaji:'kanashibari',es:'anulación',en:'Disable',morph:[{jp:'かな',ro:'kana',es:'metal',en:'metal'},{jp:'しばり',ro:'shibari',es:'atadura (dicho: parálisis del sueño)',en:'binding, idiom for sleep paralysis'}]},
         {jp:'ようかいえき',cat:'move',tier:2,romaji:'youkai eki',es:'ácido',en:'Acid'},
         {jp:'ひのこ',cat:'move',tier:2,romaji:'hinoko',es:'ascuas',en:'Ember'},
         {jp:'かえんほうしゃ',cat:'move',tier:2,romaji:'kaen housha',es:'lanzallamas',en:'Flamethrower'},
@@ -4010,13 +4032,13 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
         {jp:'はかいこうせん',cat:'move',tier:2,romaji:'hakai kousen',es:'hiperrayo',en:'Hyper Beam'},
         {jp:'つつく',cat:'move',tier:2,romaji:'tsutsuku',es:'picotazo',en:'Peck'},
         {jp:'ドりルくちばし',cat:'move',tier:2,romaji:'doriru kuchibashi',es:'pico taladro',en:'Drill Peck'},
-        {jp:'じごくぐるま',cat:'move',tier:2,romaji:'jigokuguruma',es:'sumisión',en:'Submission'},
+        {jp:'じごくぐるま',cat:'move',tier:2,romaji:'jigokuguruma',es:'sumisión',en:'Submission',morph:[{jp:'じごく',ro:'jigoku',es:'infierno',en:'hell'},{jp:'ぐるま',ro:'guruma',es:'rueda',en:'wheel'}]},
         {jp:'けたぐり',cat:'move',tier:2,romaji:'ketaguri',es:'patada baja',en:'Low Kick'},
         {jp:'カウンター',cat:'move',tier:2,romaji:'kauntaa',es:'contraataque',en:'Counter'},
         {jp:'ちきゅうなげ',cat:'move',tier:2,romaji:'chikyuunage',es:'sísmico',en:'Seismic Toss'},
         {jp:'すいとる',cat:'move',tier:2,romaji:'suitoru',es:'absorber',en:'Absorb'},
         {jp:'メガドレイン',cat:'move',tier:2,romaji:'mega dorein',es:'megaagotar',en:'Mega Drain'},
-        {jp:'やどりぎのタネ',cat:'move',tier:2,romaji:'yadorigi no tane',es:'drenadoras',en:'Leech Seed'},
+        {jp:'やどりぎのタネ',cat:'move',tier:2,romaji:'yadorigi no tane',es:'drenadoras',en:'Leech Seed',morph:[{jp:'やどりぎ',ro:'yadorigi',es:'muérdago (planta parásita)',en:'mistletoe (parasitic plant)'},{jp:'タネ',ro:'tane',es:'semilla',en:'seed'}]},
         {jp:'せいちょう',cat:'move',tier:2,romaji:'seichou',es:'crecimiento',en:'Growth'},
         {jp:'はっぱカッター',cat:'move',tier:2,romaji:'happa kattaa',es:'hoja afilada',en:'Razor Leaf'},
         {jp:'ソーラービーム',cat:'move',tier:2,romaji:'soraa biimu',es:'rayo solar',en:'Solar Beam'},
@@ -4024,11 +4046,11 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
         {jp:'しびれごな',cat:'move',tier:2,romaji:'shibiregona',es:'paralizador',en:'Stun Spore'},
         {jp:'ねむりごな',cat:'move',tier:2,romaji:'nemurigona',es:'somnífero',en:'Sleep Powder'},
         {jp:'はなびらのまい',cat:'move',tier:2,romaji:'hanabira no mai',es:'danza pétalo',en:'Petal Dance'},
-        {jp:'いとをはく',cat:'move',tier:2,romaji:'ito o haku',es:'disparo demora',en:'String Shot'},
+        {jp:'いとをはく',cat:'move',tier:2,romaji:'ito o haku',es:'disparo demora',en:'String Shot',morph:[{jp:'いと',ro:'ito',es:'hilo',en:'thread'},{jp:'はく',ro:'haku',es:'escupir',en:'to spit'}]},
         {jp:'りゅうのいかり',cat:'move',tier:2,romaji:'ryuu no ikari',es:'furia dragón',en:'Dragon Rage'},
         {jp:'ほのおのうず',cat:'move',tier:2,romaji:'honoo no uzu',es:'giro fuego',en:'Fire Spin'},
         {jp:'でんきショック',cat:'move',tier:2,romaji:'denki shokku',es:'impactrueno',en:'Thunder Shock'},
-        {jp:'10まんボルト',cat:'move',tier:2,romaji:'juuman boruto',es:'rayo (10mil voltios)',en:'Thunderbolt'},
+        {jp:'10まんボルト',cat:'move',tier:2,romaji:'juuman boruto',es:'rayo (10mil voltios)',en:'Thunderbolt',morph:[{jp:'10まん',ro:'juuman',es:'100.000 (万 = diez mil)',en:'100,000 (万 = ten thousand)'},{jp:'ボルト',ro:'boruto',es:'voltios (préstamo)',en:'volts (loanword)'}]},
         {jp:'でんじは',cat:'move',tier:2,romaji:'denjiha',es:'onda trueno',en:'Thunder Wave'},
         {jp:'かみなり',cat:'move',tier:2,romaji:'kaminari',es:'trueno',en:'Thunder'},
         {jp:'いわおとし',cat:'move',tier:2,romaji:'iwa otoshi',es:'lanzarrocas',en:'Rock Throw'},
@@ -4040,12 +4062,12 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
         {jp:'さいみんじゅつ',cat:'move',tier:2,romaji:'saiminjutsu',es:'hipnosis',en:'Hypnosis'},
         {jp:'ヨガのポーズ',cat:'move',tier:2,romaji:'yoga no poozu',es:'meditación',en:'Meditate'},
         {jp:'こうそくいどう',cat:'move',tier:2,romaji:'kousoku idou',es:'agilidad',en:'Agility'},
-        {jp:'でんこうせっか',cat:'move',tier:2,romaji:'denkou sekka',es:'ataque rápido',en:'Quick Attack'},
+        {jp:'でんこうせっか',cat:'move',tier:2,romaji:'denkou sekka',es:'ataque rápido',en:'Quick Attack',morph:[{jp:'でんこう',ro:'denkou',es:'relámpago',en:'lightning flash'},{jp:'せっか',ro:'sekka',es:'chispa de pedernal (dicho: extrema rapidez)',en:'flint spark, idiom for extreme speed'}]},
         {jp:'いかり',cat:'move',tier:2,romaji:'ikari',es:'furia',en:'Rage'},
         {jp:'ナイトへッド',cat:'move',tier:2,romaji:'naito heddo',es:'tinieblas',en:'Night Shade'},
         {jp:'ものまね',cat:'move',tier:2,romaji:'monomane',es:'mimético',en:'Mimic'},
         {jp:'いやなおと',cat:'move',tier:2,romaji:'iyana oto',es:'chirrido',en:'Screech'},
-        {jp:'かげぶんしん',cat:'move',tier:2,romaji:'kagebunshin',es:'doble equipo',en:'Double Team'},
+        {jp:'かげぶんしん',cat:'move',tier:2,romaji:'kagebunshin',es:'doble equipo',en:'Double Team',morph:[{jp:'かげ',ro:'kage',es:'sombra',en:'shadow'},{jp:'ぶんしん',ro:'bunshin',es:'clon, avatar',en:'clone, avatar'}]},
         {jp:'じこさいせい',cat:'move',tier:2,romaji:'jikosaisei',es:'recuperación',en:'Recover'},
         {jp:'かたくなる',cat:'move',tier:2,romaji:'kataku naru',es:'fortaleza',en:'Harden'},
         {jp:'ちいさくなる',cat:'move',tier:2,romaji:'chiisaku naru',es:'reducción',en:'Minimize'},
@@ -4059,15 +4081,15 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
         {jp:'りフレクター',cat:'move',tier:2,romaji:'rifurekutaa',es:'reflejo',en:'Reflect'},
         {jp:'きあいだめ',cat:'move',tier:2,romaji:'kiai dame',es:'foco energía',en:'Focus Energy'},
         {jp:'がまん',cat:'move',tier:2,romaji:'gaman',es:'venganza (aguante)',en:'Bide'},
-        {jp:'ゆびをふる',cat:'move',tier:2,romaji:'yubi o furu',es:'metrónomo',en:'Metronome'},
-        {jp:'オウムがえし',cat:'move',tier:2,romaji:'oumu gaeshi',es:'espejo',en:'Mirror Move'},
+        {jp:'ゆびをふる',cat:'move',tier:2,romaji:'yubi o furu',es:'metrónomo',en:'Metronome',morph:[{jp:'ゆび',ro:'yubi',es:'dedo',en:'finger'},{jp:'ふる',ro:'furu',es:'agitar',en:'to wave'}]},
+        {jp:'オウムがえし',cat:'move',tier:2,romaji:'oumu gaeshi',es:'espejo',en:'Mirror Move',morph:[{jp:'オウム',ro:'oumu',es:'loro',en:'parrot'},{jp:'がえし',ro:'gaeshi',es:'devolver (repetir lo que oye)',en:'to give back, echo'}]},
         {jp:'じばく',cat:'move',tier:2,romaji:'jibaku',es:'autodestrucción',en:'Self-Destruct'},
         {jp:'タマゴばくだん',cat:'move',tier:2,romaji:'tamago bakudan',es:'bomba huevo',en:'Egg Bomb'},
         {jp:'したでなめる',cat:'move',tier:2,romaji:'shita de nameru',es:'lametón',en:'Lick'},
         {jp:'スモッグ',cat:'move',tier:2,romaji:'sumoggu',es:'polución',en:'Smog'},
         {jp:'へドロこうげき',cat:'move',tier:2,romaji:'hedoro kougeki',es:'residuos',en:'Sludge'},
         {jp:'ホネこんぼう',cat:'move',tier:2,romaji:'hone konbou',es:'hueso palo',en:'Bone Club'},
-        {jp:'だいもんじ',cat:'move',tier:2,romaji:'daimonji',es:'llamarada',en:'Fire Blast'},
+        {jp:'だいもんじ',cat:'move',tier:2,romaji:'daimonji',es:'llamarada',en:'Fire Blast',morph:[{jp:'だい',ro:'dai',es:'grande',en:'big'},{jp:'もんじ',ro:'monji',es:'carácter (alude al festival Daimonji de Kioto)',en:'character, alludes to the Daimonji bonfire festival in Kyoto'}]},
         {jp:'たきのぼり',cat:'move',tier:2,romaji:'takinobori',es:'cascada',en:'Waterfall'},
         {jp:'からではさむ',cat:'move',tier:2,romaji:'kara de hasamu',es:'tenaza',en:'Clamp'},
         {jp:'スピードスター',cat:'move',tier:2,romaji:'supiido sutaa',es:'meteoros',en:'Swift'},
@@ -4075,19 +4097,19 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
         {jp:'とげキャノン',cat:'move',tier:2,romaji:'toge kyanon',es:'clavo cañón',en:'Spike Cannon'},
         {jp:'からみつく',cat:'move',tier:2,romaji:'karamitsuku',es:'restricción',en:'Constrict'},
         {jp:'ドわすれ',cat:'move',tier:2,romaji:'do wasure',es:'amnesia',en:'Amnesia'},
-        {jp:'スプーンまげ',cat:'move',tier:2,romaji:'supuun mage',es:'kinético',en:'Kinesis'},
+        {jp:'スプーンまげ',cat:'move',tier:2,romaji:'supuun mage',es:'kinético',en:'Kinesis',morph:[{jp:'スプーン',ro:'supuun',es:'cuchara (préstamo)',en:'spoon (loanword)'},{jp:'まげ',ro:'mage',es:'doblar',en:'to bend'}]},
         {jp:'タマゴうみ',cat:'move',tier:2,romaji:'tamago umi',es:'ovocuración',en:'Soft-Boiled'},
         {jp:'とびひざげり',cat:'move',tier:2,romaji:'tobihizageri',es:'patada salto alta',en:'Hi Jump Kick'},
-        {jp:'へびにらみ',cat:'move',tier:2,romaji:'hebi nirami',es:'deslumbrar',en:'Glare'},
+        {jp:'へびにらみ',cat:'move',tier:2,romaji:'hebi nirami',es:'deslumbrar',en:'Glare',morph:[{jp:'へび',ro:'hebi',es:'serpiente',en:'snake'},{jp:'にらみ',ro:'nirami',es:'mirada fija',en:'fixed stare'}]},
         {jp:'ゆめくい',cat:'move',tier:2,romaji:'yumekui',es:'come sueños',en:'Dream Eater'},
         {jp:'どくガス',cat:'move',tier:2,romaji:'doku gasu',es:'gas venenoso',en:'Poison Gas'},
         {jp:'たまなげ',cat:'move',tier:2,romaji:'tamanage',es:'bombardeo',en:'Barrage'},
         {jp:'きゅうけつ',cat:'move',tier:2,romaji:'kyuuketsu',es:'chupavidas',en:'Leech Life'},
-        {jp:'あくまのキッス',cat:'move',tier:2,romaji:'akuma no kissu',es:'beso amoroso',en:'Lovely Kiss'},
-        {jp:'ゴッドバード',cat:'move',tier:2,romaji:'goddo baado',es:'ataque aéreo',en:'Sky Attack'},
+        {jp:'あくまのキッス',cat:'move',tier:2,romaji:'akuma no kissu',es:'beso amoroso',en:'Lovely Kiss',morph:[{jp:'あくま',ro:'akuma',es:'demonio',en:'demon'},{jp:'のキッス',ro:'no kissu',es:'beso (el nombre oficial suaviza el original a "amoroso")',en:'kiss (official name softens it to "lovely")'}]},
+        {jp:'ゴッドバード',cat:'move',tier:2,romaji:'goddo baado',es:'ataque aéreo',en:'Sky Attack',morph:[{jp:'ゴッド',ro:'goddo',es:'dios (préstamo)',en:'god (loanword)'},{jp:'バード',ro:'baado',es:'pájaro (préstamo)',en:'bird (loanword)'}]},
         {jp:'へんしん',cat:'move',tier:2,romaji:'henshin',es:'transformación',en:'Transform'},
         {jp:'あわ',cat:'move',tier:2,romaji:'awa',es:'burbuja',en:'Bubble'},
-        {jp:'ピヨピヨパンチ',cat:'move',tier:2,romaji:'piyopiyo panchi',es:'puño mareo',en:'Dizzy Punch'},
+        {jp:'ピヨピヨパンチ',cat:'move',tier:2,romaji:'piyopiyo panchi',es:'puño mareo',en:'Dizzy Punch',morph:[{jp:'ピヨピヨ',ro:'piyopiyo',es:'pío pío (onomatopeya del mareo, ver pajaritos)',en:'tweet tweet, onomatopoeia for seeing stars/dizziness'},{jp:'パンチ',ro:'panchi',es:'puño (préstamo)',en:'punch (loanword)'}]},
         {jp:'キノコのほうし',cat:'move',tier:2,romaji:'kinoko no houshi',es:'espora',en:'Spore'},
         {jp:'サイコウェーブ',cat:'move',tier:2,romaji:'saikoweebu',es:'psicoonda',en:'Psywave'},
         {jp:'はねる',cat:'move',tier:2,romaji:'haneru',es:'salpicadura',en:'Splash'},
@@ -4600,7 +4622,8 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     if(wordReadable(jp)) return 'readable';     /* podés sonarla, aún sin practicar */
     return 'locked'; }                          /* su kana todavía no se aprendió */
   function kataToHira(s){ return (s||'').replace(/[\u30a1-\u30f6]/g,function(ch){return String.fromCharCode(ch.charCodeAt(0)-0x60);}); }
-  function fxHay(w){ var s=((w.jp||'')+' '+(w.romaji||'')+' '+(w.es||'')+' '+(w.en||'')).toLowerCase(); return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+  function fxHay(w){ var pt=(w.morph||[]).map(function(p){return (p.jp||'')+' '+(p.ro||'')+' '+(p.es||'')+' '+(p.en||'');}).join(' ');
+    var s=((w.jp||'')+' '+(w.romaji||'')+' '+(w.es||'')+' '+(w.en||'')+' '+pt).toLowerCase(); return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
   function fichaGroups(g){ var order=[],map={},idx={};
     (g.words||[]).forEach(function(w){ var c=w.cat||'general'; if(!map[c]){map[c]=[];idx[c]=order.length;order.push(c);} map[c].push(w); });
     var BULK={item:1,move:2,badge:3};   /* secciones grandes de referencia van al final */
@@ -4611,6 +4634,26 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       return idx[a]-idx[b];
     });
     return {order:order,map:map}; }
+  /* Desglose de palabras compuestas: solo para entradas donde el nombre
+     oficial (w.es/w.en) esconde las piezas reales del japonés (préstamos
+     pegados sin espacio, dichos, referencias culturales). Es un campo
+     opcional; si w.morph no existe el chip se ve exactamente igual que
+     antes. Nombrado "morph" (no "parts") a propósito: "parts" ya lo usa
+     el motor de gramática para el desglose de oraciones (array de
+     strings); esto es otra cosa, un array de {jp, ro, es} por palabra
+     de juego. El color solo vive en esta línea de apoyo, nunca se toca
+     fx-jp (wordFormHTML / ruby / kanji siguen intactos). Separador:
+     nakaguro (・), el mismo que la app ya enseña para dividir compuestos
+     en préstamo, cero guiones. */
+  function fichaPartsHTML(w){
+    if(!w.morph || !w.morph.length) return '';
+    var es=getLang()==='es';
+    var seg=w.morph.map(function(p,i){
+      var cls=(i%2===0)?'fx-part-a':'fx-part-b';
+      return '<span class="'+cls+'">'+(p.ro||p.jp)+'</span> '+(es?(p.es||p.en||''):(p.en||p.es||''));
+    }).join('<span class="fx-part-sep">&#12539;</span>');
+    return '<div class="fx-parts">'+seg+'</div>';
+  }
   function fichaChipHTML(w){
     var es=getLang()==='es', st=fichaState(w.jp), gl=es?(w.es||w.en):(w.en||w.es);
     var mark = st==='mastered'?'<span class="fx-mk ok">✓</span>'
@@ -4623,6 +4666,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       '<div class="fx-ro">'+(w.romaji||'')+'</div>'+
       '<div class="fx-gl">'+gl+'</div>'+
       (w.reg?'<span class="fx-reg" data-open-note="register">🗣 '+(es?w.reg.es:w.reg.en)+'</span>':'')+
+      fichaPartsHTML(w)+
       (st==='locked'?'<div class="fx-hint">'+(es?'aún no leés su kana':'kana not learned yet')+'</div>':'')+
       '</button>';
   }
@@ -5242,7 +5286,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
      palabra de contenido nueva (patrón ya conocido), o un patrón nuevo (todo el
      vocab ya dominado). Nunca ambas. Las partículas viajan dentro del patrón. */
   var PHRASE_WORD_MIN=3, PATTERN_SEEN_MIN=1;
-  var STRUCT_TOKENS={'は':1,'が':1,'を':1,'に':1,'で':1,'へ':1,'の':1,'と':1,'も':1,'か':1,'から':1,'まで':1,'や':1,'だ':1,'です':1,'ですか':1,'ください':1,'おねがいします':1,'いる':1,'ある':1,'すき':1};
+  var STRUCT_TOKENS={'は':1,'が':1,'を':1,'に':1,'で':1,'へ':1,'の':1,'と':1,'も':1,'か':1,'から':1,'まで':1,'や':1,'だ':1,'です':1,'ですか':1,'ください':1,'おねがいします':1,'いる':1,'ある':1,'すき':1,'じゃない':1,'だった':1,'じゃなかった':1};
   function isStructTok(w){ return !!STRUCT_TOKENS[w] || /たい$/.test(w); }
   function inferPattern(parts){ if(!parts||!parts.length)return null;
     var has=function(t){return parts.indexOf(t)>=0;}, last=parts[parts.length-1];
@@ -5298,6 +5342,12 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   var PATTERNS=[
     {id:'cop-da',    order:1,  needs:[],           intro:['は','だ'], mold:'｛tema｝は｛qué es｝だ',   gloss:'«X es Y» — decir qué es algo (casual)'},
     {id:'cop-desu',  order:2,  needs:['cop-da'],   intro:['です'],    mold:'｛tema｝は｛qué es｝です', gloss:'«X es Y» — la versión cortés'},
+    {id:'cop-neg',     order:1.1,needs:['cop-da'],   intro:['じゃ','ない'], mold:'｛tema｝は｛qué no es｝じゃない', gloss:'«X no es Y» (じゃない niega だ, forma casual. Version cortes: じゃないです / じゃありません)'},
+    {id:'cop-past',    order:1.2,needs:['cop-da'],   intro:['だった'],   mold:'｛tema｝は｛qué era｝だった',   gloss:'«X era/fue Y» (だった es el pasado de だ, forma casual. Version cortes: でした)'},
+    {id:'cop-negpast', order:1.3,needs:['cop-neg','cop-past'], intro:['じゃなかった'], mold:'｛tema｝は｛qué no era｝じゃなかった', gloss:'«X no era/no fue Y» (junta la negacion じゃ con el pasado なかった. Version cortes: じゃなかったです / じゃありませんでした)'},
+    {id:'adj-ineg',    order:1.4,needs:['cop-da'],   intro:['くない'],   mold:'｛tema｝は｛adjetivo い→くない｝', gloss:'«X no es adj» (los adjetivos en い NUNCA llevan だ: la propia terminacion cambia, quita い y pone くない. Ej: あつい→あつくない. Excepcion: いい usa la raiz よ: よくない)'},
+    {id:'adj-ipast',   order:1.5,needs:['adj-ineg'], intro:['かった'],   mold:'｛tema｝は｛adjetivo い→かった｝', gloss:'«X era/fue adj» (quita い y pone かった. Ej: あつい→あつかった. Excepcion: いい→よかった)'},
+    {id:'adj-inegpast',order:1.6,needs:['adj-ineg','adj-ipast'], intro:['くなかった'], mold:'｛tema｝は｛adjetivo い→くなかった｝', gloss:'«X no era/no fue adj» (combina las dos reglas: quita い, pone くなかった. Ej: あつい→あつくなかった. Excepcion: いい→よくなかった)'},
     {id:'q-desu',    order:3,  needs:['cop-desu'], intro:['か'],      mold:'｛algo｝ですか',          gloss:'«¿es X?» — か vuelve pregunta la frase'},
     {id:'obj-wo',    order:4,  needs:['cop-da'],   intro:['を'],      mold:'｛cosa｝を｛verbo｝',       gloss:'hacerle algo a X — を marca el objeto'},
     {id:'exist-aru', order:5,  needs:['cop-da'],   intro:['が'],      mold:'｛cosa｝がある',           gloss:'«hay X» — para cosas (ある)'},
