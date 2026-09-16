@@ -4662,7 +4662,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
              :                  '<span class="fx-mk">·</span>';
     var em = w.emoji?('<span class="fx-em">'+w.emoji+'</span>'):'';
     return '<button class="fx-chip '+st+'" data-say="'+w.jp+'" data-search="'+fxHay(w)+'">'+
-      '<div class="fx-hd">'+em+'<span class="fx-jp mincho">'+wordFormHTML(w)+'</span>'+mark+'</div>'+
+      '<div class="fx-hd">'+em+'<span class="fx-jp mincho">'+wordFormHTML(w,true)+'</span>'+mark+'</div>'+
       '<div class="fx-ro">'+(w.romaji||'')+'</div>'+
       '<div class="fx-gl">'+gl+'</div>'+
       (w.reg?'<span class="fx-reg" data-open-note="register">🗣 '+(es?w.reg.es:w.reg.en)+'</span>':'')+
@@ -5166,10 +5166,10 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     }
     return rubyHTML(kf,reading);
   }
-  function wordFormHTML(w){ var jp=(typeof w==='string')?w:(w&&w.jp);
+  function wordFormHTML(w,forceFurigana){ var jp=(typeof w==='string')?w:(w&&w.jp);
     if(!kanjiOn())return jp;                     // kanji off → idéntico a hoy
     var kf=kanjiForm(w); if(!kf)return jp;        // sin forma-kanji → kana
-    if(kanjiReadable(kf))return kf;              // todos los kanji aprendidos → kanji desnudo
+    if(kanjiReadable(kf))return forceFurigana?rubyHTML(kf,jp):kf;  // dominado: desnudo, o con furigana si se fuerza
     if(!wordMature(jp))return jp;                // palabra aún no madura → no le sumo carga
     return rubyHTML(kf,jp);                      // andamio: kanji + furigana
   }
@@ -5807,7 +5807,11 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var withInflight=quizWords.filter(function(w){ var kf=kanjiForm(w);
       for(var i=0;i<kf.length;i++){ if(inflight.indexOf(kf.charAt(i))>=0)return true; } return false; });
     var pool=withInflight.length?withInflight:quizWords;
+    /* evita repetir la misma palabra dos veces seguidas si el pool da para elegir otra */
+    var lastJP=ksess.lastTarget, poolNoRepeat=pool.filter(function(w){return w.jp!==lastJP;});
+    if(poolNoRepeat.length) pool=poolNoRepeat;
     var target=pool[Math.floor(Math.random()*pool.length)];
+    ksess.lastTarget=target.jp;
     var distSrc=WORD_POOL.filter(function(w){ return w.jp!==target.jp && wordReadable(w.jp); });
     shuffle(distSrc); var opts=shuffle([target].concat(distSrc.slice(0,5)));
     ksess.q={mode:"quiz",word:target,opts:opts,answered:false,picked:-1};
@@ -6248,35 +6252,11 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     pbRecent.push(phrase.jp); if(pbRecent.length>3)pbRecent.shift();
     phraseBuildLaunch(phrase); return true;
   }
-  /* Proficiencia combinada para subir la dificultad del constructor: la frase
-     puntual ya se armó bien un par de veces (su propio box de SRS) Y, si tiene
-     patrón, ese patrón ya maduró. Ambas señales juntas = "esto ya lo entendés",
-     no sólo "te acordás del orden". Frases sin patrón detectable sólo miran su
-     propio box (needsPat=false). */
-  var PB_PROF_BOX=2;
-  function pbProficient(phrase){
-    var box=(rsess&&rsess.box&&rsess.box[phrase.jp])||0;
-    var pid=patternOf(phrase), needsPat=pid&&PATTERN_BY_ID[pid];
-    return box>=PB_PROF_BOX && (!needsPat||patternMature(pid));
-  }
   function phraseBuildLaunch(phrase){
     var target=phrase.parts.slice();
     var uniq={}; target.forEach(function(w){uniq[w]=1;});
-    var hard=pbProficient(phrase);
-    var baseCount=Math.max(1,Math.min(3,6-target.length));
-    var wantCount=hard?Math.min(4,baseCount*2):baseCount;
-    var decoys=[];
-    /* señuelo de partícula confundible primero: mismo hueco gramatical, otro
-       sentido (へ vs に vs で…) — obliga a leer qué dice, no sólo dónde va. */
-    var partWord=null; for(var pi=0;pi<target.length;pi++){ if(PARTICLES[target[pi]]){ partWord=target[pi]; break; } }
-    if(partWord){
-      var conf=Object.keys(PCONF[partWord]||{}).filter(function(c){ return !uniq[c]&&wordReadable(c); });
-      shuffle(conf); conf.slice(0,hard?2:1).forEach(function(c){ if(decoys.indexOf(c)<0)decoys.push(c); });
-    }
-    /* resto: vocabulario ya legible (sólo lo aprendido) de otras frases */
-    var pool=phraseDecoyUniverse().filter(function(w){ return !uniq[w]&&decoys.indexOf(w)<0&&wordReadable(w); });
-    shuffle(pool);
-    while(decoys.length<wantCount&&pool.length){ decoys.push(pool.shift()); }
+    var decoys=phraseDecoyUniverse().filter(function(w){return !uniq[w];});
+    shuffle(decoys); decoys=decoys.slice(0,Math.max(1,Math.min(3,6-target.length)));
     var tiles=shuffle(target.concat(decoys));
     pbsess={phrase:phrase,target:target,tiles:tiles,slot:0,used:{},badIdx:-1,done:false};
     readingEl.classList.remove("hidden"); renderPhraseBuild();
