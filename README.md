@@ -45,16 +45,6 @@ Adding a new game to "What can I play?" is a one-object edit. Append to the `GAM
 
 Any word not already in the app's pool is folded in automatically, so both the readiness verdict **and** the teachable content light up with no other changes. Thresholds (`READY_KANA_DEFAULT`, `READY_DICT`, `READY_COMFY`) are tunable constants at the top of the same block.
 
-## Run it
-
-Open `index.html` in any browser. For the intended "app on my phone" experience, host it and add it to your home screen.
-
-### Host on GitHub Pages
-
-1. Put `index.html` in the repo root.
-2. **Settings → Pages → Source: Deploy from branch → `main` / `root` → Save.**
-3. Open the resulting `https://<user>.github.io/<repo>/` URL in Safari → **Share → Add to Home Screen**.
-
 ## Data & privacy
 
 Progress is saved in your browser via `localStorage` — it lives on your device, per-browser and per-device, and does **not** sync across devices. Don't clear the page's site data, or your progress and streak reset. There's an export/import panel in-app for moving your data or keeping a backup.
