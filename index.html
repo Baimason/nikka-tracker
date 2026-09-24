@@ -519,6 +519,7 @@
   .mc-verdict{font-size:13px;color:var(--ink);line-height:1.5;margin-top:8px}
   .mc-verdict.ok{color:var(--green);font-weight:600}
   .mc-verdict.gap{color:var(--shu);font-weight:600}
+  .mc-verdict.slip{color:var(--gold);font-weight:600}
   .weak-head{font-size:13px;color:var(--ink);margin-top:12px}
   .weak-head b{color:var(--shu);font-weight:800}
   .focus-all-btn{width:100%;margin-top:11px;font:inherit;font-weight:700;font-size:14px;color:var(--card);background:var(--shu);border:none;border-radius:3px;padding:11px;cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -759,18 +760,6 @@
   .qr-aim .qr-lbl{display:inline-block;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom}
   .qr-in{animation:qrIn .34s ease both}
   @keyframes qrIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
-  .ex-intro{padding:6px 2px 10px}
-  .ex-intro p{margin:0 0 10px;font-size:14px;line-height:1.6;color:var(--ink)}
-  .ex-note{font-size:12px;color:var(--ink-soft)}
-  .ex-card-sub{font-size:13px;color:var(--ink-soft);margin:4px 0 0}
-  .ex-meta{display:flex;justify-content:space-between;align-items:center;margin:2px 0 10px;font-size:13px;color:var(--ink-soft)}
-  .ex-timer{font-weight:700;color:var(--shu);font-variant-numeric:tabular-nums}
-  .ex-play{display:flex;width:fit-content;align-items:center;gap:6px;background:none;border:1.5px solid var(--ink);border-radius:20px;padding:8px 18px;font-size:16px;cursor:pointer;color:var(--ink);margin:6px auto 18px}
-  .ex-sb-slots{display:flex;gap:8px;justify-content:center;margin:10px 0 18px;flex-wrap:wrap}
-  .ex-blank{display:inline-block;width:34px;height:34px;border-bottom:3px solid var(--ink-faint)}
-  .ex-star{display:inline-block;width:34px;height:34px;line-height:34px;text-align:center;font-size:22px;color:var(--shu);border-bottom:3px solid var(--shu)}
-  .ex-total{font-family:var(--display-font);font-size:48px;text-align:center;color:var(--ink);margin:6px 0 14px}
-  .ex-sec-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
 </style>
 
 <div class="wrap">
@@ -809,7 +798,6 @@
 <div class="custom hidden" id="custom"><div class="custom-inner" id="customInner"></div></div>
 <div class="custom hidden" id="ficha"><div class="custom-inner" id="fichaInner"></div></div>
 <div class="custom hidden" id="onboard"><div class="custom-inner" id="onboardInner"></div></div>
-<div class="custom hidden" id="exam"><div class="custom-inner" id="examInner"></div></div>
 
 <script>
 (function(){
@@ -1603,11 +1591,22 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var verdict,vcls="";
     if(gap){
       var _ges=getLang()==="es",_rung=t(stageName(gap)),_rp=stagePct(gap);
-      verdict=(_ges
-        ?("Todavía no cerraste <b>"+_rung+"</b> ("+_rp+"%). Saltaste ese escalón — el kana no está terminado hasta afianzarlo, y la práctica diaria ya lo prioriza sola.")
-        :("You haven't locked in <b>"+_rung+"</b> yet ("+_rp+"%). You skipped that rung — kana isn't done until it's solid, and the daily drill already prioritizes it."))
-        +'<button class="focus-all-btn" data-fn="startGap" style="margin-top:10px">'+(_ges?("Practicá "+_rung+" ahora →"):("Drill "+_rung+" now →"))+'</button>';
-      vcls="gap";
+      var _slipped=gap<(ensureKana().level||1);
+      var _msg,_btn;
+      if(_slipped){
+        _msg=_ges
+          ?("El <b>"+_rung+"</b> bajó un poco ("+_rp+"%). La práctica diaria lo va subiendo sola — o dale un repasito cuando quieras.")
+          :("Your <b>"+_rung+"</b> slipped a bit ("+_rp+"%). The daily drill keeps it ticking back up — or give it a quick run whenever.");
+        _btn=_ges?("Repasar "+_rung+" →"):("Review "+_rung+" →");
+        vcls="slip";
+      } else {
+        _msg=_ges
+          ?("Todavía no cerraste <b>"+_rung+"</b> ("+_rp+"%). Dale un poco más — la práctica diaria ya lo prioriza.")
+          :("You haven't locked in <b>"+_rung+"</b> yet ("+_rp+"%). Keep at it — the daily drill already prioritizes it.");
+        _btn=_ges?("Practicá "+_rung+" →"):("Drill "+_rung+" →");
+        vcls="gap";
+      }
+      verdict=_msg+'<button class="focus-all-btn" data-fn="startGap" style="margin-top:10px">'+_btn+'</button>';
     }
     else if(!m.solid){verdict=t("Do a few drills and your mastery shows up here.");}
     else if(ready){ if(isKata){verdict=t("済 You've got your kana. It's logical to move on — make grammar + Anki your main focus and keep drills as warm-ups.");} else {verdict=t("済 Hiragana solid! Move on to katakana — keep hiragana as warm-up.");} vcls="ok";}
@@ -1805,7 +1804,6 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     STAGES.forEach(function(n,i){ html+=roadStopHTML(i); });
     html+='</div>';
     html+='<div class="sec-h mincho">'+t("Last 4 weeks")+'</div>'+calendarHTML()+n5BarHTML();
-    html+=examCardHTML();
     html+='<div class="sec-h mincho res-head'+(resOpen?' open':'')+'" data-fn="toggleRes">'+t("All resources")+'<span class="gh-chev">▸</span></div>';
     html+='<div class="res-hint">'+(getLang()==="es"?"Tocá para ver los enlaces":"Tap to see the links")+'</div>';
     html+='<div class="res'+(resOpen?' open':'')+'">'+
@@ -6737,7 +6735,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   }
 
   function bindMain(){
-    app.querySelectorAll("[data-fn]").forEach(function(b){var fn=b.getAttribute("data-fn");b.addEventListener("click",function(){if(fn==="startDrill")startDrill();else if(fn==="startGap")startGapDrill();else if(fn==="startDaily")startDaily();else if(fn==="startWords")startWords();else if(fn==="startPhrases")startPhrases();else if(fn==="startBuild")startBuild();else if(fn==="startMatch")startMatch();else if(fn==="openCustom")openCustom();else if(fn==="startKanji")startKanji();else if(fn==="activateKanji")activateKanji();else if(fn==="activatePhrases")activatePhrases();else if(fn==="startPlacement")startPlacement();else if(fn==="toggleGames")toggleGames();else if(fn==="toggleRoad")toggleRoad();else if(fn==="toggleRes")toggleRes();else if(fn==="openOnboard")openOnboard();else if(fn==="openExam")openExam();});});
+    app.querySelectorAll("[data-fn]").forEach(function(b){var fn=b.getAttribute("data-fn");b.addEventListener("click",function(){if(fn==="startDrill")startDrill();else if(fn==="startGap")startGapDrill();else if(fn==="startDaily")startDaily();else if(fn==="startWords")startWords();else if(fn==="startPhrases")startPhrases();else if(fn==="startBuild")startBuild();else if(fn==="startMatch")startMatch();else if(fn==="openCustom")openCustom();else if(fn==="startKanji")startKanji();else if(fn==="activateKanji")activateKanji();else if(fn==="activatePhrases")activatePhrases();else if(fn==="startPlacement")startPlacement();else if(fn==="toggleGames")toggleGames();else if(fn==="toggleRoad")toggleRoad();else if(fn==="toggleRes")toggleRes();else if(fn==="openOnboard")openOnboard();});});
 
     var wd=app.querySelector(".wotd[data-say]"); if(wd)wd.addEventListener("click",function(){speak(wd.getAttribute("data-say"));});
     app.querySelectorAll("[data-aim]").forEach(function(b){ b.addEventListener("click",function(){ setAim(b.getAttribute("data-aim")); }); });
@@ -6805,361 +6803,6 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       drillInner.querySelectorAll(".opt").forEach(function(o){
         o.addEventListener("click",function(){answer(o.getAttribute("data-r"));});
       });
-    }
-  }
-
-
-  /* =========================================================================
-     SIMULACRO N5 — motor de examen de práctica tipo JLPT N5.
-     Todas las preguntas son ORIGINALES, generadas en el momento a partir de
-     los mismos datos que Nikka ya usa (N5_READINGS: las 665 lecturas N5,
-     N5_KANJI: los 79 kanji N5, PATTERNS/PHRASES: gramática y frases propias).
-     Nunca reproduce preguntas de exámenes N5 reales (son material protegido
-     de la Japan Foundation / JEES).
-     A propósito NO filtra por lo ya aprendido en Nikka (wordReadable/box):
-     el simulacro cubre el temario N5 completo, para mostrar dónde estás
-     parado de cara al examen real, no solo lo que ya practicaste acá.
-     ========================================================================= */
-  function exT(en,es){ return getLang()==="es"?es:en; }
-
-  var _n5ExamVocab=null;
-  function n5ExamVocabPool(){
-    if(_n5ExamVocab) return _n5ExamVocab;
-    var set=n5WordSet(), words=WORD_POOL.filter(function(w){return set[w.jp];});
-    function kanjiOk(k){ for(var i=0;i<k.length;i++){ if(!N5_KANJI.has(k[i])) return false; } return true; }
-    var kanjiWords=words.filter(function(w){ return KANJI_WORDS[w.jp] && kanjiOk(KANJI_WORDS[w.jp]); });
-    _n5ExamVocab={all:words,kanji:kanjiWords};
-    return _n5ExamVocab;
-  }
-  var _wordByJp=null;
-  function wordByJp(jp){ if(!_wordByJp){ _wordByJp={}; WORD_POOL.forEach(function(w){ _wordByJp[w.jp]=w; }); } return _wordByJp[jp]; }
-  function examMeaning(o){ var es=getLang()==="es"; return (es?(o.es||o.en):(o.en||o.es))||""; }
-
-  /* Pares de sinónimos/parecidos N5 (言い換え類義), verificados contra las
-     665 lecturas reales de N5_READINGS — solo entran los que existen ahí. */
-  var EXAM_SYN=[
-    ["たくさん","おおい"],["すこし","ちょっと"],["とても","たいへん"],
-    ["いつも","まいにち"],["じょうぶ","つよい"],["べんり","じょうず"],
-    ["ゆうめい","りっぱ"],["ひろい","おおきい"],["せまい","ちいさい"],
-    ["おもしろい","たのしい"],["たいへん","むずかしい"],["はやい","すぐに"],
-    ["しずか","きれい"],["げんき","じょうぶ"],["しかし","でも"],
-    ["それから","そして"],["どうぞ","どうも"]
-  ];
-
-  function distractVals(candidates,mapFn,excludeArr,n){
-    var seen={}; (excludeArr||[]).forEach(function(v){ if(v)seen[v]=1; });
-    var pool=candidates.slice(); shuffle(pool);
-    var out=[];
-    for(var i=0;i<pool.length && out.length<n;i++){
-      var v=mapFn(pool[i]);
-      if(v && !seen[v]){ seen[v]=1; out.push(v); }
-    }
-    return out;
-  }
-  function contentWordIdx(parts){
-    for(var i=0;i<parts.length;i++){ var w=parts[i]; if(PARTICLES[w])continue; if(wordByJp(w))return i; }
-    return -1;
-  }
-
-  /* ---- Vocabulario ---- */
-  function genKanjiReadingQ(used){
-    var pool=n5ExamVocabPool().kanji.filter(function(w){return !used["kr:"+w.jp];});
-    if(!pool.length) return null;
-    var w=pool[Math.floor(Math.random()*pool.length)]; used["kr:"+w.jp]=1;
-    var kanji=KANJI_WORDS[w.jp];
-    var distract=distractVals(n5ExamVocabPool().kanji,function(x){return x.jp;},[w.jp],3);
-    if(distract.length<3) return null;
-    return {section:"vocab",type:"kanjiReading",prompt:kanji,answer:w.jp,opts:shuffle([w.jp].concat(distract)),
-      label:exT("How is this word read?","¿Cómo se lee esta palabra?")};
-  }
-  function genOrthographyQ(used){
-    var pool=n5ExamVocabPool().kanji.filter(function(w){return !used["or:"+w.jp];});
-    if(!pool.length) return null;
-    var w=pool[Math.floor(Math.random()*pool.length)]; used["or:"+w.jp]=1;
-    var kanji=KANJI_WORDS[w.jp];
-    var distract=distractVals(n5ExamVocabPool().kanji,function(x){return KANJI_WORDS[x.jp];},[kanji],3);
-    if(distract.length<3) return null;
-    return {section:"vocab",type:"orthography",prompt:w.jp,answer:kanji,opts:shuffle([kanji].concat(distract)),
-      label:exT("Which is the correct spelling?","¿Cuál es la escritura correcta?")};
-  }
-  function genContextFillQ(used){
-    var cands=PHRASES.filter(function(p){return p.parts && p.parts.length>=3 && !used["cf:"+p.jp];});
-    shuffle(cands);
-    for(var i=0;i<cands.length;i++){
-      var p=cands[i], idx=contentWordIdx(p.parts); if(idx<0) continue;
-      var answer=p.parts[idx];
-      var distract=distractVals(n5ExamVocabPool().all,function(x){return x.jp;},[answer],3);
-      if(distract.length<3) continue;
-      used["cf:"+p.jp]=1;
-      var jp=""; p.parts.forEach(function(w,j){ jp+=(j===idx?"＿＿＿＿":w); });
-      return {section:"vocab",type:"contextFill",prompt:jp,answer:answer,opts:shuffle([answer].concat(distract)),
-        label:exT("Which word fits in the blank?","¿Qué palabra completa el hueco?"),
-        revealMeaning:examMeaning(p)};
-    }
-    return null;
-  }
-  function genParaphraseQ(used){
-    var cands=EXAM_SYN.filter(function(pr){return !used["pp:"+pr[0]];});
-    if(!cands.length) return null;
-    var pr=cands[Math.floor(Math.random()*cands.length)]; used["pp:"+pr[0]]=1;
-    var a=pr[0], b=pr[1];
-    var distract=distractVals(n5ExamVocabPool().all,function(x){return x.jp;},[a,b],3);
-    if(distract.length<3) return null;
-    return {section:"vocab",type:"paraphrase",prompt:a,answer:b,opts:shuffle([b].concat(distract)),
-      label:exT("Which word means almost the same?","¿Qué palabra significa casi lo mismo?")};
-  }
-
-  /* ---- Gramática ---- */
-  function genParticleClozeQ(used){
-    var cands=PHRASES.filter(function(p){return p.parts && p.parts.some(function(w){return PARTICLES[w];}) && !used["pc:"+p.jp];});
-    if(!cands.length) return null;
-    var p=cands[Math.floor(Math.random()*cands.length)]; used["pc:"+p.jp]=1;
-    var pidxs=[]; p.parts.forEach(function(w,i){ if(PARTICLES[w])pidxs.push(i); });
-    var slot=pidxs[Math.floor(Math.random()*pidxs.length)], answer=p.parts[slot];
-    var conf=Object.keys(PCONF[answer]||{});
-    var distract=distractVals(conf,function(x){return x;},[answer],3);
-    if(distract.length<3){
-      var more=distractVals(Object.keys(PARTICLES),function(x){return x;},[answer].concat(distract),3-distract.length);
-      distract=distract.concat(more);
-    }
-    if(distract.length<3) return null;
-    var jp=""; p.parts.forEach(function(w,i){ jp+=(i===slot?"＿":w); });
-    return {section:"grammar",type:"particleCloze",prompt:jp,answer:answer,opts:shuffle([answer].concat(distract)),
-      label:exT("Which particle goes in the blank?","¿Qué partícula va en el hueco?"),
-      revealMeaning:examMeaning(p)};
-  }
-  function genSentenceBuildQ(used){
-    var cands=PHRASES.filter(function(p){return p.parts && p.parts.length===4 && !used["sb:"+p.jp];});
-    if(!cands.length) return null;
-    var p=cands[Math.floor(Math.random()*cands.length)]; used["sb:"+p.jp]=1;
-    var n=p.parts.length, starIdx=1+Math.floor(Math.random()*(n-2));
-    var display=p.parts.map(function(w,i){return {w:w,orig:i};}); shuffle(display);
-    return {section:"grammar",type:"sentenceBuild",parts:p.parts,starIdx:starIdx,
-      answer:p.parts[starIdx],opts:display.map(function(d){return d.w;}),
-      label:exT("Which word goes in the star (★)?","¿Qué palabra va en la estrella (★)?"),
-      revealMeaning:examMeaning(p)};
-  }
-  function genReadingQ(used){
-    var cands=PHRASES.filter(function(p){return p.jp && p.jp.length>=4 && !used["rd:"+p.jp];});
-    if(!cands.length) return null;
-    var p=cands[Math.floor(Math.random()*cands.length)]; used["rd:"+p.jp]=1;
-    var correct=examMeaning(p);
-    var distract=distractVals(PHRASES.filter(function(x){return x.jp!==p.jp;}),function(x){return examMeaning(x);},[correct],3);
-    if(distract.length<3) return null;
-    return {section:"grammar",type:"sentenceMeaning",prompt:p.jp,answer:correct,opts:shuffle([correct].concat(distract)),
-      label:exT("What does this sentence mean?","¿Qué significa esta oración?")};
-  }
-
-  /* ---- Comprensión auditiva (voz sintética, no audio oficial) ---- */
-  function genListenTranscriptQ(used){
-    var cands=PHRASES.filter(function(p){return p.jp && !used["lt:"+p.jp];});
-    if(!cands.length) return null;
-    var p=cands[Math.floor(Math.random()*cands.length)]; used["lt:"+p.jp]=1;
-    var distract=distractVals(PHRASES.filter(function(x){return x.jp!==p.jp;}),function(x){return x.jp;},[p.jp],3);
-    if(distract.length<3) return null;
-    return {section:"listening",type:"listenTranscript",audio:p.jp,answer:p.jp,opts:shuffle([p.jp].concat(distract)),
-      label:exT("Which one did you hear?","¿Cuál escuchaste?")};
-  }
-  function genListenMeaningQ(used){
-    var cands=PHRASES.filter(function(p){return p.jp && !used["lm:"+p.jp];});
-    if(!cands.length) return null;
-    var p=cands[Math.floor(Math.random()*cands.length)]; used["lm:"+p.jp]=1;
-    var correct=examMeaning(p);
-    var distract=distractVals(PHRASES.filter(function(x){return x.jp!==p.jp;}),function(x){return examMeaning(x);},[correct],3);
-    if(distract.length<3) return null;
-    return {section:"listening",type:"listenMeaning",audio:p.jp,answer:correct,opts:shuffle([correct].concat(distract)),
-      label:exT("What does it mean?","¿Qué significa?")};
-  }
-
-  var EXAM_SECTIONS=[
-    {id:"vocab",minutes:20,name:{en:"Vocabulary",es:"Vocabulario"}},
-    {id:"grammar",minutes:40,name:{en:"Grammar & Reading",es:"Gramática y lectura"}},
-    {id:"listening",minutes:30,name:{en:"Listening",es:"Comprensión auditiva"}}
-  ];
-  function buildExam(){
-    var used={}, qs={vocab:[],grammar:[],listening:[]}, i, q;
-    for(i=0;i<4;i++){ q=genKanjiReadingQ(used); if(q)qs.vocab.push(q); }
-    for(i=0;i<4;i++){ q=genOrthographyQ(used); if(q)qs.vocab.push(q); }
-    for(i=0;i<4;i++){ q=genContextFillQ(used); if(q)qs.vocab.push(q); }
-    for(i=0;i<4;i++){ q=genParaphraseQ(used); if(q)qs.vocab.push(q); }
-    shuffle(qs.vocab);
-    for(i=0;i<5;i++){ q=genParticleClozeQ(used); if(q)qs.grammar.push(q); }
-    for(i=0;i<5;i++){ q=genSentenceBuildQ(used); if(q)qs.grammar.push(q); }
-    for(i=0;i<5;i++){ q=genReadingQ(used); if(q)qs.grammar.push(q); }
-    shuffle(qs.grammar);
-    for(i=0;i<4;i++){ q=genListenTranscriptQ(used); if(q)qs.listening.push(q); }
-    for(i=0;i<4;i++){ q=genListenMeaningQ(used); if(q)qs.listening.push(q); }
-    shuffle(qs.listening);
-    return qs;
-  }
-
-  function ensureExam(){
-    if(!state.exercises) state.exercises={};
-    if(!state.exercises.exam) state.exercises.exam={attempts:[],best:0};
-    var e=state.exercises.exam; if(!e.attempts)e.attempts=[]; if(e.best===undefined)e.best=0;
-    return e;
-  }
-
-  var examEl=document.getElementById("exam"), examInner=document.getElementById("examInner");
-  var exsess=null, _examTimer=null;
-  function examTimeFmt(s){ var m=Math.floor(s/60),sc=s%60; return (m<10?"0":"")+m+":"+(sc<10?"0":"")+sc; }
-  function examStopTimer(){ if(_examTimer){clearInterval(_examTimer);_examTimer=null;} }
-  function examStartSectionTimer(){
-    examStopTimer();
-    var sec=EXAM_SECTIONS[exsess.secIdx]; exsess.timeLeft=sec.minutes*60;
-    _examTimer=setInterval(function(){
-      if(!exsess||exsess.phase!=="running")return;
-      exsess.timeLeft--;
-      if(exsess.timeLeft<=0){ examStopTimer(); examFinishSection(true); return; }
-      var tEl=document.getElementById("exTimer"); if(tEl)tEl.textContent=examTimeFmt(exsess.timeLeft);
-    },1000);
-  }
-  function currentSectionId(){ return EXAM_SECTIONS[exsess.secIdx].id; }
-  function currentQuestion(){ return exsess.qs[currentSectionId()][exsess.qIdx]; }
-  function openExam(){ exsess={phase:"intro"}; examEl.classList.remove("hidden"); renderExam(); try{window.scrollTo(0,0);}catch(e){} }
-  function closeExam(){ examStopTimer(); exsess=null; examEl.classList.add("hidden"); render(); }
-  function startExamRun(){
-    var qs=buildExam();
-    exsess={phase:"running",qs:qs,secIdx:0,qIdx:0,answers:{vocab:[],grammar:[],listening:[]},answered:false,picked:null};
-    examStartSectionTimer(); renderExam();
-  }
-  function examAnswer(opt){
-    if(!exsess||exsess.answered)return;
-    exsess.answered=true; exsess.picked=opt;
-    var q=currentQuestion();
-    exsess.answers[currentSectionId()].push({q:q,picked:opt,ok:opt===q.answer});
-    renderExam();
-  }
-  function examNext(){
-    var sid=currentSectionId(), qs=exsess.qs[sid];
-    exsess.answered=false; exsess.picked=null;
-    if(exsess.qIdx+1<qs.length){ exsess.qIdx++; renderExam(); }
-    else { examFinishSection(false); }
-  }
-  function examFinishSection(timedOut){
-    examStopTimer();
-    if(timedOut){
-      var sid=currentSectionId(), qs=exsess.qs[sid], answered=exsess.answers[sid].length;
-      for(var i=answered;i<qs.length;i++){ exsess.answers[sid].push({q:qs[i],picked:null,ok:false}); }
-    }
-    if(exsess.secIdx+1<EXAM_SECTIONS.length){ exsess.phase="sectionDone"; renderExam(); }
-    else { examFinishAll(); }
-  }
-  function examContinueNextSection(){
-    exsess.secIdx++; exsess.qIdx=0; exsess.answered=false; exsess.picked=null; exsess.phase="running";
-    examStartSectionTimer(); renderExam();
-  }
-  function examFinishAll(){
-    var e=ensureExam(), totalCorrect=0, totalQ=0, bySection={};
-    EXAM_SECTIONS.forEach(function(s){
-      var arr=exsess.answers[s.id]||[], c=arr.filter(function(a){return a.ok;}).length;
-      bySection[s.id]={correct:c,total:arr.length}; totalCorrect+=c; totalQ+=arr.length;
-    });
-    var pct=totalQ?Math.round(totalCorrect/totalQ*100):0;
-    e.attempts.unshift({date:today(),pct:pct}); if(e.attempts.length>10)e.attempts.length=10;
-    if(pct>e.best) e.best=pct;
-    Persistence.save(state);
-    exsess.phase="results"; exsess.bySection=bySection; exsess.pct=pct;
-    renderExam();
-  }
-
-  function examCardHTML(){
-    var e=ensureExam(), last=e.attempts&&e.attempts[0];
-    var h='<div class="mastery-card"><h3 class="mincho">'+exT("N5 Mock Exam","Simulacro N5")+"</h3>";
-    if(last) h+='<div class="ex-card-sub">'+exT("Last: ","Última: ")+last.pct+"% · "+exT("Best: ","Mejor: ")+e.best+"%</div>";
-    else h+='<div class="ex-card-sub">'+exT("Three sections, ~90 min, original N5-level questions.","Tres secciones, ~90 min, preguntas originales de nivel N5.")+"</div>";
-    h+='<button class="ex-custom-btn" data-fn="openExam">'+exT("Start mock exam","Empezar simulacro")+"</button></div>";
-    return h;
-  }
-  function examHead(title){
-    return '<div class="d-sticky"><button class="d-close" id="exClose">✕</button><div class="d-title mincho">'+title+"</div></div>";
-  }
-  function renderExamIntro(){
-    var h=examHead(exT("N5 Mock Exam","Simulacro N5"));
-    h+='<div class="ex-intro">';
-    h+="<p>"+exT("Three sections, just like the real N5: Vocabulary (20 min), Grammar &amp; Reading (40 min), Listening (30 min).","Tres secciones, como el examen real: Vocabulario (20 min), Gramática y lectura (40 min), Comprensión auditiva (30 min).")+"</p>";
-    h+="<p>"+exT("Every question is original, generated from the same N5 word and grammar lists Nikka already tracks — never copied from a real past exam.","Cada pregunta es original, generada con las mismas listas de palabras y gramática N5 que Nikka ya usa — nunca copiada de un examen real.")+"</p>";
-    h+="<p>"+exT("This covers the full N5 syllabus, not just what you've already studied here — it's meant to show where you stand for the real thing.","Cubre todo el temario N5, no solo lo que ya estudiaste acá — la idea es que veas dónde estás parado para el examen real.")+"</p>";
-    h+='<p class="ex-note">'+exT("Listening uses synthesized voice, not official exam audio.","La sección de audio usa voz sintética, no el audio oficial del examen.")+"</p>";
-    h+='<button class="d-next" id="exStart" style="width:100%">'+exT("Start","Empezar")+"</button></div>";
-    return h;
-  }
-  function renderExamQuestion(){
-    var sec=EXAM_SECTIONS[exsess.secIdx], sid=sec.id, qs=exsess.qs[sid], q=qs[exsess.qIdx];
-    var h=examHead(sec.name[getLang()]);
-    h+='<div class="ex-meta"><span>'+(exsess.qIdx+1)+" / "+qs.length+'</span><span class="ex-timer" id="exTimer">'+examTimeFmt(exsess.timeLeft)+"</span></div>";
-    h+='<div class="pt-card"><div class="pt-kind">'+q.label+"</div>";
-    if(q.type==="sentenceBuild"){
-      h+='<div class="ex-sb-slots">';
-      q.parts.forEach(function(w,i){ h+= i===q.starIdx?'<span class="ex-star">★</span>':'<span class="ex-blank"></span>'; });
-      h+="</div>";
-    } else if(q.audio){
-      h+='<button class="ex-play" id="exPlay">🔊 '+exT("Play","Reproducir")+"</button>";
-    } else {
-      h+='<div class="pt-cloze mincho">'+q.prompt+"</div>";
-    }
-    h+='<div class="pt-opts'+(q.type==="sentenceBuild"?" gb-tray":"")+'">';
-    q.opts.forEach(function(o){
-      var cls=(q.type==="sentenceBuild"?"gb-tile mincho":"pt-opt mincho");
-      if(exsess.answered){ if(o===q.answer)cls+=" ok"; else if(o===exsess.picked)cls+=" bad"; else cls+=" dim"; }
-      h+='<button class="'+cls+'">'+o+"</button>";
-    });
-    h+="</div>";
-    if(exsess.answered){
-      h+='<div class="pt-fb">'+(exsess.picked===q.answer?exT("Correct!","¡Correcto!"):exT("Correct answer: ","Respuesta correcta: ")+"<b>"+q.answer+"</b>")+"</div>";
-      if(q.revealMeaning) h+='<div class="pt-clmean">'+q.revealMeaning+"</div>";
-      h+='<div class="d-actions"><button class="d-next" id="exNext">'+t("Next →")+"</button></div>";
-    }
-    h+="</div>";
-    return h;
-  }
-  function renderExamSectionDone(){
-    var sec=EXAM_SECTIONS[exsess.secIdx], arr=exsess.answers[sec.id];
-    var c=arr.filter(function(a){return a.ok;}).length;
-    var h=examHead(sec.name[getLang()]);
-    h+='<div class="ex-intro"><div class="ex-total">'+c+" / "+arr.length+"</div>";
-    h+="<p>"+exT("Section done.","Sección terminada.")+"</p>";
-    h+='<button class="d-next" id="exContinue" style="width:100%">'+exT("Next section →","Siguiente sección →")+"</button></div>";
-    return h;
-  }
-  function renderExamResults(){
-    var h=examHead(exT("Results","Resultados"));
-    h+='<div class="ex-intro"><div class="ex-total">'+exsess.pct+"%</div>";
-    EXAM_SECTIONS.forEach(function(s){
-      var b=exsess.bySection[s.id];
-      h+='<div class="ex-sec-row"><span>'+s.name[getLang()]+"</span><span>"+b.correct+" / "+b.total+"</span></div>";
-    });
-    h+='<p class="ex-note">'+exT("Raw score, not the official scaled score — the real N5 grades each section separately with its own pass line. Use this to see where you stand, not as a guarantee.","Puntaje bruto, no el puntaje oficial escalado — el N5 real califica cada sección por separado con su propia línea de corte. Sirve para ver dónde estás parado, no como garantía.")+"</p>";
-    var e=ensureExam();
-    h+="<p>"+exT("Best so far: ","Mejor hasta ahora: ")+e.best+"%</p>";
-    h+='<button class="d-next" id="exClose2" style="width:100%">'+t("Close")+"</button></div>";
-    return h;
-  }
-  function renderExam(){
-    if(!exsess) return;
-    var h="";
-    if(exsess.phase==="intro") h=renderExamIntro();
-    else if(exsess.phase==="running") h=renderExamQuestion();
-    else if(exsess.phase==="sectionDone") h=renderExamSectionDone();
-    else if(exsess.phase==="results") h=renderExamResults();
-    examInner.innerHTML=h;
-    bindExam();
-  }
-  function bindExam(){
-    var c=document.getElementById("exClose"); if(c)c.addEventListener("click",closeExam);
-    var c2=document.getElementById("exClose2"); if(c2)c2.addEventListener("click",closeExam);
-    var st=document.getElementById("exStart"); if(st)st.addEventListener("click",startExamRun);
-    var ct=document.getElementById("exContinue"); if(ct)ct.addEventListener("click",examContinueNextSection);
-    var nx=document.getElementById("exNext"); if(nx)nx.addEventListener("click",examNext);
-    var pl=document.getElementById("exPlay"); if(pl)pl.addEventListener("click",function(){ speak(currentQuestion().audio); });
-    if(exsess.phase==="running"){
-      var q=currentQuestion();
-      if(!exsess.answered){
-        examInner.querySelectorAll(".pt-opt,.gb-tile").forEach(function(el,i){
-          el.addEventListener("click",function(){ examAnswer(q.opts[i]); });
-        });
-        if(q.audio) setTimeout(function(){ speak(q.audio); },300);
-      }
     }
   }
 
