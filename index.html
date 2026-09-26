@@ -5196,20 +5196,25 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
           '<span class="cx-title mincho">✈️ '+(es?'Frases de viaje — consulta rápida':'Travel phrases — quick lookup')+'</span></div>'+
           '<div class="kx-tabs"><button class="kx-tab'+(on?' on':'')+'" id="travelToggle">'+
             (on?(es?'済 Modo viaje activado':'済 Travel mode on'):(es?'Activar modo viaje':'Turn on travel mode'))+
-          '</button></div></div>';
+          '</button></div>'+
+          '<div class="fx-tools"><div class="fx-srow">'+
+            '<input id="travSearch" class="fx-search" type="search" lang="ja" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="'+(es?'Buscar: kana, rōmaji o español…':'Search: kana, rōmaji or English…')+'">'+
+            '<button id="travClear" class="fx-clear" title="'+(es?'Limpiar':'Clear')+'">✕</button></div></div>'+
+          '</div>';
     h+='<div class="fx-intro">'+(es
         ?'Frases de sobrevivencia agrupadas por situación, tomadas de las que ya practicás. Tocá cualquiera para escucharla. Con el modo viaje activado, este acceso reemplaza al del juego apuntado en Accesos.'
         :'Survival phrases grouped by situation, pulled from the ones you already practice. Tap any to hear it. With travel mode on, this replaces the aimed-game shortcut in Quick refs.')+'</div>';
     TRAVEL_CATS.forEach(function(c){
       var items=ph.filter(function(p){return p.cat===c.id;});
       if(!items.length)return;
-      h+='<div class="fx-cat">'+(es?c.es:c.en)+' '+c.ic+'</div><div class="fx-foot" style="margin:6px 0 16px">';
+      h+='<div class="fx-cat" data-travcat="'+c.id+'">'+(es?c.es:c.en)+' '+c.ic+'</div><div class="fx-foot trav-group" data-travcat="'+c.id+'" style="margin:6px 0 16px">';
       items.forEach(function(p){
-        h+='<div class="rq-part-row" data-say="'+p.jp+'" style="cursor:pointer"><span class="mincho" style="font-size:17px">'+sweepKanaHTML(p.jp)+'</span>'+
+        h+='<div class="rq-part-row" data-say="'+p.jp+'" data-search="'+travelHay(p)+'" style="cursor:pointer"><span class="mincho" style="font-size:17px">'+sweepKanaHTML(p.jp)+'</span>'+
            '<span class="rq-part-cn">'+(es?p.es:p.en)+'</span></div>';
       });
       h+='</div>';
     });
+    h+='<div class="fx-empty" id="travEmpty" style="display:none">'+(es?'Sin resultados. Probá con rōmaji o el significado.':'No matches. Try rōmaji or the meaning.')+'</div>';
     h+='<div class="fx-foot">'+(es
         ?'Esto crece con el tiempo: a medida que se minen más frases por situación (aeropuerto, alojamiento, dinero, comunicación) van a ir apareciendo acá solas.'
         :'This grows over time: as more phrases get mined per situation (airport, lodging, money, communication) they will show up here on their own.')+'</div>';
@@ -5217,6 +5222,27 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     var c2=document.getElementById('fxClose'); if(c2)c2.addEventListener('click',closeFicha);
     var tb=document.getElementById('travelToggle'); if(tb)tb.addEventListener('click',function(){ toggleTravelMode(); renderTravelSheet(); });
     inner.querySelectorAll('[data-say]').forEach(function(el){ el.addEventListener('click',function(){ speakSweep(el.getAttribute('data-say'), el); }); });
+    (function(){
+      var sEl=document.getElementById('travSearch'), clr=document.getElementById('travClear'), emptyEl=document.getElementById('travEmpty');
+      function norm(x){ return kataToHira((x||'').toLowerCase()); }
+      function applyFilter(){
+        var q=norm(sEl?sEl.value.trim():''), any=false;
+        inner.querySelectorAll('.trav-group').forEach(function(grp){
+          var shown=0;
+          grp.querySelectorAll('.rq-part-row').forEach(function(row){
+            var ok=!q || norm(row.getAttribute('data-search')||'').indexOf(q)>=0;
+            row.style.display=ok?'':'none'; if(ok)shown++;
+          });
+          var lab=grp.previousElementSibling;
+          grp.style.display=shown?'':'none';
+          if(lab&&lab.classList&&lab.classList.contains('fx-cat'))lab.style.display=shown?'':'none';
+          if(shown)any=true;
+        });
+        if(emptyEl)emptyEl.style.display=any?'none':'';
+      }
+      if(sEl)sEl.addEventListener('input',applyFilter);
+      if(clr)clr.addEventListener('click',function(){ if(sEl){sEl.value='';sEl.focus();} applyFilter(); });
+    })();
   }
   function renderFicha(){
     if(fichaGameId==='__kana__'){ renderKanaSheet(); return; }
@@ -5744,6 +5770,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   ];
   function travelCatLabel(id){ var es=getLang()==='es',c=null; for(var i=0;i<TRAVEL_CATS.length;i++) if(TRAVEL_CATS[i].id===id){c=TRAVEL_CATS[i];break;} if(!c)return id; return c.ic+' '+(es?c.es:c.en); }
   function travelPhrases(){ return PHRASES.filter(function(p){return !!p.cat;}); }
+  function travelHay(p){ var s=((p.jp||'')+' '+(p.romaji||'')+' '+(p.es||'')+' '+(p.en||'')).toLowerCase(); return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
   function travelMode(){ return !!state.travelMode; }
   function setTravelMode(v){ state.travelMode=!!v; Persistence.save(state); }
   function toggleTravelMode(){ setTravelMode(!travelMode()); render(); }
