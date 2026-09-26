@@ -156,6 +156,9 @@
   .stop .dot{width:13px;height:13px;border:2px solid var(--ink-faint);background:var(--paper);border-radius:50%;margin-top:4px}
   .stop .bar{width:2px;flex:1;background:var(--line);min-height:26px}
   .stop:last-child .bar{display:none}
+  .stop.parallel .bar{display:none}
+  .stop.parallel .dot{border-radius:4px}
+  .road-subhead{font-family:var(--display-font);font-weight:800;font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft);margin:2px 0 8px 36px}
   .stop .rt{padding-bottom:20px}
   .stop .rt .lbl{font-weight:700;font-size:14.5px}
   .stop .rt .ds{font-size:12.5px;color:var(--ink-soft)}
@@ -593,6 +596,7 @@
   .rq-mean{gap:6px}
   .stg-badge{margin-left:auto;align-self:center;font-family: var(--display-font);font-weight:800;font-size:13px;color:var(--ink-soft);border:1.2px solid var(--line);border-radius:20px;padding:2px 10px;white-space:nowrap}
   .stg-badge.done{color:#fff;background:var(--green);border-color:var(--green)}
+  .stg-badge.dim{opacity:.55}
   .stop.on .stg-badge{color:var(--shu);border-color:var(--shu)}
 
   /* Convertimos los caracteres débiles en botones interactivos */
@@ -1461,6 +1465,9 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     return s;
   }
   function stageState(i){ var n=i+1, cs=curStage(); if(n<cs)return "done"; if(n===cs)return "on"; return ""; }
+  /* NOTA: stageState() ya no se usa desde roadStopHTML (Palabras/Frases/Gramática/Kanji
+     ahora reportan su propio estado en paralelo, ver más abajo). Se deja documentada por
+     si alguna función futura necesita el viejo criterio secuencial 1-11. */
   function stageName(st){ return STAGES[st-1]?STAGES[st-1].lbl:"Hiragana"; }
   function setRatio(box,keys){ var s=0; keys.forEach(function(r){ if((box[r]||0)>=4)s++; }); return keys.length?s/keys.length:0; }
   function stagePct(n){
@@ -1478,6 +1485,12 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     if(n===8) return {count:poolMastery(PHRASES, ensurePhrases().box).solid, label:t("phrases")};
     return null;
   }
+  /* Palabras/Frases/Gramática/Kanji ya no son etapas en fila: los cuatro se entrenan
+     en paralelo desde que arranca "Words". Cada uno reporta SU propio estado real
+     (nunca el de un contador compartido), igual de honesto que el resto del camino. */
+  function patternsWithExamplesCount(){ var s={}; PHRASES.forEach(function(p){ if(p.pattern)s[p.pattern]=1; }); return Object.keys(s).length; }
+  function patternsMasteredCount(){ var pt=ensurePatterns(),n=0; PATTERNS.forEach(function(p){ if((pt.box[p.id]||0)>=PAT_MATURE && patternExamples(p.id,1).length)n++; }); return n; }
+  function n5KanjiLearnedCount(){ var L=ensureKanji().learned||{},n=0; for(var ch in L){ if(L[ch]&&N5_KANJI.has(ch))n++; } return n; }
   /* Kana is "done" only when all six rungs (base/dak/yōon × both scripts) are solid.
      Used to keep directing the user to the kana drill until yōon is actually learned,
      even if they advanced to later stages back when yōon didn't exist. */
@@ -1490,17 +1503,40 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
      Extraído del render principal para poder pintar la lista entera o solo el
      paso actual. Mantiene la misma lógica de estado/badge que antes. */
   function roadStopHTML(i){
-    var n=STAGES[i], num=i+1, pct=stagePct(num), st, badge='', _cs=curStage();
-    if(num<=6){ st=(typeof pct==="number"&&pct>=90)?"done":(num===_cs?"on":""); }
-    else { st=stageState(i); }
-    if(pct && typeof pct==="object"){
-      badge='<span class="stg-badge">'+pct.count+' '+pct.label+'</span>';
-    } else if(st==="done"){
-      badge='<span class="stg-badge done">'+(pct!==null?pct+'% ':'')+'✓</span>';
-    } else if(pct!==null){
-      badge='<span class="stg-badge">'+pct+'%</span>';
+    var n=STAGES[i], num=i+1, _cs=curStage(), es=getLang()==="es";
+    var st='', badge='', parallel=(num>=7&&num<=10);
+    if(num<=6){
+      var pct=stagePct(num);
+      st=(typeof pct==="number"&&pct>=90)?"done":(num===_cs?"on":"");
+      badge=(st==="done")?('<span class="stg-badge done">'+pct+'% ✓</span>'):(pct!==null?('<span class="stg-badge">'+pct+'%</span>'):'');
+    } else if(num===7){ // Palabras
+      var wm=poolMastery(WORD_POOL, ensureWords().box);
+      st=wm.seen?"on":"";
+      badge='<span class="stg-badge'+(wm.seen?"":" dim")+'">'+wm.solid+' '+t("words")+'</span>';
+    } else if(num===8){ // Frases
+      if(phrasesOn()){
+        var pm=poolMastery(PHRASES, ensurePhrases().box);
+        st=pm.seen?"on":"";
+        badge='<span class="stg-badge'+(pm.seen?"":" dim")+'">'+pm.solid+' '+t("phrases")+'</span>';
+      } else {
+        var mw=masteredWordCount();
+        badge='<span class="stg-badge dim">'+mw+'/'+PHRASE_UNLOCK_AT+' '+(es?'para activarlas':'to unlock')+'</span>';
+      }
+    } else if(num===9){ // Gramática
+      var pMast=patternsMasteredCount(), pTot=patternsWithExamplesCount();
+      st=pMast>0?"on":""; if(pTot>0&&pMast>=pTot)st="done";
+      badge='<span class="stg-badge'+(st==="done"?" done":"")+'">'+pMast+' / '+pTot+' '+(es?'patrones':'patterns')+'</span>';
+    } else if(num===10){ // Kanji
+      if(kanjiOn()){
+        var kL=n5KanjiLearnedCount(), kTot=N5_KANJI.size;
+        st=kL>0?"on":""; if(kL>=kTot)st="done";
+        badge='<span class="stg-badge'+(st==="done"?" done":"")+'">'+kL+' / '+kTot+' N5</span>';
+      } else {
+        var elig=eligibleKanji().length;
+        badge='<span class="stg-badge dim">'+elig+'/'+KANJI_UNLOCK_AT+' '+(es?'para activarlo':'to unlock')+'</span>';
+      }
     }
-    return '<div class="stop '+st+(num===_cs?' rd-cur':'')+'"><div class="rail"><div class="dot"></div><div class="bar"></div></div>'+
+    return '<div class="stop '+st+(parallel?' parallel':'')+(!parallel&&num===_cs?' rd-cur':'')+'"><div class="rail"><div class="dot"></div><div class="bar"></div></div>'+
       '<div class="rt"><div class="lbl">'+t(n.lbl)+'</div><div class="ds">'+t(n.ds)+'</div></div>'+badge+'</div>';
   }
   /* Estado de UI efímero: "El camino" arranca plegado mostrando solo el paso
@@ -1871,7 +1907,11 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     html+=gamesCardHTML();
 
     html+='<div class="sec-h mincho road-head'+(roadOpen?' open':'')+'" data-fn="toggleRoad">'+t("The path")+'<span class="gh-chev">▸</span></div><div class="road'+(roadOpen?' open':'')+'">';
-    STAGES.forEach(function(n,i){ html+=roadStopHTML(i); });
+    STAGES.forEach(function(n,i){
+      if(i===6) html+='<div class="road-subhead">'+(getLang()==="es"?"Lectura integrada — se entrena todo junto":"Integrated reading — trained all together")+'</div>';
+      if(i===10) html+='<div class="road-subhead">'+(getLang()==="es"?"Más allá":"Beyond")+'</div>';
+      html+=roadStopHTML(i);
+    });
     html+='</div>';
     html+='<div class="sec-h mincho">'+t("Last 4 weeks")+'</div>'+calendarHTML()+n5BarHTML();
     html+='<div class="sec-h mincho res-head'+(resOpen?' open':'')+'" data-fn="toggleRes">'+t("All resources")+'<span class="gh-chev">▸</span></div>';
@@ -3071,6 +3111,19 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     {jp:'たかいかもしれない',romaji:'takai kamoshirenai',es:'puede que sea caro',en:'it might be expensive',parts:['たかい','かもしれない'],pattern:'mod-kamoshirenai',note:'A + かもしれない = «puede que A».'},
     {jp:'あるきながらはなす',romaji:'arukinagara hanasu',es:'hablar mientras caminamos',en:'to talk while walking',parts:['あるきながら','はなす'],pattern:'conn-nagara',note:'あるく→あるき (raíz ます) + ながら = «mientras camina».'},
     {jp:'おんがくをききながらべんきょうする',romaji:'ongaku o kikinagara benkyou suru',es:'estudiar mientras se escucha música',en:'to study while listening to music',parts:['おんがく','を','ききながら','べんきょうする'],pattern:'conn-nagara',note:'きく→きき (raíz ます) + ながら = «mientras escucha».'},
+
+    // patrones nuevos: prohibicion, dar/recibir, listar acciones
+    {jp:"ここでたべてはいけない",romaji:"koko de tabete wa ikenai",es:"no se puede comer aquí",en:"you can't eat here",parts:["ここ","で","たべて","はいけない"],pattern:"proh-tewaikenai",note:"たべる→たべて + はいけない = «no se puede comer»."},
+    {jp:"おさけをのんではいけない",romaji:"osake o nonde wa ikenai",es:"no se puede tomar alcohol",en:"you must not drink alcohol",parts:["おさけ","を","のんで","はいけない"],pattern:"proh-tewaikenai",note:"のむ→のんで + はいけない."},
+    {jp:"はいってはいけない",romaji:"haitte wa ikenai",es:"no se puede entrar",en:"you must not enter",parts:["はいって","はいけない"],pattern:"proh-tewaikenai",note:"はいる→はいって + はいけない."},
+    {jp:"ほんをよんだりかいたりする",romaji:"hon o yondari kaitari suru",es:"hago cosas como leer y escribir",en:"I do things like reading and writing",parts:["ほん","を","よんだり","かいたり","する"],pattern:"conn-tari",note:"よむ→よんだ／かく→かいた + り, repetido y cerrado con する."},
+    {jp:"テレビをみたりねたりする",romaji:"terebi o mitari netari suru",es:"hago cosas como ver la tele y dormir",en:"I do things like watching TV and sleeping",parts:["テレビ","を","みたり","ねたり","する"],pattern:"conn-tari",note:"みる→みた／ねる→ねた + り, repetido y cerrado con する."},
+    {jp:"ともだちにプレゼントをあげる",romaji:"tomodachi ni purezento o ageru",es:"le doy un regalo a mi amigo",en:"I give a present to my friend",parts:["ともだち","に","プレゼント","を","あげる"],pattern:"give-ageru",note:"あげる = dar (yo a otro, o entre terceros)."},
+    {jp:"せんせいにてがみをあげる",romaji:"sensei ni tegami o ageru",es:"le doy una carta al profesor",en:"I give a letter to the teacher",parts:["せんせい","に","てがみ","を","あげる"],pattern:"give-ageru",note:"あげる = dar."},
+    {jp:"ともだちがプレゼントをくれる",romaji:"tomodachi ga purezento o kureru",es:"mi amigo me da un regalo",en:"my friend gives me a present",parts:["ともだち","が","プレゼント","を","くれる"],pattern:"give-kureru",note:"くれる = dar HACIA mí/nosotros (distinto de あげる)."},
+    {jp:"せんせいがほんをくれる",romaji:"sensei ga hon o kureru",es:"el profesor me da un libro",en:"the teacher gives me a book",parts:["せんせい","が","ほん","を","くれる"],pattern:"give-kureru",note:"くれる = dar hacia mí."},
+    {jp:"ともだちにプレゼントをもらう",romaji:"tomodachi ni purezento o morau",es:"recibo un regalo de mi amigo",en:"I receive a present from my friend",parts:["ともだち","に","プレゼント","を","もらう"],pattern:"give-morau",note:"もらう = recibir (に marca de quién)."},
+    {jp:"せんせいにほんをもらう",romaji:"sensei ni hon o morau",es:"recibo un libro del profesor",en:"I receive a book from the teacher",parts:["せんせい","に","ほん","を","もらう"],pattern:"give-morau",note:"もらう = recibir."},
   ];
 
   /* =========================================================================
@@ -5955,7 +6008,12 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     {id:'mod-kamoshirenai',order:1.7,needs:['cop-da'],           intro:['かもしれない'], mold:'｛frase｝かもしれない', gloss:'«puede que ~ / quizás» — menos seguro que でしょう, va tras la forma plana'},
     {id:'prob-deshou', order:2.5,needs:['cop-desu'],             intro:['でしょう'], mold:'｛frase｝でしょう',      gloss:'«probablemente ~» — va tras la forma plana (sin だ delante de でしょう)'},
     {id:'oblig-nakereba',order:24.5,needs:['v-neg-u'],           intro:['なければならない'], mold:'｛cosa｝を｛verbo-なければならない｝', gloss:'«tengo que V / hay que V» — del negativo ～ない: quitá い, poné ければならない. のむ→のまない→のまなければならない'},
-    {id:'conn-nagara',  order:25.5,needs:['v-past-u'],           intro:['ながら'], mold:'｛verbo-stem｝ながら｛otro verbo｝', gloss:'«mientras V» — dos acciones al mismo tiempo: verbo en su raíz ます (のみます→のみ) + ながら'}
+    {id:'conn-nagara',  order:25.5,needs:['v-past-u'],           intro:['ながら'], mold:'｛verbo-stem｝ながら｛otro verbo｝', gloss:'«mientras V» — dos acciones al mismo tiempo: verbo en su raíz ます (のみます→のみ) + ながら'},
+    {id:'proh-tewaikenai',order:20.5,needs:['v-te','v-te-u'],    intro:['てはいけない'], mold:'｛verbo-て｝はいけない', gloss:'«no se puede V / está prohibido V» — て-form + はいけない (más fuerte que だめ)'},
+    {id:'conn-tari',    order:26.5,needs:['v-past-u','v-past'],  intro:['たり'], mold:'｛verbo-た｝り｛verbo-た｝りする', gloss:'«hacer cosas como V1 y V2» — lista acciones de ejemplo (no todas): forma た + り, repetido, cerrando con する'},
+    {id:'give-ageru',   order:42,  needs:['obj-wo','loc-ni'],    intro:['あげる'], mold:'｛alguien｝に｛cosa｝をあげる', gloss:'«darle X a alguien» — あげる es dar (yo a otro, o entre terceros)'},
+    {id:'give-kureru',  order:43,  needs:['give-ageru'],         intro:['くれる'], mold:'｛alguien｝が｛cosa｝をくれる', gloss:'«alguien me da X» — くれる es cuando la dirección es HACIA mí/nosotros'},
+    {id:'give-morau',   order:44,  needs:['give-ageru'],         intro:['もらう'], mold:'｛alguien｝に｛cosa｝をもらう', gloss:'«recibir X de alguien» — もらう es recibir (に marca de quién)'}
   ];
   var PATTERN_BY_ID=(function(){ var m={}; PATTERNS.forEach(function(p){m[p.id]=p;}); return m; })();
 
