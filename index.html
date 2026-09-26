@@ -426,7 +426,14 @@
   .gbadge.dict{background:transparent;color:var(--ink)}
   .gbadge.locked{background:transparent;color:var(--ink);opacity:.5}
   .rq-note{margin-top:10px;font-size:13px;line-height:1.4;color:var(--shu);border-top:1px dashed var(--line);padding-top:8px;display:inline-block}
-  /* Radical breakdown panel — shown in post-answer feedback */
+  /* ---- Chuleta de radicales N5 ---- */
+  .rx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(102px,1fr));gap:8px;padding:0 0 14px}
+  .rx-card{background:var(--card);border:1.5px solid var(--line);border-radius:6px;padding:10px 8px 8px;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;cursor:default}
+  .rx-glyph{font-size:2.3em;line-height:1.05;color:var(--ink)}
+  .rx-variant{font-size:.95em;color:var(--shu);opacity:.75;margin-top:0px}
+  .rx-name{font-size:12px;font-weight:700;color:var(--ink);margin-top:4px}
+  .rx-mnem{font-size:10px;color:var(--ink-soft);line-height:1.35;margin-top:2px}
+    /* Radical breakdown panel — shown in post-answer feedback */
   .rq-parts{margin-top:14px;padding:10px 12px;background:var(--card);border-radius:6px;border:1px solid var(--line);text-align:left;max-width:480px;margin-left:auto;margin-right:auto}
   .rq-parts-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px}
   .rq-part-kanji{display:flex;gap:10px;align-items:flex-start;padding:5px 0;border-top:1px solid var(--line)}
@@ -4880,8 +4887,38 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     inner.querySelectorAll('.kx-cell[data-say]').forEach(function(b){ b.addEventListener('click',function(){ speak(b.getAttribute('data-say')); }); });
     inner.querySelectorAll('.kx-tab[data-kx]').forEach(function(b){ b.addEventListener('click',function(){ kanaSheetScript=b.getAttribute('data-kx'); renderKanaSheet(); }); });
   }
+  /* IDs de radicales agrupados por tipo para la chuleta */
+  var RX_STANDALONE=['hi','tsuki','ki','kuchi','hito','mizu','hi2','onna','ko','iu','mon','chikara','kokoro','te','me','mimi','yama','ta','tsuchi','dai','yuu','mushi','uma','kai','ame','yumi','nogi','sakana','ito'];
+  var RX_COMPONENTS=['shin_nyu','uchi','shoku','kusa','gyo','yamai','madare'];
+  function radGridHTML(ids){
+    var g='<div class="rx-grid">';
+    ids.forEach(function(id){ var r=RADICALS[id]; if(!r)return;
+      g+='<div class="rx-card">'+
+         '<span class="rx-glyph mincho">'+r.glyph+'</span>'+
+         (r.variant?'<span class="rx-variant mincho">→ '+r.variant+'</span>':'')+
+         '<span class="rx-name">'+r.name+'</span>'+
+         '<span class="rx-mnem">'+r.mnemonic+'</span>'+
+         '</div>'; });
+    return g+'</div>';
+  }
+  function renderRadicalsSheet(){
+    var inner=document.getElementById('fichaInner'); if(!inner)return;
+    var es=getLang()==='es';
+    var h='<div class="d-sticky"><div class="d-head"><button class="d-close" id="fxClose">✕ '+t('Back')+'</button>'+
+          '<span class="cx-title mincho">🧱 '+(es?'Radicales N5 — consulta rápida':'N5 Radicals — quick lookup')+'</span></div></div>';
+    h+='<div class="fx-intro">'+(es
+        ?'Los bloques visuales que se repiten en los kanji. Cuanto más los veas, más fácil identificarlos al estudiar palabras nuevas.'
+        :'The visual blocks that repeat across kanji. The more you see them, the easier to spot them in new words.')+'</div>';
+    h+='<div class="fx-cat">'+(es?'Radicales independientes (también son kanji N5)':'Standalone radicals (also N5 kanji)')+'</div>';
+    h+=radGridHTML(RX_STANDALONE);
+    h+='<div class="fx-cat">'+(es?'Componentes de posición (aparecen dentro de otros kanji)':'Positional components (appear inside other kanji)')+'</div>';
+    h+=radGridHTML(RX_COMPONENTS);
+    inner.innerHTML=h;
+    var c=document.getElementById('fxClose'); if(c)c.addEventListener('click',closeFicha);
+  }
   function renderFicha(){
     if(fichaGameId==='__kana__'){ renderKanaSheet(); return; }
+    if(fichaGameId==='__radicals__'){ renderRadicalsSheet(); return; }
     if(fichaGameId&&fichaGameId.indexOf('__note:')===0){ renderNote(fichaGameId.slice(7)); return; }
     var g=null,i; for(i=0;i<GAMES.length;i++) if(GAMES[i].id===fichaGameId) g=GAMES[i];
     var inner=document.getElementById('fichaInner'); if(!g||!inner)return;
@@ -4967,6 +5004,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     var es=getLang()==='es', g=aimedGame(), h='';
     if(g){ h+='<button class="qr-item qr-item-aim" data-ficha="'+g.id+'"><span class="qr-ic">🎯</span>'+gamePick(g.name)+'</button>'; }
     h+='<button class="qr-item" data-ficha="__kana__"><span class="qr-ic">🈂️</span>'+(es?'Silabario':'Kana chart')+'</button>';
+    h+='<button class="qr-item" data-ficha="__radicals__"><span class="qr-ic">🧱</span>'+(es?'Radicales':'Radicals')+'</button>';
     (typeof NOTES!=='undefined'?NOTES:[]).forEach(function(n){
       var lbl=es?n.tagEs:n.tagEn, ic=(n.id==='punct'?'⁉️':n.id==='register'?'🗣️':'📝');
       h+='<button class="qr-item" data-ficha="__note:'+n.id+'"><span class="qr-ic">'+ic+'</span>'+lbl+'</button>';
