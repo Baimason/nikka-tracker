@@ -2826,7 +2826,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     {jp:"えいごのメニューはありますか",romaji:"eigo no menyuu wa arimasu ka",es:"¿hay menú en inglés?",en:"is there an English menu?",cat:'restaurante'},
     {jp:"これはなんですか",romaji:"kore wa nan desu ka",es:"¿qué es esto?",en:"what is this?",parts:["これ","は","なん","ですか"],note:"X + は + なん + ですか = «¿qué es X?».",cat:'social'},
     {jp:"やすくしてください",romaji:"yasuku shite kudasai",es:"hágame un descuento",en:"make it cheaper, please",cat:'compras'},
-    {jp:"みてもいいですか",romaji:"mite mo ii desu ka",es:"¿puedo mirar?",en:"can I look?",cat:'compras'},
+    {jp:"みてもいいですか",romaji:"mite mo ii desu ka",es:"¿puedo mirar?",en:"can I look?",parts:["みても","いいですか"],pattern:"req-temoii",note:"みる→みても + いいですか = «¿puedo V?».",cat:'compras'},
     {jp:"だいじょうぶ、いりません",romaji:"daijoubu, irimasen",es:"no, gracias",en:"no, thank you",cat:'compras'},
     {jp:"ちょっとまってください",romaji:"chotto matte kudasai",es:"espere un momento, por favor",en:"please wait a moment",cat:'social'},
     {jp:"げんきでね",romaji:"genki de ne",es:"que estés bien",en:"stay well",cat:'saludo'},
@@ -2993,12 +2993,12 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     {jp:"えきからちかいですか",romaji:"eki kara chikai desu ka",es:"¿está cerca de la estación?",en:"is it close to the station?",parts:["えき","から","ちかい","ですか"],note:"X + から + ちかい = «cerca de X».",cat:'alojamiento'},
     // dinero
     {jp:"ぎんこうはどこですか",romaji:"ginkou wa doko desu ka",es:"¿dónde está el banco?",en:"where's the bank?",parts:["ぎんこう","は","どこ","ですか"],note:"X + は + どこ + ですか = «¿dónde está X?».",cat:'dinero'},
-    {jp:"カードをつかってもいいですか",romaji:"kaado o tsukattemo ii desu ka",es:"¿puedo usar la tarjeta?",en:"can I use the card?",parts:["カード","を","つかっても","いいですか"],note:"つかう→つかっても + いいですか = «¿puedo usar X?».",cat:'dinero'},
+    {jp:"カードをつかってもいいですか",romaji:"kaado o tsukattemo ii desu ka",es:"¿puedo usar la tarjeta?",en:"can I use the card?",parts:["カード","を","つかっても","いいですか"],pattern:"req-temoii",note:"つかう→つかっても + いいですか = «¿puedo usar X?».",cat:'dinero'},
     {jp:"これでおねがいします",romaji:"kore de onegaishimasu",es:"con esto, por favor",en:"with this, please",parts:["これ","で","おねがいします"],note:"X + で + おねがいします (で marca el medio de pago).",cat:'dinero'},
     {jp:"えんでいくらですか",romaji:"en de ikura desu ka",es:"¿cuánto es en yenes?",en:"how much is it in yen?",parts:["えん","で","いくら","ですか"],note:"X + で + いくら + ですか = «¿cuánto es en X?».",cat:'dinero'},
     // comunicación
-    {jp:"でんわをかりてもいいですか",romaji:"denwa o karitemo ii desu ka",es:"¿me presta el teléfono?",en:"can I borrow the phone?",parts:["でんわ","を","かりても","いいですか"],note:"かりる→かりても + いいですか = «¿puedo pedir prestado X?».",cat:'comunicacion'},
-    {jp:"ネットをつかってもいいですか",romaji:"netto o tsukattemo ii desu ka",es:"¿puedo usar internet?",en:"can I use the internet?",parts:["ネット","を","つかっても","いいですか"],note:"つかう→つかっても + いいですか.",cat:'comunicacion'},
+    {jp:"でんわをかりてもいいですか",romaji:"denwa o karitemo ii desu ka",es:"¿me presta el teléfono?",en:"can I borrow the phone?",parts:["でんわ","を","かりても","いいですか"],pattern:"req-temoii",note:"かりる→かりても + いいですか = «¿puedo pedir prestado X?».",cat:'comunicacion'},
+    {jp:"ネットをつかってもいいですか",romaji:"netto o tsukattemo ii desu ka",es:"¿puedo usar internet?",en:"can I use the internet?",parts:["ネット","を","つかっても","いいですか"],pattern:"req-temoii",note:"つかう→つかっても + いいですか.",cat:'comunicacion'},
     {jp:"でんわばんごうはなんですか",romaji:"denwa bangou wa nan desu ka",es:"¿cuál es tu número de teléfono?",en:"what's your phone number?",parts:["でんわばんごう","は","なん","ですか"],note:"X + は + なん + ですか = «¿cuál es X?».",cat:'comunicacion'},
     {jp:"スマホをわすれました",romaji:"sumaho o wasuremashita",es:"se me olvidó el celular",en:"I forgot my phone",parts:["スマホ","を","わすれました"],note:"わすれる→わすれました (pasado cortés, como わかりました).",cat:'comunicacion'},
     // transporte (suma a la única que ya había: えきはどこですか)
@@ -3060,6 +3060,17 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     // números y tiempo (para mesas, grupos)
     {jp:"ひとりです",romaji:"hitori desu",es:"solo yo (una persona)",en:"just one, please",parts:["ひとり","です"],note:"Respuesta típica a «¿cuántos son?» en un restaurante.",cat:'numeros_tiempo'},
     {jp:"ふたりです",romaji:"futari desu",es:"somos dos",en:"two of us",parts:["ふたり","です"],note:"Respuesta típica a «¿cuántos son?».",cat:'numeros_tiempo'},
+
+    // patrones nuevos: obligacion, probabilidad, posibilidad, simultaneidad
+    {jp:'がっこうへいかなければならない',romaji:'gakkou e ikanakereba naranai',es:'tengo que ir a la escuela',en:'I have to go to school',parts:['がっこう','へ','いかなければならない'],pattern:'oblig-nakereba',note:'いく→いかない→いかなければならない = «tengo que ir».'},
+    {jp:'べんきょうしなければならない',romaji:'benkyou shinakereba naranai',es:'tengo que estudiar',en:'I have to study',parts:['べんきょう','しなければならない'],pattern:'oblig-nakereba',note:'する→しない→しなければならない (irregular).'},
+    {jp:'くすりをのまなければならない',romaji:'kusuri o nomanakereba naranai',es:'tengo que tomar la medicina',en:'I have to take the medicine',parts:['くすり','を','のまなければならない'],pattern:'oblig-nakereba',note:'のむ→のまない→のまなければならない.'},
+    {jp:'あしたはあめでしょう',romaji:'ashita wa ame deshou',es:'mañana probablemente llueva',en:'it will probably rain tomorrow',parts:['あした','は','あめでしょう'],pattern:'prob-deshou',note:'X + でしょう = «probablemente X».'},
+    {jp:'これはたかいでしょう',romaji:'kore wa takai deshou',es:'esto probablemente sea caro',en:'this is probably expensive',parts:['これ','は','たかいでしょう'],pattern:'prob-deshou',note:'A + でしょう = «probablemente A».'},
+    {jp:'あめかもしれない',romaji:'ame kamoshirenai',es:'puede que llueva',en:'it might rain',parts:['あめ','かもしれない'],pattern:'mod-kamoshirenai',note:'X + かもしれない = «puede que X».'},
+    {jp:'たかいかもしれない',romaji:'takai kamoshirenai',es:'puede que sea caro',en:'it might be expensive',parts:['たかい','かもしれない'],pattern:'mod-kamoshirenai',note:'A + かもしれない = «puede que A».'},
+    {jp:'あるきながらはなす',romaji:'arukinagara hanasu',es:'hablar mientras caminamos',en:'to talk while walking',parts:['あるきながら','はなす'],pattern:'conn-nagara',note:'あるく→あるき (raíz ます) + ながら = «mientras camina».'},
+    {jp:'おんがくをききながらべんきょうする',romaji:'ongaku o kikinagara benkyou suru',es:'estudiar mientras se escucha música',en:'to study while listening to music',parts:['おんがく','を','ききながら','べんきょうする'],pattern:'conn-nagara',note:'きく→きき (raíz ます) + ながら = «mientras escucha».'},
   ];
 
   /* =========================================================================
@@ -5430,7 +5441,10 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     'さいばん':'裁判', 'べんごし':'弁護士', 'けんじ':'検事', 'しょうこ':'証拠',
     'しょうげん':'証言', 'しょうにん':'証人', 'むじゅん':'矛盾', 'うそ':'嘘',
     'じけん':'事件', 'はんにん':'犯人', 'ひがいしゃ':'被害者', 'ひこくにん':'被告人',
-    'ゆうざい':'有罪', 'むざい':'無罪', 'さいばんちょう':'裁判長', 'きおく':'記憶', 'いと':'意図'
+    'ゆうざい':'有罪', 'むざい':'無罪', 'さいばんちょう':'裁判長', 'きおく':'記憶', 'いと':'意図',
+    'くに':'国', 'がいこく':'外国', 'がいこくじん':'外国人',
+    'はん':'半', 'はんぶん':'半分',
+    'やすみ':'休み', 'やすむ':'休む', 'なつやすみ':'夏休み'
   };
   /* ── Radical tables ─────────────────────────────────────────────────────────
      RADICALS: id → { glyph, variant, name, mnemonic }
@@ -5936,7 +5950,12 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     {id:'v-irregular',  order:38, needs:['v-past-u'],     intro:[],     mold:'する→した · くる→きた · いく→いった', gloss:'verbos irregulares: no siguen las reglas de sonido. Memorizá: する→した, くる→きた, y la excepción いく→いった'},
     {id:'v-tearu',       order:39, needs:['v-te-u','exist-aru'], intro:[], mold:'｛cosa｝が｛verbo-て｝ある', gloss:'«está V-ado» — ～て + ある = algo quedó hecho y sigue así (estado resultante). Ej: かいてある = «está escrito»'},
     {id:'conn-nakutemo', order:40, needs:['v-neg-u'],            intro:[], mold:'｛cosa｝を｛verbo-なくてもよい｝', gloss:'«no hace falta V» — del negativo ～ない → ～なくても + よい/いい'},
-    {id:'conn-kara-cause',order:41,needs:['cop-da'],             intro:[], mold:'｛frase｝から',              gloss:'«porque ~» — から tras una frase plana marca la RAZÓN (distinto de から = «desde/origen»)'}
+    {id:'conn-kara-cause',order:41,needs:['cop-da'],             intro:[], mold:'｛frase｝から',              gloss:'«porque ~» — から tras una frase plana marca la RAZÓN (distinto de から = «desde/origen»)'},
+    {id:'req-temoii',   order:19.5,needs:['v-te'],               intro:['もいい'], mold:'｛verbo-て｝もいいですか', gloss:'«¿puedo V?» — pedir permiso: て-form + もいいですか'},
+    {id:'mod-kamoshirenai',order:1.7,needs:['cop-da'],           intro:['かもしれない'], mold:'｛frase｝かもしれない', gloss:'«puede que ~ / quizás» — menos seguro que でしょう, va tras la forma plana'},
+    {id:'prob-deshou', order:2.5,needs:['cop-desu'],             intro:['でしょう'], mold:'｛frase｝でしょう',      gloss:'«probablemente ~» — va tras la forma plana (sin だ delante de でしょう)'},
+    {id:'oblig-nakereba',order:24.5,needs:['v-neg-u'],           intro:['なければならない'], mold:'｛cosa｝を｛verbo-なければならない｝', gloss:'«tengo que V / hay que V» — del negativo ～ない: quitá い, poné ければならない. のむ→のまない→のまなければならない'},
+    {id:'conn-nagara',  order:25.5,needs:['v-past-u'],           intro:['ながら'], mold:'｛verbo-stem｝ながら｛otro verbo｝', gloss:'«mientras V» — dos acciones al mismo tiempo: verbo en su raíz ます (のみます→のみ) + ながら'}
   ];
   var PATTERN_BY_ID=(function(){ var m={}; PATTERNS.forEach(function(p){m[p.id]=p;}); return m; })();
 
