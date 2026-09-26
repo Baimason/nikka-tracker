@@ -6982,11 +6982,12 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   function phraseDecoyUniverse(){ var u={}; PHRASES.forEach(function(p){ if(p.parts)p.parts.forEach(function(w){u[w]=1;}); }); return Object.keys(u); }
   function phraseBuildPool(){
     if(!rsess||rsess.pool!==PHRASES)return [];
-    /* Fix A: the builder shows the meaning + note up front, so it doubles as a
-       first-contact card. We no longer require `seen` — only that the phrase is
-       readable with the kana you know ("solo lo aprendido" still holds). This
-       unlocks all composable phrases instead of only the handful you've seen. */
-    return PHRASES.filter(function(p){ return p.parts && p.parts.length>=2 && wordReadable(p.jp); });
+    /* Fix B: el armador dobla como tarjeta de primer contacto, pero ese primer
+       contacto tiene que respetar el mismo tope que el quiz de reconocimiento:
+       como mucho una pieza nueva (palabra o patrón, nunca las dos). phraseReady
+       ya hace ese chequeo, así que el armador queda alineado con "solo lo
+       aprendido" en vez de aceptar cualquier frase pronunciable. */
+    return PHRASES.filter(function(p){ return p.parts && p.parts.length>=2 && phraseReady(p); });
   }
   function maybePhraseBuild(){
     var pool=phraseBuildPool(); if(!pool.length)return false;
