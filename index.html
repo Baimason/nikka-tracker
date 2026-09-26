@@ -4574,6 +4574,15 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   function aimReviewBias(){ return aimLevel()>=2?AIM_REVIEW_BIAS2:AIM_REVIEW_BIAS; }
   function aimedGame(){ if(!state||!state.aim)return null; for(var i=0;i<GAMES.length;i++)if(GAMES[i].id===state.aim)return GAMES[i]; return null; }
   function aimWordSet(){ var g=aimedGame(); if(g){ var m={}; (g.words||[]).forEach(function(w){m[w.jp]=1;}); return m; } return (typeof n5WordSet==='function')?n5WordSet():null; }
+  /* Tier map for the aimed game's own words (jp -> 0/1/2), separate from aimWordSet
+     on purpose: aimS stays a plain truthy membership set so every existing filter
+     that checks aimS[jp] keeps working untouched (tier 0 as a map VALUE would be
+     falsy and silently break those checks). This map only feeds pickByTier below,
+     to stratify NEW-word introduction: arranque (0) before historia (1) before
+     enriquecimiento (2), so 158 movimientos don't compete on equal footing with
+     たたかう from turn one. null for games without tier (same words, same order
+     as before — n5WordSet has no tier concept either). */
+  function aimWordTiers(){ var g=aimedGame(); if(!g) return null; var m={}; (g.words||[]).forEach(function(w){ m[w.jp]=(w.tier==null?0:w.tier); }); return m; }
   function aimPhraseSet(){ var g=aimedGame(); if(!g||typeof OPENINGS==='undefined')return null; var o=OPENINGS[g.id]; if(!o)return null; var m={}; (o.phrases||[]).forEach(function(x){m[x.jp]=1;}); return m; }
   function aimSetForPool(pool){ return (typeof PHRASES!=='undefined'&&pool===PHRASES)?aimPhraseSet():aimWordSet(); }
   function setAim(id){
@@ -6092,6 +6101,20 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     /* aim set for this pool — null when no game is aimed (or a custom run opted out).
        Hoisted so both the intro lane and the review quiz can see it. */
     var aimS=(csess && !csess.useAim)?null:aimSetForPool(pool);
+    /* Solo aplica a palabras de juego (no a frases: OPENINGS no trae tier). Elige,
+       de entre los índices candidatos, únicamente los del tier más bajo presente
+       (0 mientras queden, si no 1, si no 2) y sortea al azar dentro de ese grupo.
+       Así el enriquecimiento (movimientos/objetos) nunca compite con el arranque
+       por el turno de introducción; solo entra cuando ya no queda nada más urgente. */
+    var aimTiers=(aimS && pool!==PHRASES)?aimWordTiers():null;
+    function pickByTier(idxArr){
+      if(!idxArr.length) return null;
+      if(!aimTiers) return idxArr[Math.floor(Math.random()*idxArr.length)];
+      var best=99, bucket=[];
+      idxArr.forEach(function(i){ var t=aimTiers[pool[i].jp]; if(t==null)t=0;
+        if(t<best){ best=t; bucket=[i]; } else if(t===best){ bucket.push(i); } });
+      return bucket[Math.floor(Math.random()*bucket.length)];
+    }
     function quiz(setIdx){
       var useIdx=setIdx;
       /* AIM LANE (review): bias the quiz toward aim words that haven't matured yet
@@ -6126,7 +6149,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
         var aimUnseen=unseen.filter(function(i){return aimS[pool[i].jp];});
         var aimInFlight=seenSet.filter(function(i){return aimS[pool[i].jp] && (box[pool[i].jp]||0)<WORD_PROMOTE_AT;}).length;
         if(aimUnseen.length && aimInFlight<aimReserve()){
-          var ta=aimUnseen[Math.floor(Math.random()*aimUnseen.length)];
+          var ta=pickByTier(aimUnseen);
           rsess.q={target:ta,mode:"teach",relearn:false,opts:[],answered:false,picked:-1};
           setTimeout(function(){speak(pool[ta].jp);},250); return; }
       }
@@ -6136,7 +6159,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       if(unseen.length && (inFlight < _cap || seenSet.length===0)){
         var tn;
         if(aimS){ var aimU=unseen.filter(function(i){return aimS[pool[i].jp];});
-          if(aimU.length && Math.random()<aimBias()) tn=aimU[Math.floor(Math.random()*aimU.length)]; }
+          if(aimU.length && Math.random()<aimBias()) tn=pickByTier(aimU); }
         if(tn===undefined) tn=unseen[Math.floor(Math.random()*unseen.length)];
         rsess.q={target:tn,mode:"teach",relearn:false,opts:[],answered:false,picked:-1};
         setTimeout(function(){speak(pool[tn].jp);},250); return; }
