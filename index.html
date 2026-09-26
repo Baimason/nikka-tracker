@@ -2975,6 +2975,91 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     {jp:'あめだから',romaji:'ame da kara',es:'porque llueve',en:'because it rains',parts:['あめ','だ','から'],pattern:'conn-kara-cause',note:'～だから = porque (razon)'},
     {jp:'これはほんだから',romaji:'kore wa hon da kara',es:'porque esto es un libro',en:'because this is a book',parts:['これ','は','ほん','だ','から'],pattern:'conn-kara-cause',note:'frase + から = porque'},
     {jp:'ねこだから',romaji:'neko da kara',es:'porque es un gato',en:'because it is a cat',parts:['ねこ','だ','から'],pattern:'conn-kara-cause',note:'～だから = razon'},
+
+    // ===== Modo viaje: frases nuevas por situación (sobre vocabulario ya enseñado) =====
+    // aeropuerto
+    {jp:"くうこうはどこですか",romaji:"kuukou wa doko desu ka",es:"¿dónde está el aeropuerto?",en:"where's the airport?",parts:["くうこう","は","どこ","ですか"],note:"X + は + どこ + ですか = «¿dónde está X?».",cat:'aeropuerto'},
+    {jp:"パスポートをおねがいします",romaji:"pasupooto o onegaishimasu",es:"pasaporte, por favor",en:"passport, please",parts:["パスポート","を","おねがいします"],pattern:"req-onegai",note:"X を おねがいします = pedido cortés.",cat:'aeropuerto'},
+    {jp:"これはわたしのにもつです",romaji:"kore wa watashi no nimotsu desu",es:"esto es mi equipaje",en:"this is my luggage",parts:["これ","は","わたしの","にもつ","です"],note:"わたしの + X = «mi X» (の marca posesión).",cat:'aeropuerto'},
+    {jp:"ひこうきはなんじですか",romaji:"hikouki wa nanji desu ka",es:"¿a qué hora es el vuelo?",en:"what time is the flight?",parts:["ひこうき","は","なんじ","ですか"],note:"X + は + なんじ + ですか = «¿a qué hora es X?».",cat:'aeropuerto'},
+    {jp:"きっぷをみせてください",romaji:"kippu o misete kudasai",es:"muestre el boleto, por favor",en:"please show the ticket",parts:["きっぷ","を","みせて","ください"],pattern:"v-te",note:"みせる→みせて + ください",cat:'aeropuerto'},
+    // alojamiento
+    {jp:"へやはありますか",romaji:"heya wa arimasu ka",es:"¿hay una habitación?",en:"is there a room available?",parts:["へや","は","あります","か"],note:"X + は + あります + か = «¿hay X?».",cat:'alojamiento'},
+    {jp:"タオルをください",romaji:"taoru o kudasai",es:"una toalla, por favor",en:"a towel, please",parts:["タオル","を","ください"],pattern:"req-kudasai",note:"X を ください = «X, por favor».",cat:'alojamiento'},
+    {jp:"れいぞうこがありますか",romaji:"reizouko ga arimasu ka",es:"¿hay refrigerador?",en:"is there a fridge?",parts:["れいぞうこ","が","あります","か"],note:"X + が + あります + か = «¿hay X?».",cat:'alojamiento'},
+    {jp:"へやをみせてください",romaji:"heya o misete kudasai",es:"muéstreme la habitación, por favor",en:"please show me the room",parts:["へや","を","みせて","ください"],pattern:"v-te",note:"みせる→みせて + ください",cat:'alojamiento'},
+    {jp:"あさごはんはなんじですか",romaji:"asagohan wa nanji desu ka",es:"¿a qué hora es el desayuno?",en:"what time is breakfast?",parts:["あさごはん","は","なんじ","ですか"],note:"X + は + なんじ + ですか = «¿a qué hora es X?».",cat:'alojamiento'},
+    {jp:"ホテルにとまります",romaji:"hoteru ni tomarimasu",es:"me quedo en el hotel",en:"I'm staying at the hotel",parts:["ホテル","に","とまります"],note:"lugar + に + とまります = «quedarse en».",cat:'alojamiento'},
+    {jp:"えきからちかいですか",romaji:"eki kara chikai desu ka",es:"¿está cerca de la estación?",en:"is it close to the station?",parts:["えき","から","ちかい","ですか"],note:"X + から + ちかい = «cerca de X».",cat:'alojamiento'},
+    // dinero
+    {jp:"ぎんこうはどこですか",romaji:"ginkou wa doko desu ka",es:"¿dónde está el banco?",en:"where's the bank?",parts:["ぎんこう","は","どこ","ですか"],note:"X + は + どこ + ですか = «¿dónde está X?».",cat:'dinero'},
+    {jp:"カードをつかってもいいですか",romaji:"kaado o tsukattemo ii desu ka",es:"¿puedo usar la tarjeta?",en:"can I use the card?",parts:["カード","を","つかっても","いいですか"],note:"つかう→つかっても + いいですか = «¿puedo usar X?».",cat:'dinero'},
+    {jp:"これでおねがいします",romaji:"kore de onegaishimasu",es:"con esto, por favor",en:"with this, please",parts:["これ","で","おねがいします"],note:"X + で + おねがいします (で marca el medio de pago).",cat:'dinero'},
+    {jp:"えんでいくらですか",romaji:"en de ikura desu ka",es:"¿cuánto es en yenes?",en:"how much is it in yen?",parts:["えん","で","いくら","ですか"],note:"X + で + いくら + ですか = «¿cuánto es en X?».",cat:'dinero'},
+    // comunicación
+    {jp:"でんわをかりてもいいですか",romaji:"denwa o karitemo ii desu ka",es:"¿me presta el teléfono?",en:"can I borrow the phone?",parts:["でんわ","を","かりても","いいですか"],note:"かりる→かりても + いいですか = «¿puedo pedir prestado X?».",cat:'comunicacion'},
+    {jp:"ネットをつかってもいいですか",romaji:"netto o tsukattemo ii desu ka",es:"¿puedo usar internet?",en:"can I use the internet?",parts:["ネット","を","つかっても","いいですか"],note:"つかう→つかっても + いいですか.",cat:'comunicacion'},
+    {jp:"でんわばんごうはなんですか",romaji:"denwa bangou wa nan desu ka",es:"¿cuál es tu número de teléfono?",en:"what's your phone number?",parts:["でんわばんごう","は","なん","ですか"],note:"X + は + なん + ですか = «¿cuál es X?».",cat:'comunicacion'},
+    {jp:"スマホをわすれました",romaji:"sumaho o wasuremashita",es:"se me olvidó el celular",en:"I forgot my phone",parts:["スマホ","を","わすれました"],note:"わすれる→わすれました (pasado cortés, como わかりました).",cat:'comunicacion'},
+    // transporte (suma a la única que ya había: えきはどこですか)
+    {jp:"タクシーをおねがいします",romaji:"takushii o onegaishimasu",es:"un taxi, por favor",en:"a taxi, please",parts:["タクシー","を","おねがいします"],pattern:"req-onegai",note:"X を おねがいします = pedido cortés.",cat:'transporte'},
+    {jp:"このバスはえきにいきますか",romaji:"kono basu wa eki ni ikimasu ka",es:"¿este autobús va a la estación?",en:"does this bus go to the station?",parts:["この","バス","は","えき","に","いきますか"],note:"この + X = «este X».",cat:'transporte'},
+    {jp:"でんしゃはどこですか",romaji:"densha wa doko desu ka",es:"¿dónde está el tren?",en:"where's the train?",parts:["でんしゃ","は","どこ","ですか"],note:"X + は + どこ + ですか = «¿dónde está X?».",cat:'transporte'},
+    {jp:"ちかてつでいきます",romaji:"chikatetsu de ikimasu",es:"voy en metro",en:"I'll go by subway",parts:["ちかてつ","で","いきます"],note:"X + で + いきます = «ir en X» (で = medio).",cat:'transporte'},
+    {jp:"きっぷはいくらですか",romaji:"kippu wa ikura desu ka",es:"¿cuánto cuesta el boleto?",en:"how much is the ticket?",parts:["きっぷ","は","いくら","ですか"],note:"X + は + いくら + ですか = «¿cuánto cuesta X?».",cat:'transporte'},
+    {jp:"でぐちはどこですか",romaji:"deguchi wa doko desu ka",es:"¿dónde está la salida?",en:"where's the exit?",parts:["でぐち","は","どこ","ですか"],note:"X + は + どこ + ですか = «¿dónde está X?».",cat:'transporte'},
+    {jp:"いりぐちはどこですか",romaji:"iriguchi wa doko desu ka",es:"¿dónde está la entrada?",en:"where's the entrance?",parts:["いりぐち","は","どこ","ですか"],note:"X + は + どこ + ですか = «¿dónde está X?».",cat:'transporte'},
+    // emergencia (suma a けいさつ / びょういんはどこですか / たすけて)
+    {jp:"くすりはありますか",romaji:"kusuri wa arimasu ka",es:"¿tiene medicina?",en:"do you have medicine?",parts:["くすり","は","あります","か"],note:"X + は + あります + か = «¿hay/tiene X?».",cat:'emergencia'},
+    {jp:"いしゃをよんでください",romaji:"isha o yonde kudasai",es:"llame a un médico, por favor",en:"please call a doctor",parts:["いしゃ","を","よんで","ください"],pattern:"v-te-u",note:"よぶ→よんで + ください",cat:'emergencia'},
+    {jp:"おなかがいたいです",romaji:"onaka ga itai desu",es:"me duele el estómago",en:"my stomach hurts",parts:["おなか","が","いたい","です"],note:"X + が + いたい + です = «me duele X».",cat:'emergencia'},
+    {jp:"たすけてください",romaji:"tasukete kudasai",es:"¡ayúdeme, por favor!",en:"please help!",parts:["たすけて","ください"],note:"たすけて + ください = versión más cortés de «たすけて».",cat:'emergencia'},
+
+    // restaurante: carnes, dietas y pedidos con cantidad
+    {jp:"ぎゅうにくをください",romaji:"gyuuniku o kudasai",es:"carne de res, por favor",en:"beef, please",parts:["ぎゅうにく","を","ください"],pattern:"req-kudasai",note:"X を ください = «X, por favor».",cat:'restaurante'},
+    {jp:"ぶたにくをください",romaji:"butaniku o kudasai",es:"cerdo, por favor",en:"pork, please",parts:["ぶたにく","を","ください"],pattern:"req-kudasai",note:"X を ください = «X, por favor».",cat:'restaurante'},
+    {jp:"とりにくをください",romaji:"toriniku o kudasai",es:"pollo, por favor",en:"chicken, please",parts:["とりにく","を","ください"],pattern:"req-kudasai",note:"X を ください = «X, por favor».",cat:'restaurante'},
+    {jp:"さかなはたべない",romaji:"sakana wa tabenai",es:"no como pescado",en:"I don't eat fish",parts:["さかな","は","たべない"],pattern:"v-neg",note:"たべる→たべない = «no como». Útil para avisar una restricción alimentaria.",cat:'restaurante'},
+    {jp:"ぶたにくはたべない",romaji:"butaniku wa tabenai",es:"no como cerdo",en:"I don't eat pork",parts:["ぶたにく","は","たべない"],pattern:"v-neg",note:"たべる→たべない = «no como».",cat:'restaurante'},
+    {jp:"たまごはだめです",romaji:"tamago wa dame desu",es:"nada de huevo (alergia)",en:"no eggs (allergy)",parts:["たまご","は","だめです"],note:"だめです = «no puedo / no está bien». Sirve para avisar una alergia; la palabra específica «アレルギー» todavía no está en el vocabulario de Nikka.",cat:'restaurante'},
+    {jp:"にくはだめです",romaji:"niku wa dame desu",es:"nada de carne (alergia/dieta)",en:"no meat (allergy/diet)",parts:["にく","は","だめです"],note:"だめです = «no puedo / no está bien».",cat:'restaurante'},
+    {jp:"やさいのりょうりがありますか",romaji:"yasai no ryouri ga arimasu ka",es:"¿hay algún plato de verduras?",en:"is there a vegetable dish?",parts:["やさい","の","りょうり","が","あります","か"],note:"X + が + あります + か = «¿hay X?».",cat:'restaurante'},
+    {jp:"からいですか",romaji:"karai desu ka",es:"¿es picante?",en:"is it spicy?",parts:["からい","ですか"],note:"A + ですか = «¿es A?».",cat:'restaurante'},
+    {jp:"あまいですか",romaji:"amai desu ka",es:"¿es dulce?",en:"is it sweet?",parts:["あまい","ですか"],note:"A + ですか = «¿es A?».",cat:'restaurante'},
+    {jp:"すしをふたつください",romaji:"sushi o futatsu kudasai",es:"dos sushi, por favor",en:"two sushi, please",parts:["すし","を","ふたつ","ください"],note:"X + cantidad + ください.",cat:'restaurante'},
+    {jp:"ラーメンをひとつください",romaji:"raamen o hitotsu kudasai",es:"un ramen, por favor",en:"one ramen, please",parts:["ラーメン","を","ひとつ","ください"],note:"X + cantidad + ください.",cat:'restaurante'},
+    {jp:"みずをもういっぱいください",romaji:"mizu o mou ippai kudasai",es:"otro vaso de agua, por favor",en:"one more glass of water, please",parts:["みず","を","もう","いっぱい","ください"],note:"もう + いっぱい = «un vaso más».",cat:'restaurante'},
+
+    // situaciones adicionales por categoria (ronda 3)
+    // compras
+    {jp:"サイズはありますか",romaji:"saizu wa arimasu ka",es:"¿tiene esta talla?",en:"do you have this size?",parts:["サイズ","は","あります","か"],note:"X + は + あります + か = «¿tiene X?».",cat:'compras'},
+    {jp:"ほかのいろがありますか",romaji:"hoka no iro ga arimasu ka",es:"¿tiene otro color?",en:"do you have another color?",parts:["ほかの","いろ","が","あります","か"],note:"ほかの + X = «otro X».",cat:'compras'},
+    // direcciones
+    {jp:"ちずをかいてください",romaji:"chizu o kaite kudasai",es:"dibuje un mapa, por favor",en:"please draw a map",parts:["ちず","を","かいて","ください"],pattern:"v-te-u",note:"かく→かいて + ください",cat:'direcciones'},
+    {jp:"とおいですか",romaji:"tooi desu ka",es:"¿está lejos?",en:"is it far?",parts:["とおい","ですか"],note:"A + ですか = «¿es A?».",cat:'direcciones'},
+    {jp:"かいだんはどこですか",romaji:"kaidan wa doko desu ka",es:"¿dónde están las escaleras?",en:"where are the stairs?",parts:["かいだん","は","どこ","ですか"],note:"X + は + どこ + ですか = «¿dónde está X?».",cat:'direcciones'},
+    {jp:"エレベーターはどこですか",romaji:"erebeetaa wa doko desu ka",es:"¿dónde está el ascensor?",en:"where's the elevator?",parts:["エレベーター","は","どこ","ですか"],note:"X + は + どこ + ですか = «¿dónde está X?».",cat:'direcciones'},
+    // alojamiento
+    {jp:"タオルをもっとください",romaji:"taoru o motto kudasai",es:"más toallas, por favor",en:"more towels, please",parts:["タオル","を","もっと","ください"],note:"もっと + X + ください = «más X, por favor».",cat:'alojamiento'},
+    {jp:"でんきがだめです",romaji:"denki ga dame desu",es:"no funciona la electricidad",en:"the power isn't working",parts:["でんき","が","だめです"],note:"だめです = «no funciona / no está bien».",cat:'alojamiento'},
+    // aeropuerto
+    {jp:"にもつがおおいです",romaji:"nimotsu ga ooi desu",es:"tengo mucho equipaje",en:"I have a lot of luggage",parts:["にもつ","が","おおいです"],note:"X + が + おおいです = «hay mucho X».",cat:'aeropuerto'},
+    {jp:"おそかったです",romaji:"osokatta desu",es:"llegué tarde",en:"I was late",parts:["おそかった","です"],pattern:"adj-ipast",note:"おそい→おそかった (pasado de adjetivo い). Útil si perdiste el vuelo.",cat:'aeropuerto'},
+    // transporte
+    {jp:"ホームはどこですか",romaji:"hoomu wa doko desu ka",es:"¿dónde está el andén?",en:"where's the platform?",parts:["ホーム","は","どこ","ですか"],note:"X + は + どこ + ですか = «¿dónde está X?».",cat:'transporte'},
+    {jp:"このでんしゃはとうきょうにとまりますか",romaji:"kono densha wa toukyou ni tomarimasu ka",es:"¿este tren para en Tokio?",en:"does this train stop at Tokyo?",parts:["この","でんしゃ","は","とうきょう","に","とまりますか"],note:"この + X = «este X».",cat:'transporte'},
+    {jp:"さいごのでんしゃはなんじですか",romaji:"saigo no densha wa nanji desu ka",es:"¿a qué hora es el último tren?",en:"what time is the last train?",parts:["さいごの","でんしゃ","は","なんじ","ですか"],note:"さいごの + X = «el último X».",cat:'transporte'},
+    // comunicación
+    {jp:"ネットがだめです",romaji:"netto ga dame desu",es:"no funciona internet",en:"the internet isn't working",parts:["ネット","が","だめです"],note:"だめです = «no funciona / no está bien».",cat:'comunicacion'},
+    {jp:"ゆっくりはなしてください",romaji:"yukkuri hanashite kudasai",es:"hable despacio, por favor",en:"please speak slowly",parts:["ゆっくり","はなして","ください"],pattern:"v-te-u",note:"はなす→はなして + ください",cat:'comunicacion'},
+    {jp:"かいてください",romaji:"kaite kudasai",es:"escríbalo, por favor",en:"please write it down",parts:["かいて","ください"],pattern:"v-te-u",note:"かく→かいて + ください",cat:'comunicacion'},
+    // emergencia
+    {jp:"パスポートをなくしました",romaji:"pasupooto o nakushimashita",es:"perdí el pasaporte",en:"I lost my passport",parts:["パスポート","を","なくしました"],note:"なくす→なくしました (pasado cortés, como わかりました).",cat:'emergencia'},
+    {jp:"さいふをなくしました",romaji:"saifu o nakushimashita",es:"perdí la billetera",en:"I lost my wallet",parts:["さいふ","を","なくしました"],note:"なくす→なくしました.",cat:'emergencia'},
+    {jp:"びょうきです",romaji:"byouki desu",es:"estoy enfermo",en:"I'm sick",parts:["びょうき","です"],note:"X + です = «soy/estoy X».",cat:'emergencia'},
+    // números y tiempo (para mesas, grupos)
+    {jp:"ひとりです",romaji:"hitori desu",es:"solo yo (una persona)",en:"just one, please",parts:["ひとり","です"],note:"Respuesta típica a «¿cuántos son?» en un restaurante.",cat:'numeros_tiempo'},
+    {jp:"ふたりです",romaji:"futari desu",es:"somos dos",en:"two of us",parts:["ふたり","です"],note:"Respuesta típica a «¿cuántos son?».",cat:'numeros_tiempo'},
   ];
 
   /* =========================================================================
