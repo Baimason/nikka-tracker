@@ -1287,11 +1287,11 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   function nowISO(){return new Date().toISOString();}
   function parse(s){return new Date(s+"T00:00:00");}
   function daysBetween(a,b){return Math.round((parse(b)-parse(a))/86400000);}
-  function emptyState(){return {schema:SCHEMA,lang:detectLang(),font:"mincho",theme:"light",sweep:false,sweepMs:260,startDate:today(),days:{},exercises:{},aim:null,aimLvl:1,onboardSeen:false,meta:{updatedAt:nowISO()}};}
+  function emptyState(){return {schema:SCHEMA,lang:detectLang(),font:"mincho",theme:"light",sweep:false,sweepMs:260,startDate:today(),days:{},exercises:{},aim:null,aimLvl:1,travelMode:false,onboardSeen:false,meta:{updatedAt:nowISO()}};}
   function migrate(s){
     if(!s||typeof s!=="object") return null;
     return {schema:SCHEMA,lang:s.lang,font:s.font||"mincho",theme:s.theme||"light",startDate:s.startDate||today(),aim:(s.aim||null),aimLvl:(s.aimLvl===2?2:1),
-      phrasesOn:!!s.phrasesOn,kanjiOn:!!s.kanjiOn,emoji:(s.emoji!==false),buildRomaji:(s.buildRomaji!==false),matchSpeak:(s.matchSpeak!==false),
+      phrasesOn:!!s.phrasesOn,kanjiOn:!!s.kanjiOn,travelMode:!!s.travelMode,emoji:(s.emoji!==false),buildRomaji:(s.buildRomaji!==false),matchSpeak:(s.matchSpeak!==false),
       onboardSeen:!!s.onboardSeen,
       sweep:!!s.sweep,sweepMs:(s.sweepMs||260),
       days:(s.days&&typeof s.days==="object")?s.days:{},
@@ -1308,7 +1308,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       theme:a.theme||b.theme||"light",
       aim:a.aim||b.aim||null,
       aimLvl:(a.aim?(a.aimLvl||1):(b.aim?(b.aimLvl||1):1)),
-      phrasesOn:!!(a.phrasesOn||b.phrasesOn),kanjiOn:!!(a.kanjiOn||b.kanjiOn),
+      phrasesOn:!!(a.phrasesOn||b.phrasesOn),kanjiOn:!!(a.kanjiOn||b.kanjiOn),travelMode:!!(a.travelMode||b.travelMode),
       emoji:(a.emoji!==false||b.emoji!==false),buildRomaji:(a.buildRomaji!==false||b.buildRomaji!==false),matchSpeak:(a.matchSpeak!==false||b.matchSpeak!==false),
       onboardSeen:!!(a.onboardSeen||b.onboardSeen),
       sweep:!!(a.sweep||b.sweep),sweepMs:(a.sweepMs||b.sweepMs||260),
@@ -2748,92 +2748,92 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     // ～たい  (querer hacer)
     {jp:"みずがのみたい",romaji:"mizu ga nomitai",es:"quiero beber agua",en:"I want to drink water",parts:["みず","が","のみたい"],note:"～たい = «querer (hacer)»"},
     {jp:"にほんへいきたい",romaji:"nihon e ikitai",es:"quiero ir a Japón",en:"I want to go to Japan",parts:["にほん","へ","いきたい"],note:"へ = «hacia» · ～たい = «querer»"},
-    {jp:"おはよう",romaji:"ohayou",es:"buenos días",en:"good morning"},
-    {jp:"こんにちは",romaji:"konnichiwa",es:"hola / buenas tardes",en:"hello"},
-    {jp:"こんばんは",romaji:"konbanwa",es:"buenas noches",en:"good evening"},
-    {jp:"おやすみ",romaji:"oyasumi",es:"buenas noches (al dormir)",en:"good night"},
-    {jp:"ありがとう",romaji:"arigatou",es:"gracias",en:"thank you"},
-    {jp:"どういたしまして",romaji:"douitashimashite",es:"de nada",en:"you're welcome",note:"Expresión fija: se responde a un «gracias». No se arma por partes."},
-    {jp:"すみません",romaji:"sumimasen",es:"disculpe / perdón",en:"excuse me / sorry"},
-    {jp:"ごめんなさい",romaji:"gomennasai",es:"lo siento",en:"I'm sorry"},
-    {jp:"おねがいします",romaji:"onegaishimasu",es:"por favor",en:"please"},
-    {jp:"はい",romaji:"hai",es:"sí",en:"yes"},
-    {jp:"いいえ",romaji:"iie",es:"no",en:"no"},
-    {jp:"わかりました",romaji:"wakarimashita",es:"entendido",en:"understood"},
-    {jp:"わかりません",romaji:"wakarimasen",es:"no entiendo",en:"I don't understand"},
-    {jp:"だいじょうぶ",romaji:"daijoubu",es:"está bien",en:"it's okay"},
-    {jp:"はじめまして",romaji:"hajimemashite",es:"mucho gusto",en:"nice to meet you",note:"Expresión fija: al conocer a alguien por primera vez."},
-    {jp:"さようなら",romaji:"sayounara",es:"adiós",en:"goodbye"},
-    {jp:"またね",romaji:"matane",es:"nos vemos",en:"see you"},
-    {jp:"いただきます",romaji:"itadakimasu",es:"que aproveche (antes de comer)",en:"before eating",note:"Expresión fija: se dice antes de comer, agradeciendo la comida."},
-    {jp:"ごちそうさま",romaji:"gochisousama",es:"gracias por la comida",en:"thanks for the meal",note:"Expresión fija: se dice al terminar de comer."},
-    {jp:"おいしい",romaji:"oishii",es:"delicioso",en:"delicious"},
-    {jp:"これはいくらですか",romaji:"kore wa ikura desu ka",es:"¿cuánto cuesta esto?",en:"how much is this?",parts:["これ","は","いくら","ですか"],note:"X + は + いくら + ですか = «¿cuánto cuesta X?». は marca el tema."},
-    {jp:"トイレはどこですか",romaji:"toire wa doko desu ka",es:"¿dónde está el baño?",en:"where's the bathroom?",parts:["トイレ","は","どこ","ですか"],note:"X + は + どこ + ですか = «¿dónde está X?»."},
-    {jp:"えいごをはなせますか",romaji:"eigo o hanasemasu ka",es:"¿habla inglés?",en:"do you speak English?"},
-    {jp:"なまえはなんですか",romaji:"namae wa nan desu ka",es:"¿cómo te llamás?",en:"what's your name?",parts:["なまえ","は","なん","ですか"],note:"X + は + なん + ですか = «¿cómo te llamás? / ¿cuál es tu nombre?»."},
-    {jp:"たすけて",romaji:"tasukete",es:"¡ayuda!",en:"help!"},
-    {jp:"だいすき",romaji:"daisuki",es:"me encanta",en:"I love it"},
-    {jp:"メニューをください",romaji:"menyuu o kudasai",es:"el menú, por favor",en:"menu, please",parts:["メニュー","を","ください"],note:"Patrón: X + を + ください = «X, por favor»."},
-    {jp:"おかいけいおねがいします",romaji:"okaikei onegaishimasu",es:"la cuenta, por favor",en:"the check, please",parts:["おかいけい","おねがいします"],note:"X + おねがいします = pedido cortés. おかいけい = «la cuenta»."},
-    {jp:"みずをください",romaji:"mizu o kudasai",es:"agua, por favor",en:"water, please",parts:["みず","を","ください"],note:"Patrón: X + を + ください = «X, por favor» (を marca el objeto)."},
-    {jp:"これください",romaji:"kore kudasai",es:"este, por favor",en:"this one, please",parts:["これ","ください"],note:"Patrón: X + ください = «X, por favor»."},
-    {jp:"かんぱい",romaji:"kanpai",es:"¡salud!",en:"cheers!"},
-    {jp:"おいしかった",romaji:"oishikatta",es:"estuvo delicioso",en:"it was delicious"},
-    {jp:"いくらですか",romaji:"ikura desu ka",es:"¿cuánto es?",en:"how much is it?",parts:["いくら","ですか"],note:"いくら = «cuánto» + ですか."},
-    {jp:"カードでいいですか",romaji:"kaado de ii desu ka",es:"¿puedo pagar con tarjeta?",en:"can I pay by card?"},
-    {jp:"たかい",romaji:"takai",es:"caro",en:"expensive"},
-    {jp:"やすい",romaji:"yasui",es:"barato",en:"cheap"},
-    {jp:"みぎ",romaji:"migi",es:"derecha",en:"right"},
-    {jp:"ひだり",romaji:"hidari",es:"izquierda",en:"left"},
-    {jp:"まっすぐ",romaji:"massugu",es:"recto / derecho",en:"straight ahead"},
-    {jp:"あそこ",romaji:"asoko",es:"allá",en:"over there"},
-    {jp:"えきはどこですか",romaji:"eki wa doko desu ka",es:"¿dónde está la estación?",en:"where's the station?",parts:["えき","は","どこ","ですか"],note:"X + は + どこ + ですか = «¿dónde está X?»."},
-    {jp:"びょういんはどこですか",romaji:"byouin wa doko desu ka",es:"¿dónde está el hospital?",en:"where's the hospital?",parts:["びょういん","は","どこ","ですか"],note:"X + は + どこ + ですか = «¿dónde está X?»."},
-    {jp:"きょう",romaji:"kyou",es:"hoy",en:"today"},
-    {jp:"あした",romaji:"ashita",es:"mañana (día)",en:"tomorrow"},
-    {jp:"いまなんじですか",romaji:"ima nanji desu ka",es:"¿qué hora es?",en:"what time is it?",parts:["いま","なんじ","ですか"],note:"いま = «ahora» + なんじ = «qué hora» + ですか."},
-    {jp:"げんきですか",romaji:"genki desu ka",es:"¿cómo estás?",en:"how are you?",parts:["げんき","ですか"],note:"A + ですか = «¿estás A?» (か vuelve pregunta la frase)."},
-    {jp:"げんきです",romaji:"genki desu",es:"estoy bien",en:"I'm fine",parts:["げんき","です"],note:"A + です = «estoy A / soy A»."},
-    {jp:"またあした",romaji:"mata ashita",es:"hasta mañana",en:"see you tomorrow"},
-    {jp:"おなまえは",romaji:"onamae wa",es:"¿tu nombre?",en:"your name?"},
-    {jp:"どこからですか",romaji:"doko kara desu ka",es:"¿de dónde eres?",en:"where are you from?",parts:["どこ","から","ですか"],note:"どこ + から + ですか = «¿de dónde?». から = «desde».",pattern:'q-from'},
-    {jp:"にほんごがすこしわかります",romaji:"nihongo ga sukoshi wakarimasu",es:"entiendo un poco de japonés",en:"I understand a little Japanese"},
-    {jp:"もういちど",romaji:"mou ichido",es:"otra vez",en:"once more"},
-    {jp:"ゆっくりおねがいします",romaji:"yukkuri onegaishimasu",es:"más despacio, por favor",en:"slower, please",parts:["ゆっくり","おねがいします"],note:"X + おねがいします = pedido. ゆっくり = «despacio»."},
-    {jp:"だいじょうぶですか",romaji:"daijoubu desu ka",es:"¿estás bien?",en:"are you okay?",parts:["だいじょうぶ","ですか"],note:"A + ですか = «¿estás A? / ¿está bien?»."},
-    {jp:"けいさつ",romaji:"keisatsu",es:"policía",en:"police"},
-    {jp:"だいすきです",romaji:"daisuki desu",es:"me encanta (mucho)",en:"I really love it",parts:["だいすき","です"],note:"A + です. だいすき = «me encanta»."},
-    {jp:"はじめまして、よろしく",romaji:"hajimemashite, yoroshiku",es:"mucho gusto, encantado",en:"nice to meet you"},
-    {jp:"おげんきで",romaji:"ogenki de",es:"cuídate",en:"take care"},
-    {jp:"ちょっとまって",romaji:"chotto matte",es:"esperá un momento",en:"wait a moment"},
-    {jp:"だいじょうぶです",romaji:"daijoubu desu",es:"estoy bien / no hay problema",en:"I'm fine / no problem",parts:["だいじょうぶ","です"],note:"A + です = «estoy bien / no hay problema»."},
-    {jp:"しつれいします",romaji:"shitsurei shimasu",es:"con permiso / disculpe",en:"excuse me (leaving)",note:"Expresión fija: al entrar o salir de un lugar formal, o para interrumpir con cortesía."},
-    {jp:"おつかれさま",romaji:"otsukaresama",es:"buen trabajo",en:"good work",note:"Expresión fija: reconoce el esfuerzo de alguien tras un trabajo o jornada."},
-    {jp:"がんばって",romaji:"ganbatte",es:"¡ánimo! / ¡dale!",en:"do your best!",note:"Expresión fija: se le dice a alguien que va a encarar algo difícil (un examen, un partido). Literal: «esforzate»."},
-    {jp:"おめでとう",romaji:"omedetou",es:"felicidades",en:"congratulations"},
-    {jp:"すごい",romaji:"sugoi",es:"¡increíble!",en:"amazing!"},
-    {jp:"ほんとうですか",romaji:"hontou desu ka",es:"¿en serio?",en:"really?",parts:["ほんとう","ですか"],note:"ほんとう = «verdad» + ですか = «¿en serio?»."},
-    {jp:"そうです",romaji:"sou desu",es:"así es",en:"that's right"},
-    {jp:"ちがいます",romaji:"chigaimasu",es:"no es así / incorrecto",en:"that's wrong"},
-    {jp:"しりません",romaji:"shirimasen",es:"no sé",en:"I don't know"},
-    {jp:"もういちどおねがいします",romaji:"mou ichido onegaishimasu",es:"otra vez, por favor",en:"once more, please"},
-    {jp:"なんですか",romaji:"nan desu ka",es:"¿qué es?",en:"what is it?",parts:["なん","ですか"],note:"Interrogativa + ですか. なん = «qué»."},
-    {jp:"どこですか",romaji:"doko desu ka",es:"¿dónde está?",en:"where is it?",parts:["どこ","ですか"],note:"どこ = «dónde» + ですか."},
-    {jp:"だれですか",romaji:"dare desu ka",es:"¿quién es?",en:"who is it?",parts:["だれ","ですか"],note:"だれ = «quién» + ですか."},
-    {jp:"いつですか",romaji:"itsu desu ka",es:"¿cuándo es?",en:"when is it?",parts:["いつ","ですか"],note:"いつ = «cuándo» + ですか."},
-    {jp:"どうしてですか",romaji:"doushite desu ka",es:"¿por qué?",en:"why?",parts:["どうして","ですか"],note:"どうして = «por qué» + ですか."},
-    {jp:"えいごのメニューはありますか",romaji:"eigo no menyuu wa arimasu ka",es:"¿hay menú en inglés?",en:"is there an English menu?"},
-    {jp:"これはなんですか",romaji:"kore wa nan desu ka",es:"¿qué es esto?",en:"what is this?",parts:["これ","は","なん","ですか"],note:"X + は + なん + ですか = «¿qué es X?»."},
-    {jp:"やすくしてください",romaji:"yasuku shite kudasai",es:"hágame un descuento",en:"make it cheaper, please"},
-    {jp:"みてもいいですか",romaji:"mite mo ii desu ka",es:"¿puedo mirar?",en:"can I look?"},
-    {jp:"だいじょうぶ、いりません",romaji:"daijoubu, irimasen",es:"no, gracias",en:"no, thank you"},
-    {jp:"ちょっとまってください",romaji:"chotto matte kudasai",es:"espere un momento, por favor",en:"please wait a moment"},
-    {jp:"げんきでね",romaji:"genki de ne",es:"que estés bien",en:"stay well"},
-    {jp:"おなかがすいた",romaji:"onaka ga suita",es:"tengo hambre",en:"I'm hungry"},
-    {jp:"のどがかわいた",romaji:"nodo ga kawaita",es:"tengo sed",en:"I'm thirsty"},
-    {jp:"つかれた",romaji:"tsukareta",es:"estoy cansado",en:"I'm tired"},
-    {jp:"ねむい",romaji:"nemui",es:"tengo sueño",en:"I'm sleepy"},
+    {jp:"おはよう",romaji:"ohayou",es:"buenos días",en:"good morning",cat:'saludo'},
+    {jp:"こんにちは",romaji:"konnichiwa",es:"hola / buenas tardes",en:"hello",cat:'saludo'},
+    {jp:"こんばんは",romaji:"konbanwa",es:"buenas noches",en:"good evening",cat:'saludo'},
+    {jp:"おやすみ",romaji:"oyasumi",es:"buenas noches (al dormir)",en:"good night",cat:'saludo'},
+    {jp:"ありがとう",romaji:"arigatou",es:"gracias",en:"thank you",cat:'social'},
+    {jp:"どういたしまして",romaji:"douitashimashite",es:"de nada",en:"you're welcome",note:"Expresión fija: se responde a un «gracias». No se arma por partes.",cat:'social'},
+    {jp:"すみません",romaji:"sumimasen",es:"disculpe / perdón",en:"excuse me / sorry",cat:'social'},
+    {jp:"ごめんなさい",romaji:"gomennasai",es:"lo siento",en:"I'm sorry",cat:'social'},
+    {jp:"おねがいします",romaji:"onegaishimasu",es:"por favor",en:"please",cat:'social'},
+    {jp:"はい",romaji:"hai",es:"sí",en:"yes",cat:'social'},
+    {jp:"いいえ",romaji:"iie",es:"no",en:"no",cat:'social'},
+    {jp:"わかりました",romaji:"wakarimashita",es:"entendido",en:"understood",cat:'social'},
+    {jp:"わかりません",romaji:"wakarimasen",es:"no entiendo",en:"I don't understand",cat:'social'},
+    {jp:"だいじょうぶ",romaji:"daijoubu",es:"está bien",en:"it's okay",cat:'social'},
+    {jp:"はじめまして",romaji:"hajimemashite",es:"mucho gusto",en:"nice to meet you",note:"Expresión fija: al conocer a alguien por primera vez.",cat:'social'},
+    {jp:"さようなら",romaji:"sayounara",es:"adiós",en:"goodbye",cat:'saludo'},
+    {jp:"またね",romaji:"matane",es:"nos vemos",en:"see you",cat:'saludo'},
+    {jp:"いただきます",romaji:"itadakimasu",es:"que aproveche (antes de comer)",en:"before eating",note:"Expresión fija: se dice antes de comer, agradeciendo la comida.",cat:'restaurante'},
+    {jp:"ごちそうさま",romaji:"gochisousama",es:"gracias por la comida",en:"thanks for the meal",note:"Expresión fija: se dice al terminar de comer.",cat:'restaurante'},
+    {jp:"おいしい",romaji:"oishii",es:"delicioso",en:"delicious",cat:'restaurante'},
+    {jp:"これはいくらですか",romaji:"kore wa ikura desu ka",es:"¿cuánto cuesta esto?",en:"how much is this?",parts:["これ","は","いくら","ですか"],note:"X + は + いくら + ですか = «¿cuánto cuesta X?». は marca el tema.",cat:'compras'},
+    {jp:"トイレはどこですか",romaji:"toire wa doko desu ka",es:"¿dónde está el baño?",en:"where's the bathroom?",parts:["トイレ","は","どこ","ですか"],note:"X + は + どこ + ですか = «¿dónde está X?».",cat:'direcciones'},
+    {jp:"えいごをはなせますか",romaji:"eigo o hanasemasu ka",es:"¿habla inglés?",en:"do you speak English?",cat:'social'},
+    {jp:"なまえはなんですか",romaji:"namae wa nan desu ka",es:"¿cómo te llamás?",en:"what's your name?",parts:["なまえ","は","なん","ですか"],note:"X + は + なん + ですか = «¿cómo te llamás? / ¿cuál es tu nombre?».",cat:'social'},
+    {jp:"たすけて",romaji:"tasukete",es:"¡ayuda!",en:"help!",cat:'emergencia'},
+    {jp:"だいすき",romaji:"daisuki",es:"me encanta",en:"I love it",cat:'social'},
+    {jp:"メニューをください",romaji:"menyuu o kudasai",es:"el menú, por favor",en:"menu, please",parts:["メニュー","を","ください"],note:"Patrón: X + を + ください = «X, por favor».",cat:'restaurante'},
+    {jp:"おかいけいおねがいします",romaji:"okaikei onegaishimasu",es:"la cuenta, por favor",en:"the check, please",parts:["おかいけい","おねがいします"],note:"X + おねがいします = pedido cortés. おかいけい = «la cuenta».",cat:'restaurante'},
+    {jp:"みずをください",romaji:"mizu o kudasai",es:"agua, por favor",en:"water, please",parts:["みず","を","ください"],note:"Patrón: X + を + ください = «X, por favor» (を marca el objeto).",cat:'restaurante'},
+    {jp:"これください",romaji:"kore kudasai",es:"este, por favor",en:"this one, please",parts:["これ","ください"],note:"Patrón: X + ください = «X, por favor».",cat:'compras'},
+    {jp:"かんぱい",romaji:"kanpai",es:"¡salud!",en:"cheers!",cat:'restaurante'},
+    {jp:"おいしかった",romaji:"oishikatta",es:"estuvo delicioso",en:"it was delicious",cat:'restaurante'},
+    {jp:"いくらですか",romaji:"ikura desu ka",es:"¿cuánto es?",en:"how much is it?",parts:["いくら","ですか"],note:"いくら = «cuánto» + ですか.",cat:'compras'},
+    {jp:"カードでいいですか",romaji:"kaado de ii desu ka",es:"¿puedo pagar con tarjeta?",en:"can I pay by card?",cat:'compras'},
+    {jp:"たかい",romaji:"takai",es:"caro",en:"expensive",cat:'compras'},
+    {jp:"やすい",romaji:"yasui",es:"barato",en:"cheap",cat:'compras'},
+    {jp:"みぎ",romaji:"migi",es:"derecha",en:"right",cat:'direcciones'},
+    {jp:"ひだり",romaji:"hidari",es:"izquierda",en:"left",cat:'direcciones'},
+    {jp:"まっすぐ",romaji:"massugu",es:"recto / derecho",en:"straight ahead",cat:'direcciones'},
+    {jp:"あそこ",romaji:"asoko",es:"allá",en:"over there",cat:'direcciones'},
+    {jp:"えきはどこですか",romaji:"eki wa doko desu ka",es:"¿dónde está la estación?",en:"where's the station?",parts:["えき","は","どこ","ですか"],note:"X + は + どこ + ですか = «¿dónde está X?».",cat:'transporte'},
+    {jp:"びょういんはどこですか",romaji:"byouin wa doko desu ka",es:"¿dónde está el hospital?",en:"where's the hospital?",parts:["びょういん","は","どこ","ですか"],note:"X + は + どこ + ですか = «¿dónde está X?».",cat:'emergencia'},
+    {jp:"きょう",romaji:"kyou",es:"hoy",en:"today",cat:'numeros_tiempo'},
+    {jp:"あした",romaji:"ashita",es:"mañana (día)",en:"tomorrow",cat:'numeros_tiempo'},
+    {jp:"いまなんじですか",romaji:"ima nanji desu ka",es:"¿qué hora es?",en:"what time is it?",parts:["いま","なんじ","ですか"],note:"いま = «ahora» + なんじ = «qué hora» + ですか.",cat:'numeros_tiempo'},
+    {jp:"げんきですか",romaji:"genki desu ka",es:"¿cómo estás?",en:"how are you?",parts:["げんき","ですか"],note:"A + ですか = «¿estás A?» (か vuelve pregunta la frase).",cat:'social'},
+    {jp:"げんきです",romaji:"genki desu",es:"estoy bien",en:"I'm fine",parts:["げんき","です"],note:"A + です = «estoy A / soy A».",cat:'social'},
+    {jp:"またあした",romaji:"mata ashita",es:"hasta mañana",en:"see you tomorrow",cat:'saludo'},
+    {jp:"おなまえは",romaji:"onamae wa",es:"¿tu nombre?",en:"your name?",cat:'social'},
+    {jp:"どこからですか",romaji:"doko kara desu ka",es:"¿de dónde eres?",en:"where are you from?",parts:["どこ","から","ですか"],note:"どこ + から + ですか = «¿de dónde?». から = «desde».",pattern:'q-from',cat:'social'},
+    {jp:"にほんごがすこしわかります",romaji:"nihongo ga sukoshi wakarimasu",es:"entiendo un poco de japonés",en:"I understand a little Japanese",cat:'social'},
+    {jp:"もういちど",romaji:"mou ichido",es:"otra vez",en:"once more",cat:'social'},
+    {jp:"ゆっくりおねがいします",romaji:"yukkuri onegaishimasu",es:"más despacio, por favor",en:"slower, please",parts:["ゆっくり","おねがいします"],note:"X + おねがいします = pedido. ゆっくり = «despacio».",cat:'social'},
+    {jp:"だいじょうぶですか",romaji:"daijoubu desu ka",es:"¿estás bien?",en:"are you okay?",parts:["だいじょうぶ","ですか"],note:"A + ですか = «¿estás A? / ¿está bien?».",cat:'social'},
+    {jp:"けいさつ",romaji:"keisatsu",es:"policía",en:"police",cat:'emergencia'},
+    {jp:"だいすきです",romaji:"daisuki desu",es:"me encanta (mucho)",en:"I really love it",parts:["だいすき","です"],note:"A + です. だいすき = «me encanta».",cat:'social'},
+    {jp:"はじめまして、よろしく",romaji:"hajimemashite, yoroshiku",es:"mucho gusto, encantado",en:"nice to meet you",cat:'social'},
+    {jp:"おげんきで",romaji:"ogenki de",es:"cuídate",en:"take care",cat:'saludo'},
+    {jp:"ちょっとまって",romaji:"chotto matte",es:"esperá un momento",en:"wait a moment",cat:'social'},
+    {jp:"だいじょうぶです",romaji:"daijoubu desu",es:"estoy bien / no hay problema",en:"I'm fine / no problem",parts:["だいじょうぶ","です"],note:"A + です = «estoy bien / no hay problema».",cat:'social'},
+    {jp:"しつれいします",romaji:"shitsurei shimasu",es:"con permiso / disculpe",en:"excuse me (leaving)",note:"Expresión fija: al entrar o salir de un lugar formal, o para interrumpir con cortesía.",cat:'social'},
+    {jp:"おつかれさま",romaji:"otsukaresama",es:"buen trabajo",en:"good work",note:"Expresión fija: reconoce el esfuerzo de alguien tras un trabajo o jornada.",cat:'social'},
+    {jp:"がんばって",romaji:"ganbatte",es:"¡ánimo! / ¡dale!",en:"do your best!",note:"Expresión fija: se le dice a alguien que va a encarar algo difícil (un examen, un partido). Literal: «esforzate».",cat:'social'},
+    {jp:"おめでとう",romaji:"omedetou",es:"felicidades",en:"congratulations",cat:'social'},
+    {jp:"すごい",romaji:"sugoi",es:"¡increíble!",en:"amazing!",cat:'social'},
+    {jp:"ほんとうですか",romaji:"hontou desu ka",es:"¿en serio?",en:"really?",parts:["ほんとう","ですか"],note:"ほんとう = «verdad» + ですか = «¿en serio?».",cat:'social'},
+    {jp:"そうです",romaji:"sou desu",es:"así es",en:"that's right",cat:'social'},
+    {jp:"ちがいます",romaji:"chigaimasu",es:"no es así / incorrecto",en:"that's wrong",cat:'social'},
+    {jp:"しりません",romaji:"shirimasen",es:"no sé",en:"I don't know",cat:'social'},
+    {jp:"もういちどおねがいします",romaji:"mou ichido onegaishimasu",es:"otra vez, por favor",en:"once more, please",cat:'social'},
+    {jp:"なんですか",romaji:"nan desu ka",es:"¿qué es?",en:"what is it?",parts:["なん","ですか"],note:"Interrogativa + ですか. なん = «qué».",cat:'social'},
+    {jp:"どこですか",romaji:"doko desu ka",es:"¿dónde está?",en:"where is it?",parts:["どこ","ですか"],note:"どこ = «dónde» + ですか.",cat:'direcciones'},
+    {jp:"だれですか",romaji:"dare desu ka",es:"¿quién es?",en:"who is it?",parts:["だれ","ですか"],note:"だれ = «quién» + ですか.",cat:'social'},
+    {jp:"いつですか",romaji:"itsu desu ka",es:"¿cuándo es?",en:"when is it?",parts:["いつ","ですか"],note:"いつ = «cuándo» + ですか.",cat:'numeros_tiempo'},
+    {jp:"どうしてですか",romaji:"doushite desu ka",es:"¿por qué?",en:"why?",parts:["どうして","ですか"],note:"どうして = «por qué» + ですか.",cat:'social'},
+    {jp:"えいごのメニューはありますか",romaji:"eigo no menyuu wa arimasu ka",es:"¿hay menú en inglés?",en:"is there an English menu?",cat:'restaurante'},
+    {jp:"これはなんですか",romaji:"kore wa nan desu ka",es:"¿qué es esto?",en:"what is this?",parts:["これ","は","なん","ですか"],note:"X + は + なん + ですか = «¿qué es X?».",cat:'social'},
+    {jp:"やすくしてください",romaji:"yasuku shite kudasai",es:"hágame un descuento",en:"make it cheaper, please",cat:'compras'},
+    {jp:"みてもいいですか",romaji:"mite mo ii desu ka",es:"¿puedo mirar?",en:"can I look?",cat:'compras'},
+    {jp:"だいじょうぶ、いりません",romaji:"daijoubu, irimasen",es:"no, gracias",en:"no, thank you",cat:'compras'},
+    {jp:"ちょっとまってください",romaji:"chotto matte kudasai",es:"espere un momento, por favor",en:"please wait a moment",cat:'social'},
+    {jp:"げんきでね",romaji:"genki de ne",es:"que estés bien",en:"stay well",cat:'saludo'},
+    {jp:"おなかがすいた",romaji:"onaka ga suita",es:"tengo hambre",en:"I'm hungry",cat:'restaurante'},
+    {jp:"のどがかわいた",romaji:"nodo ga kawaita",es:"tengo sed",en:"I'm thirsty",cat:'restaurante'},
+    {jp:"つかれた",romaji:"tsukareta",es:"estoy cansado",en:"I'm tired",cat:'social'},
+    {jp:"ねむい",romaji:"nemui",es:"tengo sueño",en:"I'm sleepy",cat:'social'},
     // AはBです — «X es Y» (cortés)
     {jp:'これはほんです',romaji:'kore wa hon desu',es:'esto es un libro',en:'this is a book',parts:['これ','は','ほん','です'],pattern:'cop-desu',note:'X は Y です = «X es Y» (cortés)'},
     {jp:'それはとけいです',romaji:'sore wa tokei desu',es:'eso es un reloj',en:'that is a clock',parts:['それ','は','とけい','です'],pattern:'cop-desu',note:'X は Y です = «X es Y» (cortés)'},
@@ -4116,27 +4116,27 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
         {jp:'たたきつける',cat:'move',tier:2,romaji:'tatakitsukeru',es:'golpetazo',en:'Slam'},
         {jp:'つるのムチ',cat:'move',tier:2,romaji:'tsuru no muchi',es:'látigo cepa',en:'Vine Whip'},
         {jp:'ふみつけ',cat:'move',tier:2,romaji:'fumitsuke',es:'pisotón',en:'Stomp'},
-        {jp:'にどげり',cat:'move',tier:2,romaji:'nidogeri',es:'doble patada',en:'Double Kick',morph:[{jp:'にど',ro:'nido',es:'dos veces',en:'twice'},{jp:'げり',ro:'geri',es:'patada (de 蹴る, patear)',en:'kick (from keru, to kick)'}]},
+        {jp:'にどげり',cat:'move',tier:2,romaji:'nidogeri',es:'doble patada',en:'Double Kick'},
         {jp:'メガトンキック',cat:'move',tier:2,romaji:'megaton kikku',es:'megapatada',en:'Mega Kick'},
-        {jp:'とびげり',cat:'move',tier:2,romaji:'tobigeri',es:'patada salto',en:'Jump Kick',morph:[{jp:'とび',ro:'tobi',es:'salto (de 飛ぶ, saltar/volar)',en:'jump (from tobu, to jump/fly)'},{jp:'げり',ro:'geri',es:'patada',en:'kick'}]},
-        {jp:'まわしげり',cat:'move',tier:2,romaji:'mawashigeri',es:'patada giro',en:'Rolling Kick',morph:[{jp:'まわし',ro:'mawashi',es:'giro (de 回す, girar)',en:'spin (from mawasu, to turn)'},{jp:'げり',ro:'geri',es:'patada',en:'kick'}]},
+        {jp:'とびげり',cat:'move',tier:2,romaji:'tobigeri',es:'patada salto',en:'Jump Kick'},
+        {jp:'まわしげり',cat:'move',tier:2,romaji:'mawashigeri',es:'patada giro',en:'Rolling Kick'},
         {jp:'すなかけ',cat:'move',tier:2,romaji:'sunakake',es:'ataque arena',en:'Sand Attack'},
-        {jp:'ずつき',cat:'move',tier:2,romaji:'zutsuki',es:'golpe cabeza',en:'Headbutt',morph:[{jp:'ず',ro:'zu',es:'cabeza (lectura de 頭)',en:'head (reading of 頭)'},{jp:'つき',ro:'tsuki',es:'golpe, embestida (de つく, clavar/embestir)',en:'thrust (from tsuku, to jab)'}]},
-        {jp:'つのでつく',cat:'move',tier:2,romaji:'tsuno de tsuku',es:'cornada',en:'Horn Attack',morph:[{jp:'つの',ro:'tsuno',es:'cuerno',en:'horn'},{jp:'で',ro:'de',es:'con (partícula)',en:'with (particle)'},{jp:'つく',ro:'tsuku',es:'embestir, clavar',en:'to jab, to thrust'}]},
-        {jp:'みだれづき',cat:'move',tier:2,romaji:'midaredzuki',es:'ataque furia',en:'Fury Attack',morph:[{jp:'みだれ',ro:'midare',es:'frenesí, desorden (de 乱れる, alterarse)',en:'frenzy, disorder (from midareru, to be disturbed)'},{jp:'づき',ro:'zuki',es:'embestida (de つく)',en:'thrust (from tsuku)'}]},
+        {jp:'ずつき',cat:'move',tier:2,romaji:'zutsuki',es:'golpe cabeza',en:'Headbutt'},
+        {jp:'つのでつく',cat:'move',tier:2,romaji:'tsuno de tsuku',es:'cornada',en:'Horn Attack'},
+        {jp:'みだれづき',cat:'move',tier:2,romaji:'midaredzuki',es:'ataque furia',en:'Fury Attack'},
         {jp:'つのドりル',cat:'move',tier:2,romaji:'tsuno doriru',es:'perforador (cuerno)',en:'Horn Drill'},
-        {jp:'たいあたり',cat:'move',tier:2,romaji:'taiatari',es:'placaje',en:'Tackle',morph:[{jp:'たい',ro:'tai',es:'cuerpo',en:'body'},{jp:'あたり',ro:'atari',es:'choque, impacto (de 当たる, chocar)',en:'collision, hit (from ataru, to hit)'}]},
+        {jp:'たいあたり',cat:'move',tier:2,romaji:'taiatari',es:'placaje',en:'Tackle'},
         {jp:'のしかかり',cat:'move',tier:2,romaji:'noshikakari',es:'golpe cuerpo',en:'Body Slam'},
         {jp:'まきつく',cat:'move',tier:2,romaji:'makitsuku',es:'constricción',en:'Wrap'},
         {jp:'とっしん',cat:'move',tier:2,romaji:'tosshin',es:'derribo',en:'Take Down'},
         {jp:'あばれる',cat:'move',tier:2,romaji:'abareru',es:'embiste (rabia)',en:'Thrash'},
         {jp:'すてみタックル',cat:'move',tier:2,romaji:'sutemi takkuru',es:'doble filo',en:'Double-Edge',morph:[{jp:'すてみ',ro:'sutemi',es:'sacrificar el cuerpo',en:'body sacrifice'},{jp:'タックル',ro:'takkuru',es:'placaje (préstamo)',en:'tackle (loanword)'}]},
         {jp:'しっぽをふる',cat:'move',tier:2,romaji:'shippo o furu',es:'látigo cola',en:'Tail Whip'},
-        {jp:'どくばり',cat:'move',tier:2,romaji:'dokubari',es:'picotazo veneno',en:'Poison Sting',morph:[{jp:'どく',ro:'doku',es:'veneno',en:'poison'},{jp:'ばり',ro:'bari',es:'aguja (de はり)',en:'needle (from hari)'}]},
+        {jp:'どくばり',cat:'move',tier:2,romaji:'dokubari',es:'picotazo veneno',en:'Poison Sting'},
         {jp:'ダブルニードル',cat:'move',tier:2,romaji:'daburu niidoru',es:'doble aguja',en:'Twineedle'},
         {jp:'ミサイルばり',cat:'move',tier:2,romaji:'misairu bari',es:'misil aguja',en:'Pin Missile'},
         {jp:'にらみつける',cat:'move',tier:2,romaji:'niramitsukeru',es:'mirada (malicioso)',en:'Leer'},
-        {jp:'かみつく',cat:'move',tier:2,romaji:'kamitsuku',es:'mordisco',en:'Bite',morph:[{jp:'かみ',ro:'kami',es:'mordida (de 噛む, morder)',en:'bite (from kamu, to bite)'},{jp:'つく',ro:'tsuku',es:'aferrarse, pegarse',en:'to cling, to attach'}]},
+        {jp:'かみつく',cat:'move',tier:2,romaji:'kamitsuku',es:'mordisco',en:'Bite'},
         {jp:'なきごえ',cat:'move',tier:2,romaji:'nakigoe',es:'gruñido',en:'Growl'},
         {jp:'ほえる',cat:'move',tier:2,romaji:'hoeru',es:'rugido',en:'Roar'},
         {jp:'うたう',cat:'move',tier:2,romaji:'utau',es:'canto',en:'Sing'},
@@ -4160,14 +4160,14 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
         {jp:'じごくぐるま',cat:'move',tier:2,romaji:'jigokuguruma',es:'sumisión',en:'Submission',morph:[{jp:'じごく',ro:'jigoku',es:'infierno',en:'hell'},{jp:'ぐるま',ro:'guruma',es:'rueda',en:'wheel'}]},
         {jp:'けたぐり',cat:'move',tier:2,romaji:'ketaguri',es:'patada baja',en:'Low Kick'},
         {jp:'カウンター',cat:'move',tier:2,romaji:'kauntaa',es:'contraataque',en:'Counter'},
-        {jp:'ちきゅうなげ',cat:'move',tier:2,romaji:'chikyuunage',es:'sísmico',en:'Seismic Toss',morph:[{jp:'ちきゅう',ro:'chikyuu',es:'planeta, la Tierra',en:'the Earth, globe'},{jp:'なげ',ro:'nage',es:'lanzamiento (de 投げる, lanzar)',en:'throw (from nageru, to throw)'}]},
-        {jp:'すいとる',cat:'move',tier:2,romaji:'suitoru',es:'absorber',en:'Absorb',morph:[{jp:'すい',ro:'sui',es:'aspirar (de 吸う, suu)',en:'to suck (from suu)'},{jp:'とる',ro:'toru',es:'tomar',en:'to take'}]},
+        {jp:'ちきゅうなげ',cat:'move',tier:2,romaji:'chikyuunage',es:'sísmico',en:'Seismic Toss'},
+        {jp:'すいとる',cat:'move',tier:2,romaji:'suitoru',es:'absorber',en:'Absorb'},
         {jp:'メガドレイン',cat:'move',tier:2,romaji:'mega dorein',es:'megaagotar',en:'Mega Drain'},
         {jp:'やどりぎのタネ',cat:'move',tier:2,romaji:'yadorigi no tane',es:'drenadoras',en:'Leech Seed',morph:[{jp:'やどりぎ',ro:'yadorigi',es:'muérdago (planta parásita)',en:'mistletoe (parasitic plant)'},{jp:'タネ',ro:'tane',es:'semilla',en:'seed'}]},
         {jp:'せいちょう',cat:'move',tier:2,romaji:'seichou',es:'crecimiento',en:'Growth'},
         {jp:'はっぱカッター',cat:'move',tier:2,romaji:'happa kattaa',es:'hoja afilada',en:'Razor Leaf'},
         {jp:'ソーラービーム',cat:'move',tier:2,romaji:'soraa biimu',es:'rayo solar',en:'Solar Beam'},
-        {jp:'どくのこな',cat:'move',tier:2,romaji:'doku no kona',es:'polvo veneno',en:'Poison Powder',morph:[{jp:'どく',ro:'doku',es:'veneno',en:'poison'},{jp:'こな',ro:'kona',es:'polvo',en:'powder'}]},
+        {jp:'どくのこな',cat:'move',tier:2,romaji:'doku no kona',es:'polvo veneno',en:'Poison Powder'},
         {jp:'しびれごな',cat:'move',tier:2,romaji:'shibiregona',es:'paralizador',en:'Stun Spore'},
         {jp:'ねむりごな',cat:'move',tier:2,romaji:'nemurigona',es:'somnífero',en:'Sleep Powder'},
         {jp:'はなびらのまい',cat:'move',tier:2,romaji:'hanabira no mai',es:'danza pétalo',en:'Petal Dance'},
@@ -4178,10 +4178,10 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
         {jp:'10まんボルト',cat:'move',tier:2,romaji:'juuman boruto',es:'rayo (10mil voltios)',en:'Thunderbolt',morph:[{jp:'10まん',ro:'juuman',es:'100.000 (万 = diez mil)',en:'100,000 (万 = ten thousand)'},{jp:'ボルト',ro:'boruto',es:'voltios (préstamo)',en:'volts (loanword)'}]},
         {jp:'でんじは',cat:'move',tier:2,romaji:'denjiha',es:'onda trueno',en:'Thunder Wave'},
         {jp:'かみなり',cat:'move',tier:2,romaji:'kaminari',es:'trueno',en:'Thunder'},
-        {jp:'いわおとし',cat:'move',tier:2,romaji:'iwa otoshi',es:'lanzarrocas',en:'Rock Throw',morph:[{jp:'いわ',ro:'iwa',es:'roca',en:'rock'},{jp:'おとし',ro:'otoshi',es:'caída, dejar caer (de 落とす, otosu)',en:'dropping (from otosu, to drop)'}]},
+        {jp:'いわおとし',cat:'move',tier:2,romaji:'iwa otoshi',es:'lanzarrocas',en:'Rock Throw'},
         {jp:'じしん',cat:'move',tier:2,romaji:'jishin',es:'terremoto',en:'Earthquake'},
         {jp:'じわれ',cat:'move',tier:2,romaji:'jiware',es:'fisura',en:'Fissure'},
-        {jp:'どくどく',cat:'move',tier:2,romaji:'dokudoku',es:'tóxico',en:'Toxic',morph:[{jp:'どく',ro:'doku',es:'veneno (repetido para dar énfasis)',en:'poison (doubled for emphasis)'}]},
+        {jp:'どくどく',cat:'move',tier:2,romaji:'dokudoku',es:'tóxico',en:'Toxic'},
         {jp:'ねんりき',cat:'move',tier:2,romaji:'nenriki',es:'confusión',en:'Confusion'},
         {jp:'サイコキネシス',cat:'move',tier:2,romaji:'saikokineshisu',es:'psíquico',en:'Psychic'},
         {jp:'さいみんじゅつ',cat:'move',tier:2,romaji:'saiminjutsu',es:'hipnosis',en:'Hypnosis'},
@@ -4190,22 +4190,22 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
         {jp:'でんこうせっか',cat:'move',tier:2,romaji:'denkou sekka',es:'ataque rápido',en:'Quick Attack',morph:[{jp:'でんこう',ro:'denkou',es:'relámpago',en:'lightning flash'},{jp:'せっか',ro:'sekka',es:'chispa de pedernal (dicho: extrema rapidez)',en:'flint spark, idiom for extreme speed'}]},
         {jp:'いかり',cat:'move',tier:2,romaji:'ikari',es:'furia',en:'Rage'},
         {jp:'ナイトへッド',cat:'move',tier:2,romaji:'naito heddo',es:'tinieblas',en:'Night Shade'},
-        {jp:'ものまね',cat:'move',tier:2,romaji:'monomane',es:'mimético',en:'Mimic',morph:[{jp:'もの',ro:'mono',es:'cosa',en:'thing'},{jp:'まね',ro:'mane',es:'imitación (de 真似る; dicho: ものまね es un género real de comedia japonesa de imitadores en TV)',en:'imitation (from maneru; monomane is a real Japanese TV genre of celebrity impersonators)'}]},
+        {jp:'ものまね',cat:'move',tier:2,romaji:'monomane',es:'mimético',en:'Mimic'},
         {jp:'いやなおと',cat:'move',tier:2,romaji:'iyana oto',es:'chirrido',en:'Screech'},
         {jp:'かげぶんしん',cat:'move',tier:2,romaji:'kagebunshin',es:'doble equipo',en:'Double Team',morph:[{jp:'かげ',ro:'kage',es:'sombra',en:'shadow'},{jp:'ぶんしん',ro:'bunshin',es:'clon, avatar',en:'clone, avatar'}]},
         {jp:'じこさいせい',cat:'move',tier:2,romaji:'jikosaisei',es:'recuperación',en:'Recover'},
-        {jp:'かたくなる',cat:'move',tier:2,romaji:'kataku naru',es:'fortaleza',en:'Harden',morph:[{jp:'かたく',ro:'kataku',es:'duro (de 硬い/固い, katai)',en:'hard (from katai)'},{jp:'なる',ro:'naru',es:'volverse, convertirse en',en:'to become'}]},
-        {jp:'ちいさくなる',cat:'move',tier:2,romaji:'chiisaku naru',es:'reducción',en:'Minimize',morph:[{jp:'ちいさく',ro:'chiisaku',es:'pequeño (de 小さい, chiisai)',en:'small (from chiisai)'},{jp:'なる',ro:'naru',es:'volverse',en:'to become'}]},
+        {jp:'かたくなる',cat:'move',tier:2,romaji:'kataku naru',es:'fortaleza',en:'Harden'},
+        {jp:'ちいさくなる',cat:'move',tier:2,romaji:'chiisaku naru',es:'reducción',en:'Minimize'},
         {jp:'えんまく',cat:'move',tier:2,romaji:'enmaku',es:'pantalla de humo',en:'Smokescreen'},
         {jp:'あやしいひかり',cat:'move',tier:2,romaji:'ayashii hikari',es:'rayo confuso',en:'Confuse Ray'},
-        {jp:'からにこもる',cat:'move',tier:2,romaji:'kara ni komoru',es:'refugio',en:'Withdraw',morph:[{jp:'から',ro:'kara',es:'caparazón',en:'shell'},{jp:'こもる',ro:'komoru',es:'encerrarse, refugiarse (misma raíz que 引きこもり, hikikomori)',en:'to shut oneself in (same root as hikikomori)'}]},
-        {jp:'まるくなる',cat:'move',tier:2,romaji:'maruku naru',es:'rizo defensa',en:'Defense Curl',morph:[{jp:'まるく',ro:'maruku',es:'redondo (de 丸い, marui)',en:'round (from marui)'},{jp:'なる',ro:'naru',es:'volverse',en:'to become'}]},
+        {jp:'からにこもる',cat:'move',tier:2,romaji:'kara ni komoru',es:'refugio',en:'Withdraw'},
+        {jp:'まるくなる',cat:'move',tier:2,romaji:'maruku naru',es:'rizo defensa',en:'Defense Curl'},
         {jp:'バりアー',cat:'move',tier:2,romaji:'bariaa',es:'barrera',en:'Barrier'},
         {jp:'ひかりのかべ',cat:'move',tier:2,romaji:'hikari no kabe',es:'pantalla de luz',en:'Light Screen'},
         {jp:'くろいきり',cat:'move',tier:2,romaji:'kuroi kiri',es:'niebla',en:'Haze'},
         {jp:'りフレクター',cat:'move',tier:2,romaji:'rifurekutaa',es:'reflejo',en:'Reflect'},
-        {jp:'きあいだめ',cat:'move',tier:2,romaji:'kiai dame',es:'foco energía',en:'Focus Energy',morph:[{jp:'きあい',ro:'kiai',es:'grito de concentración marcial (dicho: el kiai que se oye en artes marciales y anime)',en:'martial arts focus shout (the kiai heard in martial arts and anime)'},{jp:'だめ',ro:'dame',es:'acumulación (de 溜める, tameru)',en:'accumulation (from tameru, to store up)'}]},
-        {jp:'がまん',cat:'move',tier:2,romaji:'gaman',es:'venganza (aguante)',en:'Bide',morph:[{jp:'がまん',ro:'gaman',es:'aguante, paciencia estoica (valor cultural japonés muy presente: aguantar sin quejarse)',en:'endurance, stoic patience (a core Japanese cultural value of enduring without complaint)'}]},
+        {jp:'きあいだめ',cat:'move',tier:2,romaji:'kiai dame',es:'foco energía',en:'Focus Energy'},
+        {jp:'がまん',cat:'move',tier:2,romaji:'gaman',es:'venganza (aguante)',en:'Bide'},
         {jp:'ゆびをふる',cat:'move',tier:2,romaji:'yubi o furu',es:'metrónomo',en:'Metronome',morph:[{jp:'ゆび',ro:'yubi',es:'dedo',en:'finger'},{jp:'ふる',ro:'furu',es:'agitar',en:'to wave'}]},
         {jp:'オウムがえし',cat:'move',tier:2,romaji:'oumu gaeshi',es:'espejo',en:'Mirror Move',morph:[{jp:'オウム',ro:'oumu',es:'loro',en:'parrot'},{jp:'がえし',ro:'gaeshi',es:'devolver (repetir lo que oye)',en:'to give back, echo'}]},
         {jp:'じばく',cat:'move',tier:2,romaji:'jibaku',es:'autodestrucción',en:'Self-Destruct'},
@@ -4213,26 +4213,26 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
         {jp:'したでなめる',cat:'move',tier:2,romaji:'shita de nameru',es:'lametón',en:'Lick'},
         {jp:'スモッグ',cat:'move',tier:2,romaji:'sumoggu',es:'polución',en:'Smog'},
         {jp:'へドロこうげき',cat:'move',tier:2,romaji:'hedoro kougeki',es:'residuos',en:'Sludge'},
-        {jp:'ホネこんぼう',cat:'move',tier:2,romaji:'hone konbou',es:'hueso palo',en:'Bone Club',morph:[{jp:'ホネ',ro:'hone',es:'hueso',en:'bone'},{jp:'こんぼう',ro:'konbou',es:'garrote, palo',en:'club, cudgel'}]},
+        {jp:'ホネこんぼう',cat:'move',tier:2,romaji:'hone konbou',es:'hueso palo',en:'Bone Club'},
         {jp:'だいもんじ',cat:'move',tier:2,romaji:'daimonji',es:'llamarada',en:'Fire Blast',morph:[{jp:'だい',ro:'dai',es:'grande',en:'big'},{jp:'もんじ',ro:'monji',es:'carácter (alude al festival Daimonji de Kioto)',en:'character, alludes to the Daimonji bonfire festival in Kyoto'}]},
-        {jp:'たきのぼり',cat:'move',tier:2,romaji:'takinobori',es:'cascada',en:'Waterfall',morph:[{jp:'たき',ro:'taki',es:'cascada',en:'waterfall'},{jp:'のぼり',ro:'nobori',es:'subida (de 登る; dicho: 鯉の滝登り, la leyenda de la carpa que sube la cascada y se vuelve dragón, la premisa real detrás de Magikarp evolucionando a Gyarados)',en:'climbing (from noboru; the legend of the koi climbing the waterfall to become a dragon, the real basis behind Magikarp evolving into Gyarados)'}]},
+        {jp:'たきのぼり',cat:'move',tier:2,romaji:'takinobori',es:'cascada',en:'Waterfall'},
         {jp:'からではさむ',cat:'move',tier:2,romaji:'kara de hasamu',es:'tenaza',en:'Clamp'},
         {jp:'スピードスター',cat:'move',tier:2,romaji:'supiido sutaa',es:'meteoros',en:'Swift'},
-        {jp:'ロケットずつき',cat:'move',tier:2,romaji:'roketto zutsuki',es:'cabezazo',en:'Skull Bash',morph:[{jp:'ロケット',ro:'roketto',es:'cohete (préstamo)',en:'rocket (loanword)'},{jp:'ずつき',ro:'zutsuki',es:'cabezazo (ver Headbutt)',en:'headbutt (see Headbutt)'}]},
+        {jp:'ロケットずつき',cat:'move',tier:2,romaji:'roketto zutsuki',es:'cabezazo',en:'Skull Bash'},
         {jp:'とげキャノン',cat:'move',tier:2,romaji:'toge kyanon',es:'clavo cañón',en:'Spike Cannon'},
-        {jp:'からみつく',cat:'move',tier:2,romaji:'karamitsuku',es:'restricción',en:'Constrict',morph:[{jp:'からみ',ro:'karami',es:'enredo (de 絡む, enredarse)',en:'entangling (from karamu, to entwine)'},{jp:'つく',ro:'tsuku',es:'aferrarse, pegarse',en:'to cling, to attach'}]},
-        {jp:'ドわすれ',cat:'move',tier:2,romaji:'do wasure',es:'amnesia',en:'Amnesia',morph:[{jp:'ど',ro:'do',es:'grado, vez',en:'degree, occurrence'},{jp:'わすれ',ro:'wasure',es:'olvido (de 忘れる; dicho: 度忘れ es un olvido repentino puntual, no amnesia clínica)',en:'forgetting (from wasureru; do wasure means a sudden specific lapse, not clinical amnesia)'}]},
+        {jp:'からみつく',cat:'move',tier:2,romaji:'karamitsuku',es:'restricción',en:'Constrict'},
+        {jp:'ドわすれ',cat:'move',tier:2,romaji:'do wasure',es:'amnesia',en:'Amnesia'},
         {jp:'スプーンまげ',cat:'move',tier:2,romaji:'supuun mage',es:'kinético',en:'Kinesis',morph:[{jp:'スプーン',ro:'supuun',es:'cuchara (préstamo)',en:'spoon (loanword)'},{jp:'まげ',ro:'mage',es:'doblar',en:'to bend'}]},
         {jp:'タマゴうみ',cat:'move',tier:2,romaji:'tamago umi',es:'ovocuración',en:'Soft-Boiled'},
-        {jp:'とびひざげり',cat:'move',tier:2,romaji:'tobihizageri',es:'patada salto alta',en:'Hi Jump Kick',morph:[{jp:'とび',ro:'tobi',es:'salto',en:'jump'},{jp:'ひざ',ro:'hiza',es:'rodilla',en:'knee'},{jp:'げり',ro:'geri',es:'patada',en:'kick'}]},
+        {jp:'とびひざげり',cat:'move',tier:2,romaji:'tobihizageri',es:'patada salto alta',en:'Hi Jump Kick'},
         {jp:'へびにらみ',cat:'move',tier:2,romaji:'hebi nirami',es:'deslumbrar',en:'Glare',morph:[{jp:'へび',ro:'hebi',es:'serpiente',en:'snake'},{jp:'にらみ',ro:'nirami',es:'mirada fija',en:'fixed stare'}]},
-        {jp:'ゆめくい',cat:'move',tier:2,romaji:'yumekui',es:'come sueños',en:'Dream Eater',morph:[{jp:'ゆめ',ro:'yume',es:'sueño',en:'dream'},{jp:'くい',ro:'kui',es:'comer (de 食う; dicho: referencia al baku, el espíritu devorador de sueños del folclore, el diseño real de Drowzee y Munna)',en:'eating (from kuu; references the baku, the dream eating spirit from folklore that inspired Drowzee and Munna)'}]},
-        {jp:'どくガス',cat:'move',tier:2,romaji:'doku gasu',es:'gas venenoso',en:'Poison Gas',morph:[{jp:'どく',ro:'doku',es:'veneno',en:'poison'},{jp:'ガス',ro:'gasu',es:'gas (préstamo)',en:'gas (loanword)'}]},
-        {jp:'たまなげ',cat:'move',tier:2,romaji:'tamanage',es:'bombardeo',en:'Barrage',morph:[{jp:'たま',ro:'tama',es:'bola, esfera',en:'ball, orb'},{jp:'なげ',ro:'nage',es:'lanzamiento',en:'throw'}]},
-        {jp:'きゅうけつ',cat:'move',tier:2,romaji:'kyuuketsu',es:'chupavidas',en:'Leech Life',morph:[{jp:'きゅう',ro:'kyuu',es:'aspirar (misma raíz que すいとる, absorber)',en:'to suck (same root as suitoru, Absorb)'},{jp:'けつ',ro:'ketsu',es:'sangre (血)',en:'blood'}]},
+        {jp:'ゆめくい',cat:'move',tier:2,romaji:'yumekui',es:'come sueños',en:'Dream Eater'},
+        {jp:'どくガス',cat:'move',tier:2,romaji:'doku gasu',es:'gas venenoso',en:'Poison Gas'},
+        {jp:'たまなげ',cat:'move',tier:2,romaji:'tamanage',es:'bombardeo',en:'Barrage'},
+        {jp:'きゅうけつ',cat:'move',tier:2,romaji:'kyuuketsu',es:'chupavidas',en:'Leech Life'},
         {jp:'あくまのキッス',cat:'move',tier:2,romaji:'akuma no kissu',es:'beso amoroso',en:'Lovely Kiss',morph:[{jp:'あくま',ro:'akuma',es:'demonio',en:'demon'},{jp:'のキッス',ro:'no kissu',es:'beso (el nombre oficial suaviza el original a "amoroso")',en:'kiss (official name softens it to "lovely")'}]},
         {jp:'ゴッドバード',cat:'move',tier:2,romaji:'goddo baado',es:'ataque aéreo',en:'Sky Attack',morph:[{jp:'ゴッド',ro:'goddo',es:'dios (préstamo)',en:'god (loanword)'},{jp:'バード',ro:'baado',es:'pájaro (préstamo)',en:'bird (loanword)'}]},
-        {jp:'へんしん',cat:'move',tier:2,romaji:'henshin',es:'transformación',en:'Transform',morph:[{jp:'へん',ro:'hen',es:'cambio (de 変わる, cambiar; dicho: el grito de transformación de Kamen Rider, origen del "Its Morphin Time" de Power Rangers)',en:'change (from kawaru; the transformation shout from Kamen Rider, origin of "Its Morphin Time")'},{jp:'しん',ro:'shin',es:'cuerpo (身)',en:'body (身)'}]},
+        {jp:'へんしん',cat:'move',tier:2,romaji:'henshin',es:'transformación',en:'Transform'},
         {jp:'あわ',cat:'move',tier:2,romaji:'awa',es:'burbuja',en:'Bubble'},
         {jp:'ピヨピヨパンチ',cat:'move',tier:2,romaji:'piyopiyo panchi',es:'puño mareo',en:'Dizzy Punch',morph:[{jp:'ピヨピヨ',ro:'piyopiyo',es:'pío pío (onomatopeya del mareo, ver pajaritos)',en:'tweet tweet, onomatopoeia for seeing stars/dizziness'},{jp:'パンチ',ro:'panchi',es:'puño (préstamo)',en:'punch (loanword)'}]},
         {jp:'キノコのほうし',cat:'move',tier:2,romaji:'kinoko no houshi',es:'espora',en:'Spore'},
@@ -4242,17 +4242,17 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
         {jp:'クラブハンマー',cat:'move',tier:2,romaji:'kurabu hanmaa',es:'martillazo',en:'Crabhammer'},
         {jp:'だいばくはつ',cat:'move',tier:2,romaji:'daibakuhatsu',es:'explosión',en:'Explosion'},
         {jp:'みだれひっかき',cat:'move',tier:2,romaji:'midare hikkaki',es:'garra furia',en:'Fury Swipes'},
-        {jp:'ホネブーメラン',cat:'move',tier:2,romaji:'hone buumeran',es:'huesomerang',en:'Bonemerang',morph:[{jp:'ホネ',ro:'hone',es:'hueso',en:'bone'},{jp:'ブーメラン',ro:'buumeran',es:'boomerang (préstamo)',en:'boomerang (loanword)'}]},
+        {jp:'ホネブーメラン',cat:'move',tier:2,romaji:'hone buumeran',es:'huesomerang',en:'Bonemerang'},
         {jp:'ねむる',cat:'move',tier:2,romaji:'nemuru',es:'descanso',en:'Rest'},
-        {jp:'いわなだれ',cat:'move',tier:2,romaji:'iwa nadare',es:'avalancha',en:'Rock Slide',morph:[{jp:'いわ',ro:'iwa',es:'roca',en:'rock'},{jp:'なだれ',ro:'nadare',es:'avalancha',en:'avalanche'}]},
-        {jp:'ひっさつまえば',cat:'move',tier:2,romaji:'hissatsu maeba',es:'hipercolmillo',en:'Hyper Fang',morph:[{jp:'ひっさつ',ro:'hissatsu',es:'golpe definitivo, mortal (dicho: la palabra detrás de todo "hissatsu waza" en anime de peleas)',en:'finishing blow (the word behind every "hissatsu waza" in fighting anime)'},{jp:'まえば',ro:'maeba',es:'colmillo, diente delantero',en:'front tooth, fang'}]},
+        {jp:'いわなだれ',cat:'move',tier:2,romaji:'iwa nadare',es:'avalancha',en:'Rock Slide'},
+        {jp:'ひっさつまえば',cat:'move',tier:2,romaji:'hissatsu maeba',es:'hipercolmillo',en:'Hyper Fang'},
         {jp:'かくばる',cat:'move',tier:2,romaji:'kakubaru',es:'afilar',en:'Sharpen'},
         {jp:'テクスチャー',cat:'move',tier:2,romaji:'tekusuchaa',es:'conversión',en:'Conversion'},
         {jp:'トライアタック',cat:'move',tier:2,romaji:'torai atakku',es:'triataque',en:'Tri Attack'},
-        {jp:'いかりのまえば',cat:'move',tier:2,romaji:'ikari no maeba',es:'superdiente',en:'Super Fang',morph:[{jp:'いかり',ro:'ikari',es:'furia (también aparece sola como Rage)',en:'fury (also appears alone as the move Rage)'},{jp:'まえば',ro:'maeba',es:'colmillo delantero',en:'front tooth, fang'}]},
+        {jp:'いかりのまえば',cat:'move',tier:2,romaji:'ikari no maeba',es:'superdiente',en:'Super Fang'},
         {jp:'きりさく',cat:'move',tier:2,romaji:'kirisaku',es:'cuchillada',en:'Slash'},
         {jp:'みがわり',cat:'move',tier:2,romaji:'migawari',es:'sustituto',en:'Substitute'},
-        {jp:'わるあがき',cat:'move',tier:2,romaji:'waruagaki',es:'forcejeo',en:'Struggle',morph:[{jp:'わる',ro:'waru',es:'malo (de 悪い)',en:'bad (from warui)'},{jp:'あがき',ro:'agaki',es:'forcejeo inútil (de あがく; dicho: expresión real para resistirse ante lo inevitable)',en:'futile struggling (from agaku; a real expression for resisting the inevitable)'}]},
+        {jp:'わるあがき',cat:'move',tier:2,romaji:'waruagaki',es:'forcejeo',en:'Struggle'},
         {jp:'マスターボール',cat:'item',tier:2,romaji:'masutaabooru',es:'master ball',en:'Master Ball'},
         {jp:'ハイパーボール',cat:'item',tier:2,romaji:'haipaabooru',es:'ultra ball',en:'Ultra Ball'},
         {jp:'スーパーボール',cat:'item',tier:2,romaji:'suupaabooru',es:'super ball',en:'Great Ball'},
@@ -4574,15 +4574,6 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   function aimReviewBias(){ return aimLevel()>=2?AIM_REVIEW_BIAS2:AIM_REVIEW_BIAS; }
   function aimedGame(){ if(!state||!state.aim)return null; for(var i=0;i<GAMES.length;i++)if(GAMES[i].id===state.aim)return GAMES[i]; return null; }
   function aimWordSet(){ var g=aimedGame(); if(g){ var m={}; (g.words||[]).forEach(function(w){m[w.jp]=1;}); return m; } return (typeof n5WordSet==='function')?n5WordSet():null; }
-  /* Tier map for the aimed game's own words (jp -> 0/1/2), separate from aimWordSet
-     on purpose: aimS stays a plain truthy membership set so every existing filter
-     that checks aimS[jp] keeps working untouched (tier 0 as a map VALUE would be
-     falsy and silently break those checks). This map only feeds pickByTier below,
-     to stratify NEW-word introduction: arranque (0) before historia (1) before
-     enriquecimiento (2), so 158 movimientos don't compete on equal footing with
-     たたかう from turn one. null for games without tier (same words, same order
-     as before — n5WordSet has no tier concept either). */
-  function aimWordTiers(){ var g=aimedGame(); if(!g) return null; var m={}; (g.words||[]).forEach(function(w){ m[w.jp]=(w.tier==null?0:w.tier); }); return m; }
   function aimPhraseSet(){ var g=aimedGame(); if(!g||typeof OPENINGS==='undefined')return null; var o=OPENINGS[g.id]; if(!o)return null; var m={}; (o.phrases||[]).forEach(function(x){m[x.jp]=1;}); return m; }
   function aimSetForPool(pool){ return (typeof PHRASES!=='undefined'&&pool===PHRASES)?aimPhraseSet():aimWordSet(); }
   function setAim(id){
@@ -5049,9 +5040,39 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     inner.innerHTML=h;
     var c=document.getElementById('fxClose'); if(c)c.addEventListener('click',closeFicha);
   }
+  function renderTravelSheet(){
+    var inner=document.getElementById('fichaInner'); if(!inner)return;
+    var es=getLang()==='es', on=travelMode(), ph=travelPhrases();
+    var h='<div class="d-sticky"><div class="d-head"><button class="d-close" id="fxClose">✕ '+t('Back')+'</button>'+
+          '<span class="cx-title mincho">✈️ '+(es?'Frases de viaje — consulta rápida':'Travel phrases — quick lookup')+'</span></div>'+
+          '<div class="kx-tabs"><button class="kx-tab'+(on?' on':'')+'" id="travelToggle">'+
+            (on?(es?'済 Modo viaje activado':'済 Travel mode on'):(es?'Activar modo viaje':'Turn on travel mode'))+
+          '</button></div></div>';
+    h+='<div class="fx-intro">'+(es
+        ?'Frases de sobrevivencia agrupadas por situación, tomadas de las que ya practicás. Tocá cualquiera para escucharla. Con el modo viaje activado, este acceso reemplaza al del juego apuntado en Accesos.'
+        :'Survival phrases grouped by situation, pulled from the ones you already practice. Tap any to hear it. With travel mode on, this replaces the aimed-game shortcut in Quick refs.')+'</div>';
+    TRAVEL_CATS.forEach(function(c){
+      var items=ph.filter(function(p){return p.cat===c.id;});
+      if(!items.length)return;
+      h+='<div class="fx-cat">'+(es?c.es:c.en)+' '+c.ic+'</div><div class="fx-foot" style="margin:6px 0 16px">';
+      items.forEach(function(p){
+        h+='<div class="rq-part-row" data-say="'+p.jp+'" style="cursor:pointer"><span class="mincho" style="font-size:17px">'+p.jp+'</span>'+
+           '<span class="rq-part-cn">'+(es?p.es:p.en)+'</span></div>';
+      });
+      h+='</div>';
+    });
+    h+='<div class="fx-foot">'+(es
+        ?'Esto crece con el tiempo: a medida que se minen más frases por situación (aeropuerto, alojamiento, dinero, comunicación) van a ir apareciendo acá solas.'
+        :'This grows over time: as more phrases get mined per situation (airport, lodging, money, communication) they will show up here on their own.')+'</div>';
+    inner.innerHTML=h;
+    var c2=document.getElementById('fxClose'); if(c2)c2.addEventListener('click',closeFicha);
+    var tb=document.getElementById('travelToggle'); if(tb)tb.addEventListener('click',function(){ toggleTravelMode(); renderTravelSheet(); });
+    inner.querySelectorAll('[data-say]').forEach(function(el){ el.addEventListener('click',function(){ speak(el.getAttribute('data-say')); }); });
+  }
   function renderFicha(){
     if(fichaGameId==='__kana__'){ renderKanaSheet(); return; }
     if(fichaGameId==='__radicals__'){ renderRadicalsSheet(); return; }
+    if(fichaGameId==='__travel__'){ renderTravelSheet(); return; }
     if(fichaGameId&&fichaGameId.indexOf('__note:')===0){ renderNote(fichaGameId.slice(7)); return; }
     var g=null,i; for(i=0;i<GAMES.length;i++) if(GAMES[i].id===fichaGameId) g=GAMES[i];
     var inner=document.getElementById('fichaInner'); if(!g||!inner)return;
@@ -5135,9 +5156,11 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   }
   function qrListHTML(){
     var es=getLang()==='es', g=aimedGame(), h='';
-    if(g){ h+='<button class="qr-item qr-item-aim" data-ficha="'+g.id+'"><span class="qr-ic">🎯</span>'+gamePick(g.name)+'</button>'; }
+    if(travelMode()){ h+='<button class="qr-item qr-item-aim" data-ficha="__travel__"><span class="qr-ic">✈️</span>'+(es?'Modo viaje':'Travel mode')+'</button>'; }
+    else if(g){ h+='<button class="qr-item qr-item-aim" data-ficha="'+g.id+'"><span class="qr-ic">🎯</span>'+gamePick(g.name)+'</button>'; }
     h+='<button class="qr-item" data-ficha="__kana__"><span class="qr-ic">🈂️</span>'+(es?'Silabario':'Kana chart')+'</button>';
     h+='<button class="qr-item" data-ficha="__radicals__"><span class="qr-ic">🧱</span>'+(es?'Radicales':'Radicals')+'</button>';
+    if(!travelMode()){ h+='<button class="qr-item" data-ficha="__travel__"><span class="qr-ic">✈️</span>'+(es?'Frases de viaje':'Travel phrases')+'</button>'; }
     (typeof NOTES!=='undefined'?NOTES:[]).forEach(function(n){
       var lbl=es?n.tagEs:n.tagEn, ic=(n.id==='punct'?'⁉️':n.id==='register'?'🗣️':'📝');
       h+='<button class="qr-item" data-ficha="__note:'+n.id+'"><span class="qr-ic">'+ic+'</span>'+lbl+'</button>';
@@ -5244,15 +5267,13 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     return true;
   }
   function readableIdx(pool){ var out=[]; for(var i=0;i<pool.length;i++) if(wordReadable(pool[i].jp)) out.push(i); return out; }
-  /* ================= KANJI LAYER — durmiente hasta la sección de kanji =================
+  /* ================= KANJI LAYER =================
      Filosofía: KANA-FIRST. Una palabra SIEMPRE es legible por su kana; saber los kanji
      sólo desbloquea su FORMA con kanji (una capa que se suma, nunca un portón que oculta
-     la palabra). Con KANJI_MODE=false todo se comporta como hoy (kana puro).
-     Para encender la sección de kanji: (1) KANJI_MODE=true, (2) llenar ensureKanji() con
-     el SRS de kanji igual que ensureKana, (3) ampliar KANJI_WORDS / el campo .kanji desde
-     JMdict. wordForm() ya enruta la forma correcta en cada render; wordReadable() NO cambia:
-     el kana manda, así nunca frenás tu lectura esperando un kanji. */
-  var KANJI_MODE=false;
+     la palabra). El interruptor real es state.kanjiOn (ver kanjiOn()/setKanjiOn() más abajo),
+     que se activa solo vía el botón "Activar kanji" cuando eligibleKanji().length llega a
+     KANJI_UNLOCK_AT. wordFormHTML() enruta la forma correcta en cada render; wordReadable()
+     NO cambia: el kana manda, así nunca frenás tu lectura esperando un kanji. */
   var KANJI_WORDS={  /* kana -> forma con kanji. 397 formas: 20 semillas verificadas + JMdict common (eng) con desambiguación por sentido + correcciones curadas. */
     'あお':'青','あか':'赤','あかるい':'明るい','あき':'秋','あける':'開ける','あさ':'朝',
     'あし':'足','あした':'明日','あそぶ':'遊ぶ','あたたかい':'暖かい','あたま':'頭','あたらしい':'新しい',
@@ -5525,11 +5546,6 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     if(!hadAny||!blocks.length) return '';
     return '<div class="rq-parts"><div class="rq-parts-label">Componentes</div>'+blocks.join('')+'</div>';
   }
-  /* forma a mostrar: kana por defecto; kanji sólo si el modo está activo Y ya sabés los kanji */
-  function wordForm(w){ var jp=(typeof w==='string')?w:(w&&w.jp); if(!KANJI_MODE)return jp;
-    var kf=kanjiForm(w); return (kf&&kanjiReadable(kf))?kf:jp; }
-  /* dominio "completo": hoy = su kana; con kanji activo sumará saber los kanji de la palabra */
-  function wordFullyKnown(w){ if(!KANJI_MODE)return true; var kf=kanjiForm(w); return !kf||kanjiReadable(kf); }
   /* ================= KANJI ENGINE (Fase 1) — furigana dinámico + crédito por carácter =================
      Filosofía intacta: KANA-FIRST. wordReadable() NO cambia — el kana siempre manda, nunca
      frenás tu lectura esperando un kanji. Con state.kanjiOn=false TODO se comporta como hoy.
@@ -5551,6 +5567,34 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   function masteredWordCount(){ var b=ensureWords().box, n=0; for(var k in b){ if((b[k]||0)>=4)n++; } return n; }
   function phraseUnlockReady(){ return !phrasesOn() && masteredWordCount()>=PHRASE_UNLOCK_AT; }
   function wordMature(jp){ return (ensureWords().box[jp]||0)>=4; }   // "sólida" en el word-SRS
+
+  /* ================= MODO VIAJE — chuleta situacional sobre PHRASES =================
+     No es un pool nuevo: reusa PHRASES con un campo .cat opcional (situación de uso).
+     Entradas sin .cat siguen siendo ejemplos de patrón gramatical puro y no aparecen acá.
+     TRAVEL_CATS es la ÚNICA fuente de verdad del orden/etiqueta/ícono: agregar una
+     categoría nueva es agregar una fila acá + poner ese .cat en las frases que correspondan,
+     cero cambios de UI. Escalable a futuro: cuando se mine vocabulario específico de viaje,
+     el mismo .cat sirve para sesgar la introducción de palabras nuevas (mismo patrón que
+     aimWordTiers/pickByTier con los juegos) — pendiente, no implementado todavía. */
+  var TRAVEL_CATS=[
+    {id:'saludo',ic:'👋',es:'Saludos',en:'Greetings'},
+    {id:'social',ic:'🗣️',es:'Cortesía y trato social',en:'Courtesy & small talk'},
+    {id:'restaurante',ic:'🍜',es:'Restaurante y comida',en:'Restaurant & food'},
+    {id:'compras',ic:'🛍️',es:'Compras',en:'Shopping'},
+    {id:'transporte',ic:'🚉',es:'Transporte',en:'Transport'},
+    {id:'direcciones',ic:'🧭',es:'Direcciones',en:'Directions'},
+    {id:'alojamiento',ic:'🏨',es:'Alojamiento',en:'Lodging'},
+    {id:'aeropuerto',ic:'✈️',es:'Aeropuerto y trámites',en:'Airport & procedures'},
+    {id:'dinero',ic:'💴',es:'Dinero y banco',en:'Money & bank'},
+    {id:'emergencia',ic:'🚨',es:'Salud y emergencias',en:'Health & emergencies'},
+    {id:'comunicacion',ic:'📶',es:'Teléfono e internet',en:'Phone & internet'},
+    {id:'numeros_tiempo',ic:'🕒',es:'Números, hora y fechas',en:'Numbers, time & dates'}
+  ];
+  function travelCatLabel(id){ var es=getLang()==='es',c=null; for(var i=0;i<TRAVEL_CATS.length;i++) if(TRAVEL_CATS[i].id===id){c=TRAVEL_CATS[i];break;} if(!c)return id; return c.ic+' '+(es?c.es:c.en); }
+  function travelPhrases(){ return PHRASES.filter(function(p){return !!p.cat;}); }
+  function travelMode(){ return !!state.travelMode; }
+  function setTravelMode(v){ state.travelMode=!!v; Persistence.save(state); }
+  function toggleTravelMode(){ setTravelMode(!travelMode()); render(); }
 
   /* crédito por carácter: reusa ensureKanji().box como contador (0..PROMOTE_AT) */
   function kanjiCredit(ch,correct){ var k=ensureKanji(),cur=k.box[ch]||0;
@@ -6101,20 +6145,6 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     /* aim set for this pool — null when no game is aimed (or a custom run opted out).
        Hoisted so both the intro lane and the review quiz can see it. */
     var aimS=(csess && !csess.useAim)?null:aimSetForPool(pool);
-    /* Solo aplica a palabras de juego (no a frases: OPENINGS no trae tier). Elige,
-       de entre los índices candidatos, únicamente los del tier más bajo presente
-       (0 mientras queden, si no 1, si no 2) y sortea al azar dentro de ese grupo.
-       Así el enriquecimiento (movimientos/objetos) nunca compite con el arranque
-       por el turno de introducción; solo entra cuando ya no queda nada más urgente. */
-    var aimTiers=(aimS && pool!==PHRASES)?aimWordTiers():null;
-    function pickByTier(idxArr){
-      if(!idxArr.length) return null;
-      if(!aimTiers) return idxArr[Math.floor(Math.random()*idxArr.length)];
-      var best=99, bucket=[];
-      idxArr.forEach(function(i){ var t=aimTiers[pool[i].jp]; if(t==null)t=0;
-        if(t<best){ best=t; bucket=[i]; } else if(t===best){ bucket.push(i); } });
-      return bucket[Math.floor(Math.random()*bucket.length)];
-    }
     function quiz(setIdx){
       var useIdx=setIdx;
       /* AIM LANE (review): bias the quiz toward aim words that haven't matured yet
@@ -6149,7 +6179,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
         var aimUnseen=unseen.filter(function(i){return aimS[pool[i].jp];});
         var aimInFlight=seenSet.filter(function(i){return aimS[pool[i].jp] && (box[pool[i].jp]||0)<WORD_PROMOTE_AT;}).length;
         if(aimUnseen.length && aimInFlight<aimReserve()){
-          var ta=pickByTier(aimUnseen);
+          var ta=aimUnseen[Math.floor(Math.random()*aimUnseen.length)];
           rsess.q={target:ta,mode:"teach",relearn:false,opts:[],answered:false,picked:-1};
           setTimeout(function(){speak(pool[ta].jp);},250); return; }
       }
@@ -6159,7 +6189,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       if(unseen.length && (inFlight < _cap || seenSet.length===0)){
         var tn;
         if(aimS){ var aimU=unseen.filter(function(i){return aimS[pool[i].jp];});
-          if(aimU.length && Math.random()<aimBias()) tn=pickByTier(aimU); }
+          if(aimU.length && Math.random()<aimBias()) tn=aimU[Math.floor(Math.random()*aimU.length)]; }
         if(tn===undefined) tn=unseen[Math.floor(Math.random()*unseen.length)];
         rsess.q={target:tn,mode:"teach",relearn:false,opts:[],answered:false,picked:-1};
         setTimeout(function(){speak(pool[tn].jp);},250); return; }
