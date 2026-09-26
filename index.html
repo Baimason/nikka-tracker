@@ -5205,7 +5205,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       if(!items.length)return;
       h+='<div class="fx-cat">'+(es?c.es:c.en)+' '+c.ic+'</div><div class="fx-foot" style="margin:6px 0 16px">';
       items.forEach(function(p){
-        h+='<div class="rq-part-row" data-say="'+p.jp+'" style="cursor:pointer"><span class="mincho" style="font-size:17px">'+p.jp+'</span>'+
+        h+='<div class="rq-part-row" data-say="'+p.jp+'" style="cursor:pointer"><span class="mincho" style="font-size:17px">'+sweepKanaHTML(p.jp)+'</span>'+
            '<span class="rq-part-cn">'+(es?p.es:p.en)+'</span></div>';
       });
       h+='</div>';
@@ -5216,7 +5216,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     inner.innerHTML=h;
     var c2=document.getElementById('fxClose'); if(c2)c2.addEventListener('click',closeFicha);
     var tb=document.getElementById('travelToggle'); if(tb)tb.addEventListener('click',function(){ toggleTravelMode(); renderTravelSheet(); });
-    inner.querySelectorAll('[data-say]').forEach(function(el){ el.addEventListener('click',function(){ speak(el.getAttribute('data-say')); }); });
+    inner.querySelectorAll('[data-say]').forEach(function(el){ el.addEventListener('click',function(){ speakSweep(el.getAttribute('data-say'), el); }); });
   }
   function renderFicha(){
     if(fichaGameId==='__kana__'){ renderKanaSheet(); return; }
