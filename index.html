@@ -799,6 +799,15 @@
   .ka-art.still .ka-k path{animation:none;stroke-dashoffset:0}
   @keyframes kaDraw{to{stroke-dashoffset:0}}
   @media (prefers-reduced-motion:reduce){ .ka-k path{animation:none;stroke-dashoffset:0} .ka-a{transition:none} }
+  /* kana detail card (double tap in the kana chart) */
+  .kx-cell{touch-action:manipulation}
+  .teach.kd{padding-top:6px}
+  .kd-state{margin-top:14px;font-size:13px;font-weight:700;letter-spacing:.04em;padding:4px 12px;border-radius:999px;border:1.5px solid var(--line);color:var(--ink-soft)}
+  .kd-state.mastered{border-color:var(--green);color:var(--green)}
+  .kd-state.progress{border-color:var(--shu);color:var(--shu)}
+  .kd-row{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 6px}
+  .kd-row .kd-mini,.teach-compare .kd-mini{width:64px}
+  .kd-foot{margin:2px 0 16px}
 </style>
 
 <div class="wrap">
@@ -4911,12 +4920,72 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     rows.forEach(function(row){ row.ks.forEach(function(r){
       if(!r){ h+='<span class="kx-cell empty"></span>'; return; }
       var g=tbl[r]?tbl[r][idx]:''; if(!g){ h+='<span class="kx-cell empty"></span>'; return; }
-      h+='<button class="kx-cell '+kxState(r)+'" data-say="'+g+'"><span class="kx-g mincho">'+g+'</span><span class="kx-r">'+r+'</span></button>';
+      h+='<button class="kx-cell '+kxState(r)+'" data-say="'+g+'" data-r="'+r+'"><span class="kx-g mincho">'+g+'</span><span class="kx-r">'+r+'</span></button>';
     }); });
     return h+'</div>';
   }
+  /* ---- Ficha individual de un kana (doble toque en la chuleta). Vive en el mismo overlay:
+     al cerrarla se vuelve a la chuleta en la misma pestaña y el mismo scroll. ---- */
+  var kanaDetail=null, kanaSheetScroll=0, kxLastTap={r:null,t:0};
+  function kxBox(script,romaji){ var k=ensureKana(); return Math.min(5,((script==='kata')?k.kbox:k.box)[romaji]||0); }
+  function kxStateOf(script,romaji){ var b=kxBox(script,romaji); return b>=4?'mastered':(b>=1?'progress':'new'); }
+  function kxMiniCell(script,romaji){
+    var g=glyph(romaji,script);
+    return '<button class="kx-cell kd-mini '+kxStateOf(script,romaji)+'" data-kd-r="'+romaji+'" data-kd-s="'+script+'"><span class="kx-g mincho">'+g+'</span><span class="kx-r">'+romaji+'</span></button>';
+  }
+  function openKanaDetail(script,romaji){
+    var el=document.getElementById('ficha');
+    if(!kanaDetail&&el) kanaSheetScroll=el.scrollTop;
+    kanaDetail={script:script,romaji:romaji}; renderKanaSheet(); if(el) el.scrollTop=0;
+  }
+  function closeKanaDetail(){
+    kanaDetail=null; renderKanaSheet();
+    var el=document.getElementById('ficha'); if(el) el.scrollTop=kanaSheetScroll;
+  }
+  function renderKanaDetail(inner){
+    var es=getLang()==='es', sc=kanaDetail.script, r=kanaDetail.romaji, g=glyph(r,sc);
+    var h='<div class="d-sticky"><div class="d-head"><button class="d-close" id="kdBack">✕ '+(es?'Silabario':'Kana chart')+'</button>'+
+          '<span class="cx-title mincho">'+(sc==='kata'?'カタカナ':'ひらがな')+'</span></div></div>';
+    h+='<div class="teach kd">';
+    var dv=DEVOICE[r];
+    if(dv){
+      var base=dv[0];
+      h+='<div class="teach-compare"><div class="tc-side">'+kxMiniCell(sc,base)+'</div><div class="tc-arrow">+ '+(dv[1]==='p'?'゜':'゛')+' →</div>'+
+         '<div class="tc-side new"><div class="tc-glyph mincho">'+g+'</div></div></div>';
+    } else if(isYoonRomaji(r)){
+      var yp=yoonParts(r,sc);
+      h+='<div class="teach-compare"><div class="tc-side">'+kxMiniCell(sc,yp.baseRomaji)+'</div><div class="tc-arrow">+ '+yp.small+' →</div>'+
+         '<div class="tc-side new"><div class="tc-glyph mincho">'+g+'</div></div></div>';
+    } else {
+      h+='<div class="teach-glyph mincho">'+g+'</div>';
+    }
+    h+='<div class="teach-rom">'+r+'</div><button class="d-spk" id="kdSpk" aria-label="Play sound">🔊</button>';
+    h+=kanaArtSVG(sc,r);
+    h+='<div class="teach-mn">'+mnemonicFor(sc,r)+'</div>';
+    var b=kxBox(sc,r), st=kxStateOf(sc,r);
+    var stTxt=st==='mastered'?(es?'Dominado':'Mastered'):st==='progress'?(es?'En progreso':'In progress'):(es?'Sin practicar':'Not practiced');
+    h+='<div class="kd-state '+st+'">'+stTxt+(b?' · '+(es?'caja ':'box ')+b+(es?' de 5':' of 5'):'')+'</div>';
+    var word=pickWordFor(r,sc);
+    if(word) h+='<div class="teach-word"><b class="mincho">'+word.w+'</b> '+word.r+' · <span class="mean">'+exMean(word)+'</span></div>';
+    h+='</div>';
+    var other=sc==='kata'?'hira':'kata';
+    h+='<div class="fx-cat">'+(es?(sc==='kata'?'Su gemelo en hiragana':'Su gemelo en katakana'):(sc==='kata'?'Its hiragana twin':'Its katakana twin'))+'</div>'+
+       '<div class="kd-row">'+kxMiniCell(other,r)+'</div>';
+    var conf=Object.keys((CONFUSE[sc]||{})[r]||{}).filter(function(o){return glyph(o,sc)!==o;});
+    if(conf.length){
+      h+='<div class="fx-cat">'+(es?'Se confunde con':'Easily confused with')+'</div>'+
+         '<div class="kd-row">'+conf.map(function(o){return kxMiniCell(sc,o);}).join('')+'</div>'+
+         '<div class="fx-foot kd-foot">'+(es?'Tocá uno para comparar con su ficha.':'Tap one to compare with its card.')+'</div>';
+    }
+    inner.innerHTML=h;
+    var bk=document.getElementById('kdBack'); if(bk)bk.addEventListener('click',closeKanaDetail);
+    var sp=document.getElementById('kdSpk'); if(sp)sp.addEventListener('click',function(){ speak(g); });
+    inner.querySelectorAll('[data-kd-r]').forEach(function(x){ x.addEventListener('click',function(){
+      openKanaDetail(x.getAttribute('data-kd-s'),x.getAttribute('data-kd-r')); }); });
+  }
   function renderKanaSheet(){
     var inner=document.getElementById('fichaInner'); if(!inner)return;
+    if(kanaDetail){ renderKanaDetail(inner); return; }
     var es=getLang()==='es', hira=(kanaSheetScript!=='kata');
     var h='<div class="d-sticky"><div class="d-head"><button class="d-close" id="fxClose">✕ '+t("Back")+'</button>'+
           '<span class="cx-title mincho">🈂️ '+(es?'Silabario — consulta rápida':'Kana — quick lookup')+'</span></div>'+
@@ -4925,8 +4994,8 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
             '<button class="kx-tab'+(!hira?' on':'')+'" data-kx="kata">カタカナ</button>'+
           '</div></div>';
     h+='<div class="fx-intro">'+(es
-        ?'Tocá cualquier kana para oírlo. El borde muestra tu dominio real: verde = dominado, naranja = en progreso, tenue = sin practicar.'
-        :'Tap any kana to hear it. The border shows your real mastery: green = mastered, orange = in progress, faint = not practiced.')+'</div>';
+        ?'Tocá cualquier kana para oírlo, o tocalo dos veces para abrir su ficha. El borde muestra tu dominio real: verde = dominado, naranja = en progreso, tenue = sin practicar.'
+        :'Tap any kana to hear it, or tap it twice to open its card. The border shows your real mastery: green = mastered, orange = in progress, faint = not practiced.')+'</div>';
     h+='<div class="fx-cat">'+(es?'Base (gojūon)':'Base (gojūon)')+'</div>'+kxGrid(KX_BASE_ROWS,5,KANA_BASE);
     h+='<div class="fx-cat">'+(es?'Con dakuten / handakuten':'With dakuten / handakuten')+'</div>'+kxGrid(KX_DAK_ROWS,5,KANA_DAKUTEN);
     h+='<div class="fx-cat">'+(es?'Yōon (sonidos contraídos)':'Yōon (contracted sounds)')+'</div>'+kxGrid(KX_YOON_ROWS,3,KANA_YOON);
@@ -4935,7 +5004,11 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
        '<div class="fx-foot" style="margin:6px 0 16px"><span class="mincho" style="font-size:17px">'+conf.join('</span>&nbsp;&nbsp;<span class="mincho" style="font-size:17px">')+'</span></div>';
     inner.innerHTML=h;
     var c=document.getElementById('fxClose'); if(c)c.addEventListener('click',closeFicha);
-    inner.querySelectorAll('.kx-cell[data-say]').forEach(function(b){ b.addEventListener('click',function(){ speak(b.getAttribute('data-say')); }); });
+    inner.querySelectorAll('.kx-cell[data-say]').forEach(function(b){ b.addEventListener('click',function(){
+      var r=b.getAttribute('data-r'), now=Date.now();
+      if(r && kxLastTap.r===r && now-kxLastTap.t<400){ kxLastTap={r:null,t:0}; openKanaDetail(kanaSheetScript==='kata'?'kata':'hira',r); return; }
+      kxLastTap={r:r,t:now}; speak(b.getAttribute('data-say'));
+    }); });
     inner.querySelectorAll('.kx-tab[data-kx]').forEach(function(b){ b.addEventListener('click',function(){ kanaSheetScript=b.getAttribute('data-kx'); renderKanaSheet(); }); });
   }
   /* IDs de radicales agrupados por tipo para la chuleta */
@@ -5063,7 +5136,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     return '<div class="qr-list-inner">'+h+'</div>';
   }
   function openFicha(id){ var el=document.getElementById('ficha'); if(!el)return; fichaGameId=id; el.classList.remove('hidden'); renderFicha(); try{window.scrollTo(0,0);}catch(e){} }
-  function closeFicha(){ var el=document.getElementById('ficha'); if(el)el.classList.add('hidden'); fichaGameId=null; }
+  function closeFicha(){ var el=document.getElementById('ficha'); if(el)el.classList.add('hidden'); fichaGameId=null; kanaDetail=null; }
 
   var readingEl=document.getElementById("reading"), readingInner=document.getElementById("readingInner");
   var rsess=null;
