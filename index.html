@@ -426,6 +426,17 @@
   .gbadge.dict{background:transparent;color:var(--ink)}
   .gbadge.locked{background:transparent;color:var(--ink);opacity:.5}
   .rq-note{margin-top:10px;font-size:13px;line-height:1.4;color:var(--shu);border-top:1px dashed var(--line);padding-top:8px;display:inline-block}
+  /* Radical breakdown panel — shown in post-answer feedback */
+  .rq-parts{margin-top:14px;padding:10px 12px;background:var(--card);border-radius:6px;border:1px solid var(--line);text-align:left;max-width:480px;margin-left:auto;margin-right:auto}
+  .rq-parts-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px}
+  .rq-part-kanji{display:flex;gap:10px;align-items:flex-start;padding:5px 0;border-top:1px solid var(--line)}
+  .rq-part-kanji:first-of-type{border-top:none;padding-top:0}
+  .rq-part-head{font-size:2em;line-height:1;color:var(--ink);flex-shrink:0;min-width:1.5em;text-align:center;padding-top:2px}
+  .rq-part-rows{display:flex;flex-direction:column;gap:4px}
+  .rq-part-row{display:flex;align-items:baseline;gap:6px;font-size:12px;line-height:1.3}
+  .rq-part-comp{font-size:1.25em;color:var(--shu);line-height:1;flex-shrink:0}
+  .rq-part-cn{font-weight:700;color:var(--ink);min-width:56px;flex-shrink:0}
+  .rq-part-role{color:var(--ink-soft)}
   .phrase-nudge{margin-top:8px;font-size:13px;line-height:1.4;font-weight:600;color:var(--shu);background:rgba(178,55,38,.08);border:1px solid var(--shu);border-radius:6px;padding:8px 10px}
   .phrase-nudge-btn{display:block;width:100%;font:inherit;font-weight:700;font-size:13px;color:var(--card);background:var(--shu);border:none;border-radius:4px;padding:9px 12px;margin-top:8px;cursor:pointer;text-align:center;-webkit-tap-highlight-color:transparent}
   .phrase-nudge-btn:active{transform:translateY(1px)}
@@ -5144,6 +5155,177 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     'じけん':'事件', 'はんにん':'犯人', 'ひがいしゃ':'被害者', 'ひこくにん':'被告人',
     'ゆうざい':'有罪', 'むざい':'無罪', 'さいばんちょう':'裁判長', 'きおく':'記憶', 'いと':'意図'
   };
+  /* ── Radical tables ─────────────────────────────────────────────────────────
+     RADICALS: id → { glyph, variant, name, mnemonic }
+     KANJI_PARTS: kanji char → array of component descriptors, or null (primitive).
+     Each descriptor: { rad:'id' } → lookup in RADICALS
+                      { glyph:'寺', name:'Templo' } → inline, no RADICALS entry.
+     Both have role: string explaining what the component contributes.
+     UI calls kanjiPartsHTML(kanaJP) to render the panel in post-answer feedback. */
+  var RADICALS={
+    'hi':      {glyph:'日',variant:null, name:'Sol',       mnemonic:'cuadrado que representa el sol — también marca los días'},
+    'tsuki':   {glyph:'月',variant:null, name:'Luna',      mnemonic:'media luna de costado — los meses se contaban con la luna'},
+    'ki':      {glyph:'木',variant:null, name:'Árbol',     mnemonic:'tronco con ramas arriba y raíces abajo'},
+    'kuchi':   {glyph:'口',variant:'囗', name:'Boca',      mnemonic:'boca cuadrada abierta; como 囗 es un recinto que enmarca'},
+    'hito':    {glyph:'人',variant:'亻', name:'Persona',   mnemonic:'dos piernas caminando; la variante 亻 aparece siempre a la izquierda'},
+    'mizu':    {glyph:'水',variant:'氵', name:'Agua',      mnemonic:'corriente ondulada; como 氵 son tres salpicaduras a la izquierda'},
+    'hi2':     {glyph:'火',variant:'灬', name:'Fuego',     mnemonic:'llamas con chispas; como 灬 son cuatro brasas debajo del kanji'},
+    'onna':    {glyph:'女',variant:null, name:'Mujer',     mnemonic:'figura arrodillada con los brazos abiertos'},
+    'ko':      {glyph:'子',variant:null, name:'Hijo',      mnemonic:'bebé con los brazos abiertos y una cola de pañal'},
+    'iu':      {glyph:'言',variant:'訁', name:'Habla',     mnemonic:'una boca (口) con cuatro ondas de sonido encima — palabras'},
+    'mon':     {glyph:'門',variant:null, name:'Puerta',    mnemonic:'dos hojas de una puerta doble vista de frente'},
+    'chikara': {glyph:'力',variant:null, name:'Fuerza',    mnemonic:'brazo musculoso flexionado'},
+    'kokoro':  {glyph:'心',variant:'忄', name:'Corazón',   mnemonic:'corazón con tres latidos; la variante 忄 es vertical a la izquierda'},
+    'te':      {glyph:'手',variant:'扌', name:'Mano',      mnemonic:'cinco dedos extendidos; como 扌 es una mano simplificada a la izquierda'},
+    'me':      {glyph:'目',variant:null, name:'Ojo',       mnemonic:'un ojo visto de frente con la pupila marcada en el centro'},
+    'mimi':    {glyph:'耳',variant:null, name:'Oído',      mnemonic:'una oreja con su canal auditivo representado'},
+    'yama':    {glyph:'山',variant:null, name:'Montaña',   mnemonic:'tres picos, el del centro más alto'},
+    'ta':      {glyph:'田',variant:null, name:'Campo',     mnemonic:'parcelas de arrozal divididas, vistas desde arriba'},
+    'tsuchi':  {glyph:'土',variant:null, name:'Tierra',    mnemonic:'una planta brotando del suelo — la tierra donde crece todo'},
+    'dai':     {glyph:'大',variant:null, name:'Grande',    mnemonic:'persona con brazos y piernas extendidos — ocupa mucho espacio'},
+    'yuu':     {glyph:'夕',variant:null, name:'Atardecer', mnemonic:'media luna apenas visible al atardecer, cuando el sol casi no se ve'},
+    'mushi':   {glyph:'虫',variant:null, name:'Insecto',   mnemonic:'un gusano enroscado con la cabeza levantada'},
+    'uma':     {glyph:'馬',variant:null, name:'Caballo',   mnemonic:'caballo de perfil con crin, cuerpo y cuatro patas'},
+    'kai':     {glyph:'貝',variant:null, name:'Concha',    mnemonic:'concha marina — en la antigüedad era moneda de cambio'},
+    'ame':     {glyph:'雨',variant:null, name:'Lluvia',    mnemonic:'nubes con cuatro gotas cayendo debajo'},
+    'yumi':    {glyph:'弓',variant:null, name:'Arco',      mnemonic:'un arco tensado visto de costado'},
+    'nogi':    {glyph:'禾',variant:null, name:'Grano',     mnemonic:'tallo de cereal doblado por el peso del grano maduro'},
+    'sakana':  {glyph:'魚',variant:null, name:'Pez',       mnemonic:'pez con cabeza, escamas y aleta caudal'},
+    'ito':     {glyph:'糸',variant:'纟', name:'Hilo',      mnemonic:'hilo enrollado en un carrete; como 纟 son tres trazos a la izquierda'},
+    'shin_nyu':{glyph:'辶',variant:null, name:'Camino',    mnemonic:'pie dando un paso — siempre va por la izquierda-abajo del kanji'},
+    'uchi':    {glyph:'宀',variant:null, name:'Techo',     mnemonic:'tejado de una casa — siempre cubre la parte superior del kanji'},
+    'shoku':   {glyph:'食',variant:'飠', name:'Comida',    mnemonic:'cuenco con tapa y vapor; como 飠 va siempre a la izquierda'},
+    'kusa':    {glyph:'艹',variant:null, name:'Planta',    mnemonic:'dos brotes de hierba — siempre cubre la parte superior del kanji'},
+    'gyo':     {glyph:'彳',variant:null, name:'Paso',      mnemonic:'mitad izquierda del kanji 行 (ir) — indica movimiento'},
+    'yamai':   {glyph:'疒',variant:null, name:'Enfermedad',mnemonic:'persona recostada en cama bajo un techo — el cobertizo del enfermo'},
+    'madare':  {glyph:'广',variant:null, name:'Cobertizo', mnemonic:'techo inclinado con pared lateral — espacio techado abierto'}
+  };
+  /* null = kanji primitivo sin descomposición pedagógica útil.
+     { rad:'id' } → busca glyph/name en RADICALS.
+     { glyph:'寺', name:'Templo' } → componente inline sin entrada propia en RADICALS.
+     role = qué aporta este componente al significado del kanji padre. */
+  var KANJI_PARTS={
+    '一':null,'二':null,'三':null,'四':null,'五':null,
+    '六':null,'七':null,'八':null,'九':null,'十':null,
+    '百':null,'千':null,'万':null,'円':null,
+    '半':[{glyph:'八',name:'Dividir',role:'algo que se separa en dos partes'},{glyph:'牛',name:'Buey',role:'buey — dividir el buey exactamente por la mitad'}],
+    '日':null,'月':null,'火':null,'水':null,'木':null,'土':null,
+    '金':[{rad:'hito',role:'personas que trabajan bajo tierra'},{rad:'tsuchi',role:'tierra — el metal que se extrae del suelo'}],
+    '山':null,'川':null,'田':null,'雨':null,
+    '空':[{glyph:'穴',name:'Cueva/hueco',role:'el cielo es como un hueco enorme sobre nosotros'},{glyph:'工',name:'Trabajo',role:'el espacio donde el viento hace su trabajo'}],
+    '花':[{rad:'kusa',role:'planta — la flor es parte de una planta'},{glyph:'化',name:'Transformar',role:'la planta que se transforma y abre su flor'}],
+    '草':[{rad:'kusa',role:'planta — la hierba es la planta más básica'},{glyph:'早',name:'Temprano',role:'amanecer — la hierba que crece al alba'}],
+    '雪':[{rad:'ame',role:'lluvia/tormenta — la nieve es lluvia sólida'},{glyph:'彗',name:'Escoba',role:'la nieve que hay que barrer'}],
+    '春':[{rad:'kusa',role:'plantas — la primavera trae brotes nuevos'},{rad:'hi',role:'sol — el sol que hace crecer lo que brotó'}],
+    '夏':[{rad:'hi',role:'sol — el verano de sol intenso'},{glyph:'夂',name:'Pasos lentos',role:'el calor que sube desde abajo, paso a paso'}],
+    '秋':[{rad:'nogi',role:'grano/cosecha — el otoño es cuando se cosecha'},{rad:'hi2',role:'fuego — el color del fuego en las hojas de otoño'}],
+    '冬':[{glyph:'夂',name:'Pasos lentos',role:'caminar con dificultad'},{glyph:'仌',name:'Hielo',role:'cristales de hielo — caminar sobre el hielo del invierno'}],
+    '天':[{rad:'dai',role:'persona grande con brazos abiertos'},{glyph:'一',name:'Línea encima',role:'lo que está por encima de la persona: el cielo'}],
+    '地':[{rad:'tsuchi',role:'tierra — el suelo'},{glyph:'也',name:'Extenderse',role:'la tierra que se extiende en todas direcciones'}],
+    '池':[{rad:'mizu',role:'agua — el agua del estanque'},{glyph:'也',name:'Extenderse',role:'el agua que se extiende formando una superficie'}],
+    '海':[{rad:'mizu',role:'agua — el agua del mar'},{glyph:'毎',name:'Siempre/cada',role:'siempre — el agua que siempre ha estado ahí'}],
+    '人':null,'子':null,'女':null,
+    '男':[{rad:'ta',role:'campo/arrozal — el trabajo que se hace en el campo'},{rad:'chikara',role:'fuerza — la fuerza que se aplica en ese campo'}],
+    '父':null,
+    '母':[{rad:'onna',role:'mujer — la madre es una mujer, con los dos puntos de la maternidad'}],
+    '兄':[{rad:'kuchi',role:'boca — el que habla primero y da instrucciones'},{glyph:'儿',name:'Persona andando',role:'persona que avanza — el hermano mayor que va adelante'}],
+    '弟':[{rad:'yumi',role:'arco pequeño — el hermano menor, el arco menos tenso de la familia'}],
+    '姉':[{rad:'onna',role:'mujer — la hermana mayor es una mujer'},{glyph:'市',name:'Mercado/ciudad',role:'ya va sola al mercado'}],
+    '妹':[{rad:'onna',role:'mujer — la hermana menor es una mujer'},{glyph:'未',name:'Aún no',role:'todavía sin madurar — la que aún no creció del todo'}],
+    '友':[{glyph:'又',name:'Mano',role:'dos manos que se juntan en amistad'}],
+    '先':[{rad:'tsuchi',role:'suelo — pisa el suelo antes que nadie'},{glyph:'儿',name:'Persona andando',role:'la persona que va primero'}],
+    '生':null,
+    '学':[{rad:'uchi',role:'techo — estudiar bajo techo'},{rad:'ko',role:'niño — el niño que aprende'}],
+    '校':[{rad:'ki',role:'madera — los bancos y mesas de madera del aula'},{glyph:'交',name:'Cruzar/intercambiar',role:'donde se intercambia conocimiento'}],
+    '気':[{glyph:'气',name:'Vapor/aliento',role:'el espíritu y el ánimo son como el aliento'},{glyph:'米',name:'Arroz',role:'el vapor del arroz cocinándose — la energía que da'}],
+    '食':null,'肉':null,'魚':null,
+    '飲':[{rad:'shoku',role:'comida — la boca dispuesta a recibir'},{glyph:'欠',name:'Bostezar',role:'boca abierta — la boca abierta recibiendo el líquido'}],
+    '飯':[{rad:'shoku',role:'comida — el arroz es la comida base'},{glyph:'反',name:'Voltear',role:'el arroz que se da vuelta al servir'}],
+    '茶':[{rad:'kusa',role:'planta — la hoja del té es una planta'},{glyph:'余',name:'Lo que queda/infusión',role:'las hojas que sueltan su sabor en el agua'}],
+    '行':[{rad:'gyo',role:'paso hacia la izquierda — un paso del recorrido'},{glyph:'亍',name:'Paso derecho',role:'cada mitad es un pie: los dos pies caminando'}],
+    '来':[{rad:'ki',role:'árbol — el árbol de encuentro donde la gente se reúne'},{rad:'hito',role:'personas — gente que llega al árbol'}],
+    '帰':[{glyph:'彑',name:'Doblar hacia atrás',role:'algo que da vuelta'},{glyph:'帚',name:'Escoba',role:'volver a barrer la casa — regresar a casa'}],
+    '出':[{rad:'yama',role:'montaña — la montaña que emerge'},{glyph:'凵',name:'Concavidad',role:'hueco abierto — la montaña que sale del hoyo'}],
+    '入':null,
+    '見':[{rad:'me',role:'ojo — ver es usar los ojos'},{glyph:'儿',name:'Persona andando',role:'la persona que está mirando'}],
+    '聞':[{rad:'mon',role:'puerta — escuchar con la oreja pegada a la puerta'},{rad:'mimi',role:'oreja — escuchar con la oreja'}],
+    '話':[{rad:'iu',role:'palabras — hablar es producir palabras'},{glyph:'舌',name:'Lengua',role:'hablar con la lengua'}],
+    '読':[{rad:'iu',role:'palabras — leer es encontrarse con palabras escritas'},{glyph:'売',name:'Proclamar',role:'las palabras que se anuncian en voz alta'}],
+    '書':[{glyph:'聿',name:'Pincel',role:'pincel de caligrafía — escribir con pincel'},{rad:'hi',role:'sol / página iluminada — el pincel sobre la página'}],
+    '買':[{glyph:'罒',name:'Red',role:'atrapar algo con una red'},{rad:'kai',role:'concha/dinero — atrapar el dinero con la red: comprar'}],
+    '売':[{glyph:'士',name:'Caballero',role:'el vendedor que ofrece su mercancía'},{glyph:'儿',name:'Persona andando',role:'la persona que vende'}],
+    '休':[{rad:'hito',role:'persona — una persona'},{rad:'ki',role:'árbol — recostada a la sombra de un árbol'}],
+    '起':[{glyph:'走',name:'Correr/caminar',role:'levantarse para ponerse en marcha'},{glyph:'己',name:'Yo mismo',role:'yo soy quien decide levantarse'}],
+    '寝':[{rad:'uchi',role:'techo — dormir bajo techo, en casa'},{glyph:'寢',name:'Cuerpo en reposo',role:'la postura completa de quien duerme'}],
+    '持':[{rad:'te',role:'mano — sostener con la mano'},{glyph:'寺',name:'Templo',role:'el templo que sostiene el tiempo — sostener con firmeza'}],
+    '使':[{rad:'hito',role:'persona — una persona'},{glyph:'吏',name:'Funcionario',role:'alguien que usa su posición para actuar'}],
+    '作':[{rad:'hito',role:'persona — una persona'},{glyph:'乍',name:'Hacer de golpe',role:'crear algo de manera repentina'}],
+    '思':[{rad:'ta',role:'campo — la mente es como un campo cultivado'},{rad:'kokoro',role:'corazón — pensar con el corazón'}],
+    '急':[{rad:'kokoro',role:'corazón — el corazón que late rápido por la urgencia'}],
+    '会':[{glyph:'亼',name:'Reunirse',role:'algo que se junta desde arriba'},{glyph:'云',name:'Nube/decir',role:'lo que se dice cuando nos reunimos'}],
+    '高':[{glyph:'亠',name:'Cima',role:'la cima del edificio'},{rad:'kuchi',role:'aperturas — ventanas de un edificio de varios pisos'}],
+    '低':[{rad:'hito',role:'persona — una persona'},{glyph:'氏',name:'Agacharse',role:'persona que se inclina hacia abajo'}],
+    '長':null,
+    '短':[{glyph:'矢',name:'Flecha',role:'medir algo con una flecha'},{glyph:'豆',name:'Frijol',role:'tan corto como un frijol'}],
+    '大':null,'小':null,
+    '多':[{rad:'yuu',role:'un atardecer'},{rad:'yuu',role:'otro atardecer — dos atardeceres seguidos: mucho tiempo, muchas cosas'}],
+    '少':[{glyph:'小',name:'Pequeño',role:'ya de por sí es poco'},{glyph:'ノ',name:'Trazo que resta',role:'un trazo que quita — todavía menos que pequeño'}],
+    '古':[{glyph:'十',name:'Diez',role:'diez generaciones'},{rad:'kuchi',role:'boca — diez bocas han contado la misma historia: antiguo'}],
+    '新':[{glyph:'立',name:'Estar de pie',role:'el árbol que todavía está en pie'},{rad:'ki',role:'árbol — el árbol recién talado'},{glyph:'斤',name:'Hacha',role:'el hacha que lo taló: madera nueva'}],
+    '早':[{rad:'hi',role:'sol — el sol que acaba de salir'},{glyph:'十',name:'Horizonte',role:'el sol justo sobre la línea del horizonte: temprano'}],
+    '遅':[{rad:'shin_nyu',role:'avanzar — pero muy despacio, tardando'}],
+    '明':[{rad:'hi',role:'sol — la luz del sol'},{rad:'tsuki',role:'luna — la luz de la luna'}],
+    '強':[{rad:'yumi',role:'arco — el arco que se tensa al máximo'},{rad:'mushi',role:'insecto — el insecto tenaz que dobla incluso el arco'}],
+    '弱':[{rad:'yumi',role:'un arco pequeño'},{rad:'yumi',role:'otro arco pequeño — dos arcos que no logran tensarse: débil'}],
+    '好':[{rad:'onna',role:'mujer — una madre'},{rad:'ko',role:'hijo — una madre con su hijo: lo que más se quiere'}],
+    '安':[{rad:'uchi',role:'techo — bajo un techo seguro'},{rad:'onna',role:'mujer — una mujer segura en su hogar: tranquilidad'}],
+    '悪':[{glyph:'亜',name:'Inferior/segundo',role:'lo que queda por debajo en jerarquía'},{rad:'kokoro',role:'corazón — un corazón con algo debajo: malo'}],
+    '忙':[{rad:'kokoro',role:'corazón — el corazón que no para'},{glyph:'亡',name:'Perderse/morir',role:'el corazón que se extravía de tanto trabajo'}],
+    '白':[{rad:'hi',role:'sol — la luz blanca del sol'},{glyph:'ノ',name:'Trazo de luz',role:'la luz que se derrama y blanquea todo'}],
+    '黒':[{glyph:'里',name:'Campo+tierra',role:'tierra del campo'},{rad:'hi2',role:'fuego/brasas — la tierra carbonizada por el fuego'}],
+    '赤':[{rad:'dai',role:'persona con brazos abiertos'},{rad:'hi2',role:'fuego/brasas — persona sobre el fuego, roja del calor'}],
+    '青':[{glyph:'生',name:'Nacer/crecer',role:'la hierba joven que es verde'},{rad:'tsuki',role:'luna — el cielo nocturno con la luna: azul'}],
+    '黄':null,
+    '右':[{rad:'kuchi',role:'boca — la mano que acerca la comida a la boca'},{glyph:'又',name:'Mano',role:'mano derecha — la que más usamos'}],
+    '左':[{glyph:'工',name:'Herramienta',role:'la mano que sostiene la herramienta'},{glyph:'又',name:'Mano',role:'mano izquierda — la que ayuda mientras la derecha trabaja'}],
+    '上':null,'下':null,
+    '前':[{rad:'tsuki',role:'luna/tiempo — el tiempo que sigue avanzando'},{glyph:'刀',name:'Cuchillo',role:'cortando el camino hacia adelante'}],
+    '後':[{rad:'gyo',role:'pasos hacia el costado — pasos que se quedan atrás'},{glyph:'幺',name:'Pequeño/hilo',role:'algo pequeño que resta — el residuo del pasado'}],
+    '中':[{rad:'kuchi',role:'recinto/caja — dentro de una caja'},{glyph:'丨',name:'Línea vertical',role:'la línea que atraviesa exactamente el centro'}],
+    '外':[{rad:'yuu',role:'atardecer/oscuridad — de noche, en la oscuridad'},{glyph:'卜',name:'Adivinar',role:'adivinar lo desconocido — lo que está afuera'}],
+    '東':[{rad:'hi',role:'sol — el sol que sale al amanecer'},{rad:'ki',role:'árbol — el sol saliendo detrás del árbol: este'}],
+    '西':null,
+    '南':null,
+    '北':[{rad:'hito',role:'persona mirando al sur'},{rad:'hito',role:'otra persona mirando al sur — las dos le dan la espalda al norte'}],
+    '時':[{rad:'hi',role:'sol — el sol que mide el paso del tiempo'},{glyph:'寺',name:'Templo',role:'la campana del templo que marcaba las horas del día'}],
+    '分':[{glyph:'八',name:'Dividir',role:'algo que se separa'},{glyph:'刀',name:'Cuchillo',role:'la cuchilla que divide: un minuto es una fracción de hora'}],
+    '年':[{rad:'nogi',role:'grano/cosecha — un año completa un ciclo de cosechas'}],
+    '今':[{rad:'hito',role:'persona — la persona que acaba de llegar'},{glyph:'一',name:'Línea de tiempo',role:'el momento exacto en que llegó: ahora'}],
+    '毎':[{rad:'onna',role:'forma de 母 (madre) — la madre que llega cada día sin falta'}],
+    '何':[{rad:'hito',role:'persona — una persona'},{glyph:'可',name:'¿Puede?',role:'¿qué puede hacer esta persona? → ¿qué?'}],
+    '午':null,
+    '間':[{rad:'mon',role:'puerta — el espacio entre las dos hojas'},{rad:'hi',role:'sol — la luz del sol que entra por ese espacio'}],
+    '本':[{rad:'ki',role:'árbol — el árbol como base'},{glyph:'一',name:'Línea en la raíz',role:'marca el origen del árbol — la raíz, la base; también un libro'}],
+    '語':[{rad:'iu',role:'palabras — un idioma está hecho de palabras'},{glyph:'吾',name:'Yo/mis',role:'mis propias palabras — el idioma que uno habla'}],
+    '字':[{rad:'uchi',role:'techo — bajo el techo de la escuela'},{rad:'ko',role:'niño — el niño que aprende a trazar caracteres'}],
+    '文':null,
+    '名':[{rad:'yuu',role:'atardecer/oscuridad — en la oscuridad'},{rad:'kuchi',role:'boca — en la oscuridad solo reconoces a alguien por su nombre'}],
+    '電':[{rad:'ame',role:'lluvia/tormenta — la tormenta que genera electricidad'},{glyph:'申',name:'Rayo/espíritu',role:'el rayo que baja durante la tormenta'}],
+    '車':null,
+    '駅':[{rad:'uma',role:'caballo — la estación de relevo de caballos del sistema postal antiguo'},{glyph:'尺',name:'Medida',role:'la distancia exacta entre paradas'}],
+    '道':[{rad:'shin_nyu',role:'avanzar/recorrer — el camino que se recorre'},{glyph:'首',name:'Cabeza/cuello',role:'avanzar con la cabeza levantada'}],
+    '橋':[{rad:'ki',role:'madera — el puente de madera sobre el río'},{glyph:'喬',name:'Elevado',role:'la madera elevada sobre el agua'}],
+    '国':[{rad:'kuchi',role:'recinto — las fronteras que delimitan la nación'},{glyph:'玉',name:'Joya/rey',role:'la nación es el tesoro dentro de sus fronteras'}],
+    '家':[{rad:'uchi',role:'techo — bajo el techo del hogar'},{glyph:'豕',name:'Cerdo',role:'el cerdo bajo el techo (el hogar tradicional incluía animales)'}],
+    '店':[{rad:'madare',role:'cobertizo/techo inclinado — el puesto del mercado'},{glyph:'占',name:'Ocupar/adivinar',role:'el vendedor que ocupa su lugar fijo'}],
+    '口':null,'心':null,'手':null,'目':null,'耳':null,
+    '足':[{rad:'kuchi',role:'inicio — el talón como punto de partida'},{glyph:'止',name:'Parar/paso',role:'el paso que se detiene — el pie que para'}],
+    '体':[{rad:'hito',role:'persona — una persona'},{glyph:'本',name:'Base/raíz',role:'la base de la persona — su cuerpo es su raíz'}],
+    '病':[{rad:'yamai',role:'cama de enfermo — la postura del que está malo'},{glyph:'丙',name:'Interior/tercero',role:'algo que viene desde adentro — la enfermedad interna'}],
+    '私':[{rad:'nogi',role:'grano/cosecha — lo que cultivo es mío'},{glyph:'ム',name:'Privado/yo',role:'reservado para mí — la cosecha que es mía: yo'}],
+    '紙':[{rad:'ito',role:'fibra/hilo — hecho de fibras vegetales entrelazadas'},{glyph:'氏',name:'Familia/linaje',role:'el papel del clan — el registro escrito de la familia'}],
+    '絵':[{rad:'ito',role:'hilo/tela — pintado sobre tela'},{glyph:'会',name:'Reunión',role:'donde los colores se reúnen para formar una imagen'}]
+  };
   function ensureKanji(){ if(!state.exercises)state.exercises={};
     if(!state.exercises.kanji)state.exercises.kanji={box:{},learned:{},due:{},leech:{},daily:{}};
     var k=state.exercises.kanji; if(!k.box)k.box={}; if(!k.learned)k.learned={}; if(!k.due)k.due={}; if(!k.leech)k.leech={}; if(!k.daily)k.daily={}; if(typeof k.kanjiConceptSeen!=="boolean")k.kanjiConceptSeen=false; return k; }
@@ -5151,6 +5333,27 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
   function kanjiLearned(ch){ return !!ensureKanji().learned[ch]; }
   function kanjiReadable(str){ if(!str)return false; for(var i=0;i<str.length;i++){ if(isKanjiChar(str[i])&&!kanjiLearned(str[i]))return false; } return true; }
   function kanjiForm(w){ if(!w)return null; if(w.kanji)return w.kanji; var jp=(typeof w==='string')?w:w.jp; return KANJI_WORDS[jp]||null; }
+  /* Builds the radical-breakdown panel HTML for a word's kanji form.
+     Shown in post-answer feedback — pure exposition, never examined. */
+  function kanjiPartsHTML(jp){
+    var kf=KANJI_WORDS[jp]||null; if(!kf) return '';
+    var blocks=[]; var hadAny=false;
+    for(var i=0;i<kf.length;i++){
+      var ch=kf.charAt(i); if(!(ch.charCodeAt(0)>=0x4E00&&ch.charCodeAt(0)<=0x9FFF)) continue;
+      var parts=KANJI_PARTS[ch]; if(!parts) continue; // null = primitivo, no panel
+      hadAny=true;
+      var bh='<div class="rq-part-kanji"><span class="rq-part-head mincho">'+ch+'</span><div class="rq-part-rows">';
+      parts.forEach(function(p){
+        var g=p.rad&&RADICALS[p.rad]?RADICALS[p.rad].glyph:(p.glyph||'');
+        var n=p.rad&&RADICALS[p.rad]?RADICALS[p.rad].name:(p.name||'');
+        bh+='<div class="rq-part-row"><span class="rq-part-comp mincho">'+g+'</span><span class="rq-part-cn">'+n+'</span><span class="rq-part-role">'+p.role+'</span></div>';
+      });
+      bh+='</div></div>';
+      blocks.push(bh);
+    }
+    if(!hadAny||!blocks.length) return '';
+    return '<div class="rq-parts"><div class="rq-parts-label">Componentes</div>'+blocks.join('')+'</div>';
+  }
   /* forma a mostrar: kana por defecto; kanji sólo si el modo está activo Y ya sabés los kanji */
   function wordForm(w){ var jp=(typeof w==='string')?w:(w&&w.jp); if(!KANJI_MODE)return jp;
     var kf=kanjiForm(w); return (kf&&kanjiReadable(kf))?kf:jp; }
@@ -5901,7 +6104,8 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
     h+='<div class="rq-fb">';
     if(q.answered){ var correct=q.opts[q.picked]&&q.opts[q.picked].jp===w.jp;
       h+='<div class="rq-msg '+(correct?"ok":"no")+'">'+t(correct?"Correct!":"It was")+'</div>';
-      h+='<div class="rq-ans"><span class="mincho">'+rubySweepHTML(kanjiForm(w),w.jp)+'</span> <span class="rq-rom">'+w.romaji+'</span> — <span class="mean">'+(es?w.es:w.en)+'</span> <button class="d-spk-word" id="kSpkW">🔊 <span>'+t("hear it")+'</span></button></div>'; }
+      h+='<div class="rq-ans"><span class="mincho">'+rubySweepHTML(kanjiForm(w),w.jp)+'</span> <span class="rq-rom">'+w.romaji+'</span> — <span class="mean">'+(es?w.es:w.en)+'</span> <button class="d-spk-word" id="kSpkW">🔊 <span>'+t("hear it")+'</span></button></div>';
+      h+=kanjiPartsHTML(w.jp); }
     h+='</div>';
     if(q.answered) h+='<div class="d-actions"><button class="d-next" id="kNext">'+t("Next →")+'</button></div>';
     readingInner.innerHTML=h; bindKanji(); }
@@ -6008,6 +6212,7 @@ n:{en:"ん looks just like a lowercase n.",es:"ん es igualita a una 'n' minúsc
       var correct=q.picked===q.target;
       h+='<div class="rq-msg '+(correct?"ok":"no")+'">'+t(correct?"Correct!":"It was")+'</div>';
       h+='<div class="rq-ans">'+(getEmoji()&&it.emoji?'<span class="rq-emoji">'+it.emoji+'</span> ':'')+'<span class="mincho">'+jpSweepHTML(it)+'</span> <span class="rq-rom">'+it.romaji+'</span> — <span class="mean">'+(es?it.es:it.en)+'</span> <button class="d-spk-word" id="rSpkW">🔊 <span>'+t("hear it")+'</span></button></div>';
+      h+=kanjiPartsHTML(it.jp);
     }
     h+='</div>';
     if(q.answered) h+='<div class="d-actions"><button class="d-next" id="rNext">'+t("Next →")+'</button></div>';
