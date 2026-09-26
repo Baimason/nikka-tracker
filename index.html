@@ -6466,7 +6466,9 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
          '<div class="rq-kind">'+t("New kanji")+'</div>'+
          '<div class="rq-jp mincho" style="font-size:64px;line-height:1.1">'+q.ch+'</div>'+
          '<div class="rq-mean">'+t("appears in")+' <span class="mincho">'+rubySweepHTML(q.kf,ex.jp)+'</span> — '+(es?ex.es:ex.en)+'</div>'+
-         '<div class="rq-note" style="opacity:.65;font-size:13px;margin-top:8px">'+t("The reading shows how it's read in this word — it can change in others.")+'</div></div>'+         '<div class="d-actions"><button class="d-spk-word" id="kSpk">🔊 <span>'+t("hear it")+'</span></button><button class="d-next" id="kGot">'+t("Got it →")+'</button></div>';
+         '<div class="rq-note" style="opacity:.65;font-size:13px;margin-top:8px">'+t("The reading shows how it's read in this word — it can change in others.")+'</div></div>'+
+         kanjiPartsHTML(ex.jp)+
+         '<div class="d-actions"><button class="d-spk-word" id="kSpk">🔊 <span>'+t("hear it")+'</span></button><button class="d-next" id="kGot">'+t("Got it →")+'</button></div>';
       readingInner.innerHTML=h; bindKanji(); return; }
     /* quiz */
     var w=q.word, promptJP=kanjiForm(w);
