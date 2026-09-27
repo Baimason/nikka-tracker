@@ -6574,17 +6574,19 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     var jp=''; phrase.parts.forEach(function(w,i){ if(i===q.slot){ var cls='pt-hole'+(q.answered?(w===q.answer?' filled':''):''); jp+='<span class="'+cls+'">'+(q.answered?q.answer:'▢')+'</span>'; } else jp+=w; });
     var h=ptHead();
     h+='<div class="pt-card"><div class="pt-kind">'+t('Which particle goes here?')+'</div>';
-    h+='<div class="pt-cloze mincho">'+((q.answered&&getSweep()&&isAllKana(phrase.jp))?sweepKanaHTML(phrase.jp):jp)+'</div>';
+    h+=q.answered?sentenceBreakdownHTML(phrase.parts,es,!!q.showBreak):('<div class="pt-cloze mincho">'+jp+'</div>');
     h+='<div class="pt-clmean">'+(es?phrase.es:phrase.en)+'</div>';
     h+='<div class="pt-opts">';
     q.opts.forEach(function(w){ var cls='pt-opt mincho'; if(q.answered){ if(w===q.answer)cls+=' ok'; else if(w===q.picked)cls+=' bad'; else cls+=' dim'; } h+='<button class="'+cls+'" data-p="'+w+'">'+w+'</button>'; });
     h+='</div>';
     if(q.answered){ var info=PARTICLES[q.answer]; h+='<div class="pt-fb"><b class="mincho">'+q.answer+'</b> — '+(info?info.fn:'')+'</div>';
+      h+='<button class="bw-toggle" id="clBreakToggle">'+(q.showBreak?'☑':'☐')+' '+(es?'Ver cada bloque':'See each block')+'</button>';
       h+='<div class="rq-ans" style="text-align:center;margin:4px 0 2px"><button class="d-spk-word" id="clSpk">🔊 <span>'+t('hear it')+'</span></button></div><div class="d-actions"><button class="d-next" id="ptNext">'+t('Next →')+'</button></div>'; }
     readingInner.innerHTML=h;
     var c=document.getElementById('rClose'); if(c)c.addEventListener('click',closeReading);
     var nx=document.getElementById('ptNext'); if(nx)nx.addEventListener('click',function(){ ptsess=null; nextReadingQ(); });
     var csp=document.getElementById('clSpk'); if(csp)csp.addEventListener('click',function(){ speakSweep(phrase.jp, readingInner.querySelector('.sweepline')); });
+    bindBreakdownToggle('clBreakToggle',q,es);
     if(!q.answered){ readingInner.querySelectorAll('.pt-opt').forEach(function(o){ o.addEventListener('click',function(){ clozeAnswer(o.getAttribute('data-p')); }); }); }
     else { setTimeout(function(){ speakSweep(phrase.jp, readingInner.querySelector('.sweepline')); },250); }
   }
