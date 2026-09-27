@@ -302,14 +302,15 @@
   .rq-mean{font-family: var(--display-font);font-weight:700;font-size:clamp(22px,6vw,30px);color:var(--ink);max-width:92%}
   .d-spk.big{width:64px;height:64px;font-size:28px}
   .ropts{display:flex;flex-direction:column;gap:8px;margin-top:6px}
-  .ropt{width:100%;font:inherit;font-size:15px;color:var(--ink);background:var(--card);border:1.6px solid var(--ink);border-radius:4px;padding:13px 14px;cursor:pointer;text-align:center;transition:transform .08s,background .12s}
+  .ropt{width:100%;font:inherit;font-size:15px;color:var(--ink);background:var(--card);border:1.6px solid var(--ink);border-radius:4px;padding:13px 14px;cursor:pointer;text-align:center;transition:transform .08s,background .12s,max-height .32s ease,opacity .28s ease,padding .32s ease,margin .32s ease,border-width .32s ease}
   .ropt.jp{font-size:19px}
   .ropt.mincho{font-family:var(--display-font)}
   .teach-word .tw-rom{font-family:var(--display-font);font-weight:800;font-size:20px;color:var(--shu);margin-top:2px}
   .ropt:active{transform:scale(.99)}
   .ropt.correct{background:var(--green);border-color:var(--green);color:#fff}
   .ropt.bad{background:var(--bad-bg);border-color:var(--shu);color:var(--shu)}
-  .ropt.dim{opacity:.45}
+  .ropt.dim{opacity:.45;overflow:hidden}
+  .ropt.dim.ropt-collapse{opacity:0;max-height:0!important;padding-top:0;padding-bottom:0;margin-top:0;margin-bottom:0;border-top-width:0;border-bottom-width:0;pointer-events:none}
   .rq-fb{min-height:60px;margin-top:12px;text-align:center}
   .rq-msg{font-family: var(--display-font);font-weight:800;font-size:20px}
   .rq-msg.ok{color:var(--green)} .rq-msg.no{color:var(--shu)}
@@ -566,7 +567,7 @@
     .reward-card .d-spk-word{margin-top:8px;padding:5px 12px}
     .d-actions button{padding:11px}
   }
-  @media (prefers-reduced-motion:reduce){ .seal,.seal.show,.chip,.opt,.prog>i{transition:none} }
+  @media (prefers-reduced-motion:reduce){ .seal,.seal.show,.chip,.opt,.prog>i,.ropt{transition:none} }
   .ex-sep{font-family: var(--display-font);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);margin:16px 0 8px;border-top:1px dashed var(--line);padding-top:12px}
   .ex-list{display:flex;flex-direction:column;gap:7px}
   .ex-item{width:100%;text-align:left;font:inherit;font-weight:700;font-size:14px;color:var(--ink);background:var(--paper);border:1.3px solid var(--line);border-radius:3px;padding:11px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
@@ -6648,7 +6649,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       var distSrc=(readable.length>=6?readable:all).filter(function(i){return i!==target;});
       shuffle(distSrc); var opts=shuffle(distSrc.slice(0,5).concat([target]));
       var modes=["read","listen","recall"],mode=modes[Math.floor(Math.random()*modes.length)];
-      rsess.q={target:target,mode:mode,opts:opts,answered:false,picked:-1};
+      rsess.q={target:target,mode:mode,opts:opts,answered:false,picked:-1,settled:false};
       /* ring buffer of the last few targets to avoid the same phrase spamming */
       if(!rsess.recent)rsess.recent=[];
       rsess.recent.push(target); var _rcap=(rsess.pool===PHRASES)?5:3; if(rsess.recent.length>_rcap)rsess.recent.shift();
@@ -6774,7 +6775,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     ksess.lastTarget=target.jp;
     var distSrc=WORD_POOL.filter(function(w){ return w.jp!==target.jp && wordReadable(w.jp); });
     shuffle(distSrc); var opts=shuffle([target].concat(distSrc.slice(0,5)));
-    ksess.q={mode:"quiz",word:target,opts:opts,answered:false,picked:-1};
+    ksess.q={mode:"quiz",word:target,opts:opts,answered:false,picked:-1,settled:false};
     renderKanji(); readingEl.classList.remove("hidden");
     setTimeout(function(){speak(target.jp);},250); }
 
@@ -6806,9 +6807,10 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
        '<div class="rq-jp mincho">'+promptJP+'</div>'+
        '<div class="d-actions"><button class="d-spk-word" id="kSpkQ">🔊 <span>'+t("hear it")+'</span></button></div></div>';
     h+='<div class="ropts">';
-    q.opts.forEach(function(o){ var cls="ropt jp mincho";
-      if(q.answered){ if(o.jp===w.jp)cls+=" correct"; else if(q.picked>=0&&q.opts[q.picked]&&q.opts[q.picked].jp===o.jp)cls+=" bad"; else cls+=" dim"; }
-      h+='<button class="'+cls+'" data-jp="'+o.jp+'">'+o.jp+'</button>'; });
+    q.opts.forEach(function(o){ var cls="ropt jp mincho",already=false;
+      if(q.answered){ if(o.jp===w.jp)cls+=" correct"; else if(q.picked>=0&&q.opts[q.picked]&&q.opts[q.picked].jp===o.jp)cls+=" bad";
+        else { cls+=" dim"; if(q.settled){ cls+=" ropt-collapse"; already=true; } } }
+      h+='<button class="'+cls+'" data-jp="'+o.jp+'"'+(already?' style="display:none"':'')+'>'+o.jp+'</button>'; });
     h+='</div>';
     h+='<div class="rq-fb">';
     if(q.answered){ var correct=q.opts[q.picked]&&q.opts[q.picked].jp===w.jp;
@@ -6836,8 +6838,12 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     var gt=document.getElementById("kGot"); if(gt)gt.addEventListener("click",kanjiTeachDone);
     var sp=document.getElementById("kSpk"); if(sp)sp.addEventListener("click",function(){speakSweep(ksess.q.ex.jp, readingInner.querySelector(".sweepline"));});
     var spw=document.getElementById("kSpkW"); if(spw)spw.addEventListener("click",function(){speakSweep(ksess.q.word.jp, readingInner.querySelector(".sweepline"));});
-    var spq=document.getElementById("kSpkQ"); if(spq)spq.addEventListener("click",function(){speak(ksess.q.word.jp);});    if(ksess.q.mode==="quiz"&&!ksess.q.answered){ readingInner.querySelectorAll(".ropt").forEach(function(o){
-      o.addEventListener("click",function(){answerKanji(o.getAttribute("data-jp"));}); }); } }
+    var spq=document.getElementById("kSpkQ"); if(spq)spq.addEventListener("click",function(){speak(ksess.q.word.jp);});
+    if(ksess.q.mode==="quiz"){
+      if(!ksess.q.answered){ readingInner.querySelectorAll(".ropt").forEach(function(o){
+        o.addEventListener("click",function(){answerKanji(o.getAttribute("data-jp"));}); }); }
+      else collapseNoiseOpts(ksess.q);
+    } }
 
   function activateKanji(){ setKanjiOn(true); render(); }
   function activatePhrases(){ setPhrasesOn(true); render(); }
@@ -6912,8 +6918,10 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     q.opts.forEach(function(oi){
       var label=q.mode==="read"?(es?pool[oi].es:pool[oi].en):pool[oi].jp;
       var cls="ropt"+(q.mode!=="read"?" jp mincho":"");
-      if(q.answered){ if(oi===q.target)cls+=" correct"; else if(oi===q.picked)cls+=" bad"; else cls+=" dim"; }
-      h+='<button class="'+cls+'" data-i="'+oi+'">'+label+'</button>';
+      var already=false;
+      if(q.answered){ if(oi===q.target)cls+=" correct"; else if(oi===q.picked)cls+=" bad";
+        else { cls+=" dim"; if(q.settled){ cls+=" ropt-collapse"; already=true; } } }
+      h+='<button class="'+cls+'" data-i="'+oi+'"'+(already?' style="display:none"':'')+'>'+label+'</button>';
     });
     h+='</div>';
     h+='<div class="rq-fb">';
@@ -6939,6 +6947,29 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     var rem=document.getElementById("rEmoji"); if(rem)rem.addEventListener("click",toggleEmoji);
     var gt=document.getElementById("rGot"); if(gt)gt.addEventListener("click",teachWordDone);
     if(!rsess.q.answered){ readingInner.querySelectorAll(".ropt").forEach(function(o){ o.addEventListener("click",function(){answerReading(parseInt(o.getAttribute("data-i"),10));}); }); }
+    else collapseNoiseOpts(rsess.q);
+  }
+
+  /* Tras responder (lectura o kanji): las opciones "ruido" (ni la correcta ni
+     la elegida) se dejan ver un instante con su color de feedback y luego se
+     achican con fade-out, así lo útil (respuesta + desglose de componentes)
+     sube y queda compacto. Se corre una sola vez por pregunta (ver q.settled),
+     para no repetir la animación en re-renders posteriores (ej. toggle de emoji). */
+  function collapseNoiseOpts(q){
+    if(!q||!q.answered||q.settled)return;
+    q.settled=true;
+    var dimOpts=readingInner.querySelectorAll(".ropt.dim");
+    if(!dimOpts.length)return;
+    setTimeout(function(){
+      dimOpts.forEach(function(o){
+        o.addEventListener("transitionend",function te(e){
+          if(e.propertyName==="max-height"){ o.style.display="none"; o.removeEventListener("transitionend",te); }
+        });
+        o.style.maxHeight=o.scrollHeight+"px";
+        void o.offsetHeight;
+        o.classList.add("ropt-collapse");
+      });
+    },700);
   }
 
   /* =========================================================================
