@@ -627,12 +627,16 @@
   /* phrase first-contact card: phrases are longer than single words */
   .rq-jp.rq-jp-ph{font-size:clamp(30px,8vw,44px);line-height:1.25}
   /* ---- Armá la frase (build a phrase from word-tiles) ---- */
-  .pb-slots{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin:16px 0 4px}
+  .pb-slots{display:flex;justify-content:center;align-items:flex-start;flex-wrap:wrap;gap:8px;margin:16px 0 4px}
   .pb-slot{min-width:44px;min-height:48px;padding:6px 12px;display:flex;align-items:center;justify-content:center;
     font-size:22px;color:var(--ink);border-bottom:2.5px solid var(--line)}
   .pb-slot.filled{border-bottom-color:var(--ink)}
   .pb-slot.active{border-bottom-color:var(--shu)}
   .pb-slot.empty{color:var(--ink-faint)}
+  .pb-slot-wrap{display:flex;flex-direction:column;align-items:center;gap:3px}
+  .pb-gloss{font-size:11px;color:var(--shu);background:var(--paper);border:1px solid var(--shu);border-radius:3px;padding:2px 7px;white-space:nowrap;line-height:1.4}
+  .pb-gloss-dot{width:13px;height:13px;border-radius:50%;background:none;border:1.3px solid var(--line);padding:0;cursor:pointer;margin-top:4px}
+  .pb-gloss-dot:active{border-color:var(--shu)}
   .pb-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;margin-top:16px}
   .pb-tile{font:inherit;font-size:21px;color:var(--ink);background:var(--card);border:1.6px solid var(--ink);
     border-radius:4px;padding:11px 16px;cursor:pointer;transition:transform .08s,background .12s}
@@ -5352,7 +5356,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   var WORD_KEYSET=(function(){var m={};WORD_POOL.forEach(function(w){m[w.jp]=1;});return m;})();
   function markWordKnown(jp){ if(!WORD_KEYSET[jp])return; var w=ensureWords(); w.seen[jp]=1; w.known[jp]=1; w.leech[jp]=0; }
   function ensureWords(){ if(!state.exercises)state.exercises={}; if(!state.exercises.words)state.exercises.words={box:{},daily:{}}; var w=state.exercises.words; if(!w.box)w.box={}; if(!w.daily)w.daily={}; if(!w.seen)w.seen={}; if(!w.leech)w.leech={}; if(!w.known)w.known={}; if(!w.lastMove)w.lastMove={}; if(!w.up)w.up={}; if(!w.mas)w.mas={}; if(w.produce===undefined)w.produce=false; return w; }
-  function ensurePhrases(){ if(!state.exercises)state.exercises={}; if(!state.exercises.phrases)state.exercises.phrases={box:{},daily:{}}; var w=state.exercises.phrases; if(!w.box)w.box={}; if(!w.daily)w.daily={}; if(!w.seen)w.seen={}; if(!w.leech)w.leech={}; if(!w.built)w.built={}; return w; }
+  function ensurePhrases(){ if(!state.exercises)state.exercises={}; if(!state.exercises.phrases)state.exercises.phrases={box:{},daily:{}}; var w=state.exercises.phrases; if(!w.box)w.box={}; if(!w.daily)w.daily={}; if(!w.seen)w.seen={}; if(!w.leech)w.leech={}; if(!w.built)w.built={}; if(!w.glossSeen)w.glossSeen={}; return w; }
   function poolMastery(pool,box){ var total=pool.length,solid=0,sum=0; pool.forEach(function(it){var b=Math.min(5,box[it.jp]||0);sum+=b;if(b>=4)solid++;}); return {pct:total?Math.round(sum/(total*5)*100):0,solid:solid,total:total,seen:Object.keys(box).length}; }
   function readingCardHTML(){
     return '<div class="reading-card"><div class="dc-top"><h3>'+t("Reading")+'</h3></div>'+
@@ -6352,6 +6356,57 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   var PARTICLE_CONFUSE=[['は','が','を'],['へ','に','で'],['の','は','が'],['か','ね','よ','ぞ']];
   var PCONF=(function(){ var out={}; PARTICLE_CONFUSE.forEach(function(g){ g.forEach(function(p){ out[p]=out[p]||{}; g.forEach(function(o){ if(o!==p)out[p][o]=1; }); }); }); return out; })();
 
+  /* =========================================================================
+     BLOCK_GLOSS — micro-explicación de una partícula/terminación gramatical
+     cuando aparece como ficha suelta en "armá la frase". La traducción literal
+     al español no existe para estas piezas (は, を, です, etc.), así que en vez
+     de forzarla se muestra su FUNCIÓN, breve, junto al bloque recién colocado.
+     Clave = string exacto de la ficha (mismo valor que aparece en PHRASES.parts).
+     Deliberadamente separado de PATTERNS.gloss: ese campo es la explicación
+     larga de la chuleta de gramática; este es el caption de una sola línea
+     para un chip que vive al lado de la ficha. Solo cubre piezas funcionales
+     (partículas, cópula, finales de pregunta/permiso/prohibición, partículas
+     finales) — las palabras de contenido (sustantivos, verbos) no lo necesitan,
+     ya tienen su propia tarjeta de primer contacto.
+     ========================================================================= */
+  var BLOCK_GLOSS={
+    'は':{es:'marca el tema',en:'marks the topic'},
+    'を':{es:'marca el objeto',en:'marks the object'},
+    'が':{es:'marca el sujeto',en:'marks the subject'},
+    'に':{es:'marca lugar o tiempo',en:'marks place or time'},
+    'で':{es:'marca el medio o lugar',en:'marks means or place'},
+    'へ':{es:'marca el destino',en:'marks the destination'},
+    'の':{es:'conecta — «de»',en:'connects — "of"'},
+    'と':{es:'marca la cita/pensamiento',en:'marks a quote or thought'},
+    'から':{es:'desde / porque',en:'from / because'},
+    'か':{es:'vuelve la frase pregunta',en:'turns it into a question'},
+    'だ':{es:'«es» (casual)',en:'"is" (casual)'},
+    'です':{es:'«es» (cortés)',en:'"is" (polite)'},
+    'ですか':{es:'pregunta cortés',en:'polite question'},
+    'じゃない':{es:'«no es» (casual)',en:'"isn\'t" (casual)'},
+    'だった':{es:'«era/fue» (casual)',en:'"was" (casual)'},
+    'じゃなかった':{es:'«no era/no fue» (casual)',en:'"wasn\'t" (casual)'},
+    'いいですか':{es:'¿puedo…?',en:'may I…?'},
+    'だめです':{es:'no se puede',en:'not allowed'},
+    'はいけない':{es:'prohibido / no se puede',en:'must not / forbidden'},
+    'ください':{es:'…, por favor (pedir)',en:'…, please (request)'},
+    'おねがいします':{es:'…, por favor (cortés)',en:'…, please (polite)'},
+    'ある':{es:'«hay» (cosas)',en:'"there is" (things)'},
+    'あります':{es:'«hay» (cosas, cortés)',en:'"there is" (things, polite)'},
+    'いる':{es:'«hay» (seres vivos)',en:'"there is" (living things)'},
+    'よ':{es:'énfasis — te aviso',en:'emphasis — heads up'},
+    'ね':{es:'¿no? / ¿verdad?',en:'right? / isn\'t it?'},
+    'ぞ':{es:'énfasis fuerte',en:'strong emphasis'},
+    'みたい':{es:'parece que…',en:'seems like…'},
+    'らしい':{es:'según dicen…',en:'apparently…'},
+    'わけだ':{es:'o sea / resulta que',en:'so, it turns out'}
+  };
+  /* Cuántas veces vio esta partícula colocada en "armá la frase" -> opacidad
+     del chip. Reusa el mismo umbral que kanaArtOpacity (0-1 completo, 2 al
+     45%, 3 al 15%, 4+ oculto salvo toque) para que la curva de desvanecido
+     sea consistente en toda la app. */
+  function glossOpacity(n){ return kanaArtOpacity(n||0); }
+
   /* ---- SRS de patrones (mismo intervalo que el kana) ---- */
   var PAT_SRS_IV=[0,1,2,4,7,14], PAT_LEECH_AT=3, PATTERN_DRILL_PROB=0.30;
   /* Consolidation gates: at most MAX_YOUNG_PATTERNS still-immature patterns "in flight"
@@ -7312,7 +7367,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
      mirroring the words+build (wsess+bsess) seam. Never punitive: a wrong tile
      just flags red; only a completed build advances SRS. Tunable: PHRASE_BUILD_PROB.
      ========================================================================= */
-  var pbsess=null, PHRASE_BUILD_PROB=0.34, pbRecent=[], gbRecent=[];
+  var pbsess=null, PHRASE_BUILD_PROB=0.34, pbRecent=[], gbRecent=[], pbGlossPeek={};
   function phraseDecoyUniverse(){ var u={}; PHRASES.forEach(function(p){ if(p.parts)p.parts.forEach(function(w){u[w]=1;}); }); return Object.keys(u); }
   function phraseBuildPool(){
     if(!rsess||rsess.pool!==PHRASES)return [];
@@ -7344,6 +7399,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     shuffle(decoys); decoys=decoys.slice(0,Math.max(1,Math.min(3,6-target.length)));
     var tiles=shuffle(target.concat(decoys));
     pbsess={phrase:phrase,target:target,tiles:tiles,slot:0,used:{},badIdx:-1,done:false};
+    pbGlossPeek={};
     readingEl.classList.remove("hidden"); renderPhraseBuild();
   }
   function pbHeadHTML(){
@@ -7361,7 +7417,17 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     h+='</div>';
     h+='<div class="pb-slots mincho">';
     q.target.forEach(function(w,i){
-      if(i<q.slot) h+='<span class="pb-slot filled">'+q.placed[i]+'</span>';
+      if(i<q.slot){
+        var pw=q.placed[i], gl=BLOCK_GLOSS[pw];
+        if(gl){
+          var cnt=(rsess&&rsess.ex&&rsess.ex.glossSeen&&rsess.ex.glossSeen[pw])||0;
+          var op=glossOpacity(cnt), peek=!!pbGlossPeek[pw];
+          h+='<div class="pb-slot-wrap"><span class="pb-slot filled">'+pw+'</span>';
+          if(peek||op>0) h+='<span class="pb-gloss" style="opacity:'+(peek?1:op)+'">'+(es?gl.es:gl.en)+'</span>';
+          else h+='<button class="pb-gloss-dot" data-gk="'+pw+'" aria-label="'+t("What does it mean?")+'"></button>';
+          h+='</div>';
+        } else h+='<span class="pb-slot filled">'+pw+'</span>';
+      }
       else if(i===q.slot && !q.done) h+='<span class="pb-slot active empty">＿</span>';
       else h+='<span class="pb-slot empty">＿</span>';
     });
@@ -7382,7 +7448,12 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     var q=pbsess; if(!q||q.done||q.used[i])return;
     var need=q.target[q.slot];
     if(q.tiles[i]===need){
-      q.used[i]=true; q.placed=q.placed||[]; q.placed[q.slot]=q.tiles[i]; q.slot++; q.badIdx=-1;
+      q.used[i]=true; q.placed=q.placed||[]; q.placed[q.slot]=q.tiles[i];
+      if(BLOCK_GLOSS[need] && rsess && rsess.ex){
+        if(!rsess.ex.glossSeen) rsess.ex.glossSeen={};
+        rsess.ex.glossSeen[need]=(rsess.ex.glossSeen[need]||0)+1;
+      }
+      q.slot++; q.badIdx=-1;
       if(q.slot>=q.target.length){
         q.done=true;
         var jp=q.phrase.jp, box=rsess.box, cur=box[jp]||0; box[jp]=Math.min(5,cur+1);
@@ -7402,6 +7473,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     var sp=document.getElementById("pbSpk"); if(sp)sp.addEventListener("click",function(){ if(pbsess)speakSweep(pbsess.phrase.jp, readingInner.querySelector(".sweepline")); });
     var nx=document.getElementById("pbNext"); if(nx)nx.addEventListener("click",nextReadingQ);
     if(!pbsess.done) readingInner.querySelectorAll(".pb-tile:not(.used)").forEach(function(o){ o.addEventListener("click",function(){ pbTap(parseInt(o.getAttribute("data-i"),10)); }); });
+    readingInner.querySelectorAll(".pb-gloss-dot").forEach(function(o){ o.addEventListener("click",function(){ pbGlossPeek[o.getAttribute("data-gk")]=true; renderPhraseBuild(); }); });
   }
 
   /* =========================================================================
