@@ -367,7 +367,7 @@
   .reward-card .rw-word{font-size:34px;color:var(--ink);line-height:1.1}
   .reward-card .rw-sub{font-size:15px;color:var(--ink)}
   .reward-card .rw-sub .mean{color:var(--ink-soft)}
-  .d-actions{display:flex;gap:10px;margin-top:6px}
+  .d-actions{display:flex;gap:10px;margin-top:auto;padding-top:6px}
   .d-actions button{flex:1;font:inherit;font-weight:700;font-size:14px;border-radius:3px;padding:12px;cursor:pointer;border:1.5px solid var(--ink)}
   .d-next{background:var(--ink);color:var(--card)}
   .d-skip{background:var(--paper);color:var(--ink-soft);border-color:var(--line)}
@@ -5586,6 +5586,13 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     'yamai':   {glyph:'疒',variant:null, name:'Enfermedad',mnemonic:'persona recostada en cama bajo un techo — el cobertizo del enfermo'},
     'madare':  {glyph:'广',variant:null, name:'Cobertizo', mnemonic:'techo inclinado con pared lateral — espacio techado abierto'}
   };
+  /* glifo -> radical, para cuando un kanji de la palabra ES un radical
+     independiente (KANJI_PARTS[ch]===null porque no se descompone más,
+     pero igual vale la pena mostrarlo y estudiarlo). Solo los ~29 radicales
+     independientes (los que también son kanji real, como 大 o 人) van a
+     matchear acá — los 7 de posición (variant-only, como 宀 o 艹) nunca
+     aparecen como carácter suelto en una palabra real. */
+  var RADICAL_BY_GLYPH=(function(){ var m={}; for(var k in RADICALS){ m[RADICALS[k].glyph]=RADICALS[k]; } return m; })();
   /* null = kanji primitivo sin descomposición pedagógica útil.
      { rad:'id' } → busca glyph/name en RADICALS.
      { glyph:'寺', name:'Templo' } → componente inline sin entrada propia en RADICALS.
@@ -6029,7 +6036,18 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     var blocks=[]; var hadAny=false;
     for(var i=0;i<kf.length;i++){
       var ch=kf.charAt(i); if(!(ch.charCodeAt(0)>=0x4E00&&ch.charCodeAt(0)<=0x9FFF)) continue;
-      var parts=KANJI_PARTS[ch]; if(!parts) continue; // null = primitivo, no panel
+      var parts=KANJI_PARTS[ch];
+      if(!parts){
+        /* null = no se descompone más, pero si el kanji ES en sí uno de los
+           radicales independientes, lo mostramos igual — así también se
+           estudia, en vez de desaparecer del panel sin explicación. */
+        var rad=RADICAL_BY_GLYPH[ch]; if(!rad) continue;
+        hadAny=true;
+        blocks.push('<div class="rq-part-kanji"><span class="rq-part-head mincho">'+ch+'</span><div class="rq-part-rows">'+
+          '<div class="rq-part-row"><span class="rq-part-comp mincho">'+ch+'</span><span class="rq-part-cn">'+rad.name+'</span>'+
+          '<span class="rq-part-role">es un radical base — '+rad.mnemonic+'</span></div></div></div>');
+        continue;
+      }
       hadAny=true;
       var bh='<div class="rq-part-kanji"><span class="rq-part-head mincho">'+ch+'</span><div class="rq-part-rows">';
       parts.forEach(function(p){
@@ -6430,13 +6448,52 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
      y la frase es kana puro) para que el barrido de audio siga funcionando:
      el querySelectorAll(".mora") de runSweep encuentra las moras sin
      importar que ahora vivan anidadas dentro de spans por palabra. */
+  /* Bloques de contenido conjugados (わすれました, たべません...) no matchean
+     WORD_BY_JP porque el pool solo guarda la forma de diccionario. En vez de
+     dejarlos sin descripción, se intenta revertir la conjugación ます/ました/
+     ません/ませんでした a la forma de diccionario probando los finales
+     posibles (ichidan -る, godan por fila い + irregulares する/くる) contra
+     WORD_BY_JP — el propio vocabulario, chico, hace de diccionario de
+     validación. Cubre la familia ます, la más común en las frases; no intenta
+     た/て/ない en plano (alcance acotado a propósito, mismo patrón se puede
+     extender después con más finales si hace falta). */
+  function deinflectMasu(w){
+    var endings=[['ませんでした','pastNeg'],['ました','past'],['ません','neg'],['ます','pres']];
+    for(var i=0;i<endings.length;i++){
+      var suf=endings[i][0];
+      if(w.length>suf.length && w.slice(-suf.length)===suf){
+        var stem=w.slice(0,-suf.length), last=stem.slice(-1), head=stem.slice(0,-1);
+        var cands=[stem+'る'];
+        var uMap={'い':['う','つ','る'],'き':['く'],'ぎ':['ぐ'],'し':['す'],'に':['ぬ'],'び':['ぶ'],'み':['む'],'り':['る']};
+        if(uMap[last]) uMap[last].forEach(function(u){ cands.push(head+u); });
+        if(last==='し') cands.push('する');
+        if(stem==='き') cands.push('くる');
+        for(var j=0;j<cands.length;j++){ if(WORD_BY_JP[cands[j]]) return {base:cands[j],kind:endings[i][1]}; }
+      }
+    }
+    return null;
+  }
+  var CONJ_KIND_LABEL={past:{es:'pasado',en:'past'},pastNeg:{es:'pasado negativo',en:'past neg.'},neg:{es:'negativo',en:'negative'},pres:{es:'presente',en:'present'}};
+  /* índice jp conjugado -> {base,kind}, precalculado una vez sobre todo el
+     vocabulario de PHRASES (no en cada render) */
+  var CONJ_BY_JP=(function(){ var m={};
+    PHRASES.forEach(function(p){ if(!p.parts) return; p.parts.forEach(function(w){
+      if(m[w]||WORD_BY_JP[w]||BLOCK_GLOSS[w]) return;
+      var d=deinflectMasu(w); if(d) m[w]=d;
+    }); });
+    return m;
+  })();
   function moraSpansOnly(kana){ var m=splitMora(kana),s=""; for(var i=0;i<m.length;i++) s+='<span class="mora">'+m[i]+'</span>'; return s; }
   function sentenceBreakdownHTML(words,es,split){
     var joined=words.join(''), sweepOn=getSweep()&&isAllKana(joined);
     var h='<div class="bd-sentence'+(sweepOn?' sweepline':'')+(split?' split':'')+'">';
     words.forEach(function(w){
-      var gl=BLOCK_GLOSS[w], wd=WORD_BY_JP[w];
-      var cap=gl?(es?gl.es:gl.en):(wd?(es?wd.es:wd.en):'');
+      var gl=BLOCK_GLOSS[w], wd=WORD_BY_JP[w], cj=!wd&&!gl?CONJ_BY_JP[w]:null;
+      var cap='';
+      if(gl) cap=es?gl.es:gl.en;
+      else if(wd) cap=es?wd.es:wd.en;
+      else if(cj){ var base=WORD_BY_JP[cj.base], lbl=CONJ_KIND_LABEL[cj.kind];
+        cap=base?((es?base.es:base.en)+' ('+(es?lbl.es:lbl.en)+')'):''; }
       var txt=sweepOn?moraSpansOnly(w):w;
       h+='<span class="bd-word mincho"><span class="bd-w-text">'+txt+'</span>'+(cap?'<span class="bd-w-cap">'+cap+'</span>':'')+'</span>';
     });
