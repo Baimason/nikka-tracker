@@ -637,6 +637,10 @@
   .pb-gloss{font-size:11px;color:var(--shu);background:var(--paper);border:1px solid var(--shu);border-radius:3px;padding:2px 7px;white-space:nowrap;line-height:1.4}
   .pb-gloss-dot{width:13px;height:13px;border-radius:50%;background:none;border:1.3px solid var(--line);padding:0;cursor:pointer;margin-top:4px}
   .pb-gloss-dot:active{border-color:var(--shu)}
+  .bd-row{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin:14px 0 4px}
+  .bd-item{display:flex;flex-direction:column;align-items:center;gap:5px;max-width:100px}
+  .bd-w{font-size:20px;color:var(--ink)}
+  .bd-c{font-size:11px;color:var(--ink-soft);text-align:center;line-height:1.35}
   .pb-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;margin-top:16px}
   .pb-tile{font:inherit;font-size:21px;color:var(--ink);background:var(--card);border:1.6px solid var(--ink);
     border-radius:4px;padding:11px 16px;cursor:pointer;transition:transform .08s,background .12s}
@@ -4110,6 +4114,9 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     {jp:"ラジオ",romaji:"rajio",es:"radio",en:"radio",emoji:"📻"}
   ];
   var WORD_POOL=(function(){ var seen={},out=[]; EXTRA_WORDS.forEach(function(o){ if(!seen[o.jp]){seen[o.jp]=1;out.push({jp:o.jp,romaji:o.romaji,es:o.es,en:o.en,emoji:(EMOJI[o.jp]||"")});} }); for(var k in WORDS){ WORDS[k].forEach(function(o){ if(!seen[o.w]){ seen[o.w]=1; out.push({jp:o.w,romaji:o.r,en:o.m,es:(MEANINGS_ES[o.m]||o.m),emoji:(EMOJI[o.w]||"")}); } }); } MORE_WORDS.forEach(function(o){ if(!seen[o.jp]){ seen[o.jp]=1; out.push({jp:o.jp,romaji:o.romaji,es:o.es,en:o.en,emoji:(EMOJI[o.jp]||"")}); } }); N5_WORDS.forEach(function(o){ if(!seen[o.jp]){ seen[o.jp]=1; out.push({jp:o.jp,romaji:o.romaji,es:o.es,en:o.en,emoji:(o.emoji||EMOJI[o.jp]||"")}); } }); N5_WORDS2.forEach(function(o){ if(!seen[o.jp]){ seen[o.jp]=1; out.push({jp:o.jp,romaji:o.romaji,es:o.es,en:o.en,emoji:(o.emoji||EMOJI[o.jp]||"")}); } }); N5_WORDS3.forEach(function(o){ if(!seen[o.jp]){ seen[o.jp]=1; out.push({jp:o.jp,romaji:o.romaji,es:o.es,en:o.en,emoji:(o.emoji||EMOJI[o.jp]||"")}); } }); return out; })();
+  /* índice jp -> entrada de WORD_POOL, para lookups puntuales (ej. desglose de
+     bloques en "armá la frase") sin recorrer las 1300+ entradas cada vez */
+  var WORD_BY_JP=(function(){ var m={}; WORD_POOL.forEach(function(o){ m[o.jp]=o; }); return m; })();
 
   /* ===================== N5 PROGRESS — barra hacia N5 =====================
      Denominador fijo y honesto: 665 lecturas N5 + 79 kanji (lista Waller/
@@ -6406,6 +6413,21 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
      45%, 3 al 15%, 4+ oculto salvo toque) para que la curva de desvanecido
      sea consistente en toda la app. */
   function glossOpacity(n){ return kanaArtOpacity(n||0); }
+  /* Desglose completo bajo demanda (toggle "ver cada bloque"): a diferencia del
+     chip automático de BLOCK_GLOSS (solo gramática, se atenúa con la exposición),
+     esto cubre TODO bloque de una frase ya construida — gramática vía BLOCK_GLOSS,
+     palabras de contenido vía WORD_BY_JP — para estudiarla a fondo bajo pedido
+     explícito, sin curva de desvanecido. Vive en un toggle, nunca automático. */
+  function blockBreakdownHTML(parts,es){
+    var h='<div class="bd-row">';
+    parts.forEach(function(w){
+      var gl=BLOCK_GLOSS[w], wd=WORD_BY_JP[w];
+      var cap=gl?(es?gl.es:gl.en):(wd?(es?wd.es:wd.en):'');
+      h+='<div class="bd-item"><span class="bd-w mincho">'+w+'</span>'+(cap?'<span class="bd-c">'+cap+'</span>':'')+'</div>';
+    });
+    h+='</div>';
+    return h;
+  }
 
   /* ---- SRS de patrones (mismo intervalo que el kana) ---- */
   var PAT_SRS_IV=[0,1,2,4,7,14], PAT_LEECH_AT=3, PATTERN_DRILL_PROB=0.30;
@@ -6646,11 +6668,16 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       h+='</div>';
     }
     h+='</div>';
-    if(q.answered) h+='<div class="rq-ans" style="text-align:center;margin:4px 0 2px"><button class="d-spk-word" id="gbSpk">🔊 <span>'+t('hear it')+'</span></button></div><div class="d-actions"><button class="d-next" id="gbNext">'+t('Next →')+'</button></div>';
+    if(q.answered){
+      h+='<button class="bw-toggle" id="gbBreakToggle">'+(q.showBreak?'☑':'☐')+' '+(es?'Ver cada bloque':'See each block')+'</button>';
+      if(q.showBreak) h+=blockBreakdownHTML(q.phrase.parts,es);
+      h+='<div class="rq-ans" style="text-align:center;margin:4px 0 2px"><button class="d-spk-word" id="gbSpk">🔊 <span>'+t('hear it')+'</span></button></div><div class="d-actions"><button class="d-next" id="gbNext">'+t('Next →')+'</button></div>';
+    }
     readingInner.innerHTML=h;
     var c=document.getElementById('rClose'); if(c)c.addEventListener('click',closeReading);
     var nx=document.getElementById('gbNext'); if(nx)nx.addEventListener('click',function(){ ptsess=null; nextReadingQ(); });
     var gsp=document.getElementById('gbSpk'); if(gsp)gsp.addEventListener('click',function(){ speakSweep(q.phrase.jp, readingInner.querySelector('.sweepline')); });
+    var bt=document.getElementById('gbBreakToggle'); if(bt)bt.addEventListener('click',function(){ q.showBreak=!q.showBreak; renderGuidedBuild(); });
     if(!q.answered){ readingInner.querySelectorAll('.gb-tile:not(.used)').forEach(function(o){ o.addEventListener('click',function(){ gbTap(parseInt(o.getAttribute('data-i'),10)); }); }); }
     else { setTimeout(function(){ speakSweep(q.phrase.jp, readingInner.querySelector('.sweepline')); },250); }
   }
@@ -7440,6 +7467,8 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     h+='</div>';
     if(q.done){
       h+='<div class="rq-fb"><div class="rq-ans"><span class="mincho">'+sweepKanaHTML(p.jp)+'</span> <span class="rq-rom">'+p.romaji+'</span> — <span class="mean">'+(es?p.es:p.en)+'</span></div>'+(p.note?'<div class="rq-note">'+p.note+'</div>':'')+'</div>';
+      h+='<button class="bw-toggle" id="pbBreakToggle">'+(q.showBreak?'☑':'☐')+' '+(es?'Ver cada bloque':'See each block')+'</button>';
+      if(q.showBreak) h+=blockBreakdownHTML(q.target,es);
       h+='<div class="d-actions"><button class="d-next" id="pbNext">'+t("Next →")+'</button></div>';
     }
     readingInner.innerHTML=h; bindPhraseBuild();
@@ -7474,6 +7503,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     var nx=document.getElementById("pbNext"); if(nx)nx.addEventListener("click",nextReadingQ);
     if(!pbsess.done) readingInner.querySelectorAll(".pb-tile:not(.used)").forEach(function(o){ o.addEventListener("click",function(){ pbTap(parseInt(o.getAttribute("data-i"),10)); }); });
     readingInner.querySelectorAll(".pb-gloss-dot").forEach(function(o){ o.addEventListener("click",function(){ pbGlossPeek[o.getAttribute("data-gk")]=true; renderPhraseBuild(); }); });
+    var bt=document.getElementById("pbBreakToggle"); if(bt)bt.addEventListener("click",function(){ pbsess.showBreak=!pbsess.showBreak; renderPhraseBuild(); });
   }
 
   /* =========================================================================
