@@ -1550,13 +1550,11 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       var kc=kanaComplete();
       T.push({id:"kana",sacred:!kc,label:"Kana drill",sub:kc?"Keep it sharp — a few reps":"Your kana isn't finished — the drill will teach the missing yōon",drill:true});
       /* Reading (stage 7): words are the daily core; phrases, grammar patterns and kanji
-         open on their own by mastery gates (see readingGatesHTML). Anki and Tae Kim stay
-         as optional external support. Kanji has no manual checkbox: its real drill button
-         lives in the today card. */
+         open on their own by mastery gates (see readingGatesHTML). Anki and Tae Kim live only
+         in "All resources" (no checkbox: the app's own engine replaced them; old day.anki ticks
+         still count for the streak via coreDone). */
       T.push({id:"words",sacred:true,label:"Words",sub:"Read single words"});
       T.push({id:"phrases",sacred:false,label:"Phrases",sub:"Read useful phrases"});
-      T.push({id:"anki",sacred:false,label:"Anki — reviews + 10 new",sub:"The vocab engine",link:LINKS.ankiweb});
-      T.push({id:"grammar",sacred:false,label:"Grammar — 1 point",sub:"Tae Kim's guide",link:LINKS.taekim});
       if(st>=8) T.push({id:"speaking",sacred:false,label:"Speak / exchange",sub:"HelloTalk or iTalki",link:LINKS.hello});
     }
     return T;
