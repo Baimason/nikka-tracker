@@ -831,6 +831,25 @@
   .nv-center{text-align:center;margin-top:10px}
   .nv-pip{width:26px;height:26px;border-radius:50%;background:var(--green);border:2px solid var(--ink)}
   .nv-ok{font-family:var(--display-font);font-weight:800;font-size:17px;color:var(--green);text-align:center;margin-top:12px}
+
+  .nv-bub{display:flex;align-items:stretch;gap:10px;margin:10px 0}
+  .nv-who{flex:0 0 84px;font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);display:flex;align-items:center}
+  .nv-say{flex:1;min-width:0;background:var(--paper);border:1.4px solid var(--ink-soft);border-radius:10px 10px 10px 2px;padding:8px 12px}
+  .nv-say b{display:block;font-family:var(--display-font);font-weight:700;font-size:22px;line-height:1.25;color:var(--ink)}
+  .nv-say i{display:block;font-style:normal;font-size:13.5px;color:var(--ink-soft);margin-top:2px}
+  .nv-pair{display:flex;align-items:center;justify-content:center;gap:12px;margin:8px 0}
+  .nv-pair .a{font-family:var(--display-font);font-size:24px;font-weight:700;color:var(--ink-soft);min-width:96px;text-align:right}
+  .nv-pair .b{font-family:var(--display-font);font-size:26px;font-weight:800;color:var(--shu);min-width:96px}
+  .nv-pair .m{color:var(--ink-faint);font-size:20px}
+  .nv-ladder{display:flex;align-items:center;gap:12px;margin:8px 0}
+  .nv-ladder .g{flex:0 0 118px;font-family:var(--display-font);font-weight:800;font-size:25px;color:var(--ink)}
+  .nv-ladder .bar{flex:1;height:10px;border-radius:5px;background:var(--line);overflow:hidden}
+  .nv-ladder .bar i{display:block;height:100%;background:var(--shu);width:var(--w)}
+  .nv-ladder .c{flex:0 0 74px;font-size:12.5px;color:var(--ink-soft);line-height:1.25}
+  .nv-ends{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+  .nv-end{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 10px;border:1.4px solid var(--line);border-radius:6px;background:var(--paper);min-width:92px}
+  .nv-end b{font-family:var(--display-font);font-size:22px;color:var(--ink)}
+  .nv-end span{font-size:12.5px;color:var(--ink-soft)}
   @media (prefers-reduced-motion:reduce){ .np-page{animation:none} }
   .fx-cat{scroll-margin-top:150px}
 
@@ -5144,7 +5163,25 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   function nvSvg(inner,cap){ return '<div class="nv-tile"><svg class="nv-svg" viewBox="0 0 64 56" aria-hidden="true">'+inner+'</svg>'+(cap?'<span class="nv-cap">'+cap+'</span>':'')+'</div>'; }
   var NV_SUN='<circle cx="32" cy="28" r="18"/><circle cx="32" cy="28" r="3.5" fill="currentColor" style="fill:var(--shu);stroke:none"/>';
   var NV_PEAKS='<path d="M4 50 L18 20 L26 36 L32 8 L38 36 L46 20 L60 50"/>';
+  function nvBub(who,jp,tr){ return '<div class="nv-bub"><span class="nv-who">'+who+'</span><div class="nv-say"><b>'+jp+'</b><i>'+tr+'</i></div></div>'; }
+  function nvPair(a,b){ return '<div class="nv-pair"><span class="a">'+a+'</span><span class="m">→</span><span class="b">'+b+'</span></div>'; }
+  function nvLad(g,w,c){ return '<div class="nv-ladder"><span class="g">'+g+'</span><span class="bar"><i style="--w:'+w+'"></i></span><span class="c">'+c+'</span></div>'; }
+  function nvEnd(b,s){ return '<div class="nv-end"><b>'+b+'</b><span>'+s+'</span></div>'; }
   var NOTE_VIZ={
+    register:[
+      function(es){ return '<div class="nv">'+nvLab(es?'Mismo significado: voy':'Same meaning: I am going')+nvBub(es?'Cortés':'Polite','いきます',es?'el del libro de texto':'the textbook one')+nvBub('Casual','いくよ',es?'entre amigos':'between friends')+nvBub(es?'Rudo':'Rough','いくぜ',es?'el matón del pueblo':'the town tough')+'</div>'; },
+      function(es){ return '<div class="nv">'+nvLab(es?'Mismo significado: así es':'Same meaning: that is right')+nvBub(es?'Viejo sabio':'Wise elder','そうじゃ',es?'habla antigua, autoridad':'old-fashioned, authority')+nvBub(es?'Matón':'Thug','そうだぜ',es?'chulo y directo':'cocky and blunt')+nvBub(es?'Niña':'Little girl','そうなの',es?'suave, tierna':'soft, sweet')+nvBub('Robot','ソウデス',es?'katakana y sin fluidez':'katakana, no flow')+'</div>'; },
+      function(es){ return '<div class="nv">'+nvLab(es?'Cómo suena el NPC de servicio':'How the service NPC sounds')+nvBub(es?'Guía':'Guide','これは ポーションです',es?'Esto es una poción.':'This is a potion.')+nvBub(es?'Tendero':'Shopkeeper','ここで セーブします',es?'Aquí se guarda la partida.':'You save the game here.')+nvBub(es?'Guardia':'Guard','ここは とおれません',es?'Por aquí no se puede pasar.':'You cannot pass here.')+
+        '<div class="nv-sep"></div>'+nvLab(es?'Las tres terminaciones':'The three endings')+'<div class="nv-ends">'+nvEnd('です',es?'es / son':'is / are')+nvEnd('ます',es?'verbo, sí':'verb, yes')+nvEnd('ません',es?'verbo, no':'verb, no')+'</div></div>'; },
+      function(es){ return '<div class="nv">'+nvLab(es?'De cortés a plano':'From polite to plain')+nvPair('です','だ')+nvPair('いきます','いく')+nvPair('たべます','たべる')+nvPair('します','する')+
+        '<div class="nv-sep"></div>'+nvLab(es?'Partículas finales':'Final particles')+'<div class="nv-ends">'+nvEnd('よ',es?'te aviso':'heads up')+nvEnd('ね',es?'¿verdad?':'right?')+nvEnd('な',es?'hablando solo':'muttering')+'</div></div>'; },
+      function(es){ return '<div class="nv">'+nvLab(es?'Cuatro formas de decir yo':'Four ways to say I')+'<div class="nv-row">'+nvT('おれ',es?'rudo, masc.':'rough, male','s')+nvT('おいら',es?'rústico':'rustic','s')+nvT('あたし',es?'casual, fem.':'casual, female','s')+nvT('ぼく',es?'suave, masc.':'soft, male','s')+'</div>'+
+        '<div class="nv-sep"></div>'+nvLab(es?'Sílabas que se comen':'Syllables get eaten')+nvPair('わからない','わかんない')+nvPair('しかたない','しかたねー')+nvPair('～ておくれ','～ておくんな')+
+        '<div class="nv-sep"></div>'+nvLab(es?'Colas de personaje':'Character tails')+'<div class="nv-ends">'+nvEnd('や',es?'rústico':'rustic')+nvEnd('ぜ',es?'chulo':'cocky')+nvEnd('だぜ',es?'chulo':'cocky')+nvEnd('ってさ',es?'dizque...':'they say...')+'</div></div>'; },
+      function(es){ return '<div class="nv">'+nvLab(es?'La escalera del yo':'The ladder of I')+nvLad('わたし','18%',es?'cortés':'polite')+nvLad('ぼく','42%',es?'suave':'soft')+nvLad('おれ','70%',es?'rudo':'rough')+nvLad('おいら / わし','95%',es?'rústico o viejo':'rustic or elderly')+
+        '<div class="nv-sep"></div>'+nvLab(es?'La escalera del tú':'The ladder of you')+nvLad('あなた','20%',es?'neutro':'neutral')+nvLad('あんた','58%',es?'brusco':'rough')+nvLad('おまえ / きさま','92%',es?'hostil':'hostile')+
+        '<div class="nv-sep"></div>'+nvLab(es?'Y el final de la oración':'And the sentence ending')+'<div class="nv-ends">'+nvEnd('です・ます',es?'cortés':'polite')+nvEnd('だ・よ・ね',es?'casual':'casual')+nvEnd('ぜ・や',es?'rudo':'rough')+'</div></div>'; }
+    ],
     kanji:[
       function(es){ return '<div class="nv"><div class="nv-row">'+nvT('森',es?'un muro de trazos':'a wall of strokes','xl')+nvOp('→')+nvT('木',es?'árbol':'tree','s')+nvT('木',es?'árbol':'tree','s')+nvT('木',es?'árbol':'tree','s')+'</div><div class="nv-story">'+(es?'Tres piezas simples forman 森, un bosque.':'Three simple pieces make 森, a forest.')+'</div></div>'; },
       function(es){ return '<div class="nv"><div class="nv-row">'+nvT('さん',es?'solo un sonido':'only a sound')+nvT('山',es?'una idea: montaña':'an idea: mountain','xl')+'</div><div class="nv-sep"></div>'+nvLab(es?'Se lee distinto según la palabra':'Read differently by word')+'<div class="nv-row">'+nvT('山','やま')+nvT('火山',es?'かざん, volcán':'かざん, volcano')+'</div></div>'; },
