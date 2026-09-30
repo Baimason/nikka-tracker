@@ -5608,6 +5608,46 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
      matchear acá — los 7 de posición (variant-only, como 宀 o 艹) nunca
      aparecen como carácter suelto en una palabra real. */
   var RADICAL_BY_GLYPH=(function(){ var m={}; for(var k in RADICALS){ m[RADICALS[k].glyph]=RADICALS[k]; } return m; })();
+  /* Kanji primitivos (KANJI_PARTS === null) que NO son radicales independientes.
+     Mnemotecnia corta opcional; si falta, kanjiPartsHTML usa un texto genérico. */
+  var PRIMITIVE_NOTES={
+    '一':{name:'Uno',mnemonic:'una sola línea horizontal'},
+    '二':{name:'Dos',mnemonic:'dos líneas horizontales'},
+    '三':{name:'Tres',mnemonic:'tres líneas horizontales'},
+    '五':{name:'Cinco',mnemonic:'dos barras con un cruce en medio'},
+    '八':{name:'Ocho',mnemonic:'dos trazos que se separan hacia abajo, algo que se abre'},
+    '十':{name:'Diez',mnemonic:'una cruz: dos líneas que se cruzan'},
+    '百':{name:'Cien',mnemonic:'un uno sobre el sol (日): un día repetido cien veces'},
+    '千':{name:'Mil',mnemonic:'un diez con un trazo encima: diez veces cien'},
+    '円':{name:'Yen',mnemonic:'una moneda dentro de un marco'},
+    '川':{name:'Río',mnemonic:'tres corrientes de agua que fluyen hacia abajo'},
+    '父':{name:'Padre',mnemonic:'dos manos que sostienen un hacha'},
+    '生':{name:'Nacer',mnemonic:'un brote que sale de la tierra'},
+    '肉':{name:'Carne',mnemonic:'un trozo de carne con las vetas marcadas'},
+    '入':{name:'Entrar',mnemonic:'una cuña que se abre paso hacia adentro'},
+    '長':{name:'Largo',mnemonic:'un anciano de pelo largo'},
+    '小':{name:'Pequeño',mnemonic:'un trazo central y dos chispitas a los lados'},
+    '上':{name:'Arriba',mnemonic:'algo que queda por encima de la línea base'},
+    '下':{name:'Abajo',mnemonic:'algo que cuelga por debajo de la línea'},
+    '車':{name:'Carro',mnemonic:'un carro visto desde arriba: caja, eje y ruedas'},
+    '牛':{name:'Buey',mnemonic:'la cabeza de un buey con sus dos cuernos'},
+    '犬':{name:'Perro',mnemonic:'un perro de perfil con la oreja levantada'},
+    '米':{name:'Arroz',mnemonic:'granos de arroz que se reparten en las cuatro direcciones'},
+    '竹':{name:'Bambú',mnemonic:'dos ramas de bambú con hojas colgando'},
+    '石':{name:'Piedra',mnemonic:'una roca al pie de un acantilado'},
+    '立':{name:'Estar de pie',mnemonic:'una persona de pie sobre el suelo'},
+    '矢':{name:'Flecha',mnemonic:'una flecha con su punta y sus plumas'},
+    '鳥':{name:'Pájaro',mnemonic:'un pájaro con cabeza, cuerpo y patas'},
+    '首':{name:'Cuello',mnemonic:'una cabeza con el pelo arriba y el cuello debajo'},
+    '骨':{name:'Hueso',mnemonic:'un hueso con su articulación'},
+    '血':{name:'Sangre',mnemonic:'una gota que cae en un cuenco'},
+    '面':{name:'Cara',mnemonic:'un rostro dentro de un marco'},
+    '音':{name:'Sonido',mnemonic:'una boca que emite una nota, un tono que se sostiene'},
+    '走':{name:'Correr',mnemonic:'una persona con los pies en movimiento sobre la tierra'},
+    '飛':{name:'Volar',mnemonic:'un ave con las alas abiertas en pleno vuelo'},
+    '風':{name:'Viento',mnemonic:'una vela que se hincha, el viento que sopla'},
+    '老':{name:'Anciano',mnemonic:'una persona mayor con el pelo largo y un bastón'}
+  };
   /* null = kanji primitivo sin descomposición pedagógica útil.
      { rad:'id' } → busca glyph/name en RADICALS.
      { glyph:'寺', name:'Templo' } → componente inline sin entrada propia en RADICALS.
@@ -6053,14 +6093,18 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       var ch=kf.charAt(i); if(!(ch.charCodeAt(0)>=0x4E00&&ch.charCodeAt(0)<=0x9FFF)) continue;
       var parts=KANJI_PARTS[ch];
       if(!parts){
-        /* null = no se descompone más, pero si el kanji ES en sí uno de los
-           radicales independientes, lo mostramos igual — así también se
-           estudia, en vez de desaparecer del panel sin explicación. */
-        var rad=RADICAL_BY_GLYPH[ch]; if(!rad) continue;
+        /* null = no se descompone más. Se muestra igual, nunca se omite en silencio:
+           radical independiente (RADICALS) > nota propia (PRIMITIVE_NOTES) > texto genérico. */
+        var rad=RADICAL_BY_GLYPH[ch];
+        var pn=PRIMITIVE_NOTES[ch];
+        var pName, pRole;
+        if(rad){ pName=rad.name; pRole='es un radical base — '+rad.mnemonic; }
+        else if(pn){ pName=pn.name; pRole='es un kanji base, no se descompone: '+pn.mnemonic; }
+        else { pName='Kanji base'; pRole='no se descompone: se aprende como una sola pieza'; }
         hadAny=true;
         blocks.push('<div class="rq-part-kanji"><span class="rq-part-head mincho">'+ch+'</span><div class="rq-part-rows">'+
-          '<div class="rq-part-row"><span class="rq-part-comp mincho">'+ch+'</span><span class="rq-part-cn">'+rad.name+'</span>'+
-          '<span class="rq-part-role">es un radical base — '+rad.mnemonic+'</span></div></div></div>');
+          '<div class="rq-part-row"><span class="rq-part-comp mincho">'+ch+'</span><span class="rq-part-cn">'+pName+'</span>'+
+          '<span class="rq-part-role">'+pRole+'</span></div></div></div>');
         continue;
       }
       hadAny=true;
