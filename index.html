@@ -517,6 +517,29 @@
   .kx-g{font-size:22px;line-height:1.05;color:var(--ink)}
   .kx-r{font-size:10px;letter-spacing:.03em;color:var(--ink-soft)}
   @media(max-width:480px){.kx-g{font-size:19px}.kx-grid.kx-c3{max-width:100%}}
+    /* ---- Chuleta de kanji ---- */
+  .kj-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:4px}
+  @media(min-width:560px){.kj-grid{grid-template-columns:repeat(6,1fr)}}
+  .kj-cell.new{opacity:1}
+  .kj-m{font-size:10px;color:var(--ink-soft);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 2px}
+  .kj-count{font-size:12px;color:var(--ink-soft);margin:6px 0 0}
+  .fx-pill.on{border-color:var(--ink);color:var(--ink)}
+  .kj-row{display:flex;gap:6px;overflow-x:auto;padding:6px 0 2px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .kj-row::-webkit-scrollbar{display:none}
+  .kj-det{text-align:center;padding:6px 0 10px}
+  .kj-big{font-size:clamp(88px,26vw,124px);line-height:1.05;color:var(--ink)}
+  .kj-main{font-family:var(--display-font);font-weight:800;font-size:22px;color:var(--shu);margin-top:2px}
+  .kj-alt{font-size:13px;color:var(--ink-soft);margin-top:2px}
+  .kj-badges{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+  .kj-read{text-align:left;font-size:13px;margin:10px auto;max-width:480px;display:flex;flex-direction:column;gap:4px}
+  .kj-read b{display:inline-block;min-width:34px;font-family:var(--display-font)}
+  .kj-sec{text-align:left;max-width:480px;margin:14px auto 0}
+  .kj-sec .rq-parts{margin-top:0}
+  .kj-words{display:flex;flex-direction:column;gap:6px}
+  .kj-word{display:flex;align-items:baseline;gap:8px;text-align:left;font:inherit;font-size:13px;background:var(--card);border:1.2px solid var(--line);border-radius:4px;padding:7px 9px;color:var(--ink);cursor:pointer}
+  .kj-wk{font-size:17px}
+  .kj-wr{color:var(--ink-soft);font-size:11px}
+  .kj-wm{margin-left:auto;color:var(--ink-soft);font-size:12px;text-align:right}
   .fx-hd{display:flex;align-items:center;justify-content:center;gap:4px}
   .fx-em{font-size:15px}
   .fx-jp{font-size:19px;color:var(--ink);line-height:1.2;word-break:break-all}
@@ -4879,6 +4902,10 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
          ' <span class="grow-mode">'+(es?'consulta al instante':'instant lookup')+'</span></span></div>'+
        '<div class="mc-goal">'+(es?'Cualquier kana que dudés, confirmalo acá. Muestra tu dominio real y suena al tocarlo.':'Any kana you are unsure about, confirm it here. It shows your real mastery and speaks on tap.')+'</div>'+
        '<div class="grow-btns"><button class="ficha-btn" data-ficha="__kana__">🈂️ '+(es?'Abrir silabario':'Open chart')+'</button></div></div>';
+    h+='<div class="grow"><div class="grow-top"><span class="grow-name">'+(es?'Chuleta de kanji':'Kanji chart')+
+         ' <span class="grow-mode">'+(es?'consulta al instante':'instant lookup')+'</span></span></div>'+
+       '<div class="mc-goal">'+(es?'Busca por kanji, lectura, romaji o significado. Muestra tu progreso, sus piezas y las palabras donde aparece.':'Search by kanji, reading, romaji or meaning. It shows your progress, its pieces and the words it appears in.')+'</div>'+
+       '<div class="grow-btns"><button class="ficha-btn" data-ficha="__kanji__">漢 '+(es?'Abrir chuleta':'Open chart')+'</button></div></div>';
     NOTES.forEach(function(n){
       h+='<div class="grow"><div class="grow-top"><span class="grow-name">'+(es?n.cardEs:n.cardEn)+
            ' <span class="grow-mode">'+(es?'nota general':'general note')+'</span></span></div>'+
@@ -5041,7 +5068,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
           bEs:'La terminación canta el registro: です・ます = cortés; だ o verbo plano + よ/ね = casual; ～ねー / ～ぜ / ～や / ～おくんな = rudo o rústico. Y el pronombre de "yo" va de わたし (cortés) → ぼく → おれ → おいら/わし (cada vez más informal, masculino o de viejo). El "tú" tiene su propia escalera: あなた (neutro) → あんた (brusco) → きさま／おまえ (hostil). Con eso ubicás el tono antes de traducir una sola palabra.',
           bEn:'The ending sings the register: です・ます = polite; だ or a plain verb + よ/ね = casual; ～ねー / ～ぜ / ～や / ～おくんな = rough or rustic. And the word for I runs わたし (polite) → ぼく → おれ → おいら/わし (more and more informal, male or elderly). The word for you has its own ladder: あなた (neutral) → あんた (rough) → きさま／おまえ (hostile). With that you place the tone before translating a single word.' }
       ] },
-    { id:'kanji', tagEs:'Kanji', tagEn:'Kanji',
+    { id:'kanji', tagEs:'Intro a kanji', tagEn:'Kanji intro',
       cardEs:'Qué son los kanji', cardEn:'What kanji are',
       subEs:'Qué son, por qué se ven así, qué son los radicales y cómo los vamos a memorizar.',
       subEn:'What they are, why they look the way they do, what radicals are and how we will memorize them.',
@@ -5059,8 +5086,8 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
           bEn:'Kanji came from China over a thousand years ago and almost all follow one of three logics. Some started as drawings: 日 was a sun, 山 was three peaks. Others combine ideas: 木 plus 木 gives 林, a forest. And most mix one piece that carries the meaning with another that hints at the sound. It is not a random code: almost every kanji is an assembly of simpler pieces.' },
         { tEs:'Los radicales son las piezas que se repiten',
           tEn:'Radicals are the pieces that repeat',
-          bEs:'Esas piezas se llaman radicales. Algunos también son kanji sueltos (人, 水, 木). Otros solo existen como parte de otros kanji, y a veces cambian de forma: 水 se vuelve 氵 cuando va a la izquierda. Con unos pocos radicales ya reconocés familias enteras: 氵 aparece en 海, 池 y 泳, y siempre insinúa agua. La lista completa está en Accesos, en Radicales.',
-          bEn:'Those pieces are called radicals. Some are also standalone kanji (人, 水, 木). Others only exist as part of other kanji, and sometimes change shape: 水 becomes 氵 when it sits on the left. With a few radicals you already recognize whole families: 氵 appears in 海, 池 and 泳, and always hints at water. The full list is in Quick refs, under Radicals.' },
+          bEs:'Esas piezas se llaman radicales. Algunos también son kanji sueltos (人, 水, 木). Otros solo existen como parte de otros kanji, y a veces cambian de forma: 水 se vuelve 氵 cuando va a la izquierda. Con unos pocos radicales ya reconocés familias enteras: 氵 aparece en 海, 池 y 泳, y siempre insinúa agua. La lista completa está en Accesos, en Radicales. Y en la Chuleta de kanji, también en Accesos, puedes buscar cualquier kanji y ver de qué piezas está hecho.',
+          bEn:'Those pieces are called radicals. Some are also standalone kanji (人, 水, 木). Others only exist as part of other kanji, and sometimes change shape: 水 becomes 氵 when it sits on the left. With a few radicals you already recognize whole families: 氵 appears in 海, 池 and 泳, and always hints at water. The full list is in Quick refs, under Radicals. And in the Kanji chart, also in Quick refs, you can look up any kanji and see which pieces it is built from.' },
         { tEs:'Cómo lo vamos a aprender: mnemotecnias',
           tEn:'How we will learn them: mnemonics',
           bEs:'No vas a memorizar trazos en frío. Después de cada respuesta, la app te muestra los Componentes del kanji y una historia corta, visual y a veces absurda que lo ata a su forma. Lo absurdo es a propósito: lo raro se recuerda. Cada historia lleva su etiqueta: "Así se dibujaba" cuando es la historia real del kanji, y "Truco de memoria" cuando es un invento para recordarlo. Los trucos no son etimología, son solo un ancla.',
@@ -5307,6 +5334,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   function renderFicha(){
     if(fichaGameId==='__kana__'){ renderKanaSheet(); return; }
     if(fichaGameId==='__radicals__'){ renderRadicalsSheet(); return; }
+    if(fichaGameId==='__kanji__'){ renderKanjiSheet(); return; }
     if(fichaGameId==='__travel__'){ renderTravelSheet(); return; }
     if(fichaGameId&&fichaGameId.indexOf('__note:')===0){ renderNote(fichaGameId.slice(7)); return; }
     var g=null,i; for(i=0;i<GAMES.length;i++) if(GAMES[i].id===fichaGameId) g=GAMES[i];
@@ -5395,6 +5423,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     else if(g){ h+='<button class="qr-item qr-item-aim" data-ficha="'+g.id+'"><span class="qr-ic">🎯</span>'+gamePick(g.name)+'</button>'; }
     h+='<button class="qr-item" data-ficha="__kana__"><span class="qr-ic">🈂️</span>'+(es?'Silabario':'Kana chart')+'</button>';
     h+='<button class="qr-item" data-ficha="__radicals__"><span class="qr-ic">🧱</span>'+(es?'Radicales':'Radicals')+'</button>';
+    h+='<button class="qr-item" data-ficha="__kanji__"><span class="qr-ic mincho">漢</span>'+(es?'Chuleta de kanji':'Kanji chart')+'</button>';
     if(!travelMode()){ h+='<button class="qr-item" data-ficha="__travel__"><span class="qr-ic">✈️</span>'+(es?'Frases de viaje':'Travel phrases')+'</button>'; }
     (typeof NOTES!=='undefined'?NOTES:[]).forEach(function(n){
       var lbl=es?n.tagEs:n.tagEn, ic=(n.id==='punct'?'⁉️':n.id==='register'?'🗣️':'📝');
@@ -5403,7 +5432,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     return '<div class="qr-list-inner">'+h+'</div>';
   }
   function openFicha(id){ var el=document.getElementById('ficha'); if(!el)return; fichaGameId=id; el.classList.remove('hidden'); renderFicha(); try{window.scrollTo(0,0);}catch(e){} }
-  function closeFicha(){ var el=document.getElementById('ficha'); if(el)el.classList.add('hidden'); fichaGameId=null; kanaDetail=null; }
+  function closeFicha(){ var el=document.getElementById('ficha'); if(el)el.classList.add('hidden'); fichaGameId=null; kanaDetail=null; kjDetail=null; }
 
   var readingEl=document.getElementById("reading"), readingInner=document.getElementById("readingInner");
   var rsess=null;
@@ -5637,6 +5666,455 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
      matchear acá — los 7 de posición (variant-only, como 宀 o 艹) nunca
      aparecen como carácter suelto en una palabra real. */
   var RADICAL_BY_GLYPH=(function(){ var m={}; for(var k in RADICALS){ m[RADICALS[k].glyph]=RADICALS[k]; } return m; })();
+  /* KANJI_DB:BEGIN */
+  var KANJI_DB={
+    '青':[8,4,589,'セイ,ショウ','あお,あお-,あお.い','azul, verde','blue, green'],
+    '赤':[7,4,584,'セキ,シャク','あか,あか-,あか.い,あか.らむ,あか.らめる','rojo','red'],
+    '明':[8,4,67,'メイ,ミョウ,ミン','あ.かり,あか.るい,あか.るむ,あか.らむ,あき.らか','brillante, claro','bright, light'],
+    '秋':[9,4,635,'シュウ','あき,とき','otoño','autumn'],
+    '開':[12,4,59,'カイ','ひら.く,ひら.き,-びら.き,ひら.ける,あ.く','abrir','open, unfold, unseal'],
+    '朝':[12,4,248,'チョウ','あさ','mañana','morning, dynasty, regime'],
+    '足':[7,4,343,'ソク','あし,た.りる,た.る,た.す','pie, pierna','leg, foot, be sufficient'],
+    '日':[4,5,1,'ニチ,ジツ','ひ,-び,-か','día, sol','day, sun, Japan'],
+    '遊':[12,3,941,'ユウ,ユ','あそ.ぶ,あそ.ばす','jugar','play'],
+    '暖':[13,1,1371,'ダン,ノン','あたた.か,あたた.かい,あたた.まる,あたた.める','calidez','warmth'],
+    '頭':[16,3,433,'トウ,ズ,ト','あたま,かしら,-がしら,かぶり','cabeza','head'],
+    '新':[13,4,51,'シン','あたら.しい,あら.た,あら-,にい-','nuevo','new'],
+    '兄':[5,4,1219,'ケイ,キョウ','あに','hermano mayor','elder brother, big brother'],
+    '姉':[8,4,1473,'シ','あね,はは','hermana mayor','elder sister'],
+    '危':[6,3,606,'キ','あぶ.ない,あや.うい,あや.ぶむ','peligro','dangerous, fear, uneasy'],
+    '甘':[5,2,1248,'カン','あま.い,あま.える,あま.やかす,うま.い','dulce','sweet, coax, pamper'],
+    '雨':[8,5,950,'ウ','あめ,あま-,-さめ','lluvia','rain'],
+    '歩':[8,4,554,'ホ,ブ,フ','ある.く,あゆ.む','caminar','walk'],
+    '家':[10,4,133,'カ,ケ','いえ,や,うち','casa, familia','house, home, family'],
+    '行':[6,5,20,'コウ,ギョウ,アン','い.く,ゆ.く,-ゆ.き,-ゆき,-い.き','ir','going, journey, carry out'],
+    '池':[6,2,827,'チ','いけ','estanque','pond, cistern, pool'],
+    '石':[5,3,342,'セキ,シャク,コク','いし','piedra','stone'],
+    '医':[7,4,437,'イ','い.やす,い.する,くすし','médico, medicina','doctor, medicine'],
+    '者':[8,4,38,'シャ','もの','persona','someone, person'],
+    '椅':[12,0,2245,'イ','','silla','chair'],
+    '子':[3,5,72,'シ,ス,ツ','こ,-こ,ね','niño, hijo','child'],
+    '忙':[6,3,1475,'ボウ,モウ','いそが.しい,せわ.しい,おそ.れる,うれえるさま','ocupado','busy, occupied, restless'],
+    '一':[1,5,2,'イチ,イツ','ひと-,ひと.つ','uno','one'],
+    '杯':[8,3,1235,'ハイ','さかずき','vaso, copa','wine glass, glass, toast'],
+    '五':[4,5,31,'ゴ','いつ,いつ.つ','cinco','five'],
+    '犬':[4,4,1326,'ケン','いぬ,いぬ-','perro','dog'],
+    '今':[4,5,49,'コン,キン','いま','ahora','now'],
+    '妹':[8,4,1446,'マイ','いもうと','hermana menor','younger sister'],
+    '色':[6,4,621,'ショク,シキ','いろ','color','color'],
+    '上':[3,5,35,'ジョウ,ショウ,シャン','うえ,-うえ,うわ-,かみ,あ.げる','arriba','above, up'],
+    '兎':[8,0,0,'ト,ツ','うさぎ','conejo','rabbit, hare'],
+    '牛':[4,4,1202,'ギュウ','うし','vaca','cow'],
+    '後':[9,5,26,'ゴ,コウ','のち,うし.ろ,うしろ,あと,おく.れる','detrás, después','behind, back, later'],
+    '嘘':[14,0,2235,'キョ,コ','うそ,ふ.く','mentira','lie, falsehood'],
+    '歌':[14,4,519,'カ','うた,うた.う','canción, cantar','song, sing'],
+    '馬':[10,3,639,'バ','うま,うま-,ま','caballo','horse'],
+    '海':[9,4,200,'カイ','うみ','mar','sea, ocean'],
+    '嬉':[15,1,2274,'キ','うれ.しい,たの.しむ','alegre','glad, pleased, rejoice'],
+    '絵':[12,3,895,'カイ,エ','','dibujo, pintura','picture, drawing, painting'],
+    '映':[9,4,404,'エイ','うつ.る,うつ.す,は.える,-ば.え','reflejar, proyectar','reflect, reflection, projection'],
+    '画':[8,4,199,'ガ,カク,エ,カイ','えが.く,かく.する,かぎ.る,はかりごと,はか.る','trazo, imagen','brush-stroke, picture'],
+    '英':[8,4,430,'エイ','はなぶさ','inglés, Inglaterra','England, english, hero'],
+    '語':[14,5,301,'ゴ','かた.る,かた.らう','palabra, idioma','word, speech, language'],
+    '駅':[14,4,724,'エキ','','estación','station'],
+    '老':[6,3,803,'ロウ','お.いる,ふ.ける','anciano, envejecer','old man, old age, grow old'],
+    '選':[15,3,57,'セン','えら.ぶ','elegir','elect, select, choose'],
+    '円':[4,5,69,'エン','まる.い,まる,まど,まど.か,まろ.やか','círculo, yen','circle, yen, round'],
+    '鉛':[13,1,1710,'エン','なまり','plomo','lead'],
+    '筆':[12,2,1132,'ヒツ','ふで','pincel, escribir','writing brush, writing, painting brush'],
+    '美':[9,3,462,'ビ,ミ','うつく.しい','belleza','beauty, beautiful'],
+    '味':[8,4,442,'ミ','あじ,あじ.わう','sabor','flavor, taste'],
+    '大':[3,5,7,'ダイ,タイ','おお-,おお.きい,-おお.いに','grande','large, big'],
+    '母':[5,5,570,'ボ','はは,も','madre','mother'],
+    '会':[6,4,4,'カイ,エ','あ.う,あ.わせる,あつ.まる','reunión, encontrar','meeting, meet, party'],
+    '計':[9,4,228,'ケイ','はか.る,はか.らう','medir, plan','plot, plan, scheme'],
+    '菓':[11,2,1719,'カ','','dulces','candy, cakes, fruit'],
+    '金':[8,5,53,'キン,コン,ゴン','かね,かな-,-がね','oro, dinero','gold'],
+    '起':[10,4,374,'キ','お.きる,お.こる,お.こす,おこ.す,た.つ','despertar, levantarse','rouse, wake up, get up'],
+    '教':[11,4,166,'キョウ','おし.える,おそ.わる','enseñar','teach, faith, doctrine'],
+    '遅':[12,3,833,'チ','おく.れる,おく.らす,おそ.い','tarde, lento','slow, late, back'],
+    '茶':[9,4,1116,'チャ,サ','','té','tea'],
+    '音':[9,4,491,'オン,イン,-ノン','おと,ね','sonido','sound, noise'],
+    '父':[4,5,646,'フ','ちち','padre','father'],
+    '弟':[7,4,1161,'テイ,ダイ,デ','おとうと','hermano menor','younger brother, faithful service to elders'],
+    '男':[7,5,240,'ダン,ナン','おとこ,お','hombre','male'],
+    '腹':[13,3,1286,'フク','はら','vientre','abdomen, belly, stomach'],
+    '同':[6,4,15,'ドウ','おな.じ','mismo','same, agree, equal'],
+    '風':[9,4,558,'フウ,フ','かぜ,かざ-,-かぜ','viento','wind, air, style'],
+    '呂':[7,1,2055,'ロ,リョ','せぼね','columna, espinazo','spine, backbone'],
+    '覚':[12,3,710,'カク','おぼ.える,さ.ます,さ.める,さと.る','recordar, memorizar','memorize, learn, remember'],
+    '重':[9,4,193,'ジュウ,チョウ','え,おも.い,おも.り,おも.なう,かさ.ねる','pesado, importante','heavy, important, esteem'],
+    '面':[9,3,186,'メン,ベン','おも,おもて,つら','cara, máscara','mask, face, features'],
+    '白':[5,5,483,'ハク,ビャク','しろ,しら-,しろ.い','blanco','white'],
+    '泳':[8,3,1223,'エイ','およ.ぐ','nadar','swim'],
+    '降':[10,3,596,'コウ,ゴ','お.りる,お.ろす,ふ.る,ふ.り,くだ.る','caer, bajar','descend, precipitate, fall'],
+    '楽':[13,4,373,'ガク,ラク,ゴウ','たの.しい,たの.しむ,この.む','música, disfrutar','music, comfort, ease'],
+    '女':[3,5,151,'ジョ,ニョ,ニョウ','おんな,め','mujer','woman, female'],
+    '社':[7,4,21,'シャ','やしろ','empresa, santuario','company, firm, office'],
+    '員':[10,4,54,'イン','','miembro, empleado','employee, member, number'],
+    '回':[6,3,50,'カイ,エ','まわ.る,-まわ.る,-まわ.り,まわ.す,-まわ.す','vez, girar','-times, round, game'],
+    '復':[12,2,438,'フク','また','volver, restaurar','restore, return to, revert'],
+    '買':[12,4,520,'バイ','か.う','comprar','buy'],
+    '顔':[18,3,676,'ガン','かお','cara','face, expression'],
+    '鍵':[17,0,2029,'ケン','かぎ','llave','key'],
+    '書':[10,5,169,'ショ','か.く,-が.き,-がき','escribir','write'],
+    '具':[8,3,629,'グ','そな.える,つぶさ.に','herramienta','tool, utensil, means'],
+    '影':[15,1,464,'エイ','かげ','sombra','shadow, silhouette, phantom'],
+    '族':[11,4,393,'ゾク','','tribu, familia','tribe, family'],
+    '悲':[12,3,1014,'ヒ','かな.しい,かな.しむ','triste','grieve, sad, deplore'],
+    '彼':[8,3,648,'ヒ','かれ,かの,か.の','él','he, that, the'],
+    '鞄':[14,0,0,'ハク,ホウ,ビョウ','かばん','bolso, maletín','suitcase, bag, briefcase'],
+    '壁':[16,1,1037,'ヘキ','かべ','pared','wall, lining (stomach), fence'],
+    '火':[4,5,574,'カ','ひ,-び,ほ-','fuego','fire'],
+    '曜':[18,4,940,'ヨウ','','día de la semana','weekday'],
+    '空':[8,4,304,'クウ','そら,あ.く,あ.き,あ.ける,から','cielo, vacío','empty, sky, void'],
+    '辛':[7,2,1607,'シン','から.い,つら.い,-づら.い,かのと','picante, duro','spicy, bitter, hot'],
+    '体':[7,4,88,'タイ,テイ','からだ,かたち','cuerpo','body, substance, object'],
+    '軽':[12,2,790,'ケイ,キョウ,キン','かる.い,かろ.やか,かろ.んじる','ligero','lightly, trifling, unimportant'],
+    '川':[3,5,181,'セン','かわ','río','stream, river'],
+    '可':[5,0,314,'カ,コク','-べ.き,-べ.し','posible, aprobar','can, passable, mustn\'t'],
+    '愛':[13,3,640,'アイ','いと.しい,かな.しい,め.でる,お.しむ,まな','amor','love, affection, favourite'],
+    '漢':[13,4,1487,'カン','','China, chino','sino-, China'],
+    '字':[6,4,485,'ジ','あざ,あざな,-な','carácter, letra','character, letter, word'],
+    '乾':[11,2,1453,'カン,ケン','かわ.く,かわ.かす,ほ.す,ひ.る,いぬい','seco','drought, dry, dessicate'],
+    '学':[8,5,63,'ガク','まな.ぶ','estudiar','study, learning, science'],
+    '生':[5,5,29,'セイ,ショウ','い.きる,い.かす,い.ける,う.まれる,うま.れる','vida, nacer','life, genuine, birth'],
+    '校':[10,5,294,'コウ,キョウ','','escuela','exam, school, printing'],
+    '木':[4,5,317,'ボク,モク','き,こ-','árbol, madera','tree, wood'],
+    '黄':[11,2,1240,'コウ,オウ','き,こ-','amarillo','yellow'],
+    '聞':[14,5,319,'ブン,モン','き.く,き.こえる','oír, preguntar','hear, ask, listen'],
+    '北':[5,5,153,'ホク','きた','norte','north'],
+    '汚':[6,2,908,'オ','けが.す,けが.れる,けが.らわしい,よご.す,よご.れる','sucio','dirty, pollute, disgrace'],
+    '切':[4,4,324,'セツ,サイ','き.る,-き.る,き.り,-き.り,-ぎ.り','cortar','cut, cutoff, be sharp'],
+    '符':[11,2,1798,'フ','','boleto, señal','token, sign, mark'],
+    '狐':[9,0,2185,'コ','きつね','zorro','fox'],
+    '絹':[13,1,1916,'ケン','きぬ','seda','silk'],
+    '昨':[9,3,226,'サク','','ayer','yesterday, previous'],
+    '九':[2,5,55,'キュウ,ク','ここの,ここの.つ','nueve','nine'],
+    '嫌':[13,1,1207,'ケン,ゲン','きら.う,きら.い,いや','detestar','dislike, detest, hate'],
+    '乳':[8,2,1289,'ニュウ','ちち,ち','leche, pecho','milk, breasts'],
+    '銀':[14,4,395,'ギン','しろがね','plata','silver'],
+    '港':[12,3,495,'コウ','みなと','puerto','harbor'],
+    '草':[9,3,967,'ソウ','くさ,くさ-,-ぐさ','hierba','grass, weeds, herbs'],
+    '果':[8,3,258,'カ','は.たす,はた.す,-は.たす,は.てる,-は.てる','fruto, resultado','fruit, reward, carry out'],
+    '物':[8,4,215,'ブツ,モツ','もの,もの-','cosa','thing, object, matter'],
+    '口':[3,4,284,'コウ,ク','くち','boca','mouth'],
+    '靴':[13,3,1561,'カ','くつ','zapatos','shoes'],
+    '下':[3,5,97,'カ,ゲ','した,しも,もと,さ.げる,さ.がる','abajo, bajar','below, down, descend'],
+    '首':[9,3,98,'シュ','くび','cuello','neck'],
+    '熊':[14,1,1105,'ユウ','くま','oso','bear'],
+    '雲':[12,2,1256,'ウン','くも,-ぐも','nube','cloud'],
+    '曇':[16,2,1899,'ドン','くも.る','nublado','cloudy weather, cloud up'],
+    '暗':[13,3,1040,'アン','くら.い,くら.む,くれ.る','oscuro','darkness, disappear, shade'],
+    '来':[7,5,102,'ライ,タイ','く.る,きた.る,きた.す,き.たす,き.たる','venir','come, due, next'],
+    '車':[7,5,333,'シャ','くるま','carro','car'],
+    '黒':[11,4,573,'コク','くろ,くろ.ずむ,くろ.い','negro','black'],
+    '合':[6,3,41,'ゴウ,ガッ,カッ','あ.う,-あ.う,あ.い,あい-,-あ.い','juntar, encajar','fit, suit, join'],
+    '消':[10,3,345,'ショウ','き.える,け.す','apagar, borrar','extinguish, blow out, turn off'],
+    '煙':[13,3,1290,'エン','けむ.る,けむり,けむ.い','humo','smoke'],
+    '剣':[10,1,1305,'ケン','つるぎ','espada','sabre, sword, blade'],
+    '駄':[14,1,1500,'ダ,タ','','carga, inútil','burdensome, pack horse, horse load'],
+    '月':[4,5,23,'ゲツ,ガツ','つき','luna, mes','month, moon'],
+    '玄':[5,1,1409,'ゲン','くろ,くろ.い','misterioso','mysterious, occultness, black'],
+    '関':[14,3,70,'カン','せき,-ぜき,かか.わる,からくり,かんぬき','barrera, relación','connection, barrier, gateway'],
+    '元':[4,4,192,'ゲン,ガン','もと','origen, principio','beginning, former time, origin'],
+    '気':[6,5,113,'キ,ケ','いき','espíritu, ánimo','spirit, mind, air'],
+    '公':[4,4,118,'コウ,ク','おおやけ','público','public, prince, official'],
+    '園':[13,3,628,'エン','その','parque, jardín','park, garden, yard'],
+    '攻':[7,1,532,'コウ','せ.める','atacar','aggression, attack, criticize'],
+    '撃':[15,1,473,'ゲキ','う.つ','golpear, disparar','beat, attack, defeat'],
+    '交':[6,3,178,'コウ','まじ.わる,まじ.える,ま.じる,まじ.る,ま.ざる','cruzar, mezclar','mingle, mixing, association'],
+    '番':[12,3,348,'バン','つが.い','turno, número','turn, number in a series'],
+    '声':[7,3,388,'セイ,ショウ','こえ,こわ-','voz','voice'],
+    '言':[7,4,83,'ゲン,ゴン','い.う,こと','decir','say, word'],
+    '葉':[12,3,414,'ヨウ','は','hoja','leaf, plane, lobe'],
+    '供':[8,3,313,'キョウ,ク,クウ,グ','そな.える,とも,-ども','ofrecer, acompañar','submit, offer, present'],
+    '米':[6,3,61,'ベイ,マイ,メエトル','こめ,よね','arroz','rice, Usa, metre'],
+    '怖':[8,3,1325,'フ,ホ','こわ.い,こわ.がる,お.じる,おそ.れる','miedo','dreadful, be frightened, fearful'],
+    '午':[4,5,154,'ゴ','うま','mediodía','noon'],
+    '飯':[12,4,1046,'ハン','めし','comida, arroz cocido','meal, boiled rice'],
+    '財':[10,3,494,'ザイ,サイ,ゾク','たから','riqueza','property, money, wealth'],
+    '布':[5,2,877,'フ','ぬの','tela','linen, cloth, spread'],
+    '魚':[11,4,1208,'ギョ','うお,さかな,-ざかな','pez','fish'],
+    '桜':[10,1,1237,'オウ,ヨウ','さくら','cerezo','cherry'],
+    '鮭':[17,0,2477,'カイ,ケイ','さけ,しゃけ,ふぐ','salmón','salmon'],
+    '寂':[11,1,1599,'ジャク,セキ','さび,さび.しい,さび.れる,さみ.しい','soledad','loneliness, quietly, mellow'],
+    '寒':[12,3,1456,'カン','さむ.い','frío','cold'],
+    '猿':[13,1,1772,'エン','さる','mono','monkey'],
+    '三':[3,5,14,'サン,ゾウ','み,み.つ,みっ.つ','tres','three'],
+    '散':[12,3,758,'サン','ち.る,ち.らす,-ち.らす,ち.らかす,ち.らかる','esparcir','scatter, disperse, spend'],
+    '座':[10,3,588,'ザ','すわ.る','asiento','squat, seat, cushion'],
+    '席':[10,3,370,'セキ','むしろ','asiento, lugar','seat, mat, occasion'],
+    '雑':[14,3,839,'ザツ,ゾウ','まじ.える,まじ.る','variado','miscellaneous'],
+    '誌':[14,2,851,'シ','','registro, revista','document, records'],
+    '団':[6,2,213,'ダン,トン','かたまり,まる.い','grupo','group, association'],
+    '仕':[5,4,439,'シ,ジ','つか.える','servir','attend, doing, official'],
+    '事':[8,4,18,'ジ,ズ','こと,つか.う,つか.える','asunto, cosa','matter, thing, fact'],
+    '静':[14,3,764,'セイ,ジョウ','しず-,しず.か,しず.まる,しず.める','tranquilo','quiet'],
+    '尻':[5,0,1692,'コウ','しり','trasero','buttocks, hips, butt'],
+    '尾':[7,1,875,'ビ','お','cola','tail, end, lower slope of mountain'],
+    '島':[10,2,245,'トウ','しま','isla','island'],
+    '閉':[11,3,951,'ヘイ','と.じる,と.ざす,し.める,し.まる,た.てる','cerrar','closed, shut'],
+    '宿':[11,3,701,'シュク','やど,やど.る,やど.す','posada, alojarse','inn, lodging, relay station'],
+    '題':[18,4,96,'ダイ','','tema','topic, subject'],
+    '知':[8,4,205,'チ','し.る,し.らせる','saber','know, wisdom'],
+    '心':[4,4,157,'シン','こころ,-ごころ','corazón','heart, mind, spirit'],
+    '配':[10,3,359,'ハイ','くば.る','repartir','distribute, spouse, exile'],
+    '時':[10,5,16,'ジ','とき,-どき','tiempo, hora','time, hour'],
+    '間':[12,5,33,'カン,ケン','あいだ,ま,あい','intervalo, espacio','interval, space'],
+    '辞':[13,3,633,'ジ','や.める,いな.む','renunciar, palabra','resign, word, term'],
+    '自':[6,4,19,'ジ,シ','みずか.ら,おの.ずから,おの.ずと','uno mismo','oneself'],
+    '転':[11,4,327,'テン','ころ.がる,ころ.げる,ころ.がす,ころ.ぶ,まろ.ぶ','girar, rodar','revolve, turn around, change'],
+    '十':[2,5,8,'ジュウ,ジッ,ジュッ','とお,と','diez','ten'],
+    '水':[4,5,223,'スイ','みず,みず-','agua','water'],
+    '好':[6,3,423,'コウ','この.む,す.く,よ.い,い.い','gustar','fond, pleasing, like something'],
+    '直':[8,3,246,'チョク,ジキ,ジカ','ただ.ちに,なお.す,-なお.す,なお.る,なお.き','recto, arreglar','straightaway, honesty, frankness'],
+    '少':[4,4,287,'ショウ','すく.ない,すこ.し','poco','few, little'],
+    '寿':[7,0,1245,'ジュ,ス,シュウ','ことぶき,ことぶ.く,ことほ.ぐ','longevidad','longevity, congratulations, one\'s natural life'],
+    '司':[5,1,759,'シ','つかさど.る','dirigir, oficial','director, official, govt office'],
+    '涼':[11,2,1783,'リョウ','すず.しい,すず.む,すず.やか,うす.い,ひや.す','fresco','refreshing, nice and cool'],
+    '雀':[11,0,1856,'ジャク,ジャン,サク,シャク','すずめ','gorrión','sparrow'],
+    '図':[7,4,539,'ズ,ト','え,はか.る','mapa, plano','map, drawing, plan'],
+    '鑑':[23,1,1391,'カン','かんが.みる,かがみ','modelo, ejemplar','specimen, take warning from, learn from'],
+    '世':[5,4,135,'セイ,セ,ソウ','よ','mundo, generación','generation, world, society'],
+    '界':[9,4,158,'カイ','','mundo, límite','world, boundary'],
+    '説':[14,3,326,'セツ,ゼイ','と.く','teoría, explicación','opinion, theory, explanation'],
+    '背':[9,3,696,'ハイ','せ,せい,そむ.く,そむ.ける','espalda, estatura','stature, height, back'],
+    '中':[4,5,11,'チュウ','なか,うち,あた.る','dentro, medio','in, inside, middle'],
+    '狭':[9,1,1346,'キョウ,コウ','せま.い,せば.める,せば.まる,さ','estrecho','cramped, narrow, contract'],
+    '千':[3,5,195,'セン','ち','mil','thousand'],
+    '先':[6,5,173,'セン','さき,ま.ず','antes, futuro','before, ahead, previous'],
+    '扇':[10,1,1805,'セン','おうぎ','abanico','fan, folding fan'],
+    '機':[16,3,127,'キ','はた','máquina','loom, mechanism, machine'],
+    '是':[9,1,1045,'ゼ,シ','これ,この,ここ','correcto','just so, this, right'],
+    '非':[8,3,472,'ヒ','あら.ず','no, error','un-, mistake, negative'],
+    '底':[8,2,867,'テイ','そこ','fondo','bottom, sole, depth'],
+    '袖':[10,0,1960,'シュウ','そで','manga','sleeve, wing (building), extension'],
+    '外':[5,5,81,'ガイ,ゲ','そと,ほか,はず.す,はず.れる,と-','afuera','outside'],
+    '蕎':[15,0,0,'キョウ','そば','alforfón','buckwheat'],
+    '麦':[7,2,1615,'バク','むぎ','trigo, cebada','barley, wheat'],
+    '祖':[9,3,1226,'ソ','','antepasado','ancestor, pioneer, founder'],
+    '象':[12,2,394,'ショウ,ゾウ','かたど.る','elefante','elephant, pattern after, imitate'],
+    '巾':[3,0,0,'キン,フク','おお.い,ちきり,きれ','paño, ancho','towel, hanging scroll, width'],
+    '高':[10,5,65,'コウ','たか.い,たか,-だか,たか.まる,たか.める','alto, caro','tall, high, expensive'],
+    '竹':[6,2,593,'チク','たけ','bambú','bamboo'],
+    '戦':[13,3,78,'セン','いくさ,たたか.う,おのの.く,そよ.ぐ,わなな.く','guerra, batalla','war, battle, match'],
+    '立':[5,4,58,'リツ,リュウ,リットル','た.つ,-た.つ,た.ち-,た.てる,-た.てる','pararse, erigir','stand up, rise, set up'],
+    '盾':[9,1,1476,'ジュン','たて','escudo','shield, escutcheon, pretext'],
+    '建':[9,4,300,'ケン,コン','た.てる,た.て,-だ.て,た.つ','construir','build'],
+    '旅':[10,4,783,'リョ','たび','viaje','trip, travel'],
+    '多':[6,4,139,'タ','おお.い,まさ.に,まさ.る','mucho','many, frequent, much'],
+    '分':[4,0,24,'ブン,フン,ブ','わ.ける,わ.け,わ.かれる,わ.かる,わ.かつ','parte, minuto','part, minute of time, segment'],
+    '食':[9,5,328,'ショク,ジキ','く.う,く.らう,た.べる,は.む','comer, comida','eat, food'],
+    '卵':[7,2,1342,'ラン','たまご','huevo','egg, ovum, spawn'],
+    '台':[5,4,262,'ダイ,タイ','うてな,われ,つかさ','soporte, base','pedestal, a stand'],
+    '所':[8,3,221,'ショ','ところ,-ところ,どころ,とこ','lugar','place, extent'],
+    '誰':[15,0,1933,'スイ','だれ,たれ,た','quién','who, someone, somebody'],
+    '血':[6,2,832,'ケツ','ち','sangre','blood'],
+    '小':[3,5,114,'ショウ','ちい.さい,こ-,お-,さ-','pequeño','little, small'],
+    '地':[6,4,40,'チ,ジ','','tierra, suelo','ground, earth'],
+    '鉄':[13,2,672,'テツ','くろがね','hierro','iron'],
+    '使':[8,4,219,'シ','つか.う,つか.い,-つか.い,-づか.い','usar, mensajero','use, send on a mission, order'],
+    '次':[6,3,222,'ジ,シ','つ.ぐ,つぎ','siguiente','next, order, sequence'],
+    '机':[6,2,1671,'キ','つくえ','escritorio','desk, table'],
+    '作':[7,4,103,'サク,サ','つく.る,つく.り,-づく.り','hacer, crear','make, production, prepare'],
+    '冷':[7,3,667,'レイ','つめ.たい,ひ.える,ひ.や,ひ.ややか,ひ.やす','frío','cool, cold (beer, person), chill'],
+    '強':[11,4,112,'キョウ,ゴウ','つよ.い,つよ.まる,つよ.める,し.いる,こわ.い','fuerte','strong'],
+    '手':[4,4,60,'シュ,ズ','て,て-,-て,た-','mano','hand'],
+    '紙':[10,4,559,'シ','かみ','papel','paper'],
+    '天':[4,5,512,'テン','あまつ,あめ,あま-','cielo','heavens, sky, imperial'],
+    '出':[5,5,13,'シュツ,スイ','で.る,-で,だ.す,-だ.す,い.でる','salir','exit, leave, go out'],
+    '電':[13,5,268,'デン','','electricidad','electricity'],
+    '話':[13,5,134,'ワ','はな.す,はなし','hablar, cuento','tale, talk'],
+    '東':[8,5,37,'トウ','ひがし','este','east'],
+    '京':[8,4,74,'キョウ,ケイ,キン','みやこ','capital','capital, 10**16'],
+    '特':[10,4,234,'トク','','especial','special'],
+    '殊':[10,1,1361,'シュ','こと','particular','particularly, especially, exceptionally'],
+    '年':[6,5,6,'ネン','とし','año','year'],
+    '館':[16,4,613,'カン','やかた,たて','edificio, local','building, mansion, large building'],
+    '隣':[16,1,1083,'リン','とな.る,となり','vecino','neighboring'],
+    '飛':[9,3,580,'ヒ','と.ぶ,と.ばす,-と.ばす','volar','fly, skip (pages), scatter'],
+    '友':[4,5,622,'ユウ','とも','amigo','friend'],
+    '達':[12,3,500,'タツ,ダ','-たち','alcanzar, llegar','accomplished, reach, arrive'],
+    '虎':[8,1,1653,'コ','とら','tigre','tiger, drunkard'],
+    '鳥':[11,4,1043,'チョウ','とり','pájaro','bird, chicken'],
+    '道':[12,4,207,'ドウ,トウ','みち,いう','camino','road-way, street, district'],
+    '毒':[8,2,1419,'ドク','','veneno','poison, virus, venom'],
+    '何':[7,5,340,'カ','なに,なん,なに-,なん-','qué','what'],
+    '処':[5,3,547,'ショ','ところ,-こ,お.る','lugar, tratar','dispose, manage, deal with'],
+    '殿':[13,2,1199,'デン,テン','との,-どの','señor, palacio','mr., hall, mansion'],
+    '土':[3,5,307,'ド,ト','つち','tierra','soil, earth, ground'],
+    '長':[8,5,12,'チョウ','なが.い,おさ','largo, jefe','long, leader, superior'],
+    '謎':[16,0,2021,'メイ,ベイ','なぞ','enigma','riddle, puzzle, enigma'],
+    '夏':[10,4,659,'カ,ガ,ゲ','なつ','verano','summer'],
+    '七':[2,5,115,'シチ','なな,なな.つ,なの','siete','seven'],
+    '鍋':[17,0,1810,'カ','なべ','olla','pot, pan, kettle'],
+    '名':[6,5,177,'メイ,ミョウ','な,-な','nombre','name, noted, distinguished'],
+    '前':[9,5,27,'ゼン','まえ,-まえ','delante, antes','in front, before'],
+    '伝':[6,3,416,'デン,テン','つた.わる,つた.える,つた.う,つだ.う,-づた.い','transmitir','transmit, go along, walk along'],
+    '決':[7,3,71,'ケツ','き.める,-ぎ.め,き.まる,さ.く','decidir','decide, fix, agree upon'],
+    '写':[5,4,453,'シャ,ジャ','うつ.す,うつ.る,うつ-,うつ.し','copiar, fotografiar','copy, be photographed, describe'],
+    '思':[9,4,132,'シ','おも.う,おもえら.く,おぼ.す','pensar','think'],
+    '違':[13,3,344,'イ','ちが.う,ちが.い,ちが.える,-ちが.える,たが.う','diferente','difference, differ'],
+    '南':[9,5,341,'ナン,ナ','みなみ','sur','south'],
+    '無':[12,0,274,'ム,ブ','な.い','nada, sin','nothingness, none, ain\'t'],
+    '理':[11,4,86,'リ','ことわり','razón, lógica','logic, arrangement, reason'],
+    '怪':[8,1,1634,'カイ,ケ','あや.しい,あや.しむ','misterioso, sospechoso','suspicious, mystery, apparition'],
+    '押':[8,3,789,'オウ','お.す,お.し-,お.っ-,お.さえる,おさ.える','empujar','push, stop, check'],
+    '敵':[15,1,1205,'テキ','かたき,あだ,かな.う','enemigo','enemy, foe, opponent'],
+    '戻':[7,3,890,'レイ','もど.す,もど.る','volver','re-, return, revert'],
+    '探':[11,3,930,'タン','さぐ.る,さが.す','buscar','grope, search, look for'],
+    '欲':[11,3,902,'ヨク','ほっ.する,ほ.しい','deseo, ansia','longing, covetousness, greed'],
+    '持':[9,4,119,'ジ','も.つ,-も.ち,も.てる','tener, sostener','hold, have'],
+    '全':[6,3,75,'ゼン','まった.く,すべ.て','todo','whole, entire, all'],
+    '部':[11,3,36,'ブ','-べ','sección, parte','section, bureau, dept'],
+    '四':[5,5,47,'シ','よ,よ.つ,よっ.つ,よん','cuatro','four'],
+    '難':[18,3,330,'ナン','かた.い,-がた.い,むずか.しい,むづか.しい,むつか.しい','difícil','difficult, impossible, trouble'],
+    '取':[8,3,122,'シュ','と.る,と.り,と.り-,とり,-ど.り','tomar','take, fetch, take up'],
+    '山':[3,5,131,'サン,セン','やま','montaña','mountain'],
+    '頼':[16,3,708,'ライ','たの.む,たの.もしい,たよ.る','confiar, pedir','trust, request'],
+    '迷':[9,3,942,'メイ','まよ.う','perderse, dudar','astray, be perplexed, in doubt'],
+    '爆':[19,2,735,'バク','は.ぜる','explotar, bomba','bomb, burst open, pop'],
+    '弾':[12,1,853,'ダン,タン','ひ.く,-ひ.き,はず.む,たま,はじ.く','bala','bullet, twang, flip'],
+    '投':[7,3,236,'トウ','な.げる,-な.げ','lanzar','throw, discard, abandon'],
+    '穴':[5,1,1366,'ケツ','あな','hueco, cueva','hole, aperture, slit'],
+    '込':[5,3,675,'','-こ.む,こ.む,こ.み,-こ.み,こ.める','meter, incluir','crowded, mixture, in bulk'],
+    '担':[8,2,422,'タン','かつ.ぐ,にな.う','cargar al hombro','shouldering, carry, raise'],
+    '方':[4,4,46,'ホウ','かた,-かた,-がた','dirección, persona','direction, person, alternative'],
+    '法':[8,3,100,'ホウ,ハッ,ホッ,フラン','のり','método, ley','method, law, rule'],
+    '例':[8,3,399,'レイ','たと.える','ejemplo','example, custom, usage'],
+    '習':[11,4,706,'シュウ,ジュ','なら.う,なら.い','aprender','learn'],
+    '二':[2,5,9,'ニ,ジ','ふた,ふた.つ,ふたたび','dos','two'],
+    '苦':[8,3,623,'ク','くる.しい,-ぐる.しい,くる.しむ,くる.しめる,にが.い','sufrimiento, amargo','suffering, trial, worry'],
+    '賑':[14,0,0,'シン','にぎ.わい,にぎ.やか,にぎ.わす,にぎ.わう','animado, bullicioso','flourish, be bustling, prosperity'],
+    '肉':[6,4,986,'ニク','しし','carne','meat'],
+    '逃':[9,3,931,'トウ','に.げる,に.がす,のが.す,のが.れる','escapar','escape, flee, shirk'],
+    '西':[6,5,259,'セイ,サイ,ス','にし','oeste','west, Spain'],
+    '本':[5,5,10,'ホン','もと','libro, origen','book, present, main'],
+    '庭':[10,3,816,'テイ','にわ','jardín, patio','courtyard, garden, yard'],
+    '沼':[8,1,1467,'ショウ','ぬま','pantano','marsh, lake, bog'],
+    '塗':[13,2,1414,'ト','ぬ.る,ぬ.り,まみ.れる','pintar, untar','paint, plaster, daub'],
+    '猫':[11,3,1702,'ビョウ','ねこ','gato','cat'],
+    '寝':[13,3,1034,'シン','ね.る,ね.かす,い.ぬ,みたまや,や.める','dormir','lie down, sleep, rest'],
+    '飲':[12,4,969,'イン,オン','の.む,-の.み','beber','drink, smoke, take'],
+    '苔':[8,0,0,'タイ','こけ,こけら','musgo','moss, lichen'],
+    '乗':[9,3,377,'ジョウ,ショウ','の.る,-の.り,の.せる','subir, montar','ride, power, multiplication'],
+    '歯':[12,3,1106,'シ','よわい,は,よわ.い,よわい.する','diente','tooth, cog'],
+    '入':[2,5,56,'ニュウ,ジュ','い.る,-い.る,-い.り,い.れる,-い.れ','entrar','enter, insert'],
+    '走':[7,4,626,'ソウ','はし.る','correr','run'],
+    '働':[13,3,417,'ドウ','はたら.く','trabajar','work'],
+    '八':[2,5,92,'ハチ','や,や.つ,やっ.つ,よう','ocho','eight'],
+    '早':[6,4,402,'ソウ,サッ','はや.い,はや,はや-,はや.まる,はや.める','temprano','early, fast'],
+    '春':[9,4,579,'シュン','はる','primavera','springtime, spring (season)'],
+    '晴':[12,3,1022,'セイ','は.れる,は.れ,は.れ-,-ば.れ,は.らす','despejarse','clear up'],
+    '場':[12,4,52,'ジョウ,チョウ','ば','lugar','location, place'],
+    '晩':[12,3,1424,'バン','','noche','nightfall, night'],
+    '御':[12,3,1087,'ギョ,ゴ','おん-,お-,み-','honorífico','honorable, manipulate, govern'],
+    '低':[7,2,435,'テイ','ひく.い,ひく.める,ひく.まる','bajo','lower, short, humble'],
+    '髭':[16,0,0,'シ','ひげ,くちひげ','bigote, barba','beard, mustache'],
+    '膝':[15,0,2320,'シツ','ひざ','rodilla','knee, lap'],
+    '左':[5,5,630,'サ,シャ','ひだり','izquierda','left'],
+    '人':[2,5,5,'ジン,ニン','ひと,-り,-と','persona','person'],
+    '暇':[13,1,1386,'カ','ひま,いとま','tiempo libre','spare time, rest, leisure'],
+    '百':[6,5,163,'ヒャク,ビャク','もも','cien','hundred'],
+    '昼':[9,4,1115,'チュウ','ひる','mediodía','daytime, noon'],
+    '広':[5,4,263,'コウ','ひろ.い,ひろ.まる,ひろ.める,ひろ.がる,ひろ.げる','amplio','wide, broad, spacious'],
+    '病':[10,4,384,'ビョウ,ヘイ','や.む,-や.み,やまい','enfermo','ill, sick'],
+    '院':[10,4,150,'イン','','institución','inst., institution, temple'],
+    '服':[8,4,873,'フク','','ropa','clothing, admit, obey'],
+    '船':[11,3,713,'セン','ふね,ふな-','barco','ship, boat'],
+    '冬':[5,4,1090,'トウ','ふゆ','invierno','winter'],
+    '古':[5,4,509,'コ','ふる.い,ふる-,-ふる.す','viejo','old'],
+    '豚':[11,1,1864,'トン','ぶた','cerdo','pork, pig'],
+    '平':[5,3,128,'ヘイ,ビョウ,ヒョウ','たい.ら,-だいら,ひら,ひら-','plano, paz','even, flat, peace'],
+    '和':[8,3,124,'ワ,オ,カ','やわ.らぐ,やわ.らげる,なご.む,なご.やか,あ.える','armonía, estilo japonés','harmony, japanese style, peace'],
+    '蛇':[11,1,1721,'ジャ,ダ,イ,ヤ','へび','serpiente','snake, serpent, hard drinker'],
+    '屋':[9,4,616,'オク','や','tienda, techo','roof, house, shop'],
+    '変':[9,3,238,'ヘン','か.わる,か.わり,か.える','raro, cambiar','unusual, change, strange'],
+    '勉':[10,4,1066,'ベン','つと.める','esforzarse','exertion, endeavour, encourage'],
+    '便':[9,3,729,'ベン,ビン','たよ.り','comodidad, correo','convenience, facility, excrement'],
+    '利':[7,3,203,'リ','き.く','provecho','profit, advantage, benefit'],
+    '他':[5,3,543,'タ','ほか','otro','other, another, the others'],
+    '星':[9,2,844,'セイ,ショウ','ほし,-ぼし','estrella','star, spot, dot'],
+    '細':[11,2,537,'サイ','ほそ.い,ほそ.る,こま.か,こま.かい','fino, delgado','dainty, get thin, taper'],
+    '骨':[10,2,936,'コツ','ほね','hueso','skeleton, bone, remains'],
+    '防':[7,2,331,'ボウ','ふせ.ぐ','defender','ward off, defend, protect'],
+    '帽':[12,2,1742,'ボウ,モウ','ずきん,おお.う','gorro','cap, headgear'],
+    '僕':[14,1,1236,'ボク','しもべ','yo (masculino)','me, i (male), servant'],
+    '毎':[6,5,436,'マイ','ごと,-ごと.に','cada','every'],
+    '鮪':[17,0,0,'キ,ユウ,イ','まぐろ,しび','atún','tuna'],
+    '町':[7,4,292,'チョウ','まち','pueblo','town, village, block'],
+    '待':[9,4,391,'タイ','ま.つ,-ま.ち','esperar','wait, depend on'],
+    '窓':[11,3,1186,'ソウ,ス','まど,てんまど,けむだし','ventana','window, pane'],
+    '万':[3,5,375,'マン,バン','よろず','diez mil','ten thousand, 10,000'],
+    '右':[5,5,602,'ウ,ユウ','みぎ','derecha','right'],
+    '短':[12,2,689,'タン','みじか.い','corto','short, brevity, fault'],
+    '店':[8,4,378,'テン','みせ,たな','tienda','store, shop'],
+    '噌':[14,0,0,'ソウ,ショウ,ソ','かまびす.しい','miso','boisterous'],
+    '緑':[14,2,1180,'リョク,ロク','みどり','verde','green'],
+    '耳':[6,3,1328,'ジ','みみ','oreja','ear'],
+    '見':[7,5,22,'ケン','み.る,み.える,み.せる','ver','see, hopes, chances'],
+    '虫':[6,2,1351,'チュウ,キ','むし','insecto','insect, bug, temper'],
+    '息':[10,3,882,'ソク','いき','aliento','breath, respiration, son'],
+    '村':[7,2,253,'ソン','むら','aldea','village, town'],
+    '紫':[12,1,1516,'シ','むらさき','morado','purple, violet'],
+    '目':[5,4,76,'モク,ボク','め,-め,ま-','ojo','eye, class, look'],
+    '眼':[11,1,1527,'ガン,ゲン','まなこ,め','ojo, globo ocular','eyeball'],
+    '鏡':[19,1,1506,'キョウ,ケイ','かがみ','espejo','mirror, speculum, barrel-head'],
+    '森':[12,2,609,'シン','もり','bosque','forest, woods'],
+    '野':[11,4,120,'ヤ,ショ','の,の-','campo','plains, field, rustic'],
+    '菜':[11,2,1327,'サイ','な','verdura','vegetable, side dish, greens'],
+    '安':[6,4,144,'アン','やす.い,やす.まる,やす,やす.らか','barato, tranquilo','relax, cheap, low'],
+    '郵':[11,2,917,'ユウ','','correo','mail, stagecoach stop'],
+    '局':[7,3,286,'キョク','つぼね','oficina','bureau, board, office'],
+    '有':[6,4,282,'ユウ,ウ','あ.る','tener, existir','possess, have, exist'],
+    '床':[7,2,1175,'ショウ','とこ,ゆか','piso, cama','bed, floor, padding'],
+    '雪':[11,3,1131,'セツ','ゆき','nieve','snow'],
+    '指':[9,3,155,'シ','ゆび,さ.す,-さ.し','dedo','finger, point to, indicate'],
+    '弓':[3,1,1802,'キュウ','ゆみ','arco','bow, bow (archery, violin)'],
+    '矢':[5,1,1294,'シ','や','flecha','dart, arrow'],
+    '夢':[13,3,943,'ム,ボウ','ゆめ,ゆめ.みる,くら.い','sueño','dream, vision, illusion'],
+    '妖':[7,0,1964,'ヨウ','あや.しい,なま.めく,わざわ.い','hechizante','attractive, bewitching, calamity'],
+    '精':[14,3,752,'セイ,ショウ','しら.げる,くわ.しい','espíritu, refinado','refined, ghost, fairy'],
+    '横':[15,3,480,'オウ','よこ','lado, horizontal','sideways, side, horizontal'],
+    '読':[14,5,618,'ドク,トク,トウ','よ.む,-よ.み','leer','read'],
+    '夜':[8,4,487,'ヤ','よ,よる','noche','night, evening'],
+    '弱':[10,2,958,'ジャク','よわ.い,よわ.る,よわ.まる,よわ.める','débil','weak, frail'],
+    '林':[8,2,656,'リン','はやし','arboleda','grove, forest'],
+    '檎':[17,0,0,'キン,ゴン,ゴ','','manzana','apple'],
+    '零':[13,2,1217,'レイ','ぜろ,こぼ.す,こぼ.れる','cero','zero, spill, overflow'],
+    '歴':[14,2,632,'レキ,レッキ','','historia, trayectoria','curriculum, continuation, passage of time'],
+    '史':[5,2,511,'シ','','historia','history, chronicle'],
+    '練':[14,2,788,'レン','ね.る,ね.り','practicar','practice, gloss, train'],
+    '六':[4,5,93,'ロク,リク','む,む.つ,むっ.つ,むい','seis','six'],
+    '技':[7,2,434,'ギ','わざ','técnica','skill, art, craft'],
+    '忘':[7,3,1129,'ボウ','わす.れる','olvidar','forget'],
+    '私':[7,4,242,'シ','わたくし,わたし','yo','private, i, me'],
+    '笑':[10,3,913,'ショウ','わら.う,え.む','reír','laugh'],
+    '悪':[11,4,530,'アク,オ','わる.い,わる-,あ.し,にく.い,-にく.い','malo','bad, vice, rascal'],
+    '裁':[12,1,297,'サイ','た.つ,さば.く','juzgar, cortar','tailor, judge, decision'],
+    '判':[7,3,197,'ハン,バン','わか.る','juicio, sello','judgement, signature, stamp'],
+    '弁':[5,1,619,'ベン,ヘン','かんむり,わきま.える,わ.ける,はなびら,あらそ.う','discurso, válvula','valve, petal, braid'],
+    '護':[20,1,351,'ゴ','まも.る','proteger','safeguard, protect'],
+    '士':[3,1,526,'シ','さむらい','profesional, samurái','gentleman, scholar, samurai'],
+    '検':[12,1,290,'ケン','しら.べる','examinar','examination, investigate'],
+    '証':[12,1,306,'ショウ','あかし','prueba','evidence, proof, certificate'],
+    '拠':[8,1,858,'キョ,コ','よ.る','base, fundamento','foothold, based on, follow'],
+    '矛':[5,1,1538,'ム,ボウ','ほこ','lanza, alabarda','halberd, arms, festival float'],
+    '件':[6,3,212,'ケン','くだん','caso, asunto','affair, case, matter'],
+    '犯':[5,3,874,'ハン,ボン','おか.す','crimen, cometer','crime, sin, offense'],
+    '被':[10,2,431,'ヒ','こうむ.る,おお.う,かぶ.る,かぶ.せる','sufrir, cubrir','incur, cover, veil'],
+    '害':[10,3,358,'ガイ','','daño','harm, injury'],
+    '告':[7,3,188,'コク','つ.げる','informar','revelation, tell, inform'],
+    '罪':[13,3,732,'ザイ','つみ','culpa, crimen','guilt, sin, crime'],
+    '記':[10,3,149,'キ','しる.す','anotar, registrar','scribe, account, narrative'],
+    '憶':[16,1,1324,'オク','','recordar','recollection, think, remember'],
+    '意':[13,4,99,'イ','','intención, idea','idea, mind, heart'],
+    '国':[8,5,3,'コク','くに','país','country'],
+    '半':[5,5,224,'ハン','なか.ば','mitad','half, middle, odd number'],
+    '休':[6,5,642,'キュウ','やす.む,やす.まる,やす.める','descansar','rest, day off, retire']
+  };
+  /* KANJI_DB:END */
   /* Kanji primitivos (KANJI_PARTS === null) que NO son radicales independientes.
      kind 'E' = así se dibujaba (historia real), 'M' = truco de memoria (invento).
      Si falta la entrada, kanjiPartsHTML usa un texto genérico. */
@@ -6160,39 +6638,215 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   function kanjiForm(w){ if(!w)return null; if(w.kanji)return w.kanji; var jp=(typeof w==='string')?w:w.jp; return KANJI_WORDS[jp]||null; }
   /* Builds the radical-breakdown panel HTML for a word's kanji form.
      Shown in post-answer feedback — pure exposition, never examined. */
+  /* Bloque de componentes de UN kanji (panel post-respuesta y ficha de la chuleta). */
+  function kanjiBlockHTML(ch){
+    var parts=KANJI_PARTS[ch];
+    if(!parts){
+      /* null = no se descompone más. Se muestra igual, nunca se omite en silencio:
+         radical independiente (RADICALS) > nota propia (PRIMITIVE_NOTES) > texto genérico. */
+      var rad=RADICAL_BY_GLYPH[ch];
+      var pn=PRIMITIVE_NOTES[ch];
+      var pName, pRole;
+      if(rad){ pName=rad.name; pRole='es un radical base — '+rad.mnemonic; }
+      else if(pn){ pName=pn.name; pRole=(pn.kind==='E'?'Así se dibujaba: ':'Truco de memoria: ')+pn.mnemonic; }
+      else { pName='Kanji base'; pRole='no se descompone: se aprende como una sola pieza'; }
+      return '<div class="rq-part-kanji"><span class="rq-part-head mincho">'+ch+'</span><div class="rq-part-rows">'+
+        '<div class="rq-part-row"><span class="rq-part-comp mincho">'+ch+'</span><span class="rq-part-cn">'+pName+'</span>'+
+        '<span class="rq-part-role">'+pRole+'</span></div></div></div>';
+    }
+    var bh='<div class="rq-part-kanji"><span class="rq-part-head mincho">'+ch+'</span><div class="rq-part-rows">';
+    parts.forEach(function(p){
+      var g=p.rad&&RADICALS[p.rad]?RADICALS[p.rad].glyph:(p.glyph||'');
+      var n=p.rad&&RADICALS[p.rad]?RADICALS[p.rad].name:(p.name||'');
+      bh+='<div class="rq-part-row"><span class="rq-part-comp mincho">'+g+'</span><span class="rq-part-cn">'+n+'</span><span class="rq-part-role">'+p.role+'</span></div>';
+    });
+    return bh+'</div></div>';
+  }
   function kanjiPartsHTML(jp){
     var kf=KANJI_WORDS[jp]||null; if(!kf) return '';
-    var blocks=[]; var hadAny=false;
+    var blocks=[];
     for(var i=0;i<kf.length;i++){
       var ch=kf.charAt(i); if(!(ch.charCodeAt(0)>=0x4E00&&ch.charCodeAt(0)<=0x9FFF)) continue;
-      var parts=KANJI_PARTS[ch];
-      if(!parts){
-        /* null = no se descompone más. Se muestra igual, nunca se omite en silencio:
-           radical independiente (RADICALS) > nota propia (PRIMITIVE_NOTES) > texto genérico. */
-        var rad=RADICAL_BY_GLYPH[ch];
-        var pn=PRIMITIVE_NOTES[ch];
-        var pName, pRole;
-        if(rad){ pName=rad.name; pRole='es un radical base — '+rad.mnemonic; }
-        else if(pn){ pName=pn.name; pRole=(pn.kind==='E'?'Así se dibujaba: ':'Truco de memoria: ')+pn.mnemonic; }
-        else { pName='Kanji base'; pRole='no se descompone: se aprende como una sola pieza'; }
-        hadAny=true;
-        blocks.push('<div class="rq-part-kanji"><span class="rq-part-head mincho">'+ch+'</span><div class="rq-part-rows">'+
-          '<div class="rq-part-row"><span class="rq-part-comp mincho">'+ch+'</span><span class="rq-part-cn">'+pName+'</span>'+
-          '<span class="rq-part-role">'+pRole+'</span></div></div></div>');
-        continue;
-      }
-      hadAny=true;
-      var bh='<div class="rq-part-kanji"><span class="rq-part-head mincho">'+ch+'</span><div class="rq-part-rows">';
-      parts.forEach(function(p){
-        var g=p.rad&&RADICALS[p.rad]?RADICALS[p.rad].glyph:(p.glyph||'');
-        var n=p.rad&&RADICALS[p.rad]?RADICALS[p.rad].name:(p.name||'');
-        bh+='<div class="rq-part-row"><span class="rq-part-comp mincho">'+g+'</span><span class="rq-part-cn">'+n+'</span><span class="rq-part-role">'+p.role+'</span></div>';
-      });
-      bh+='</div></div>';
-      blocks.push(bh);
+      blocks.push(kanjiBlockHTML(ch));
     }
-    if(!hadAny||!blocks.length) return '';
+    if(!blocks.length) return '';
     return '<div class="rq-parts"><div class="rq-parts-label">Componentes</div>'+blocks.join('')+'</div>';
+  }
+  /* ================= CHULETA DE KANJI =================
+     Datos: KANJI_DB (generado por build_kanji_db.py: KANJIDIC + lista JLPT de Waller + glosas ES).
+     Crecer hacia N1 = correr el script con --levels; la pantalla no cambia. Sin glosa ES cae al inglés. */
+  var kjQ='', kjLevel='all', kjStatus='all', kjPiece=null, kjDetail=null, kjLimit=240, kjListScroll=0, KJ_IDX=null;
+  var KJ_R={'あ':'a','い':'i','う':'u','え':'e','お':'o','か':'ka','き':'ki','く':'ku','け':'ke','こ':'ko','さ':'sa','し':'shi','す':'su','せ':'se','そ':'so','た':'ta','ち':'chi','つ':'tsu','て':'te','と':'to','な':'na','に':'ni','ぬ':'nu','ね':'ne','の':'no','は':'ha','ひ':'hi','ふ':'fu','へ':'he','ほ':'ho','ま':'ma','み':'mi','む':'mu','め':'me','も':'mo','や':'ya','ゆ':'yu','よ':'yo','ら':'ra','り':'ri','る':'ru','れ':'re','ろ':'ro','わ':'wa','を':'o','ん':'n','が':'ga','ぎ':'gi','ぐ':'gu','げ':'ge','ご':'go','ざ':'za','じ':'ji','ず':'zu','ぜ':'ze','ぞ':'zo','だ':'da','ぢ':'ji','づ':'zu','で':'de','ど':'do','ば':'ba','び':'bi','ぶ':'bu','べ':'be','ぼ':'bo','ぱ':'pa','ぴ':'pi','ぷ':'pu','ぺ':'pe','ぽ':'po'};
+  var KJ_Y={'ゃ':'ya','ゅ':'yu','ょ':'yo'};
+  function kjRomaji(k){
+    var out='',i,c,n,b,y;
+    for(i=0;i<k.length;i++){ c=k.charAt(i); n=k.charAt(i+1);
+      if(c==='っ'){ out+=(KJ_R[n]||'').charAt(0); continue; }
+      if(c==='ー'){ out+=out.slice(-1); continue; }
+      if(!KJ_R[c]) continue;
+      b=KJ_R[c]; y=KJ_Y[n];
+      if(y){ i++; out+=(b==='shi'||b==='chi'||b==='ji')?b.slice(0,-1)+y.slice(1):b.slice(0,-1)+y; }
+      else out+=b;
+    }
+    return out;
+  }
+  function kjNorm(x){
+    x=String(x||'').toLowerCase();
+    try{ x=x.normalize('NFD').replace(/[\u0300-\u036f]/g,''); }catch(e){}
+    return x.replace(/[\u30a1-\u30f6]/g,function(c){ return String.fromCharCode(c.charCodeAt(0)-0x60); }).replace(/[.\-・]/g,'');
+  }
+  function kjStateOf(ch){ if(kanjiLearned(ch))return 'mastered'; return (ensureKanji().box[ch]||0)>0?'progress':'new'; }
+  /* piezas de un kanji: [{g,name}] a partir de KANJI_PARTS */
+  function kjPiecesOf(ch){
+    var parts=KANJI_PARTS[ch]; if(!parts)return [];
+    return parts.map(function(p){
+      var r=(p.rad&&RADICALS[p.rad])?RADICALS[p.rad]:null;
+      return {g:r?r.glyph:(p.glyph||''), name:r?r.name:(p.name||''), v:r&&r.variant?r.variant:''};
+    }).filter(function(x){ return x.g; });
+  }
+  function kjBuild(){
+    if(KJ_IDX)return KJ_IDX;
+    var byJp={},words={},pieces={},own={},via={},order=Object.keys(KANJI_DB);
+    WORD_POOL.forEach(function(w){ byJp[w.jp]=w; });
+    for(var jp in KANJI_WORDS){ var kf=KANJI_WORDS[jp], w=byJp[jp]||{};
+      for(var i=0;i<kf.length;i++){ var c=kf.charAt(i); if(!isKanjiChar(c))continue;
+        var arr=(words[c]=words[c]||[]); if(arr.some(function(x){return x.jp===jp;}))continue;
+        arr.push({jp:jp,kf:kf,romaji:w.romaji||'',es:w.es||'',en:w.en||''}); } }
+    order.forEach(function(ch){
+      var d=KANJI_DB[ch], ps=kjPiecesOf(ch), t=[ch,d[5],d[6],d[3],d[4]];
+      (d[3]+','+d[4]).split(',').forEach(function(r){ if(!r)return; var k=kjNorm(r); t.push(kjRomaji(k)); var st=r.split('.')[0]; if(st!==r)t.push(kjRomaji(kjNorm(st))); });
+      ps.forEach(function(x){ t.push(x.g,x.name,x.v); (pieces[x.g]=pieces[x.g]||[]).push(ch); });
+      own[ch]=kjNorm(t.join(' '));
+      var v=[]; (words[ch]||[]).forEach(function(x){ v.push(x.jp,x.romaji,x.es,x.en); });
+      via[ch]=kjNorm(v.join(' '));
+    });
+    KJ_IDX={order:order,words:words,pieces:pieces,own:own,via:via};
+    return KJ_IDX;
+  }
+  function kjFiltered(){
+    var I=kjBuild(), raw=String(kjQ||''), glyphs=[], rest='';
+    for(var i=0;i<raw.length;i++){ var c=raw.charAt(i); if(isKanjiChar(c))glyphs.push(c); else rest+=c; }
+    var toks=kjNorm(rest).split(/\s+/).filter(Boolean), out=[];
+    I.order.forEach(function(ch,idx){
+      var d=KANJI_DB[ch];
+      if(kjLevel!=='all'&&String(d[1])!==String(kjLevel))return;
+      if(kjStatus!=='all'&&kjStateOf(ch)!==kjStatus)return;
+      if(kjPiece&&ch!==kjPiece&&(I.pieces[kjPiece]||[]).indexOf(ch)<0)return;
+      var rank=0;
+      if(glyphs.length){
+        if(glyphs.indexOf(ch)<0){
+          /* un solo kanji buscado: tambien salen los que lo llevan como pieza */
+          if(!(glyphs.length===1&&(I.pieces[glyphs[0]]||[]).indexOf(ch)>=0))return;
+          rank=1;
+        }
+      }
+      for(var k=0;k<toks.length;k++){
+        if(I.own[ch].indexOf(toks[k])>=0)continue;
+        if(I.via[ch].indexOf(toks[k])>=0){ rank=1; continue; }
+        return;
+      }
+      out.push({ch:ch,rank:rank,lv:d[1]||0,fr:d[2]||99999,idx:idx});
+    });
+    var searching=!!(toks.length||glyphs.length);
+    out.sort(function(a,b){
+      if(searching&&a.rank!==b.rank)return a.rank-b.rank;
+      var la=a.lv||-1, lb=b.lv||-1; if(la!==lb)return lb-la;
+      if(a.fr!==b.fr)return a.fr-b.fr; return a.idx-b.idx; });
+    return out;
+  }
+  function kjMeaning(ch,es){ var d=KANJI_DB[ch]; return es?(d[5]||d[6]):(d[6]||d[5]); }
+  function kjCellHTML(ch,es){
+    return '<button class="kx-cell kj-cell '+kjStateOf(ch)+'" data-kj="'+ch+'"><span class="kx-g mincho">'+ch+'</span>'+
+           '<span class="kj-m">'+kjMeaning(ch,es).split(',')[0]+'</span></button>';
+  }
+  function kjLevelLabel(lv,es){ return lv?('N'+lv):(es?'Sin nivel JLPT':'No JLPT level'); }
+  function kjBodyHTML(){
+    var es=getLang()==='es', list=kjFiltered(), h='<div class="kj-count">'+list.length+' kanji</div>';
+    if(!list.length)return h+'<div class="fx-intro">'+(es?'Nada coincide. Prueba con el kanji, su lectura en kana o romaji, o el significado.':'Nothing matches. Try the kanji, its reading in kana or romaji, or the meaning.')+'</div>';
+    var shown=list.slice(0,kjLimit), flat=!!(String(kjQ).trim()||kjPiece), cur=null, open=false, counts={};
+    list.forEach(function(o){ counts[o.lv]=(counts[o.lv]||0)+1; });
+    if(flat){ h+='<div class="kj-grid">'+shown.map(function(o){return kjCellHTML(o.ch,es);}).join('')+'</div>'; }
+    else shown.forEach(function(o){
+      if(o.lv!==cur){ if(open)h+='</div>'; cur=o.lv; open=true;
+        h+='<div class="fx-cat">'+kjLevelLabel(o.lv,es)+' <span class="grow-mode">'+counts[o.lv]+'</span></div><div class="kj-grid">'; }
+      h+=kjCellHTML(o.ch,es); });
+    if(open)h+='</div>';
+    if(list.length>kjLimit)h+='<button class="ex-custom-btn" id="kjMore">'+(es?'Mostrar más':'Show more')+' ('+(list.length-kjLimit)+')</button>';
+    return h;
+  }
+  function kjBindBody(inner){
+    inner.querySelectorAll('[data-kj]').forEach(function(b){ b.addEventListener('click',function(){
+      var el=document.getElementById('ficha'); if(el)kjListScroll=el.scrollTop;
+      kjDetail=b.getAttribute('data-kj'); renderKanjiSheet(); if(el)el.scrollTop=0; }); });
+    var m=inner.querySelector('#kjMore'); if(m)m.addEventListener('click',function(){ kjLimit+=240; kjRefreshBody(); });
+  }
+  function kjRefreshBody(){
+    var inner=document.getElementById('fichaInner'), body=document.getElementById('kjBody'); if(!inner||!body)return;
+    body.innerHTML=kjBodyHTML(); kjBindBody(body);
+  }
+  function kjDetailHTML(ch){
+    var d=KANJI_DB[ch], es=getLang()==='es', I=kjBuild(), main=kjMeaning(ch,es), alt=es?d[6]:d[5], st=kjStateOf(ch);
+    var stl={mastered:es?'Aprendido':'Learned',progress:es?'En progreso':'In progress','new':es?'Sin ver':'Not seen'}[st];
+    var h='<div class="kj-det"><div class="kj-big mincho">'+ch+'</div><div class="kj-main">'+main+'</div>';
+    if(alt&&alt!==main)h+='<div class="kj-alt">'+alt+'</div>';
+    h+='<div class="kj-badges"><span class="gbadge dict">'+kjLevelLabel(d[1],es)+'</span><span class="gbadge dict">'+d[0]+(es?' trazos':' strokes')+'</span><span class="gbadge '+(st==='mastered'?'comfy':'dict')+'">'+stl+'</span></div></div>';
+    h+='<div class="kj-read">';
+    if(d[3])h+='<div><b class="mincho">音</b>'+d[3].split(',').join('、')+' <span class="grow-mode">'+(es?'lectura china (on)':'Chinese reading (on)')+'</span></div>';
+    if(d[4])h+='<div><b class="mincho">訓</b>'+d[4].split(',').join('、')+' <span class="grow-mode">'+(es?'lectura japonesa (kun)':'Japanese reading (kun)')+'</span></div>';
+    h+='</div>';
+    h+='<div class="kj-sec"><div class="rq-parts"><div class="rq-parts-label">'+(es?'Componentes':'Components')+'</div>'+kanjiBlockHTML(ch)+'</div></div>';
+    var ps=kjPiecesOf(ch);
+    if(ps.length){ h+='<div class="kj-sec"><div class="rq-parts-label">'+(es?'Ver otros kanji con la misma pieza':'See other kanji with the same piece')+'</div><div class="kj-row">'+
+      ps.map(function(x){ return '<button class="fx-pill" data-kjpiece="'+x.g+'"><span class="mincho">'+x.g+'</span> '+x.name+' <b>'+(I.pieces[x.g]||[]).length+'</b></button>'; }).join('')+'</div></div>'; }
+    var ws=I.words[ch]||[];
+    if(ws.length){ h+='<div class="kj-sec"><div class="rq-parts-label">'+(es?'Palabras donde aparece':'Words it appears in')+'</div><div class="kj-words">'+
+      ws.slice(0,14).map(function(w){ return '<button class="kj-word" data-say="'+w.jp+'"><span class="kj-wk mincho">'+w.kf+'</span><span>'+w.jp+'</span><span class="kj-wr">'+w.romaji+'</span><span class="kj-wm">'+(es?(w.es||w.en):(w.en||w.es))+'</span></button>'; }).join('')+'</div></div>'; }
+    return h;
+  }
+  function kjFootHTML(es){
+    return '<div class="fx-foot">'+(es
+      ?'Lecturas, trazos y significados en inglés: KANJIDIC (EDRDG, licencia CC BY-SA 4.0). Niveles: lista de Jonathan Waller. El JLPT no publica una lista oficial de kanji, así que los niveles son aproximados.'
+      :'Readings, strokes and English meanings: KANJIDIC (EDRDG, CC BY-SA 4.0 license). Levels: Jonathan Waller list. The JLPT publishes no official kanji list, so levels are approximate.')+'</div>';
+  }
+  function renderKanjiSheet(){
+    var inner=document.getElementById('fichaInner'); if(!inner)return;
+    var es=getLang()==='es', I=kjBuild(), h,i;
+    if(kjDetail&&KANJI_DB[kjDetail]){
+      h='<div class="d-sticky"><div class="d-head"><button class="d-close" id="kjBack">← '+(es?'Chuleta':'Chart')+'</button>'+
+        '<span class="cx-title mincho">'+kjDetail+'</span></div></div>'+kjDetailHTML(kjDetail)+kjFootHTML(es);
+      inner.innerHTML=h;
+      var bk=document.getElementById('kjBack'); if(bk)bk.addEventListener('click',function(){
+        kjDetail=null; renderKanjiSheet(); var el=document.getElementById('ficha'); if(el)el.scrollTop=kjListScroll; });
+      inner.querySelectorAll('[data-kjpiece]').forEach(function(b){ b.addEventListener('click',function(){
+        kjPiece=b.getAttribute('data-kjpiece'); kjDetail=null; kjLimit=240; kjLevel='all'; kjStatus='all'; kjQ=''; renderKanjiSheet();
+        var el=document.getElementById('ficha'); if(el)el.scrollTop=0; }); });
+      inner.querySelectorAll('.kj-word[data-say]').forEach(function(b){ b.addEventListener('click',function(){ speak(b.getAttribute('data-say')); }); });
+      return;
+    }
+    var lc={}, sc={mastered:0,progress:0,'new':0}, total=I.order.length;
+    I.order.forEach(function(ch){ var lv=KANJI_DB[ch][1]||0; lc[lv]=(lc[lv]||0)+1; sc[kjStateOf(ch)]++; });
+    var lvPills='<button class="fx-pill'+(kjLevel==='all'?' on':'')+'" data-kjlevel="all">'+(es?'Todos':'All')+' <b>'+total+'</b></button>';
+    [5,4,3,2,1,0].forEach(function(lv){ if(!lc[lv])return;
+      lvPills+='<button class="fx-pill'+(String(kjLevel)===String(lv)?' on':'')+'" data-kjlevel="'+lv+'">'+(lv?('N'+lv):(es?'Sin nivel':'No level'))+' <b>'+lc[lv]+'</b></button>'; });
+    var stDefs=[['all',es?'Todos':'All',total],['mastered',es?'Aprendidos':'Learned',sc.mastered],['progress',es?'En progreso':'In progress',sc.progress],['new',es?'Sin ver':'Not seen',sc['new']]];
+    var stPills=stDefs.map(function(x){ return '<button class="fx-pill'+(kjStatus===x[0]?' on':'')+'" data-kjstatus="'+x[0]+'">'+x[1]+' <b>'+x[2]+'</b></button>'; }).join('');
+    if(kjPiece)stPills+='<button class="fx-pill on" data-kjclrpiece="1">'+(es?'Pieza':'Piece')+' <span class="mincho">'+kjPiece+'</span> ✕</button>';
+    h='<div class="d-sticky"><div class="d-head"><button class="d-close" id="fxClose">✕ '+t("Back")+'</button>'+
+      '<span class="cx-title mincho">漢字 '+(es?'Chuleta de kanji':'Kanji chart')+'</span></div>'+
+      '<div class="fx-tools"><div class="fx-srow"><input id="kjSearch" class="fx-search" type="search" lang="ja" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="'+(es?'Kanji, kana, romaji o significado':'Kanji, kana, romaji or meaning')+'" value="'+String(kjQ).replace(/"/g,'&quot;')+'">'+
+      '<button id="kjClear" class="fx-clear" title="'+(es?'Limpiar':'Clear')+'">✕</button></div>'+
+      '<div class="kj-row">'+lvPills+'</div><div class="kj-row">'+stPills+'</div></div></div>';
+    h+='<div class="fx-legend"><span><b class="ok">■</b>'+(es?'aprendido':'learned')+'</span><span><b class="prog">■</b>'+(es?'en progreso':'in progress')+'</span><span>'+(es?'Toca un kanji para ver su ficha':'Tap a kanji for its card')+'</span></div>';
+    h+='<div id="kjBody">'+kjBodyHTML()+'</div>'+kjFootHTML(es);
+    inner.innerHTML=h;
+    var c=document.getElementById('fxClose'); if(c)c.addEventListener('click',closeFicha);
+    var sEl=document.getElementById('kjSearch'), clr=document.getElementById('kjClear');
+    if(sEl)sEl.addEventListener('input',function(){ kjQ=sEl.value; kjLimit=240; kjRefreshBody(); });
+    if(clr)clr.addEventListener('click',function(){ kjQ=''; if(sEl){sEl.value='';sEl.focus();} kjLimit=240; kjRefreshBody(); });
+    inner.querySelectorAll('[data-kjlevel]').forEach(function(b){ b.addEventListener('click',function(){ kjLevel=b.getAttribute('data-kjlevel'); kjLimit=240; renderKanjiSheet(); }); });
+    inner.querySelectorAll('[data-kjstatus]').forEach(function(b){ b.addEventListener('click',function(){ kjStatus=b.getAttribute('data-kjstatus'); kjLimit=240; renderKanjiSheet(); }); });
+    var cp=inner.querySelector('[data-kjclrpiece]'); if(cp)cp.addEventListener('click',function(){ kjPiece=null; kjLimit=240; renderKanjiSheet(); });
+    kjBindBody(inner.querySelector('#kjBody'));
   }
   /* ================= KANJI ENGINE (Fase 1) — furigana dinámico + crédito por carácter =================
      Filosofía intacta: KANA-FIRST. wordReadable() NO cambia — el kana siempre manda, nunca
