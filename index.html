@@ -803,11 +803,11 @@
   .np-dot.on{background:var(--shu)}
   .np-count{font-size:12px;letter-spacing:.14em;color:var(--ink-soft);font-weight:700;white-space:nowrap}
   .np-tag{font-family:var(--display-font);font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--shu)}
-  .np-page{min-height:50dvh;animation:npIn .28s ease both}
+  .np-page{flex:1 0 auto;min-height:50dvh;padding-bottom:14px;animation:npIn .28s ease both}
   @keyframes npIn{from{opacity:0;transform:translateX(var(--np-dx,14px))}to{opacity:1;transform:none}}
   .np-h{font-family:var(--display-font);font-weight:800;font-size:clamp(25px,7.2vw,31px);line-height:1.2;margin:10px 0 14px;color:var(--ink)}
   .np-p{font-size:17.5px;line-height:1.68;color:var(--ink);margin:16px 0 8px}
-  .np-nav{position:sticky;bottom:0;display:flex;gap:10px;padding:14px 0 calc(4px + env(safe-area-inset-bottom,0px));margin-top:18px;background:linear-gradient(to top,var(--paper) 72%,transparent)}
+  .np-nav{position:sticky;bottom:calc(-30px - env(safe-area-inset-bottom,0px));z-index:5;flex:0 0 auto;display:flex;gap:10px;margin:18px -18px calc(-30px - env(safe-area-inset-bottom,0px));padding:12px 18px calc(10px + env(safe-area-inset-bottom,0px));background:var(--paper);border-top:1px solid var(--line)}
   .np-btn{flex:1;font:inherit;font-weight:700;font-size:16px;padding:14px 10px;border:1.5px solid var(--ink);border-radius:4px;background:var(--card);color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent}
   .np-btn:active{transform:translateY(1px)}
   .np-btn.pri{background:var(--ink);color:var(--paper);flex:1.6}
@@ -834,7 +834,12 @@
 
   .nv-bub{display:flex;align-items:stretch;gap:10px;margin:10px 0}
   .nv-who{flex:0 0 84px;font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);display:flex;align-items:center}
-  .nv-say{flex:1;min-width:0;background:var(--paper);border:1.4px solid var(--ink-soft);border-radius:10px 10px 10px 2px;padding:8px 12px}
+  .nv-say{flex:1;min-width:0;background:var(--paper);border:1.4px solid var(--ink-soft);border-radius:10px 10px 10px 2px;padding:8px 12px;display:flex;align-items:center;gap:10px}
+  .nv-tx{flex:1;min-width:0}
+  .nv-say[data-npsay]{cursor:pointer;-webkit-tap-highlight-color:transparent;transition:border-color .15s}
+  .nv-say.on{border-color:var(--shu)}
+  .nv-spk{flex:0 0 22px;width:22px;height:22px;fill:none;stroke:var(--ink-soft);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .nv-say.on .nv-spk{stroke:var(--shu)}
   .nv-say b{display:block;font-family:var(--display-font);font-weight:700;font-size:22px;line-height:1.25;color:var(--ink)}
   .nv-say i{display:block;font-style:normal;font-size:13.5px;color:var(--ink-soft);margin-top:2px}
   .nv-pair{display:flex;align-items:center;justify-content:center;gap:12px;margin:8px 0}
@@ -5163,7 +5168,12 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   function nvSvg(inner,cap){ return '<div class="nv-tile"><svg class="nv-svg" viewBox="0 0 64 56" aria-hidden="true">'+inner+'</svg>'+(cap?'<span class="nv-cap">'+cap+'</span>':'')+'</div>'; }
   var NV_SUN='<circle cx="32" cy="28" r="18"/><circle cx="32" cy="28" r="3.5" fill="currentColor" style="fill:var(--shu);stroke:none"/>';
   var NV_PEAKS='<path d="M4 50 L18 20 L26 36 L32 8 L38 36 L46 20 L60 50"/>';
-  function nvBub(who,jp,tr){ return '<div class="nv-bub"><span class="nv-who">'+who+'</span><div class="nv-say"><b>'+jp+'</b><i>'+tr+'</i></div></div>'; }
+  var NV_SPK='<svg class="nv-spk" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 9a4 4 0 0 1 0 6"/><path d="M19 6.5a8 8 0 0 1 0 11"/></svg>';
+  function nvBub(who,jp,tr){
+    var say=jp.replace(/[\u2026.\uFF01\uFF1F!?\s]+/g,' ').trim();
+    var ok=/[\u3040-\u30ff\u4e00-\u9fff]/.test(say);
+    return '<div class="nv-bub"><span class="nv-who">'+who+'</span><div class="nv-say"'+(ok?' data-npsay="'+say.replace(/"/g,'&quot;')+'" role="button" aria-label="Escuchar / Listen"':'')+'><div class="nv-tx"><b>'+jp+'</b><i>'+tr+'</i></div>'+(ok?NV_SPK:'')+'</div></div>';
+  }
   function nvPair(a,b){ return '<div class="nv-pair"><span class="a">'+a+'</span><span class="m">→</span><span class="b">'+b+'</span></div>'; }
   function nvLad(g,w,c){ return '<div class="nv-ladder"><span class="g">'+g+'</span><span class="bar"><i style="--w:'+w+'"></i></span><span class="c">'+c+'</span></div>'; }
   function nvEnd(b,s){ return '<div class="nv-end"><b>'+b+'</b><span>'+s+'</span></div>'; }
@@ -5237,7 +5247,9 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     h+='<div class="np-nav"><button class="np-btn" id="npPrev"'+(cur===0?' disabled':'')+'>'+(es?'Anterior':'Back')+'</button>'+
        '<button class="np-btn pri" id="npNext">'+(last?(es?'Listo':'Done'):(cur===0?(es?'Empezar':'Start'):(es?'Siguiente':'Next')))+'</button></div>';
     inner.innerHTML=h;
-    function go(k,d){ noteCur.i=k; noteCur.dir=d; renderNote(id); var ov=document.getElementById('ficha'); if(ov) ov.scrollTop=0; }
+    function go(k,d){ try{ window.speechSynthesis.cancel(); }catch(e){} noteCur.i=k; noteCur.dir=d; renderNote(id); var ov=document.getElementById('ficha'); if(ov) ov.scrollTop=0; }
+    inner.querySelectorAll('[data-npsay]').forEach(function(b){ b.addEventListener('click',function(){
+      speak(b.getAttribute('data-npsay')); b.classList.add('on'); setTimeout(function(){ b.classList.remove('on'); },1400); }); });
     var c=document.getElementById('fxClose'); if(c)c.addEventListener('click',closeFicha);
     var pv=document.getElementById('npPrev'); if(pv)pv.addEventListener('click',function(){ if(cur>0) go(cur-1,-1); });
     var nx=document.getElementById('npNext'); if(nx)nx.addEventListener('click',function(){ if(last) closeFicha(); else go(cur+1,1); });
