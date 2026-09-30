@@ -794,6 +794,44 @@
   .fx-pill b{color:var(--ink);font-weight:800;margin-left:3px}
   .fx-pill.dim{opacity:.32}
   .fx-empty{color:var(--ink-soft);font-size:14px;padding:22px 4px;text-align:center}
+
+  /* Notas paginadas: una seccion por pagina, texto grande e ilustraciones */
+  .np-prog{display:flex;align-items:center;gap:12px;margin:2px 0 6px}
+  .np-dots{display:flex;gap:6px;flex:1}
+  .np-dot{flex:1;height:6px;border-radius:3px;background:var(--line);border:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .np-dot.past{background:var(--ink-soft)}
+  .np-dot.on{background:var(--shu)}
+  .np-count{font-size:12px;letter-spacing:.14em;color:var(--ink-soft);font-weight:700;white-space:nowrap}
+  .np-tag{font-family:var(--display-font);font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--shu)}
+  .np-page{min-height:50dvh;animation:npIn .28s ease both}
+  @keyframes npIn{from{opacity:0;transform:translateX(var(--np-dx,14px))}to{opacity:1;transform:none}}
+  .np-h{font-family:var(--display-font);font-weight:800;font-size:clamp(25px,7.2vw,31px);line-height:1.2;margin:10px 0 14px;color:var(--ink)}
+  .np-p{font-size:17.5px;line-height:1.68;color:var(--ink);margin:16px 0 8px}
+  .np-nav{position:sticky;bottom:0;display:flex;gap:10px;padding:14px 0 calc(4px + env(safe-area-inset-bottom,0px));margin-top:18px;background:linear-gradient(to top,var(--paper) 72%,transparent)}
+  .np-btn{flex:1;font:inherit;font-weight:700;font-size:16px;padding:14px 10px;border:1.5px solid var(--ink);border-radius:4px;background:var(--card);color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .np-btn:active{transform:translateY(1px)}
+  .np-btn.pri{background:var(--ink);color:var(--paper);flex:1.6}
+  .np-btn[disabled]{opacity:.3;pointer-events:none}
+  .nv{background:var(--card);border:1.5px solid var(--ink);border-radius:6px;padding:16px 12px;margin:14px 0}
+  .nv-row{display:flex;align-items:flex-end;justify-content:center;gap:10px;flex-wrap:wrap}
+  .nv-tile{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:70px;max-width:110px}
+  .nv-g{font-family:var(--display-font);font-weight:700;font-size:54px;line-height:1;color:var(--ink)}
+  .nv-g.s{font-size:38px}
+  .nv-g.xl{font-size:84px}
+  .nv-g.shu{color:var(--shu)}
+  .nv-cap{font-size:13.5px;color:var(--ink-soft);text-align:center;line-height:1.3}
+  .nv-op{font-family:var(--display-font);font-size:30px;line-height:54px;color:var(--ink-faint);font-weight:700}
+  .nv-svg{width:58px;height:52px;fill:none;stroke:var(--shu);stroke-width:3;stroke-linejoin:round;stroke-linecap:round}
+  .nv-sep{height:1px;background:var(--line);margin:16px 0}
+  .nv-lab{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin:0 0 10px;text-align:center}
+  .nv-tag{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:3px;border:1.4px solid var(--ink-soft);color:var(--ink-soft)}
+  .nv-tag.real{border-color:var(--green);color:var(--green)}
+  .nv-tag.trick{border-color:var(--shu);color:var(--shu)}
+  .nv-story{font-size:15.5px;line-height:1.5;color:var(--ink);text-align:center;margin:10px 4px 0}
+  .nv-center{text-align:center;margin-top:10px}
+  .nv-pip{width:26px;height:26px;border-radius:50%;background:var(--green);border:2px solid var(--ink)}
+  .nv-ok{font-family:var(--display-font);font-weight:800;font-size:17px;color:var(--green);text-align:center;margin-top:12px}
+  @media (prefers-reduced-motion:reduce){ .np-page{animation:none} }
   .fx-cat{scroll-margin-top:150px}
 
   .drill .d-sticky,.reading .d-sticky,.custom .d-sticky{padding-top:calc(20px + env(safe-area-inset-top,0px) + 6px)}
@@ -5098,20 +5136,70 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
           bEn:'You see the word in kanji, without furigana, and pick its reading. Each correct answer adds to the kanji in that word. With 3 correct answers, across any word that contains it, the kanji counts as learned: so 学 seen in 学校 and in 学生 accumulates from both. Kana stays the base, and none of this slows your reading.' }
       ] }
   ];
+  /* ---- Notas paginadas: ilustraciones por pagina (0 = portada, 1.. = secciones) ---- */
+  var noteCur={id:null,i:0,dir:1};
+  function nvT(g,cap,cls){ return '<div class="nv-tile"><span class="nv-g'+(cls?' '+cls:'')+' mincho">'+g+'</span>'+(cap?'<span class="nv-cap">'+cap+'</span>':'')+'</div>'; }
+  function nvOp(s){ return '<span class="nv-op">'+s+'</span>'; }
+  function nvLab(s){ return '<div class="nv-lab">'+s+'</div>'; }
+  function nvSvg(inner,cap){ return '<div class="nv-tile"><svg class="nv-svg" viewBox="0 0 64 56" aria-hidden="true">'+inner+'</svg>'+(cap?'<span class="nv-cap">'+cap+'</span>':'')+'</div>'; }
+  var NV_SUN='<circle cx="32" cy="28" r="18"/><circle cx="32" cy="28" r="3.5" fill="currentColor" style="fill:var(--shu);stroke:none"/>';
+  var NV_PEAKS='<path d="M4 50 L18 20 L26 36 L32 8 L38 36 L46 20 L60 50"/>';
+  var NOTE_VIZ={
+    kanji:[
+      function(es){ return '<div class="nv"><div class="nv-row">'+nvT('森',es?'un muro de trazos':'a wall of strokes','xl')+nvOp('→')+nvT('木',es?'árbol':'tree','s')+nvT('木',es?'árbol':'tree','s')+nvT('木',es?'árbol':'tree','s')+'</div><div class="nv-story">'+(es?'Tres piezas simples forman 森, un bosque.':'Three simple pieces make 森, a forest.')+'</div></div>'; },
+      function(es){ return '<div class="nv"><div class="nv-row">'+nvT('さん',es?'solo un sonido':'only a sound')+nvT('山',es?'una idea: montaña':'an idea: mountain','xl')+'</div><div class="nv-sep"></div>'+nvLab(es?'Se lee distinto según la palabra':'Read differently by word')+'<div class="nv-row">'+nvT('山','やま')+nvT('火山',es?'かざん, volcán':'かざん, volcano')+'</div></div>'; },
+      function(es){ return '<div class="nv">'+nvLab(es?'1. Nacieron como dibujos':'1. Born as drawings')+'<div class="nv-row">'+nvSvg(NV_SUN,es?'un sol':'a sun')+nvOp('→')+nvT('日',es?'sol':'sun','s')+nvSvg(NV_PEAKS,es?'tres picos':'three peaks')+nvOp('→')+nvT('山',es?'montaña':'mountain','s')+'</div>'+
+        '<div class="nv-sep"></div>'+nvLab(es?'2. Juntan ideas':'2. Combine ideas')+'<div class="nv-row">'+nvT('木',es?'árbol':'tree','s')+nvOp('+')+nvT('木',es?'árbol':'tree','s')+nvOp('=')+nvT('林',es?'bosque':'woods','s')+'</div>'+
+        '<div class="nv-sep"></div>'+nvLab(es?'3. Significado más sonido':'3. Meaning plus sound')+'<div class="nv-row">'+nvT('氵',es?'significado: agua':'meaning: water','s')+nvOp('+')+nvT('羊',es?'sonido: よう':'sound: よう','s')+nvOp('=')+nvT('洋',es?'océano, よう':'ocean, よう','s')+'</div></div>'; },
+      function(es){ return '<div class="nv">'+nvLab(es?'Una pieza que cambia de forma':'A piece that changes shape')+'<div class="nv-row">'+nvT('水',es?'suelto: agua':'alone: water','s')+nvOp('→')+nvT('氵',es?'a la izquierda':'on the left','s','shu')+'</div>'+
+        '<div class="nv-sep"></div>'+nvLab(es?'La familia del agua':'The water family')+'<div class="nv-row">'+nvT('海',es?'うみ, mar':'うみ, sea','s')+nvT('池',es?'いけ, estanque':'いけ, pond','s')+nvT('泳',es?'およぐ, nadar':'およぐ, swim','s')+'</div>'+
+        '<div class="nv-sep"></div>'+nvLab(es?'También son kanji sueltos':'Also standalone kanji')+'<div class="nv-row">'+nvT('人',es?'persona':'person','s')+nvT('水',es?'agua':'water','s')+nvT('木',es?'árbol':'tree','s')+'</div></div>'; },
+      function(es){ return '<div class="nv">'+nvLab(es?'Componentes':'Components')+'<div class="nv-row">'+nvT('亻',es?'persona':'person','s')+nvOp('+')+nvT('木',es?'árbol':'tree','s')+nvOp('=')+nvT('休',es?'descansar':'rest','s')+'</div>'+
+        '<div class="nv-center"><span class="nv-tag real">'+(es?'Así se dibujaba':'How it was drawn')+'</span></div><div class="nv-story">'+(es?'Una persona apoyada en un árbol, descansando.':'A person leaning on a tree, resting.')+'</div>'+
+        '<div class="nv-sep"></div>'+nvLab(es?'Componentes':'Components')+'<div class="nv-row">'+nvT('大',es?'grande':'big','s')+nvOp('+')+nvT('丶',es?'un punto':'a dot','s')+nvOp('=')+nvT('犬',es?'perro':'dog','s')+'</div>'+
+        '<div class="nv-center"><span class="nv-tag trick">'+(es?'Truco de memoria':'Memory trick')+'</span></div><div class="nv-story">'+(es?'Un perro grande con una pulga rascándole la oreja. Es un invento para recordarlo, no etimología.':'A big dog with a flea scratching its ear. An invention to remember it, not etymology.')+'</div></div>'; },
+      function(es){ return '<div class="nv"><div class="nv-row">'+nvT('学',es?'el kanji':'the kanji','xl')+'</div><div class="nv-sep"></div><div class="nv-row">'+
+        '<div class="nv-tile"><span class="nv-pip"></span><span class="nv-cap">'+(es?'acierto en':'correct in')+' 学校</span></div>'+
+        '<div class="nv-tile"><span class="nv-pip"></span><span class="nv-cap">'+(es?'acierto en':'correct in')+' 学校</span></div>'+
+        '<div class="nv-tile"><span class="nv-pip"></span><span class="nv-cap">'+(es?'acierto en':'correct in')+' 学生</span></div></div>'+
+        '<div class="nv-ok">'+(es?'3 de 3: kanji aprendido':'3 of 3: kanji learned')+'</div></div>'; }
+    ]
+  };
   function renderNote(id){
     var inner=document.getElementById('fichaInner'); if(!inner)return;
     var es=getLang()==='es', n=null,i;
     for(i=0;i<NOTES.length;i++) if(NOTES[i].id===id) n=NOTES[i];
     if(!n)return;
+    if(noteCur.id!==id){ noteCur.id=id; noteCur.i=0; noteCur.dir=1; }
+    var total=n.sections.length+1;
+    var cur=Math.max(0,Math.min(noteCur.i,total-1));
+    noteCur.i=cur;
+    var head, body;
+    if(cur===0){ head=es?n.titleEs:n.titleEn; body=es?n.introEs:n.introEn; }
+    else { var s=n.sections[cur-1]; head=es?s.tEs:s.tEn; body=es?s.bEs:s.bEn; }
+    var vz=(NOTE_VIZ[id]&&NOTE_VIZ[id][cur])?NOTE_VIZ[id][cur](es):'';
     var h='<div class="d-sticky"><div class="d-head"><button class="d-close" id="fxClose">✕ '+t("Back")+'</button>'+
-          '<span class="cx-title mincho">📝 '+(es?n.titleEs:n.titleEn)+'</span></div></div>';
-    h+='<div class="fx-intro">'+(es?n.introEs:n.introEn)+'</div>';
-    n.sections.forEach(function(s){
-      h+='<div class="fx-cat">'+(es?s.tEs:s.tEn)+'</div>'+
-         '<div class="fx-foot" style="margin:6px 0 16px">'+(es?s.bEs:s.bEn)+'</div>';
-    });
+          '<span class="np-tag">'+(es?n.tagEs:n.tagEn)+'</span></div>'+
+          '<div class="np-prog"><div class="np-dots">';
+    for(i=0;i<total;i++) h+='<button class="np-dot'+(i===cur?' on':(i<cur?' past':''))+'" data-np="'+i+'" aria-label="'+(i+1)+'"></button>';
+    h+='</div><span class="np-count">'+(cur+1)+' / '+total+'</span></div></div>';
+    h+='<div class="np-page" id="npPage" style="--np-dx:'+(noteCur.dir>0?'16px':'-16px')+'">'+
+       '<h2 class="np-h">'+head+'</h2>'+vz+'<div class="np-p">'+body+'</div></div>';
+    var last=(cur===total-1);
+    h+='<div class="np-nav"><button class="np-btn" id="npPrev"'+(cur===0?' disabled':'')+'>'+(es?'Anterior':'Back')+'</button>'+
+       '<button class="np-btn pri" id="npNext">'+(last?(es?'Listo':'Done'):(cur===0?(es?'Empezar':'Start'):(es?'Siguiente':'Next')))+'</button></div>';
     inner.innerHTML=h;
+    function go(k,d){ noteCur.i=k; noteCur.dir=d; renderNote(id); var ov=document.getElementById('ficha'); if(ov) ov.scrollTop=0; }
     var c=document.getElementById('fxClose'); if(c)c.addEventListener('click',closeFicha);
+    var pv=document.getElementById('npPrev'); if(pv)pv.addEventListener('click',function(){ if(cur>0) go(cur-1,-1); });
+    var nx=document.getElementById('npNext'); if(nx)nx.addEventListener('click',function(){ if(last) closeFicha(); else go(cur+1,1); });
+    inner.querySelectorAll('[data-np]').forEach(function(b){ b.addEventListener('click',function(){ var k=parseInt(b.getAttribute('data-np'),10); if(k!==cur) go(k,k>cur?1:-1); }); });
+    var pg=document.getElementById('npPage'), sx=0, sy=0;
+    if(pg){
+      pg.addEventListener('touchstart',function(e){ var p=e.touches[0]; sx=p.clientX; sy=p.clientY; },{passive:true});
+      pg.addEventListener('touchend',function(e){ var p=e.changedTouches[0], dx=p.clientX-sx, dy=p.clientY-sy;
+        if(Math.abs(dx)>60 && Math.abs(dx)>Math.abs(dy)*1.6){ if(dx<0 && cur<total-1) go(cur+1,1); else if(dx>0 && cur>0) go(cur-1,-1); } },{passive:true});
+    }
   }
   /* ---- Cheat sheet de kana: consulta rápida + estado SRS real por celda ---- */
   var kanaSheetScript='hira';
@@ -5432,7 +5520,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     return '<div class="qr-list-inner">'+h+'</div>';
   }
   function openFicha(id){ var el=document.getElementById('ficha'); if(!el)return; fichaGameId=id; el.classList.remove('hidden'); renderFicha(); try{window.scrollTo(0,0);}catch(e){} }
-  function closeFicha(){ var el=document.getElementById('ficha'); if(el)el.classList.add('hidden'); fichaGameId=null; kanaDetail=null; kjDetail=null; }
+  function closeFicha(){ var el=document.getElementById('ficha'); if(el)el.classList.add('hidden'); fichaGameId=null; kanaDetail=null; kjDetail=null; noteCur.id=null; }
 
   var readingEl=document.getElementById("reading"), readingInner=document.getElementById("readingInner");
   var rsess=null;
