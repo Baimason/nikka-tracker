@@ -5040,6 +5040,35 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
           tEn:'Quick tell: look at the sentence ending',
           bEs:'La terminación canta el registro: です・ます = cortés; だ o verbo plano + よ/ね = casual; ～ねー / ～ぜ / ～や / ～おくんな = rudo o rústico. Y el pronombre de "yo" va de わたし (cortés) → ぼく → おれ → おいら/わし (cada vez más informal, masculino o de viejo). El "tú" tiene su propia escalera: あなた (neutro) → あんた (brusco) → きさま／おまえ (hostil). Con eso ubicás el tono antes de traducir una sola palabra.',
           bEn:'The ending sings the register: です・ます = polite; だ or a plain verb + よ/ね = casual; ～ねー / ～ぜ / ～や / ～おくんな = rough or rustic. And the word for I runs わたし (polite) → ぼく → おれ → おいら/わし (more and more informal, male or elderly). The word for you has its own ladder: あなた (neutral) → あんた (rough) → きさま／おまえ (hostile). With that you place the tone before translating a single word.' }
+      ] },
+    { id:'kanji', tagEs:'Kanji', tagEn:'Kanji',
+      cardEs:'Qué son los kanji', cardEn:'What kanji are',
+      subEs:'Qué son, por qué se ven así, qué son los radicales y cómo los vamos a memorizar.',
+      subEn:'What they are, why they look the way they do, what radicals are and how we will memorize them.',
+      titleEs:'Qué son los kanji y cómo los vamos a aprender', titleEn:'What kanji are and how we will learn them',
+      introEs:'Los kanji parecen un muro de trazos, pero casi todos están armados con unas pocas piezas que se repiten. Esta nota te da el mapa antes de empezar.',
+      introEn:'Kanji look like a wall of strokes, but almost all of them are built from a few pieces that repeat. This note gives you the map before you start.',
+      sections:[
+        { tEs:'El kana suena, el kanji significa',
+          tEn:'Kana sounds, kanji means',
+          bEs:'Cada kana es un sonido y nada más. Un kanji es una idea entera: 山 no es "san", es montaña, y además se puede leer de varias formas según la palabra donde aparezca. Por eso en un juego los kanji te dejan captar el significado de un vistazo, aunque no leas cada sílaba.',
+          bEn:'Each kana is a sound and nothing else. A kanji is a whole idea: 山 is not "san", it is mountain, and it can be read several ways depending on the word it appears in. That is why in a game kanji let you catch the meaning at a glance, even if you do not read every syllable.' },
+        { tEs:'Por qué se ven así',
+          tEn:'Why they look like this',
+          bEs:'Los kanji llegaron de China hace más de mil años y casi todos siguen una de tres lógicas. Unos nacieron como dibujos: 日 era un sol, 山 eran tres picos. Otros juntan ideas: 木 más 木 da 林, un bosque. Y la mayoría mezcla una pieza que aporta el significado con otra que da una pista del sonido. No es un código al azar: casi cada kanji es un ensamble de piezas más simples.',
+          bEn:'Kanji came from China over a thousand years ago and almost all follow one of three logics. Some started as drawings: 日 was a sun, 山 was three peaks. Others combine ideas: 木 plus 木 gives 林, a forest. And most mix one piece that carries the meaning with another that hints at the sound. It is not a random code: almost every kanji is an assembly of simpler pieces.' },
+        { tEs:'Los radicales son las piezas que se repiten',
+          tEn:'Radicals are the pieces that repeat',
+          bEs:'Esas piezas se llaman radicales. Algunos también son kanji sueltos (人, 水, 木). Otros solo existen como parte de otros kanji, y a veces cambian de forma: 水 se vuelve 氵 cuando va a la izquierda. Con unos pocos radicales ya reconocés familias enteras: 氵 aparece en 海, 池 y 泳, y siempre insinúa agua. La lista completa está en Accesos, en Radicales.',
+          bEn:'Those pieces are called radicals. Some are also standalone kanji (人, 水, 木). Others only exist as part of other kanji, and sometimes change shape: 水 becomes 氵 when it sits on the left. With a few radicals you already recognize whole families: 氵 appears in 海, 池 and 泳, and always hints at water. The full list is in Quick refs, under Radicals.' },
+        { tEs:'Cómo lo vamos a aprender: mnemotecnias',
+          tEn:'How we will learn them: mnemonics',
+          bEs:'No vas a memorizar trazos en frío. Después de cada respuesta, la app te muestra los Componentes del kanji y una historia corta, visual y a veces absurda que lo ata a su forma. Lo absurdo es a propósito: lo raro se recuerda. Cada historia lleva su etiqueta: "Así se dibujaba" cuando es la historia real del kanji, y "Truco de memoria" cuando es un invento para recordarlo. Los trucos no son etimología, son solo un ancla.',
+          bEn:'You will not memorize strokes cold. After each answer, the app shows the kanji Components and a short, visual, sometimes absurd story that ties it to its shape. The absurdity is on purpose: weird things stick. Each story carries a label: "How it was drawn" when it is the real history of the kanji, and "Memory trick" when it is an invention to help you remember. Tricks are not etymology, just an anchor.' },
+        { tEs:'Cómo se cuenta que aprendiste uno',
+          tEn:'How a kanji counts as learned',
+          bEs:'Ves la palabra en kanji, sin furigana, y elegís su lectura. Cada acierto le suma al kanji de esa palabra. Con 3 aciertos, en cualquier palabra que lo tenga, el kanji queda como aprendido: así 学 visto en 学校 y en 学生 acumula de las dos. El kana sigue siendo la base, y nada de esto te frena la lectura.',
+          bEn:'You see the word in kanji, without furigana, and pick its reading. Each correct answer adds to the kanji in that word. With 3 correct answers, across any word that contains it, the kanji counts as learned: so 学 seen in 学校 and in 学生 accumulates from both. Kana stays the base, and none of this slows your reading.' }
       ] }
   ];
   function renderNote(id){
@@ -5609,44 +5638,89 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
      aparecen como carácter suelto en una palabra real. */
   var RADICAL_BY_GLYPH=(function(){ var m={}; for(var k in RADICALS){ m[RADICALS[k].glyph]=RADICALS[k]; } return m; })();
   /* Kanji primitivos (KANJI_PARTS === null) que NO son radicales independientes.
-     Mnemotecnia corta opcional; si falta, kanjiPartsHTML usa un texto genérico. */
+     kind 'E' = así se dibujaba (historia real), 'M' = truco de memoria (invento).
+     Si falta la entrada, kanjiPartsHTML usa un texto genérico. */
   var PRIMITIVE_NOTES={
-    '一':{name:'Uno',mnemonic:'una sola línea horizontal'},
-    '二':{name:'Dos',mnemonic:'dos líneas horizontales'},
-    '三':{name:'Tres',mnemonic:'tres líneas horizontales'},
-    '五':{name:'Cinco',mnemonic:'dos barras con un cruce en medio'},
-    '八':{name:'Ocho',mnemonic:'dos trazos que se separan hacia abajo, algo que se abre'},
-    '十':{name:'Diez',mnemonic:'una cruz: dos líneas que se cruzan'},
-    '百':{name:'Cien',mnemonic:'un uno sobre el sol (日): un día repetido cien veces'},
-    '千':{name:'Mil',mnemonic:'un diez con un trazo encima: diez veces cien'},
-    '円':{name:'Yen',mnemonic:'una moneda dentro de un marco'},
-    '川':{name:'Río',mnemonic:'tres corrientes de agua que fluyen hacia abajo'},
-    '父':{name:'Padre',mnemonic:'dos manos que sostienen un hacha'},
-    '生':{name:'Nacer',mnemonic:'un brote que sale de la tierra'},
-    '肉':{name:'Carne',mnemonic:'un trozo de carne con las vetas marcadas'},
-    '入':{name:'Entrar',mnemonic:'una cuña que se abre paso hacia adentro'},
-    '長':{name:'Largo',mnemonic:'un anciano de pelo largo'},
-    '小':{name:'Pequeño',mnemonic:'un trazo central y dos chispitas a los lados'},
-    '上':{name:'Arriba',mnemonic:'algo que queda por encima de la línea base'},
-    '下':{name:'Abajo',mnemonic:'algo que cuelga por debajo de la línea'},
-    '車':{name:'Carro',mnemonic:'un carro visto desde arriba: caja, eje y ruedas'},
-    '牛':{name:'Buey',mnemonic:'la cabeza de un buey con sus dos cuernos'},
-    '犬':{name:'Perro',mnemonic:'un perro de perfil con la oreja levantada'},
-    '米':{name:'Arroz',mnemonic:'granos de arroz que se reparten en las cuatro direcciones'},
-    '竹':{name:'Bambú',mnemonic:'dos ramas de bambú con hojas colgando'},
-    '石':{name:'Piedra',mnemonic:'una roca al pie de un acantilado'},
-    '立':{name:'Estar de pie',mnemonic:'una persona de pie sobre el suelo'},
-    '矢':{name:'Flecha',mnemonic:'una flecha con su punta y sus plumas'},
-    '鳥':{name:'Pájaro',mnemonic:'un pájaro con cabeza, cuerpo y patas'},
-    '首':{name:'Cuello',mnemonic:'una cabeza con el pelo arriba y el cuello debajo'},
-    '骨':{name:'Hueso',mnemonic:'un hueso con su articulación'},
-    '血':{name:'Sangre',mnemonic:'una gota que cae en un cuenco'},
-    '面':{name:'Cara',mnemonic:'un rostro dentro de un marco'},
-    '音':{name:'Sonido',mnemonic:'una boca que emite una nota, un tono que se sostiene'},
-    '走':{name:'Correr',mnemonic:'una persona con los pies en movimiento sobre la tierra'},
-    '飛':{name:'Volar',mnemonic:'un ave con las alas abiertas en pleno vuelo'},
-    '風':{name:'Viento',mnemonic:'una vela que se hincha, el viento que sopla'},
-    '老':{name:'Anciano',mnemonic:'una persona mayor con el pelo largo y un bastón'}
+    '一':{name:'Uno',mnemonic:'una sola línea horizontal',kind:'E'},
+    '二':{name:'Dos',mnemonic:'dos líneas horizontales',kind:'E'},
+    '三':{name:'Tres',mnemonic:'tres líneas horizontales',kind:'E'},
+    '五':{name:'Cinco',mnemonic:'dos barras con un cruce en medio',kind:'E'},
+    '八':{name:'Ocho',mnemonic:'dos trazos que se separan hacia abajo, algo que se divide',kind:'E'},
+    '十':{name:'Diez',mnemonic:'una cruz: dos líneas que se cruzan',kind:'E'},
+    '百':{name:'Cien',mnemonic:'un uno sobre el sol (日): un día repetido cien veces',kind:'M'},
+    '千':{name:'Mil',mnemonic:'un diez con un trazo encima: diez veces cien',kind:'M'},
+    '円':{name:'Yen',mnemonic:'una moneda dentro de un marco',kind:'M'},
+    '川':{name:'Río',mnemonic:'tres corrientes de agua que fluyen hacia abajo',kind:'E'},
+    '父':{name:'Padre',mnemonic:'una mano que sostiene un hacha',kind:'E'},
+    '生':{name:'Nacer',mnemonic:'un brote que sale de la tierra',kind:'E'},
+    '肉':{name:'Carne',mnemonic:'un trozo de carne con las vetas marcadas',kind:'E'},
+    '入':{name:'Entrar',mnemonic:'una cuña que se abre paso hacia adentro',kind:'M'},
+    '長':{name:'Largo',mnemonic:'un anciano de pelo largo',kind:'E'},
+    '小':{name:'Pequeño',mnemonic:'un trazo central y dos chispitas a los lados',kind:'M'},
+    '上':{name:'Arriba',mnemonic:'una marca que queda por encima de la línea base',kind:'E'},
+    '下':{name:'Abajo',mnemonic:'una marca que cuelga por debajo de la línea',kind:'E'},
+    '車':{name:'Carro',mnemonic:'un carro visto desde arriba: caja, eje y ruedas',kind:'E'},
+    '牛':{name:'Buey',mnemonic:'la cabeza de un buey con sus dos cuernos',kind:'E'},
+    '犬':{name:'Perro',mnemonic:'un perro de perfil con la oreja levantada',kind:'E'},
+    '米':{name:'Arroz',mnemonic:'granos de arroz que se reparten en las cuatro direcciones',kind:'E'},
+    '竹':{name:'Bambú',mnemonic:'dos ramas de bambú con hojas colgando',kind:'E'},
+    '石':{name:'Piedra',mnemonic:'una roca al pie de un acantilado',kind:'E'},
+    '立':{name:'Estar de pie',mnemonic:'una persona de pie sobre el suelo',kind:'E'},
+    '矢':{name:'Flecha',mnemonic:'una flecha con su punta y sus plumas',kind:'E'},
+    '鳥':{name:'Pájaro',mnemonic:'un pájaro con cabeza, cuerpo y patas',kind:'E'},
+    '首':{name:'Cuello',mnemonic:'una cabeza con el pelo arriba y el cuello debajo',kind:'E'},
+    '骨':{name:'Hueso',mnemonic:'un hueso con su articulación',kind:'E'},
+    '血':{name:'Sangre',mnemonic:'una gota que cae en un cuenco',kind:'E'},
+    '面':{name:'Cara',mnemonic:'un rostro dentro de un marco',kind:'M'},
+    '音':{name:'Sonido',mnemonic:'una boca que emite una nota, un tono que se sostiene',kind:'M'},
+    '走':{name:'Correr',mnemonic:'una persona con los pies en movimiento sobre la tierra',kind:'E'},
+    '飛':{name:'Volar',mnemonic:'un ave con las alas abiertas en pleno vuelo',kind:'M'},
+    '風':{name:'Viento',mnemonic:'una vela que se hincha, el viento que sopla',kind:'M'},
+    '老':{name:'Anciano',mnemonic:'una persona mayor con el pelo largo y un bastón',kind:'E'},
+    '卵':{name:'Huevo',mnemonic:'un huevo de Pokémon a punto de eclosionar',kind:'M'},
+    '象':{name:'Elefante',mnemonic:'un elefante de lado con la trompa arriba, listo para usarlo de montura',kind:'E'},
+    '自':{name:'Uno mismo',mnemonic:'es una nariz: el jugador uno se señala la nariz diciendo "yo"',kind:'E'},
+    '西':{name:'Oeste',mnemonic:'se pone el sol y el pajarito vuelve a su nido a guardar partida',kind:'E'},
+    '矛':{name:'Lanza',mnemonic:'el arma larga del jefe final, con su punta y su asta',kind:'E'},
+    '兎':{name:'Conejo',mnemonic:'un conejo con orejas largas arriba y una bolita de cola atrás',kind:'E'},
+    '巾':{name:'Paño',mnemonic:'un paño colgando de una cuerda',kind:'E'},
+    '非':{name:'No',mnemonic:'dos alas que se dan la espalda: nada coincide, un bug total',kind:'E'},
+    '辛':{name:'Picante',mnemonic:'una espada clavada de pie en el piso: duele como daño por veneno',kind:'M'},
+    '四':{name:'Cuatro',mnemonic:'un cofre de botín con dos patitas asomando: es un mimic que se escapa',kind:'M'},
+    '六':{name:'Seis',mnemonic:'un mago con sombrero puntudo y las piernas abiertas lanzando un hechizo',kind:'M'},
+    '七':{name:'Siete',mnemonic:'una cruz que se dobló después de un golpe crítico',kind:'M'},
+    '九':{name:'Nueve',mnemonic:'casi un 力 (fuerza), pero con la barra de vida a medias',kind:'M'},
+    '万':{name:'Diez mil',mnemonic:'un uno con un ganchito: diez mil puntos de daño del jefe',kind:'M'},
+    '危':{name:'Peligro',mnemonic:'un personaje parado en el borde del acantilado, a un paso de morir por caída',kind:'M'},
+    '甘':{name:'Dulce',mnemonic:'una boca con un caramelo adentro, como tomar una poción de maná',kind:'M'},
+    '者':{name:'Persona',mnemonic:'un viejito bajo el sol: el NPC con nombre y profesión',kind:'M'},
+    '色':{name:'Color',mnemonic:'un personaje que cambia de skin y estrena otro color',kind:'M'},
+    '黄':{name:'Amarillo',mnemonic:'una linterna con patitas que alumbra en amarillo',kind:'M'},
+    '剣':{name:'Espada',mnemonic:'un cuchillo (刂) a la derecha que creció hasta ser la espada legendaria',kind:'M'},
+    '玄':{name:'Misterioso',mnemonic:'un sombrero sobre un hilito: la trampa oscura del pasillo de entrada',kind:'M'},
+    '声':{name:'Voz',mnemonic:'un guerrero (士) gritando con un megáfono',kind:'M'},
+    '午':{name:'Mediodía',mnemonic:'una estaca en pie: al mediodía la sombra se esconde bajo el palo',kind:'M'},
+    '寂':{name:'Solitario',mnemonic:'un NPC solito bajo un techo (宀): todos se fueron a otro nivel',kind:'M'},
+    '散':{name:'Esparcir',mnemonic:'le pegás con un palo a un montón de hierba y todo el botín se dispersa',kind:'M'},
+    '事':{name:'Asunto',mnemonic:'una mano que sostiene el cartel de una misión clavado en un palo: una quest',kind:'M'},
+    '寿':{name:'Longevidad',mnemonic:'un anciano de barba larguísima con un sushi de bonus',kind:'M'},
+    '世':{name:'Mundo',mnemonic:'tres cruces unidas por abajo, como las capas de un mundo que se pasan de nivel',kind:'M'},
+    '是':{name:'Correcto',mnemonic:'el sol (日) sobre un 正 (correcto): sí, esa es la ruta buena del mapa',kind:'M'},
+    '麦':{name:'Trigo',mnemonic:'una planta de trigo con pies (夂) que camina hasta tus fideos soba',kind:'M'},
+    '処':{name:'Lugar',mnemonic:'un personaje que camina lento (夂) y se sienta en un banco: el punto donde guarda la partida',kind:'M'},
+    '殿':{name:'Señor',mnemonic:'un señor en su trono empuñando una maza (殳): el jefe del castillo',kind:'M'},
+    '敵':{name:'Enemigo',mnemonic:'un enemigo con la mano levantada (攵), listo para golpear',kind:'M'},
+    '方':{name:'Dirección',mnemonic:'un banderín con su asta apuntando hacia un lado: por acá va el método',kind:'M'},
+    '塗':{name:'Pintar',mnemonic:'agua (氵) y tierra (土) mezcladas: barro para pintar el piso',kind:'M'},
+    '乗':{name:'Subir',mnemonic:'un jugador trepado a un árbol (木) para subirse a la montura',kind:'M'},
+    '御':{name:'Honorífico',mnemonic:'un criado que camina (彳) con reverencia delante del rey: la o de cortesía',kind:'M'},
+    '膝':{name:'Rodilla',mnemonic:'una parte del cuerpo (月) que se dobla: la rodilla del héroe cuando cae',kind:'M'},
+    '平':{name:'Plano',mnemonic:'una mesa bien plana con algo en equilibrio: cuando todo está parejo, hay paz',kind:'M'},
+    '僕':{name:'Yo (masculino)',mnemonic:'una persona (亻) sirviendo: el NPC del pueblo diciendo "¡yo!"',kind:'M'},
+    '史':{name:'Historia',mnemonic:'una mano con un pincel anotando en el libro (口): la crónica de la aventura',kind:'M'},
+    '弁':{name:'Defender',mnemonic:'dos manos (廾) que sujetan un caso (厶): el abogado del Ace Attorney',kind:'M'},
+    '南':{name:'Sur',mnemonic:'una tienda de campaña con una bandera en cruz y una ovejita adentro: el campamento al sur del mapa',kind:'M'},
+    '士':{name:'Guerrero',mnemonic:'una cruz con el techo largo: un caballero de pie con su espada',kind:'M'}
   };
   /* null = kanji primitivo sin descomposición pedagógica útil.
      { rad:'id' } → busca glyph/name en RADICALS.
@@ -6099,7 +6173,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
         var pn=PRIMITIVE_NOTES[ch];
         var pName, pRole;
         if(rad){ pName=rad.name; pRole='es un radical base — '+rad.mnemonic; }
-        else if(pn){ pName=pn.name; pRole='es un kanji base, no se descompone: '+pn.mnemonic; }
+        else if(pn){ pName=pn.name; pRole=(pn.kind==='E'?'Así se dibujaba: ':'Truco de memoria: ')+pn.mnemonic; }
         else { pName='Kanji base'; pRole='no se descompone: se aprende como una sola pieza'; }
         hadAny=true;
         blocks.push('<div class="rq-part-kanji"><span class="rq-part-head mincho">'+ch+'</span><div class="rq-part-rows">'+
@@ -7143,7 +7217,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       else collapseNoiseOpts(ksess.q);
     } }
 
-  function activateKanji(){ setKanjiOn(true); render(); }
+  function activateKanji(){ setKanjiOn(true); render(); openFicha('__note:kanji'); }
   function activatePhrases(){ setPhrasesOn(true); render(); }
 
   function startPhrases(){ if(!phrasesOn())return; startQuiz(PHRASES, ensurePhrases(), true); if(maybePattern())return; }
