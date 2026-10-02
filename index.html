@@ -5642,7 +5642,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   var WORD_KEYSET=(function(){var m={};WORD_POOL.forEach(function(w){m[w.jp]=1;});return m;})();
   function markWordKnown(jp){ if(!WORD_KEYSET[jp])return; var w=ensureWords(); w.seen[jp]=1; w.known[jp]=1; w.leech[jp]=0; }
   function ensureWords(){ if(!state.exercises)state.exercises={}; if(!state.exercises.words)state.exercises.words={box:{},daily:{}}; var w=state.exercises.words; if(!w.box)w.box={}; if(!w.daily)w.daily={}; if(!w.seen)w.seen={}; if(!w.leech)w.leech={}; if(!w.known)w.known={}; if(!w.lastMove)w.lastMove={}; if(!w.up)w.up={}; if(!w.mas)w.mas={}; if(w.produce===undefined)w.produce=false; return w; }
-  function ensurePhrases(){ if(!state.exercises)state.exercises={}; if(!state.exercises.phrases)state.exercises.phrases={box:{},daily:{}}; var w=state.exercises.phrases; if(!w.box)w.box={}; if(!w.daily)w.daily={}; if(!w.seen)w.seen={}; if(!w.leech)w.leech={}; if(!w.built)w.built={}; if(!w.glossSeen)w.glossSeen={}; return w; }
+  function ensurePhrases(){ if(!state.exercises)state.exercises={}; if(!state.exercises.phrases)state.exercises.phrases={box:{},daily:{}}; var w=state.exercises.phrases; if(!w.box)w.box={}; if(!w.daily)w.daily={}; if(!w.seen)w.seen={}; if(!w.leech)w.leech={}; if(!w.built)w.built={}; if(!w.glossSeen)w.glossSeen={}; if(!w.lastMove)w.lastMove={}; if(!w.up)w.up={}; if(!w.mas)w.mas={}; return w; }
   function poolMastery(pool,box){ var total=pool.length,solid=0,sum=0; pool.forEach(function(it){var b=Math.min(5,box[it.jp]||0);sum+=b;if(b>=4)solid++;}); return {pct:total?Math.round(sum/(total*5)*100):0,solid:solid,total:total,seen:Object.keys(box).length}; }
   function readingCardHTML(){
     return '<div class="reading-card"><div class="dc-top"><h3>'+t("Reading")+'</h3></div>'+
@@ -8033,6 +8033,26 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     return '<div class="d-goal">'+_aim+'<div class="lab"><span>'+t("Daily practice")+'</span><span>'+reps+(gtier>=0?' \u00b7 '+t(TIER_LABEL[gtier]):'')+'</span></div>'+
       '<div class="prog milestones"><i style="width:'+gpct+'%"></i>'+milestoneTicks(reps,"words")+'</div></div>'; }
   function wordsMix(){ var seen=ensureWords().seen||{}; var sb=buildWordPool().filter(function(w){return seen[w.jp];}).length; return { canBuild: sb>=4, buildProb: WORDS_BUILD_PROB }; }
+  /* Rescata el progreso de frases que quedo guardado en la caja de PALABRAS por el bug
+     de wordSrsMove. Mueve box/lastMove/leech de cada clave que es una frase hacia
+     ensurePhrases(). Idempotente (una vez movidas ya no hay nada que mover). Si una frase
+     fija coincide con una palabra del pool (ej. ありがとう), NO se toca: no hay forma de
+     saber de cual de las dos era ese progreso. */
+  function migratePhraseBoxes(){
+    if(typeof PHRASES==='undefined')return false;
+    var w=ensureWords(), ph=ensurePhrases(), moved=false;
+    PHRASES.forEach(function(p){
+      var k=p.jp;
+      if(WORD_KEYSET[k])return;
+      if(w.box[k]!==undefined){
+        if((ph.box[k]||0)<w.box[k]) ph.box[k]=w.box[k];
+        delete w.box[k]; moved=true;
+      }
+      if(w.lastMove&&w.lastMove[k]!==undefined){ if(!ph.lastMove[k])ph.lastMove[k]=w.lastMove[k]; delete w.lastMove[k]; moved=true; }
+      if(w.leech&&w.leech[k]!==undefined){ if(!ph.leech[k])ph.leech[k]=w.leech[k]; delete w.leech[k]; moved=true; }
+    });
+    return moved;
+  }
   function seedKnownFromBuild(){ var ex=ensureWords(), changed=false;
     /* one-time: undo the old over-seed so words start fresh and get taught (kana-style pool) */
     if(!ex.wreset){ ex.seen={}; ex.known={}; ex.leech={}; ex.wreset=1; changed=true; }
@@ -8220,7 +8240,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
            del mismo día refuerzan pero no lo mueven. Así box>=4 = acertada en 4 días
            distintos = dominio espaciado de verdad, no una racha de un mismo minuto.
        (shared with the word-production typing mode via wordSrsMove) */
-    wordSrsMove(key,correct);
+    wordSrsMove(key,correct,rsess.ex);
     rsess.done++; if(correct)rsess.correct++; else rsess.wrong++;
     var td=today(); rsess.ex.daily[td]=(rsess.ex.daily[td]||0)+1; stampDay();
     Persistence.save(state); renderReading(); speakSweep(pool[q.target].jp, readingInner.querySelector(".sweepline"));
@@ -8343,8 +8363,12 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   }
   /* shared: mirror the word-SRS's "-1 on fail, one move per day" semantics
      (same rules answerReading already applies) for one whole-word event. */
-  function wordSrsMove(jp,correct){
-    var ex=ensureWords(), box=ex.box, cur=box[jp]||0, td=today();
+  function wordSrsMove(jp,correct,exTarget){
+    /* exTarget = la caja del pool que se esta practicando (palabras o frases).
+       Sin esto, las frases escribian en la caja de palabras y el contador de frases
+       nunca subia. Por defecto sigue siendo la de palabras (modo escribir palabra). */
+    var ex=exTarget||ensureWords(), box=ex.box, cur=box[jp]||0, td=today();
+    if(!ex.lastMove)ex.lastMove={}; if(!ex.up)ex.up={}; if(!ex.mas)ex.mas={}; if(!ex.leech)ex.leech={};
     if(ex.lastMove[jp]!==td){
       box[jp]=correct?Math.min(5,cur+1):Math.max(0,cur-1);
       ex.lastMove[jp]=td;
@@ -9128,6 +9152,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     state=loaded||emptyState();
     if(!loaded)Persistence.save(state);
     if(!state.lang){state.lang=detectLang();Persistence.save(state);}
+    try{ if(migratePhraseBoxes())Persistence.save(state); }catch(e){}
     try{seedKnownFromBuild();}catch(e){}
     render();
     if(!state.onboardSeen) openOnboard();
