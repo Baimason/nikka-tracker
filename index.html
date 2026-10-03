@@ -794,6 +794,15 @@
   .fx-pill b{color:var(--ink);font-weight:800;margin-left:3px}
   .fx-pill.dim{opacity:.32}
   .fx-empty{color:var(--ink-soft);font-size:14px;padding:22px 4px;text-align:center}
+  .gr-exp{font-size:13px;color:var(--ink-soft);line-height:1.45;margin:0 0 8px}
+  .gr-row{background:var(--card);border:1.5px solid var(--line);border-radius:4px;padding:9px 11px;margin:0 0 7px;cursor:pointer}
+  .gr-row:active{transform:translateY(1px)}
+  .gr-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+  .gr-jp{font-size:18px;line-height:1.35}
+  .gr-mk{font-size:14px;font-weight:700;flex-shrink:0}
+  .gr-es{font-size:13px;color:var(--ink);margin-top:2px}
+  .gr-note{font-size:11.5px;color:var(--ink-soft);margin-top:4px;line-height:1.4}
+  .gr-empty{font-size:12px;color:var(--ink-soft);font-style:italic;margin:0 0 8px;padding:7px 10px;border:1px dashed var(--line);border-radius:4px}
 
   /* Notas paginadas: una seccion por pagina, texto grande e ilustraciones */
   .np-prog{display:flex;align-items:center;gap:12px;margin:2px 0 6px}
@@ -3295,128 +3304,128 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   var OPENINGS = {
     'zelda-la-dx': {
       patterns:[
-        {pat:'は + だ/です', es:'«X es Y» (cópula). La base de toda descripción.'},
-        {pat:'を + verbo',   es:'を marca el objeto directo: «hacer algo a X».'},
-        {pat:'が + いる/ある', es:'existencia: «hay X». いる = seres vivos, ある = cosas.'},
-        {pat:'か',           es:'partícula de pregunta al final de la frase.'},
-        {pat:'～てください',   es:'pedido cortés: «por favor hacé X» (así te piden cosas).'},
-        {pat:'へ / に + いく', es:'dirección: «ir a X».'},
-        {pat:'～ね / ～よ',    es:'partículas finales: ね confirma, よ avisa/enfatiza.'}
+        {pat:"は + だ/です", es:"«X es Y» (cópula). La base de toda descripción.", en:"X is Y (copula). The base of every description."},
+        {pat:"を + verbo", es:"を marca el objeto directo: «hacer algo a X».", en:"を marks the direct object: doing something to X."},
+        {pat:"が + いる/ある", es:"existencia: «hay X». いる = seres vivos, ある = cosas.", en:"existence: there is X. いる = living things, ある = things."},
+        {pat:"か", es:"partícula de pregunta al final de la frase.", en:"question particle at the end of a sentence."},
+        {pat:"～てください", es:"pedido cortés: «por favor hacé X» (así te piden cosas).", en:"polite request: please do X (how people ask you for things)."},
+        {pat:"へ / に + いく", es:"dirección: «ir a X».", en:"direction: going to X."},
+        {pat:"～ね / ～よ", es:"partículas finales: ね confirma, よ avisa/enfatiza.", en:"final particles: ね checks in, よ warns or stresses."}
       ],
       phrases:[
-        {jp:'これはけんだ',romaji:'kore wa ken da',es:'esto es una espada',en:'this is a sword',parts:['これ','は','けん','だ'],note:'これ + は + X + だ = «esto es X»'},
-        {jp:'これはたてだ',romaji:'kore wa tate da',es:'esto es un escudo',en:'this is a shield',parts:['これ','は','たて','だ'],note:'これ + は + X + だ = «esto es X»'},
-        {jp:'これはかぎだ',romaji:'kore wa kagi da',es:'esto es una llave',en:'this is a key',parts:['これ','は','かぎ','だ'],note:'これ + は + X + だ = «esto es X»'},
-        {jp:'それはりんごだ',romaji:'sore wa ringo da',es:'eso es una manzana',en:"that's an apple",parts:['それ','は','りんご','だ'],note:'それ + は + X + だ = «eso es X»'},
-        {jp:'たてをもつ',romaji:'tate o motsu',es:'sostener el escudo',en:'hold the shield',parts:['たて','を','もつ'],note:'を marca el objeto · もつ = «sostener»'},
-        {jp:'けんをもつ',romaji:'ken o motsu',es:'sostener la espada',en:'hold the sword',parts:['けん','を','もつ'],note:'を marca el objeto · もつ = «sostener»'},
-        {jp:'かぎをつかう',romaji:'kagi o tsukau',es:'usar la llave',en:'use the key',parts:['かぎ','を','つかう'],note:'を + verbo · つかう = «usar»'},
-        {jp:'ドアをあける',romaji:'doa o akeru',es:'abrir la puerta',en:'open the door',parts:['ドア','を','あける'],note:'を + verbo · あける = «abrir»'},
-        {jp:'ようせいがいる',romaji:'yousei ga iru',es:'hay un hada',en:"there's a fairy",parts:['ようせい','が','いる'],note:'が…いる = «hay» (seres vivos)'},
-        {jp:'いぬがいる',romaji:'inu ga iru',es:'hay un perro',en:"there's a dog",parts:['いぬ','が','いる'],note:'が…いる = «hay» (seres vivos)'},
-        {jp:'ねこがいる',romaji:'neko ga iru',es:'hay un gato',en:"there's a cat",parts:['ねこ','が','いる'],note:'が…いる = «hay» (seres vivos)'},
-        {jp:'かぎがある',romaji:'kagi ga aru',es:'hay una llave',en:"there's a key",parts:['かぎ','が','ある'],note:'が…ある = «hay» (cosas)'},
-        {jp:'ちずがある',romaji:'chizu ga aru',es:'hay un mapa',en:"there's a map",parts:['ちず','が','ある'],note:'が…ある = «hay» (cosas)'},
-        {jp:'おかねがある',romaji:'okane ga aru',es:'hay dinero',en:"there's money",parts:['おかね','が','ある'],note:'が…ある = «hay» (cosas)'},
-        {jp:'だいじょうぶか',romaji:'daijoubu ka',es:'¿estás bien?',en:'are you okay?',note:'か = pregunta'},
-        {jp:'しまへいく',romaji:'shima e iku',es:'voy a la isla',en:'I go to the island',parts:['しま','へ','いく'],note:'へ = «hacia» · いく = «ir»'},
-        {jp:'みせへいく',romaji:'mise e iku',es:'voy a la tienda',en:'I go to the shop',parts:['みせ','へ','いく'],note:'へ = «hacia» · いく = «ir»'},
-        {jp:'いえへいく',romaji:'ie e iku',es:'voy a la casa',en:'I go home',parts:['いえ','へ','いく'],note:'へ = «hacia» · いく = «ir»'},
-        {jp:'きをつけてね',romaji:'ki o tsukete ne',es:'cuidate, ¿eh?',en:'take care, okay?',note:'～て + ね (confirma)'},
-        {jp:'あぶないよ',romaji:'abunai yo',es:'¡es peligroso!',en:"it's dangerous!",note:'よ = te aviso'},
-        {jp:'だいじょうぶだ',romaji:'daijoubu da',es:'está todo bien',en:"it's all right",note:'だ = «es» (casual)'}
+        {jp:'これはけんだ',pi:0,romaji:'kore wa ken da',es:'esto es una espada',en:'this is a sword',parts:['これ','は','けん','だ'],note:'これ + は + X + だ = «esto es X»'},
+        {jp:'これはたてだ',pi:0,romaji:'kore wa tate da',es:'esto es un escudo',en:'this is a shield',parts:['これ','は','たて','だ'],note:'これ + は + X + だ = «esto es X»'},
+        {jp:'これはかぎだ',pi:0,romaji:'kore wa kagi da',es:'esto es una llave',en:'this is a key',parts:['これ','は','かぎ','だ'],note:'これ + は + X + だ = «esto es X»'},
+        {jp:'それはりんごだ',pi:0,romaji:'sore wa ringo da',es:'eso es una manzana',en:"that's an apple",parts:['それ','は','りんご','だ'],note:'それ + は + X + だ = «eso es X»'},
+        {jp:'たてをもつ',pi:1,romaji:'tate o motsu',es:'sostener el escudo',en:'hold the shield',parts:['たて','を','もつ'],note:'を marca el objeto · もつ = «sostener»'},
+        {jp:'けんをもつ',pi:1,romaji:'ken o motsu',es:'sostener la espada',en:'hold the sword',parts:['けん','を','もつ'],note:'を marca el objeto · もつ = «sostener»'},
+        {jp:'かぎをつかう',pi:1,romaji:'kagi o tsukau',es:'usar la llave',en:'use the key',parts:['かぎ','を','つかう'],note:'を + verbo · つかう = «usar»'},
+        {jp:'ドアをあける',pi:1,romaji:'doa o akeru',es:'abrir la puerta',en:'open the door',parts:['ドア','を','あける'],note:'を + verbo · あける = «abrir»'},
+        {jp:'ようせいがいる',pi:2,romaji:'yousei ga iru',es:'hay un hada',en:"there's a fairy",parts:['ようせい','が','いる'],note:'が…いる = «hay» (seres vivos)'},
+        {jp:'いぬがいる',pi:2,romaji:'inu ga iru',es:'hay un perro',en:"there's a dog",parts:['いぬ','が','いる'],note:'が…いる = «hay» (seres vivos)'},
+        {jp:'ねこがいる',pi:2,romaji:'neko ga iru',es:'hay un gato',en:"there's a cat",parts:['ねこ','が','いる'],note:'が…いる = «hay» (seres vivos)'},
+        {jp:'かぎがある',pi:2,romaji:'kagi ga aru',es:'hay una llave',en:"there's a key",parts:['かぎ','が','ある'],note:'が…ある = «hay» (cosas)'},
+        {jp:'ちずがある',pi:2,romaji:'chizu ga aru',es:'hay un mapa',en:"there's a map",parts:['ちず','が','ある'],note:'が…ある = «hay» (cosas)'},
+        {jp:'おかねがある',pi:2,romaji:'okane ga aru',es:'hay dinero',en:"there's money",parts:['おかね','が','ある'],note:'が…ある = «hay» (cosas)'},
+        {jp:'だいじょうぶか',pi:3,romaji:'daijoubu ka',es:'¿estás bien?',en:'are you okay?',note:'か = pregunta'},
+        {jp:'しまへいく',pi:5,romaji:'shima e iku',es:'voy a la isla',en:'I go to the island',parts:['しま','へ','いく'],note:'へ = «hacia» · いく = «ir»'},
+        {jp:'みせへいく',pi:5,romaji:'mise e iku',es:'voy a la tienda',en:'I go to the shop',parts:['みせ','へ','いく'],note:'へ = «hacia» · いく = «ir»'},
+        {jp:'いえへいく',pi:5,romaji:'ie e iku',es:'voy a la casa',en:'I go home',parts:['いえ','へ','いく'],note:'へ = «hacia» · いく = «ir»'},
+        {jp:'きをつけてね',pi:6,romaji:'ki o tsukete ne',es:'cuidate, ¿eh?',en:'take care, okay?',note:'～て + ね (confirma)'},
+        {jp:'あぶないよ',pi:6,romaji:'abunai yo',es:'¡es peligroso!',en:"it's dangerous!",note:'よ = te aviso'},
+        {jp:'だいじょうぶだ',pi:0,romaji:'daijoubu da',es:'está todo bien',en:"it's all right",note:'だ = «es» (casual)'}
       ]
     },
     'dq1-nes': {
       patterns:[
-        {pat:"が + ある / いる", es:"existencia: «hay X». いる = seres vivos, ある = cosas. Así te dan las pistas casi todos los NPC."},
-        {pat:"を + verbo", es:"を marca el objeto: かぎをつかう «usar la llave»."},
-        {pat:"に / へ + いく・はいる・もどる", es:"destino: «ir a X», «entrar en X», «volver a X»."},
-        {pat:"か", es:"partícula de pregunta al final: «¿…?». Así te prueban los guardias."},
-        {pat:"verbo + がよい", es:"«hacé X / más vale que hagas X». Mandato solemne de reyes y ancianos: いくがよい «andá». Es el sello del habla antigua de este juego."},
-        {pat:"じゃ / ぞ", es:"finales antiguos: じゃ ocupa el lugar de だ (viejos y sabios); ぞ avisa o enfatiza (rey y guardias)."},
-        {pat:"～た (pasado casual)", es:"el combate narra todo en pasado: たおした «derrotó», あらわれた «apareció», あがった «subió»."},
-        {pat:"～が + あがる", es:"cambio de estado: レベルがあがった «el nivel subió»."},
-        {pat:"X は número + ゴールド", es:"precios en tiendas y posadas: たいまつははちゴールド «la antorcha cuesta 8 de oro»."}
+        {pat:"が + ある / いる", es:"existencia: «hay X». いる = seres vivos, ある = cosas. Así te dan las pistas casi todos los NPC.", en:"existence: there is X. いる = living things, ある = things. This is how almost every NPC gives you clues."},
+        {pat:"を + verbo", es:"を marca el objeto: かぎをつかう «usar la llave».", en:"を marks the object: かぎをつかう \"use the key\"."},
+        {pat:"に / へ + いく・はいる・もどる", es:"destino: «ir a X», «entrar en X», «volver a X».", en:"destination: go to X, enter X, return to X."},
+        {pat:"か", es:"partícula de pregunta al final: «¿…?». Así te prueban los guardias.", en:"question particle at the end: \"...?\". How guards test you."},
+        {pat:"verbo + がよい", es:"«hacé X / más vale que hagas X». Mandato solemne de reyes y ancianos: いくがよい «andá». Es el sello del habla antigua de este juego.", en:"do X / you had better do X. Solemn command from kings and elders: いくがよい \"go\". The signature of this game's old-style speech."},
+        {pat:"じゃ / ぞ", es:"finales antiguos: じゃ ocupa el lugar de だ (viejos y sabios); ぞ avisa o enfatiza (rey y guardias).", en:"old-style endings: じゃ takes the place of だ (elders and sages); ぞ warns or stresses (kings and guards)."},
+        {pat:"～た (pasado casual)", es:"el combate narra todo en pasado: たおした «derrotó», あらわれた «apareció», あがった «subió».", en:"combat narrates everything in the past: たおした \"defeated\", あらわれた \"appeared\"."},
+        {pat:"が + verbo (cambio o falta)", es:"lo que cambia o falta: レベルがあがった «el nivel subió», おかねがたりない «falta dinero».", en:"what changes or runs out: レベルがあがった \"the level went up\", おかねがたりない \"not enough money\"."},
+        {pat:"X は número + ゴールド", es:"precios en tiendas y posadas: たいまつははちゴールド «la antorcha cuesta 8 de oro».", en:"prices in shops and inns: たいまつははちゴールド \"the torch costs 8 gold\"."}
       ],
       phrases:[
-        {jp:"ここにかいだんがある",romaji:"koko ni kaidan ga aru",es:"hay una escalera aquí",en:"there is a staircase here",parts:["ここ", "に", "かいだん", "が", "ある"],note:"が…ある = «hay» (cosas) · に marca el lugar"},
-        {jp:"まちにやどやがある",romaji:"machi ni yadoya ga aru",es:"hay una posada en el pueblo",en:"there is an inn in town",parts:["まち", "に", "やどや", "が", "ある"],note:"が…ある = «hay» (cosas)"},
-        {jp:"しろにへいしがいる",romaji:"shiro ni heishi ga iru",es:"hay soldados en el castillo",en:"there are soldiers in the castle",parts:["しろ", "に", "へいし", "が", "いる"],note:"が…いる = «hay» (seres vivos)"},
-        {jp:"ほこらにろうじんがいる",romaji:"hokora ni roujin ga iru",es:"hay un anciano en el santuario",en:"there is an old man in the shrine",parts:["ほこら", "に", "ろうじん", "が", "いる"],note:"が…いる = «hay» (seres vivos)"},
-        {jp:"かぎをつかう",romaji:"kagi o tsukau",es:"usar la llave",en:"use the key",parts:["かぎ", "を", "つかう"],note:"を + verbo · つかう = «usar»"},
-        {jp:"やくそうをつかう",romaji:"yakusou o tsukau",es:"usar la hierba medicinal",en:"use the herb",parts:["やくそう", "を", "つかう"],note:"を + verbo · つかう = «usar»"},
-        {jp:"とびらをあける",romaji:"tobira o akeru",es:"abrir la puerta",en:"open the door",parts:["とびら", "を", "あける"],note:"を + verbo · あける = «abrir»"},
-        {jp:"たからのはこをあける",romaji:"takara no hako o akeru",es:"abrir el cofre del tesoro",en:"open the treasure chest",parts:["たからのはこ", "を", "あける"],note:"を + verbo · あける = «abrir»"},
-        {jp:"まものをたおす",romaji:"mamono o taosu",es:"derrotar al monstruo",en:"defeat the monster",parts:["まもの", "を", "たおす"],note:"を + verbo · たおす = «derrotar»"},
-        {jp:"しろへいく",romaji:"shiro e iku",es:"voy al castillo",en:"I go to the castle",parts:["しろ", "へ", "いく"],note:"へ = «hacia» · いく = «ir»"},
-        {jp:"どうくつにはいる",romaji:"doukutsu ni hairu",es:"entro a la cueva",en:"I enter the cave",parts:["どうくつ", "に", "はいる"],note:"に marca el destino de はいる"},
-        {jp:"まちにもどる",romaji:"machi ni modoru",es:"vuelvo al pueblo",en:"I return to town",parts:["まち", "に", "もどる"],note:"に marca el destino de もどる"},
-        {jp:"しまへわたる",romaji:"shima e wataru",es:"cruzo a la isla",en:"I cross to the island",parts:["しま", "へ", "わたる"],note:"へ = «hacia» · わたる = «cruzar»"},
-        {jp:"ロトのしるしをもっているか",romaji:"Roto no shirushi o motte iru ka",es:"¿tenés el emblema de Roto?",en:"do you have Roto's emblem?",parts:["ロトのしるし", "を", "もっている", "か"],note:"もつ→もっている («tiene») + か = pregunta"},
-        {jp:"ひめをしっているか",romaji:"hime o shitte iru ka",es:"¿conocés a la princesa?",en:"do you know the princess?",parts:["ひめ", "を", "しっている", "か"],note:"しる→しっている («sabe, conoce») + か = pregunta"},
-        {jp:"いくがよい",romaji:"iku ga yoi",es:"andá (orden solemne)",en:"go (solemn command)",parts:["いく", "がよい"],note:"verbo + がよい = «hacelo, andá». Mandato de reyes y ancianos"},
-        {jp:"まつがよい",romaji:"matsu ga yoi",es:"esperá (consejo solemne)",en:"wait (solemn advice)",parts:["まつ", "がよい"],note:"verbo + がよい = «hacelo»"},
-        {jp:"はなすがよい",romaji:"hanasu ga yoi",es:"hablá (dilo)",en:"speak (go ahead)",parts:["はなす", "がよい"],note:"verbo + がよい = «hacelo»"},
-        {jp:"やどやにとまるがよい",romaji:"yadoya ni tomaru ga yoi",es:"hospedate en la posada",en:"stay at the inn",parts:["やどや", "に", "とまる", "がよい"],note:"に + とまる = «hospedarse en» · がよい = consejo"},
-        {jp:"これはかぎじゃ",romaji:"kore wa kagi ja",es:"esto es una llave (habla de anciano)",en:"this is a key (elder speech)",parts:["これ", "は", "かぎ", "じゃ"],note:"じゃ = だ en boca de ancianos y sabios"},
-        {jp:"わしがおうさまじゃ",romaji:"washi ga ousama ja",es:"yo soy el rey",en:"I am the king",parts:["わし", "が", "おうさま", "じゃ"],note:"わし = «yo» (viejo o rey) · じゃ = «es»"},
-        {jp:"そなたはゆうしゃじゃ",romaji:"sonata wa yuusha ja",es:"tú eres el héroe",en:"you are the hero",parts:["そなた", "は", "ゆうしゃ", "じゃ"],note:"そなた = «tú» arcaico · じゃ = «es»"},
-        {jp:"あぶないぞ",romaji:"abunai zo",es:"¡cuidado!",en:"watch out!",parts:["あぶない", "ぞ"],note:"ぞ = aviso o énfasis fuerte"},
-        {jp:"まものがあらわれた",romaji:"mamono ga arawareta",es:"apareció un monstruo",en:"a monster appeared",parts:["まもの", "が", "あらわれた"],note:"あらわれる→あらわれた = pasado"},
-        {jp:"スライムをたおした",romaji:"suraimu o taoshita",es:"derrotaste al slime",en:"you defeated the slime",parts:["スライム", "を", "たおした"],note:"たおす→たおした = pasado"},
-        {jp:"ダメージをうけた",romaji:"dameeji o uketa",es:"recibiste daño",en:"you took damage",parts:["ダメージ", "を", "うけた"],note:"うける→うけた = pasado"},
-        {jp:"ゴールドをてにいれた",romaji:"goorudo o te ni ireta",es:"conseguiste oro",en:"you got gold",parts:["ゴールド", "を", "てにいれた"],note:"てにいれる→てにいれた = pasado"},
-        {jp:"レベルがあがった",romaji:"reberu ga agatta",es:"subiste de nivel",en:"your level went up",parts:["レベル", "が", "あがった"],note:"あがる→あがった = pasado · が marca lo que cambia"},
-        {jp:"ひめがさらわれた",romaji:"hime ga sarawareta",es:"secuestraron a la princesa",en:"the princess was kidnapped",parts:["ひめ", "が", "さらわれた"],note:"さらう→さらわれた (pasivo: «fue secuestrada»). El pasivo se estudia más adelante; acá va como frase hecha"},
-        {jp:"おかねがたりない",romaji:"okane ga tarinai",es:"falta dinero",en:"not enough money",parts:["おかね", "が", "たりない"],note:"たりる→たりない = «no alcanza»"},
-        {jp:"たいまつははちゴールド",romaji:"taimatsu wa hachi goorudo",es:"la antorcha cuesta 8 de oro",en:"the torch costs 8 gold",parts:["たいまつ", "は", "はち", "ゴールド"],note:"X は número + ゴールド = precio"}
+        {jp:"ここにかいだんがある",pi:0,romaji:"koko ni kaidan ga aru",es:"hay una escalera aquí",en:"there is a staircase here",parts:["ここ", "に", "かいだん", "が", "ある"],note:"が…ある = «hay» (cosas) · に marca el lugar"},
+        {jp:"まちにやどやがある",pi:0,romaji:"machi ni yadoya ga aru",es:"hay una posada en el pueblo",en:"there is an inn in town",parts:["まち", "に", "やどや", "が", "ある"],note:"が…ある = «hay» (cosas)"},
+        {jp:"しろにへいしがいる",pi:0,romaji:"shiro ni heishi ga iru",es:"hay soldados en el castillo",en:"there are soldiers in the castle",parts:["しろ", "に", "へいし", "が", "いる"],note:"が…いる = «hay» (seres vivos)"},
+        {jp:"ほこらにろうじんがいる",pi:0,romaji:"hokora ni roujin ga iru",es:"hay un anciano en el santuario",en:"there is an old man in the shrine",parts:["ほこら", "に", "ろうじん", "が", "いる"],note:"が…いる = «hay» (seres vivos)"},
+        {jp:"かぎをつかう",pi:1,romaji:"kagi o tsukau",es:"usar la llave",en:"use the key",parts:["かぎ", "を", "つかう"],note:"を + verbo · つかう = «usar»"},
+        {jp:"やくそうをつかう",pi:1,romaji:"yakusou o tsukau",es:"usar la hierba medicinal",en:"use the herb",parts:["やくそう", "を", "つかう"],note:"を + verbo · つかう = «usar»"},
+        {jp:"とびらをあける",pi:1,romaji:"tobira o akeru",es:"abrir la puerta",en:"open the door",parts:["とびら", "を", "あける"],note:"を + verbo · あける = «abrir»"},
+        {jp:"たからのはこをあける",pi:1,romaji:"takara no hako o akeru",es:"abrir el cofre del tesoro",en:"open the treasure chest",parts:["たからのはこ", "を", "あける"],note:"を + verbo · あける = «abrir»"},
+        {jp:"まものをたおす",pi:1,romaji:"mamono o taosu",es:"derrotar al monstruo",en:"defeat the monster",parts:["まもの", "を", "たおす"],note:"を + verbo · たおす = «derrotar»"},
+        {jp:"しろへいく",pi:2,romaji:"shiro e iku",es:"voy al castillo",en:"I go to the castle",parts:["しろ", "へ", "いく"],note:"へ = «hacia» · いく = «ir»"},
+        {jp:"どうくつにはいる",pi:2,romaji:"doukutsu ni hairu",es:"entro a la cueva",en:"I enter the cave",parts:["どうくつ", "に", "はいる"],note:"に marca el destino de はいる"},
+        {jp:"まちにもどる",pi:2,romaji:"machi ni modoru",es:"vuelvo al pueblo",en:"I return to town",parts:["まち", "に", "もどる"],note:"に marca el destino de もどる"},
+        {jp:"しまへわたる",pi:2,romaji:"shima e wataru",es:"cruzo a la isla",en:"I cross to the island",parts:["しま", "へ", "わたる"],note:"へ = «hacia» · わたる = «cruzar»"},
+        {jp:"ロトのしるしをもっているか",pi:3,romaji:"Roto no shirushi o motte iru ka",es:"¿tenés el emblema de Roto?",en:"do you have Roto's emblem?",parts:["ロトのしるし", "を", "もっている", "か"],note:"もつ→もっている («tiene») + か = pregunta"},
+        {jp:"ひめをしっているか",pi:3,romaji:"hime o shitte iru ka",es:"¿conocés a la princesa?",en:"do you know the princess?",parts:["ひめ", "を", "しっている", "か"],note:"しる→しっている («sabe, conoce») + か = pregunta"},
+        {jp:"いくがよい",pi:4,romaji:"iku ga yoi",es:"andá (orden solemne)",en:"go (solemn command)",parts:["いく", "がよい"],note:"verbo + がよい = «hacelo, andá». Mandato de reyes y ancianos"},
+        {jp:"まつがよい",pi:4,romaji:"matsu ga yoi",es:"esperá (consejo solemne)",en:"wait (solemn advice)",parts:["まつ", "がよい"],note:"verbo + がよい = «hacelo»"},
+        {jp:"はなすがよい",pi:4,romaji:"hanasu ga yoi",es:"hablá (dilo)",en:"speak (go ahead)",parts:["はなす", "がよい"],note:"verbo + がよい = «hacelo»"},
+        {jp:"やどやにとまるがよい",pi:4,romaji:"yadoya ni tomaru ga yoi",es:"hospedate en la posada",en:"stay at the inn",parts:["やどや", "に", "とまる", "がよい"],note:"に + とまる = «hospedarse en» · がよい = consejo"},
+        {jp:"これはかぎじゃ",pi:5,romaji:"kore wa kagi ja",es:"esto es una llave (habla de anciano)",en:"this is a key (elder speech)",parts:["これ", "は", "かぎ", "じゃ"],note:"じゃ = だ en boca de ancianos y sabios"},
+        {jp:"わしがおうさまじゃ",pi:5,romaji:"washi ga ousama ja",es:"yo soy el rey",en:"I am the king",parts:["わし", "が", "おうさま", "じゃ"],note:"わし = «yo» (viejo o rey) · じゃ = «es»"},
+        {jp:"そなたはゆうしゃじゃ",pi:5,romaji:"sonata wa yuusha ja",es:"tú eres el héroe",en:"you are the hero",parts:["そなた", "は", "ゆうしゃ", "じゃ"],note:"そなた = «tú» arcaico · じゃ = «es»"},
+        {jp:"あぶないぞ",pi:5,romaji:"abunai zo",es:"¡cuidado!",en:"watch out!",parts:["あぶない", "ぞ"],note:"ぞ = aviso o énfasis fuerte"},
+        {jp:"まものがあらわれた",pi:6,romaji:"mamono ga arawareta",es:"apareció un monstruo",en:"a monster appeared",parts:["まもの", "が", "あらわれた"],note:"あらわれる→あらわれた = pasado"},
+        {jp:"スライムをたおした",pi:6,romaji:"suraimu o taoshita",es:"derrotaste al slime",en:"you defeated the slime",parts:["スライム", "を", "たおした"],note:"たおす→たおした = pasado"},
+        {jp:"ダメージをうけた",pi:6,romaji:"dameeji o uketa",es:"recibiste daño",en:"you took damage",parts:["ダメージ", "を", "うけた"],note:"うける→うけた = pasado"},
+        {jp:"ゴールドをてにいれた",pi:6,romaji:"goorudo o te ni ireta",es:"conseguiste oro",en:"you got gold",parts:["ゴールド", "を", "てにいれた"],note:"てにいれる→てにいれた = pasado"},
+        {jp:"レベルがあがった",pi:7,romaji:"reberu ga agatta",es:"subiste de nivel",en:"your level went up",parts:["レベル", "が", "あがった"],note:"あがる→あがった = pasado · が marca lo que cambia"},
+        {jp:"ひめがさらわれた",pi:6,romaji:"hime ga sarawareta",es:"secuestraron a la princesa",en:"the princess was kidnapped",parts:["ひめ", "が", "さらわれた"],note:"さらう→さらわれた (pasivo: «fue secuestrada»). El pasivo se estudia más adelante; acá va como frase hecha"},
+        {jp:"おかねがたりない",pi:7,romaji:"okane ga tarinai",es:"falta dinero",en:"not enough money",parts:["おかね", "が", "たりない"],note:"たりる→たりない = «no alcanza»"},
+        {jp:"たいまつははちゴールド",pi:8,romaji:"taimatsu wa hachi goorudo",es:"la antorcha cuesta 8 de oro",en:"the torch costs 8 gold",parts:["たいまつ", "は", "はち", "ゴールド"],note:"X は número + ゴールド = precio"}
       ]
     },
     'pkmn-gen1': {
       patterns:[
-        {pat:'これ/それ + は…だ', es:'demostrativo + cópula: «esto es…».'},
-        {pat:'を + verbo', es:'を marca el objeto: «elegir X», «usar X».'},
-        {pat:'の', es:'の une nombres: «el X de Y» / posesivo.'},
-        {pat:'か', es:'partícula de pregunta.'},
-        {pat:'～てください', es:'pedido cortés.'},
-        {pat:'～こう (volitivo)', es:'«hagamos / vamos»: いこう.'},
-        {pat:'～た (pasado casual)', es:'acción ya ocurrida: おぼえた «aprendió», みつけた «encontró». El juego narra casi todo en pasado.'},
-        {pat:'Xを つかった', es:'を + verbo de acción en pasado: «usó X».'},
-        {pat:'～できません', es:'potencial negativo cortés: «no se puede» (…つかえません).'},
-        {pat:'～に なる', es:'convertirse / volverse: しんか → «se volvió X».'},
-        {pat:'～ますか', es:'pregunta cortés (tiendas, NPC): «¿…?».'},
-        {pat:'número + かい', es:'contador de pisos: 1かい, ちか1かい (sótano 1).'},
-        {pat:'～たい', es:'querer hacer: おぼえたい «quiere aprender».'}
+        {pat:"これ/それ + は…だ", es:"demostrativo + cópula: «esto es…».", en:"demonstrative + copula: this is..."},
+        {pat:"を + verbo", es:"を marca el objeto: «elegir X», «usar X».", en:"を marks the object: choose X, use X."},
+        {pat:"の", es:"の une nombres: «el X de Y» / posesivo.", en:"の links nouns: X of Y, or possessive."},
+        {pat:"か", es:"partícula de pregunta.", en:"question particle."},
+        {pat:"～てください", es:"pedido cortés.", en:"polite request."},
+        {pat:"～こう (volitivo)", es:"«hagamos / vamos»: いこう.", en:"let us do it: いこう."},
+        {pat:"～た (pasado casual)", es:"acción ya ocurrida: おぼえた «aprendió», みつけた «encontró». El juego narra casi todo en pasado.", en:"a completed action: おぼえた \"learned\", みつけた \"found\". The game narrates almost everything in the past."},
+        {pat:"Xを つかった", es:"を + verbo de acción en pasado: «usó X».", en:"を + past action verb: \"used X\"."},
+        {pat:"～できません", es:"potencial negativo cortés: «no se puede» (…つかえません).", en:"polite negative potential: \"cannot\" (…つかえません)."},
+        {pat:"～に なる", es:"convertirse / volverse: しんか → «se volvió X».", en:"to become: しんか means \"became X\"."},
+        {pat:"～ますか", es:"pregunta cortés (tiendas, NPC): «¿…?».", en:"polite question (shops, NPCs)."},
+        {pat:"número + かい", es:"contador de pisos: 1かい, ちか1かい (sótano 1).", en:"floor counter: 1かい, ちか1かい (basement 1)."},
+        {pat:"～たい", es:"querer hacer: おぼえたい «quiere aprender».", en:"want to do: おぼえたい \"wants to learn\"."}
       ],
       phrases:[
-        {jp:'これはポケモンだ',romaji:'kore wa pokemon da',es:'esto es un Pokémon',en:"this is a Pokémon",parts:['これ','は','ポケモン','だ'],note:'これ + は + X + だ = «esto es X»'},
-        {jp:'それはどうぐだ',romaji:'sore wa dougu da',es:'eso es un objeto',en:"that's an item",parts:['それ','は','どうぐ','だ'],note:'それ + は + X + だ'},
-        {jp:'ポケモンをえらぶ',romaji:'pokemon o erabu',es:'elegir un Pokémon',en:'choose a Pokémon',parts:['ポケモン','を','えらぶ'],note:'を + verbo · えらぶ = «elegir»'},
-        {jp:'きみのなまえは',romaji:'kimi no namae wa',es:'¿tu nombre?',en:'your name?',note:'の = «de» · は = tema'},
-        {jp:'キズぐすりをつかう',romaji:'kizugusuri o tsukau',es:'usar una poción',en:'use a potion',parts:['キズぐすり','を','つかう'],note:'を + つかう = «usar X»'},
-        {jp:'わざをおぼえた',romaji:'waza o oboeta',es:'aprendió un movimiento',en:'learned a move',parts:['わざ','を','おぼえた'],note:'～た = pasado: おぼえる → おぼえた'},
-        {jp:'どうぐをみつけた',romaji:'dougu o mitsuketa',es:'encontró un objeto',en:'found an item',parts:['どうぐ','を','みつけた'],note:'～た = pasado: みつける → みつけた'},
-        {jp:'ポケモンをつかまえる',romaji:'pokemon o tsukamaeru',es:'atrapar un Pokémon',en:'catch a Pokémon',parts:['ポケモン','を','つかまえる'],note:'を + verbo · つかまえる = «atrapar»'},
-        {jp:'ポケモンがしんかした',romaji:'pokemon ga shinka shita',es:'el Pokémon evolucionó',en:'the Pokémon evolved',parts:['ポケモン','が','しんか','した'],note:'しんかする → した (pasado)'},
-        {jp:'つよさをみる',romaji:'tsuyosa o miru',es:'ver los stats',en:'view stats',parts:['つよさ','を','みる'],note:'を + verbo · みる = «ver»'},
-        {jp:'ここではつかえません',romaji:'koko de wa tsukaemasen',es:'aquí no se puede usar',en:"you can't use it here",parts:['ここ','で','は','つかえません'],note:'～ません = negativo cortés (no se puede)'},
-        {jp:'ちか1かい',romaji:'chika ikkai',es:'sótano 1',en:'basement 1',note:'ちか + número + かい = piso subterráneo'},
-        {jp:'がんばってください',romaji:'ganbatte kudasai',es:'esforzate, por favor',en:'do your best, please',note:'～てください = pedido'},
-        {jp:'いこう',romaji:'ikou',es:'¡vamos!',en:"let's go!",note:'～こう = «hagamos»'}
+        {jp:'これはポケモンだ',pi:0,romaji:'kore wa pokemon da',es:'esto es un Pokémon',en:"this is a Pokémon",parts:['これ','は','ポケモン','だ'],note:'これ + は + X + だ = «esto es X»'},
+        {jp:'それはどうぐだ',pi:0,romaji:'sore wa dougu da',es:'eso es un objeto',en:"that's an item",parts:['それ','は','どうぐ','だ'],note:'それ + は + X + だ'},
+        {jp:'ポケモンをえらぶ',pi:1,romaji:'pokemon o erabu',es:'elegir un Pokémon',en:'choose a Pokémon',parts:['ポケモン','を','えらぶ'],note:'を + verbo · えらぶ = «elegir»'},
+        {jp:'きみのなまえは',pi:2,romaji:'kimi no namae wa',es:'¿tu nombre?',en:'your name?',note:'の = «de» · は = tema'},
+        {jp:'キズぐすりをつかう',pi:1,romaji:'kizugusuri o tsukau',es:'usar una poción',en:'use a potion',parts:['キズぐすり','を','つかう'],note:'を + つかう = «usar X»'},
+        {jp:'わざをおぼえた',pi:6,romaji:'waza o oboeta',es:'aprendió un movimiento',en:'learned a move',parts:['わざ','を','おぼえた'],note:'～た = pasado: おぼえる → おぼえた'},
+        {jp:'どうぐをみつけた',pi:6,romaji:'dougu o mitsuketa',es:'encontró un objeto',en:'found an item',parts:['どうぐ','を','みつけた'],note:'～た = pasado: みつける → みつけた'},
+        {jp:'ポケモンをつかまえる',pi:1,romaji:'pokemon o tsukamaeru',es:'atrapar un Pokémon',en:'catch a Pokémon',parts:['ポケモン','を','つかまえる'],note:'を + verbo · つかまえる = «atrapar»'},
+        {jp:'ポケモンがしんかした',pi:6,romaji:'pokemon ga shinka shita',es:'el Pokémon evolucionó',en:'the Pokémon evolved',parts:['ポケモン','が','しんか','した'],note:'しんかする → した (pasado)'},
+        {jp:'つよさをみる',pi:1,romaji:'tsuyosa o miru',es:'ver los stats',en:'view stats',parts:['つよさ','を','みる'],note:'を + verbo · みる = «ver»'},
+        {jp:'ここではつかえません',pi:8,romaji:'koko de wa tsukaemasen',es:'aquí no se puede usar',en:"you can't use it here",parts:['ここ','で','は','つかえません'],note:'～ません = negativo cortés (no se puede)'},
+        {jp:'ちか1かい',pi:11,romaji:'chika ikkai',es:'sótano 1',en:'basement 1',note:'ちか + número + かい = piso subterráneo'},
+        {jp:'がんばってください',pi:4,romaji:'ganbatte kudasai',es:'esforzate, por favor',en:'do your best, please',note:'～てください = pedido'},
+        {jp:'いこう',pi:5,romaji:'ikou',es:'¡vamos!',en:"let's go!",note:'～こう = «hagamos»'}
       ]
     },
     'gyakuten-saiban': {
       patterns:[
-        {pat:'と + むじゅんしている', es:'«Contradice a X». と se usa para decir "con", marcando contra qué choca el testimonio.'},
-        {pat:'うそ + を + つく', es:'Expresión fija: «Decir mentiras». を marca la mentira como el objeto.'},
-        {pat:'～は + あなた + だ', es:'«X eres tú». Clásica frase de acusación en la corte.'}
+        {pat:"と + むじゅんしている", es:"«Contradice a X». と se usa para decir \"con\", marcando contra qué choca el testimonio.", en:"Contradicts X. と marks what the testimony clashes with."},
+        {pat:"うそ + を + つく", es:"Expresión fija: «Decir mentiras». を marca la mentira como el objeto.", en:"Fixed expression: to tell lies. を marks the lie as the object."},
+        {pat:"～は + あなた + だ", es:"«X eres tú». Clásica frase de acusación en la corte.", en:"X is you. Classic courtroom accusation."}
       ],
       phrases:[
-        {jp:'しょうことむじゅんしている',romaji:'shouko to mujun shite iru',es:'contradice la evidencia',en:'it contradicts the evidence',parts:['しょうこ','と','むじゅん','している'],note:'と = «con» · むじゅんしている = «está contradiciendo»'},
-        {jp:'しょうげんとむじゅんしている',romaji:'shougen to mujun shite iru',es:'contradice el testimonio',en:'it contradicts the testimony',parts:['しょうげん','と','むじゅん','している'],note:'と = «con»'},
-        {jp:'うそをついている',romaji:'uso o tsuite iru',es:'está mintiendo',en:'is lying',parts:['うそ','を','ついている'],note:'うそをつく = «mentir» (estado continuo: ついている)'},
-        {jp:'はんにんはあなただ',romaji:'hannin wa anata da',es:'el culpable eres tú',en:'the culprit is you',parts:['はんにん','は','あなた','だ'],note:'A は B だ = Acusación directa'},
+        {jp:'しょうことむじゅんしている',pi:0,romaji:'shouko to mujun shite iru',es:'contradice la evidencia',en:'it contradicts the evidence',parts:['しょうこ','と','むじゅん','している'],note:'と = «con» · むじゅんしている = «está contradiciendo»'},
+        {jp:'しょうげんとむじゅんしている',pi:0,romaji:'shougen to mujun shite iru',es:'contradice el testimonio',en:'it contradicts the testimony',parts:['しょうげん','と','むじゅん','している'],note:'と = «con»'},
+        {jp:'うそをついている',pi:1,romaji:'uso o tsuite iru',es:'está mintiendo',en:'is lying',parts:['うそ','を','ついている'],note:'うそをつく = «mentir» (estado continuo: ついている)'},
+        {jp:'はんにんはあなただ',pi:2,romaji:'hannin wa anata da',es:'el culpable eres tú',en:'the culprit is you',parts:['はんにん','は','あなた','だ'],note:'A は B だ = Acusación directa'},
         {jp:'しょうこはある',romaji:'shouko wa aru',es:'hay pruebas',en:'there is evidence',parts:['しょうこ','は','ある'],note:'は marca el tema. ある = «hay / existen» (cosas)'},
         {jp:'しょうげんをはじめる',romaji:'shougen o hajimeru',es:'comenzar el testimonio',en:'begin testimony',parts:['しょうげん','を','はじめる'],note:'を marca el objeto. はじめる = «comenzar»'}
       ]
@@ -5829,11 +5838,71 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       if(clr)clr.addEventListener('click',function(){ if(sEl){sEl.value='';sEl.focus();} applyFilter(); });
     })();
   }
+  /* =========================================================================
+     CHULETA DE GRAMATICA POR JUEGO
+     Lee OPENINGS[gid]: cada patron con su explicacion y, debajo, las frases
+     propias que lo practican (campo pi = indice del patron). Las frases sin
+     patron van al final. Un patron sin frases se muestra igual, con aviso, para
+     que el hueco sea visible y no se esconda.
+     ========================================================================= */
+  function gramPickText(o,es){ return es?(o.es||o.en||''):(o.en||o.es||''); }
+  function gramMark(jp){
+    var b=ensurePhrases().box[jp]||0;
+    if(b>=4) return '<span class="fx-mk ok gr-mk">\u2713</span>';
+    if(b>=1) return '<span class="fx-mk prog gr-mk">\u25D0</span>';
+    return '';
+  }
+  function renderGramSheet(gid){
+    var inner=document.getElementById('fichaInner'); if(!inner)return;
+    var es=getLang()==='es', g=null, i;
+    for(i=0;i<GAMES.length;i++) if(GAMES[i].id===gid) g=GAMES[i];
+    var og=(typeof OPENINGS!=='undefined')?OPENINGS[gid]:null;
+    if(!g||!og||!og.patterns){ closeFicha(); return; }
+    var pats=og.patterns, phr=og.phrases||[], groups=[], other=[];
+    pats.forEach(function(){ groups.push([]); });
+    phr.forEach(function(p){ if(typeof p.pi==='number'&&groups[p.pi]) groups[p.pi].push(p); else other.push(p); });
+    var h='<div class="d-sticky"><div class="d-head"><button class="d-close" id="fxClose">\u2715 '+t('Back')+'</button>'+
+          '<span class="cx-title mincho">'+(es?'Gram\u00e1tica: ':'Grammar: ')+gamePick(g.name)+'</span></div>'+
+          '<div class="fx-tools"><div class="fx-index" id="fxIndex">';
+    pats.forEach(function(p,n){ h+='<button class="fx-pill" data-jump="gramsec-'+n+'">'+p.pat+' <b>'+groups[n].length+'</b></button>'; });
+    if(other.length) h+='<button class="fx-pill" data-jump="gramsec-x">'+(es?'Otras':'Other')+' <b>'+other.length+'</b></button>';
+    h+='</div></div></div>';
+    h+='<div class="fx-intro">'+(es
+        ?'Los patrones que este juego repite, cada uno con frases propias que lo practican. Toc\u00e1 una frase para escucharla.'
+        :'The patterns this game keeps repeating, each with our own phrases that drill it. Tap a phrase to hear it.')+'</div>';
+    h+='<div class="fx-legend"><span><b class="ok">\u2713</b>'+(es?'dominada':'mastered')+'</span>'+
+       '<span><b class="prog">\u25D0</b>'+(es?'en progreso':'in progress')+'</span></div>';
+    function rowHTML(p){
+      return '<div class="gr-row" data-say="'+p.jp+'"><div class="gr-top"><span class="mincho gr-jp">'+sweepKanaHTML(p.jp)+'</span>'+gramMark(p.jp)+'</div>'+
+             '<div class="gr-es">'+(es?(p.es||p.en):(p.en||p.es))+'</div>'+
+             (p.note?'<div class="gr-note">'+p.note+'</div>':'')+'</div>';
+    }
+    pats.forEach(function(p,n){
+      h+='<div class="fx-cat" id="gramsec-'+n+'">'+p.pat+'</div>'+
+         '<div class="gr-exp">'+gramPickText(p,es)+'</div>';
+      if(groups[n].length){ groups[n].forEach(function(x){ h+=rowHTML(x); }); }
+      else h+='<div class="gr-empty">'+(es?'Todav\u00eda sin frases de ejemplo propias para este patr\u00f3n.':'No example phrases of our own for this pattern yet.')+'</div>';
+    });
+    if(other.length){
+      h+='<div class="fx-cat" id="gramsec-x">'+(es?'Otras frases del juego':'Other phrases from the game')+'</div>';
+      other.forEach(function(x){ h+=rowHTML(x); });
+    }
+    h+='<div class="fx-foot">'+(es
+        ?'Estas frases son nuestras, no salen del guion del juego. Para practicarlas con repaso espaciado us\u00e1 Frases en la lectura de hoy.'
+        :'These phrases are our own, not taken from the game script. To practice them with spaced repetition use Phrases in today\'s reading.')+'</div>';
+    inner.innerHTML=h;
+    var c=document.getElementById('fxClose'); if(c)c.addEventListener('click',function(){ openFicha(gid); });
+    inner.querySelectorAll('.gr-row[data-say]').forEach(function(el){ el.addEventListener('click',function(){ speakSweep(el.getAttribute('data-say'), el); }); });
+    inner.querySelectorAll('.fx-pill[data-jump]').forEach(function(p){
+      p.addEventListener('click',function(){ var el=document.getElementById(p.getAttribute('data-jump')); if(el)el.scrollIntoView({behavior:'smooth',block:'start'}); });
+    });
+  }
   function renderFicha(){
     if(fichaGameId==='__kana__'){ renderKanaSheet(); return; }
     if(fichaGameId==='__radicals__'){ renderRadicalsSheet(); return; }
     if(fichaGameId==='__kanji__'){ renderKanjiSheet(); return; }
     if(fichaGameId==='__travel__'){ renderTravelSheet(); return; }
+    if(fichaGameId&&fichaGameId.indexOf('__gram:')===0){ renderGramSheet(fichaGameId.slice(7)); return; }
     if(fichaGameId&&fichaGameId.indexOf('__note:')===0){ renderNote(fichaGameId.slice(7)); return; }
     var g=null,i; for(i=0;i<GAMES.length;i++) if(GAMES[i].id===fichaGameId) g=GAMES[i];
     var inner=document.getElementById('fichaInner'); if(!g||!inner)return;
@@ -5856,6 +5925,10 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
         '<span><b class="prog">◐</b>'+(es?'en progreso':'in progress')+'</span>'+
         '<span><b>·</b>'+(es?'legible':'readable')+'</span>'+
         '<span><b class="lock">🔒</b>'+(es?'bloqueada':'locked')+'</span></div>';
+    var ogr=(typeof OPENINGS!=='undefined')?OPENINGS[g.id]:null;
+    if(ogr&&ogr.patterns&&ogr.patterns.length){
+      h+='<div class="kx-tabs" style="margin:2px 0 4px"><button class="kx-tab" id="fxGram">'+(es?'Chuleta de gram\u00e1tica ('+ogr.patterns.length+' patrones)':'Grammar cheat sheet ('+ogr.patterns.length+' patterns)')+'</button></div>';
+    }
     grp.order.forEach(function(c){
       h+='<div class="fx-cat" id="fxsec-'+c+'">'+catLabel(c)+'</div><div class="fx-grid">';
       grp.map[c].forEach(function(w){ h+=fichaChipHTML(w); });
@@ -5867,6 +5940,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
         :'Story dialogue lives elsewhere: use an external dictionary (Jisho, Yomitan) for that. Nikka raises your reading until that dictionary becomes usable.')+'</div>';
     inner.innerHTML=h;
     var c=document.getElementById('fxClose'); if(c)c.addEventListener('click',closeFicha);
+    var gbtn=document.getElementById('fxGram'); if(gbtn)gbtn.addEventListener('click',function(){ openFicha('__gram:'+g.id); });
     inner.querySelectorAll('.fx-chip[data-say]').forEach(function(b){
       b.addEventListener('click',function(ev){ var t=(ev&&ev.target&&ev.target.closest)?ev.target.closest('[data-open-note]'):null; if(t){ if(ev.stopPropagation)ev.stopPropagation(); openFicha('__note:'+t.getAttribute('data-open-note')); return; } speak(b.getAttribute('data-say')); }); });
     (function(){
