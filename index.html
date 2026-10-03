@@ -3327,6 +3327,52 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
         {jp:'だいじょうぶだ',romaji:'daijoubu da',es:'está todo bien',en:"it's all right",note:'だ = «es» (casual)'}
       ]
     },
+    'dq1-nes': {
+      patterns:[
+        {pat:"が + ある / いる", es:"existencia: «hay X». いる = seres vivos, ある = cosas. Así te dan las pistas casi todos los NPC."},
+        {pat:"を + verbo", es:"を marca el objeto: かぎをつかう «usar la llave»."},
+        {pat:"に / へ + いく・はいる・もどる", es:"destino: «ir a X», «entrar en X», «volver a X»."},
+        {pat:"か", es:"partícula de pregunta al final: «¿…?». Así te prueban los guardias."},
+        {pat:"verbo + がよい", es:"«hacé X / más vale que hagas X». Mandato solemne de reyes y ancianos: いくがよい «andá». Es el sello del habla antigua de este juego."},
+        {pat:"じゃ / ぞ", es:"finales antiguos: じゃ ocupa el lugar de だ (viejos y sabios); ぞ avisa o enfatiza (rey y guardias)."},
+        {pat:"～た (pasado casual)", es:"el combate narra todo en pasado: たおした «derrotó», あらわれた «apareció», あがった «subió»."},
+        {pat:"～が + あがる", es:"cambio de estado: レベルがあがった «el nivel subió»."},
+        {pat:"X は número + ゴールド", es:"precios en tiendas y posadas: たいまつははちゴールド «la antorcha cuesta 8 de oro»."}
+      ],
+      phrases:[
+        {jp:"ここにかいだんがある",romaji:"koko ni kaidan ga aru",es:"hay una escalera aquí",en:"there is a staircase here",parts:["ここ", "に", "かいだん", "が", "ある"],note:"が…ある = «hay» (cosas) · に marca el lugar"},
+        {jp:"まちにやどやがある",romaji:"machi ni yadoya ga aru",es:"hay una posada en el pueblo",en:"there is an inn in town",parts:["まち", "に", "やどや", "が", "ある"],note:"が…ある = «hay» (cosas)"},
+        {jp:"しろにへいしがいる",romaji:"shiro ni heishi ga iru",es:"hay soldados en el castillo",en:"there are soldiers in the castle",parts:["しろ", "に", "へいし", "が", "いる"],note:"が…いる = «hay» (seres vivos)"},
+        {jp:"ほこらにろうじんがいる",romaji:"hokora ni roujin ga iru",es:"hay un anciano en el santuario",en:"there is an old man in the shrine",parts:["ほこら", "に", "ろうじん", "が", "いる"],note:"が…いる = «hay» (seres vivos)"},
+        {jp:"かぎをつかう",romaji:"kagi o tsukau",es:"usar la llave",en:"use the key",parts:["かぎ", "を", "つかう"],note:"を + verbo · つかう = «usar»"},
+        {jp:"やくそうをつかう",romaji:"yakusou o tsukau",es:"usar la hierba medicinal",en:"use the herb",parts:["やくそう", "を", "つかう"],note:"を + verbo · つかう = «usar»"},
+        {jp:"とびらをあける",romaji:"tobira o akeru",es:"abrir la puerta",en:"open the door",parts:["とびら", "を", "あける"],note:"を + verbo · あける = «abrir»"},
+        {jp:"たからのはこをあける",romaji:"takara no hako o akeru",es:"abrir el cofre del tesoro",en:"open the treasure chest",parts:["たからのはこ", "を", "あける"],note:"を + verbo · あける = «abrir»"},
+        {jp:"まものをたおす",romaji:"mamono o taosu",es:"derrotar al monstruo",en:"defeat the monster",parts:["まもの", "を", "たおす"],note:"を + verbo · たおす = «derrotar»"},
+        {jp:"しろへいく",romaji:"shiro e iku",es:"voy al castillo",en:"I go to the castle",parts:["しろ", "へ", "いく"],note:"へ = «hacia» · いく = «ir»"},
+        {jp:"どうくつにはいる",romaji:"doukutsu ni hairu",es:"entro a la cueva",en:"I enter the cave",parts:["どうくつ", "に", "はいる"],note:"に marca el destino de はいる"},
+        {jp:"まちにもどる",romaji:"machi ni modoru",es:"vuelvo al pueblo",en:"I return to town",parts:["まち", "に", "もどる"],note:"に marca el destino de もどる"},
+        {jp:"しまへわたる",romaji:"shima e wataru",es:"cruzo a la isla",en:"I cross to the island",parts:["しま", "へ", "わたる"],note:"へ = «hacia» · わたる = «cruzar»"},
+        {jp:"ロトのしるしをもっているか",romaji:"Roto no shirushi o motte iru ka",es:"¿tenés el emblema de Roto?",en:"do you have Roto's emblem?",parts:["ロトのしるし", "を", "もっている", "か"],note:"もつ→もっている («tiene») + か = pregunta"},
+        {jp:"ひめをしっているか",romaji:"hime o shitte iru ka",es:"¿conocés a la princesa?",en:"do you know the princess?",parts:["ひめ", "を", "しっている", "か"],note:"しる→しっている («sabe, conoce») + か = pregunta"},
+        {jp:"いくがよい",romaji:"iku ga yoi",es:"andá (orden solemne)",en:"go (solemn command)",parts:["いく", "がよい"],note:"verbo + がよい = «hacelo, andá». Mandato de reyes y ancianos"},
+        {jp:"まつがよい",romaji:"matsu ga yoi",es:"esperá (consejo solemne)",en:"wait (solemn advice)",parts:["まつ", "がよい"],note:"verbo + がよい = «hacelo»"},
+        {jp:"はなすがよい",romaji:"hanasu ga yoi",es:"hablá (dilo)",en:"speak (go ahead)",parts:["はなす", "がよい"],note:"verbo + がよい = «hacelo»"},
+        {jp:"やどやにとまるがよい",romaji:"yadoya ni tomaru ga yoi",es:"hospedate en la posada",en:"stay at the inn",parts:["やどや", "に", "とまる", "がよい"],note:"に + とまる = «hospedarse en» · がよい = consejo"},
+        {jp:"これはかぎじゃ",romaji:"kore wa kagi ja",es:"esto es una llave (habla de anciano)",en:"this is a key (elder speech)",parts:["これ", "は", "かぎ", "じゃ"],note:"じゃ = だ en boca de ancianos y sabios"},
+        {jp:"わしがおうさまじゃ",romaji:"washi ga ousama ja",es:"yo soy el rey",en:"I am the king",parts:["わし", "が", "おうさま", "じゃ"],note:"わし = «yo» (viejo o rey) · じゃ = «es»"},
+        {jp:"そなたはゆうしゃじゃ",romaji:"sonata wa yuusha ja",es:"tú eres el héroe",en:"you are the hero",parts:["そなた", "は", "ゆうしゃ", "じゃ"],note:"そなた = «tú» arcaico · じゃ = «es»"},
+        {jp:"あぶないぞ",romaji:"abunai zo",es:"¡cuidado!",en:"watch out!",parts:["あぶない", "ぞ"],note:"ぞ = aviso o énfasis fuerte"},
+        {jp:"まものがあらわれた",romaji:"mamono ga arawareta",es:"apareció un monstruo",en:"a monster appeared",parts:["まもの", "が", "あらわれた"],note:"あらわれる→あらわれた = pasado"},
+        {jp:"スライムをたおした",romaji:"suraimu o taoshita",es:"derrotaste al slime",en:"you defeated the slime",parts:["スライム", "を", "たおした"],note:"たおす→たおした = pasado"},
+        {jp:"ダメージをうけた",romaji:"dameeji o uketa",es:"recibiste daño",en:"you took damage",parts:["ダメージ", "を", "うけた"],note:"うける→うけた = pasado"},
+        {jp:"ゴールドをてにいれた",romaji:"goorudo o te ni ireta",es:"conseguiste oro",en:"you got gold",parts:["ゴールド", "を", "てにいれた"],note:"てにいれる→てにいれた = pasado"},
+        {jp:"レベルがあがった",romaji:"reberu ga agatta",es:"subiste de nivel",en:"your level went up",parts:["レベル", "が", "あがった"],note:"あがる→あがった = pasado · が marca lo que cambia"},
+        {jp:"ひめがさらわれた",romaji:"hime ga sarawareta",es:"secuestraron a la princesa",en:"the princess was kidnapped",parts:["ひめ", "が", "さらわれた"],note:"さらう→さらわれた (pasivo: «fue secuestrada»). El pasivo se estudia más adelante; acá va como frase hecha"},
+        {jp:"おかねがたりない",romaji:"okane ga tarinai",es:"falta dinero",en:"not enough money",parts:["おかね", "が", "たりない"],note:"たりる→たりない = «no alcanza»"},
+        {jp:"たいまつははちゴールド",romaji:"taimatsu wa hachi goorudo",es:"la antorcha cuesta 8 de oro",en:"the torch costs 8 gold",parts:["たいまつ", "は", "はち", "ゴールド"],note:"X は número + ゴールド = precio"}
+      ]
+    },
     'pkmn-gen1': {
       patterns:[
         {pat:'これ/それ + は…だ', es:'demostrativo + cópula: «esto es…».'},
@@ -4828,6 +4874,249 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       ]
     },
     {
+      id:'dq1-nes', rung:2,
+      name:{ es:'Dragon Quest I (NES)', en:'Dragon Quest I (NES)' },
+      mode:{ es:'kana + habla antigua', en:'kana + archaic speech' },
+      words:[
+        {jp:"はなす",cat:"menu",tier:0,romaji:"hanasu",es:"hablar",en:"to talk"},  /* 話す */
+        {jp:"じゅもん",cat:"menu",tier:0,romaji:"jumon",es:"hechizo (magia)",en:"spell"},  /* 呪文 */
+        {jp:"つよさ",cat:"menu",tier:0,romaji:"tsuyosa",es:"fuerza (pantalla de stats)",en:"strength (stats screen)"},  /* 強さ */
+        {jp:"どうぐ",cat:"menu",tier:0,romaji:"dougu",es:"objetos",en:"items"},  /* 道具 */
+        {jp:"かいだん",cat:"menu",tier:0,romaji:"kaidan",es:"escaleras",en:"stairs"},  /* 階段 */
+        {jp:"しらべる",cat:"menu",tier:0,romaji:"shiraberu",es:"examinar / buscar",en:"to examine"},  /* 調べる */
+        {jp:"とる",cat:"menu",tier:0,romaji:"toru",es:"tomar",en:"to take"},  /* 取る */
+        {jp:"とびら",cat:"menu",tier:0,romaji:"tobira",es:"puerta",en:"door"},  /* 扉 */
+        {jp:"コマンド",cat:"menu",tier:0,romaji:"komando",es:"comando",en:"command"},
+        {jp:"はい",cat:"menu",tier:0,romaji:"hai",es:"sí",en:"yes"},
+        {jp:"いいえ",cat:"menu",tier:0,romaji:"iie",es:"no",en:"no"},
+        {jp:"ふっかつのじゅもん",cat:"menu",tier:0,romaji:"fukkatsu no jumon",es:"contraseña (hechizo de resurrección)",en:"password (revival spell)",morph:[{"jp": "ふっかつ", "ro": "fukkatsu", "es": "revivir", "en": "revival"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "じゅもん", "ro": "jumon", "es": "hechizo", "en": "spell"}]},  /* 復活の呪文 */
+        {jp:"たたかう",cat:"combat",tier:0,romaji:"tatakau",es:"pelear",en:"to fight"},  /* 戦う */
+        {jp:"にげる",cat:"combat",tier:0,romaji:"nigeru",es:"huir",en:"to run away"},  /* 逃げる */
+        {jp:"こうげき",cat:"combat",tier:0,romaji:"kougeki",es:"ataque",en:"attack"},  /* 攻撃 */
+        {jp:"ダメージ",cat:"combat",tier:0,romaji:"dameeji",es:"daño",en:"damage"},
+        {jp:"あらわれる",cat:"combat",tier:0,romaji:"arawareru",es:"aparecer",en:"to appear"},  /* 現れる */
+        {jp:"てにいれる",cat:"combat",tier:0,romaji:"te ni ireru",es:"conseguir / obtener",en:"to obtain",morph:[{"jp": "て", "ro": "te", "es": "mano", "en": "hand"}, {"jp": "に", "ro": "ni", "es": "en", "en": "into"}, {"jp": "いれる", "ro": "ireru", "es": "meter", "en": "to put in"}]},  /* 手に入れる */
+        {jp:"ゴールド",cat:"stats",tier:0,romaji:"goorudo",es:"oro (moneda)",en:"gold (currency)"},
+        {jp:"レベル",cat:"stats",tier:0,romaji:"reberu",es:"nivel",en:"level"},
+        {jp:"ポイント",cat:"stats",tier:0,romaji:"pointo",es:"puntos",en:"points"},
+        {jp:"けいけんち",cat:"stats",tier:0,romaji:"keikenchi",es:"experiencia (puntos)",en:"experience points"},  /* 経験値 */
+        {jp:"やどや",cat:"shop",tier:0,romaji:"yadoya",es:"posada",en:"inn"},  /* 宿屋 */
+        {jp:"かう",cat:"shop",tier:0,romaji:"kau",es:"comprar",en:"to buy"},  /* 買う */
+        {jp:"うる",cat:"shop",tier:0,romaji:"uru",es:"vender",en:"to sell"},  /* 売る */
+        {jp:"ちから",cat:"stats",tier:1,romaji:"chikara",es:"fuerza",en:"strength"},  /* 力 */
+        {jp:"すばやさ",cat:"stats",tier:1,romaji:"subayasa",es:"agilidad",en:"agility"},  /* 素早さ */
+        {jp:"さいだい",cat:"stats",tier:1,romaji:"saidai",es:"máximo",en:"maximum"},  /* 最大 */
+        {jp:"こうげきりょく",cat:"stats",tier:1,romaji:"kougekiryoku",es:"poder de ataque",en:"attack power",morph:[{"jp": "こうげき", "ro": "kougeki", "es": "ataque", "en": "attack"}, {"jp": "りょく", "ro": "ryoku", "es": "fuerza (力)", "en": "power (力)"}]},  /* 攻撃力 */
+        {jp:"しゅびりょく",cat:"stats",tier:1,romaji:"shubiryoku",es:"poder de defensa",en:"defense power",morph:[{"jp": "しゅび", "ro": "shubi", "es": "defensa", "en": "defense"}, {"jp": "りょく", "ro": "ryoku", "es": "fuerza (力)", "en": "power (力)"}]},  /* 守備力 */
+        {jp:"ぶき",cat:"stats",tier:1,romaji:"buki",es:"arma",en:"weapon"},  /* 武器 */
+        {jp:"よろい",cat:"stats",tier:1,romaji:"yoroi",es:"armadura",en:"armor"},  /* 鎧 */
+        {jp:"たて",cat:"stats",tier:1,romaji:"tate",es:"escudo",en:"shield"},  /* 盾 */
+        {jp:"なし",cat:"stats",tier:1,romaji:"nashi",es:"nada / sin",en:"none"},  /* 無し */
+        {jp:"あがる",cat:"stats",tier:1,romaji:"agaru",es:"subir",en:"to go up"},  /* 上がる */
+        {jp:"たおす",cat:"combat",tier:1,romaji:"taosu",es:"derrotar",en:"to defeat"},  /* 倒す */
+        {jp:"うける",cat:"combat",tier:1,romaji:"ukeru",es:"recibir",en:"to receive"},  /* 受ける */
+        {jp:"あたえる",cat:"combat",tier:1,romaji:"ataeru",es:"dar / infligir",en:"to give, to inflict"},  /* 与える */
+        {jp:"てき",cat:"combat",tier:1,romaji:"teki",es:"enemigo",en:"enemy"},  /* 敵 */
+        {jp:"まもの",cat:"combat",tier:1,romaji:"mamono",es:"monstruo",en:"monster"},  /* 魔物 */
+        {jp:"にげだす",cat:"combat",tier:1,romaji:"nigedasu",es:"escaparse",en:"to run off"},  /* 逃げ出す */
+        {jp:"となえる",cat:"combat",tier:1,romaji:"tonaeru",es:"recitar (un hechizo)",en:"to chant (cast)"},  /* 唱える */
+        {jp:"かいふく",cat:"combat",tier:1,romaji:"kaifuku",es:"recuperarse / curar",en:"to recover"},  /* 回復 */
+        {jp:"かいしんのいちげき",cat:"combat",tier:1,romaji:"kaishin no ichigeki",es:"golpe crítico",en:"critical hit",morph:[{"jp": "かいしん", "ro": "kaishin", "es": "golpe certero (会心)", "en": "a perfect hit (会心)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "いちげき", "ro": "ichigeki", "es": "un golpe (一撃)", "en": "one blow (一撃)"}]},  /* 会心の一撃 */
+        {jp:"ねむる",cat:"status",tier:1,romaji:"nemuru",es:"dormir",en:"to sleep"},  /* 眠る */
+        {jp:"のろい",cat:"status",tier:1,romaji:"noroi",es:"maldición",en:"curse"},  /* 呪い */
+        {jp:"のろう",cat:"status",tier:1,romaji:"norou",es:"maldecir (のろわれる: ser maldecido)",en:"to curse (のろわれる: to be cursed)"},  /* 呪う */
+        {jp:"どく",cat:"status",tier:1,romaji:"doku",es:"veneno",en:"poison"},  /* 毒 */
+        {jp:"ホイミ",cat:"spell",tier:1,romaji:"hoimi",es:"hechizo de curación",en:"healing spell"},
+        {jp:"ギラ",cat:"spell",tier:1,romaji:"gira",es:"hechizo de ataque",en:"attack spell"},
+        {jp:"ラリホー",cat:"spell",tier:1,romaji:"rarihoo",es:"hechizo de sueño",en:"sleep spell"},
+        {jp:"レミーラ",cat:"spell",tier:1,romaji:"remiira",es:"ilumina la cueva",en:"lights up caves"},
+        {jp:"マホトーン",cat:"spell",tier:1,romaji:"mahotoon",es:"sella los hechizos",en:"seals spells"},
+        {jp:"リレミト",cat:"spell",tier:1,romaji:"riremito",es:"sale de la cueva",en:"escape from a cave"},
+        {jp:"ルーラ",cat:"spell",tier:1,romaji:"ruura",es:"vuelve al castillo (Radatomu)",en:"return to the castle"},
+        {jp:"トヘロス",cat:"spell",tier:1,romaji:"toherosu",es:"aleja a los monstruos",en:"repels monsters"},
+        {jp:"ベホイミ",cat:"spell",tier:1,romaji:"behoimi",es:"curación fuerte",en:"stronger healing"},
+        {jp:"ベギラマ",cat:"spell",tier:1,romaji:"begirama",es:"ataque fuerte",en:"stronger attack spell"},
+        {jp:"ゆうしゃ",cat:"people",tier:1,romaji:"yuusha",es:"héroe",en:"hero"},  /* 勇者 */
+        {jp:"おうさま",cat:"people",tier:1,romaji:"ousama",es:"rey",en:"king"},  /* 王様 */
+        {jp:"へいし",cat:"people",tier:1,romaji:"heishi",es:"soldado",en:"soldier"},  /* 兵士 */
+        {jp:"ひめ",cat:"people",tier:1,romaji:"hime",es:"princesa",en:"princess"},  /* 姫 */
+        {jp:"ろうじん",cat:"people",tier:1,romaji:"roujin",es:"anciano",en:"old man"},  /* 老人 */
+        {jp:"せいねん",cat:"people",tier:1,romaji:"seinen",es:"joven (hombre)",en:"young man"},  /* 青年 */
+        {jp:"しょうにん",cat:"people",tier:1,romaji:"shounin",es:"comerciante",en:"merchant"},  /* 商人 */
+        {jp:"じょせい",cat:"people",tier:1,romaji:"josei",es:"mujer",en:"woman"},  /* 女性 */
+        {jp:"せんし",cat:"people",tier:1,romaji:"senshi",es:"guerrero",en:"warrior"},  /* 戦士 */
+        {jp:"じいさん",cat:"people",tier:1,romaji:"jiisan",es:"viejo / abuelo",en:"old man (casual)"},  /* 爺さん */
+        {jp:"りゅうおう",cat:"people",tier:1,romaji:"ryuuou",es:"Rey Dragón (jefe final)",en:"Dragonlord (final boss)",morph:[{"jp": "りゅう", "ro": "ryuu", "es": "dragón (竜)", "en": "dragon (竜)"}, {"jp": "おう", "ro": "ou", "es": "rey (王)", "en": "king (王)"}]},  /* 竜王 */
+        {jp:"ローラ",cat:"people",tier:1,romaji:"Roora",es:"Lora (la princesa)",en:"Lora / Gwaelin (the princess)"},
+        {jp:"ロト",cat:"people",tier:1,romaji:"Roto",es:"Roto (héroe legendario)",en:"Roto / Erdrick (legendary hero)"},
+        {jp:"ラダトーム",cat:"world",tier:1,romaji:"Radatoomu",es:"Radatomu (castillo y ciudad iniciales)",en:"Tantegel (starting castle)"},
+        {jp:"ガライ",cat:"world",tier:1,romaji:"Garai",es:"Garai (ciudad del bardo)",en:"Garinham (the bard's town)"},
+        {jp:"マイラ",cat:"world",tier:1,romaji:"Maira",es:"Maira (aldea)",en:"Kol (village)"},
+        {jp:"リムルダール",cat:"world",tier:1,romaji:"Rimurudaaru",es:"Rimurudaru (ciudad)",en:"Rimuldar (town)"},
+        {jp:"メルキド",cat:"world",tier:1,romaji:"Merukido",es:"Merukido (ciudad fortaleza)",en:"Cantlin (fortress town)"},
+        {jp:"ドムドーラ",cat:"world",tier:1,romaji:"Domudoora",es:"Domudora (ciudad en ruinas)",en:"Hauksness (ruined town)"},
+        {jp:"まち",cat:"world",tier:1,romaji:"machi",es:"ciudad / pueblo",en:"town"},  /* 街 / 町 */
+        {jp:"しろ",cat:"world",tier:1,romaji:"shiro",es:"castillo",en:"castle"},  /* 城 */
+        {jp:"むら",cat:"world",tier:1,romaji:"mura",es:"aldea",en:"village"},  /* 村 */
+        {jp:"どうくつ",cat:"world",tier:1,romaji:"doukutsu",es:"cueva",en:"cave"},  /* 洞窟 */
+        {jp:"ほこら",cat:"world",tier:1,romaji:"hokora",es:"santuario (ermita)",en:"shrine"},
+        {jp:"しま",cat:"world",tier:1,romaji:"shima",es:"isla",en:"island"},  /* 島 */
+        {jp:"うみ",cat:"world",tier:1,romaji:"umi",es:"mar",en:"sea"},  /* 海 */
+        {jp:"はし",cat:"world",tier:1,romaji:"hashi",es:"puente",en:"bridge"},  /* 橋 */
+        {jp:"ぬまち",cat:"world",tier:1,romaji:"numachi",es:"pantano",en:"swampland"},  /* 沼地 */
+        {jp:"へや",cat:"world",tier:1,romaji:"heya",es:"cuarto / sala",en:"room"},  /* 部屋 */
+        {jp:"ちか",cat:"place",tier:1,romaji:"chika",es:"subsuelo",en:"underground"},  /* 地下 */
+        {jp:"きた",cat:"place",tier:1,romaji:"kita",es:"norte",en:"north"},  /* 北 */
+        {jp:"みなみ",cat:"place",tier:1,romaji:"minami",es:"sur",en:"south"},  /* 南 */
+        {jp:"ひがし",cat:"place",tier:1,romaji:"higashi",es:"este",en:"east"},  /* 東 */
+        {jp:"にし",cat:"place",tier:1,romaji:"nishi",es:"oeste",en:"west"},  /* 西 */
+        {jp:"みせ",cat:"shop",tier:1,romaji:"mise",es:"tienda",en:"shop"},  /* 店 */
+        {jp:"やくそう",cat:"item",tier:1,romaji:"yakusou",es:"hierba medicinal",en:"medicinal herb",morph:[{"jp": "くすり", "ro": "kusuri", "es": "medicina (薬)", "en": "medicine (薬)"}, {"jp": "そう", "ro": "sou", "es": "hierba (草)", "en": "herb (草)"}]},  /* 薬草 */
+        {jp:"たいまつ",cat:"item",tier:1,romaji:"taimatsu",es:"antorcha",en:"torch"},  /* 松明 */
+        {jp:"かぎ",cat:"item",tier:1,romaji:"kagi",es:"llave",en:"key"},  /* 鍵 */
+        {jp:"まほうのかぎ",cat:"item",tier:1,romaji:"mahou no kagi",es:"llave mágica",en:"magic key",morph:[{"jp": "まほう", "ro": "mahou", "es": "magia (魔法)", "en": "magic (魔法)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "かぎ", "ro": "kagi", "es": "llave", "en": "key"}]},  /* 魔法の鍵 */
+        {jp:"たからのはこ",cat:"item",tier:1,romaji:"takara no hako",es:"cofre del tesoro",en:"treasure chest",morph:[{"jp": "たから", "ro": "takara", "es": "tesoro (宝)", "en": "treasure (宝)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "はこ", "ro": "hako", "es": "caja (箱)", "en": "box (箱)"}]},  /* 宝の箱 */
+        {jp:"キメラのつばさ",cat:"item",tier:1,romaji:"kimera no tsubasa",es:"ala de quimera (vuelve a Radatomu)",en:"Chimaera Wing (returns to the castle)",morph:[{"jp": "キメラ", "ro": "kimera", "es": "quimera (monstruo)", "en": "chimera (monster)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "つばさ", "ro": "tsubasa", "es": "ala (翼)", "en": "wing (翼)"}]},  /* キメラの翼 */
+        {jp:"ロトのしるし",cat:"item",tier:1,romaji:"Roto no shirushi",es:"emblema de Roto",en:"Roto's emblem (Erdrick's Token)",morph:[{"jp": "ロト", "ro": "Roto", "es": "Roto", "en": "Roto"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "しるし", "ro": "shirushi", "es": "señal / emblema (印)", "en": "sign / emblem (印)"}]},  /* ロトの印 */
+        {jp:"あまぐものつえ",cat:"item",tier:1,romaji:"amagumo no tsue",es:"vara de la nube de lluvia",en:"Staff of Rain",morph:[{"jp": "あまぐも", "ro": "amagumo", "es": "nube de lluvia (雨雲)", "en": "rain cloud (雨雲)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "つえ", "ro": "tsue", "es": "vara / bastón (杖)", "en": "staff (杖)"}]},  /* 雨雲の杖 */
+        {jp:"たいようのいし",cat:"item",tier:1,romaji:"taiyou no ishi",es:"piedra del sol",en:"Stones of Sunlight",morph:[{"jp": "たいよう", "ro": "taiyou", "es": "sol (太陽)", "en": "sun (太陽)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "いし", "ro": "ishi", "es": "piedra (石)", "en": "stone (石)"}]},  /* 太陽の石 */
+        {jp:"にじのしずく",cat:"item",tier:1,romaji:"niji no shizuku",es:"gota del arcoíris",en:"Rainbow Drop",morph:[{"jp": "にじ", "ro": "niji", "es": "arcoíris (虹)", "en": "rainbow (虹)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "しずく", "ro": "shizuku", "es": "gota (雫)", "en": "drop (雫)"}]},  /* 虹の雫 */
+        {jp:"ぎんのたてごと",cat:"item",tier:1,romaji:"gin no tategoto",es:"arpa de plata",en:"Silver Harp",morph:[{"jp": "ぎん", "ro": "gin", "es": "plata (銀)", "en": "silver (銀)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "たてごと", "ro": "tategoto", "es": "arpa (竪琴)", "en": "harp (竪琴)"}]},  /* 銀の竪琴 */
+        {jp:"ようせいのふえ",cat:"item",tier:1,romaji:"yousei no fue",es:"flauta de las hadas",en:"Fairy Flute",morph:[{"jp": "ようせい", "ro": "yousei", "es": "hada (妖精)", "en": "fairy (妖精)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "ふえ", "ro": "fue", "es": "flauta (笛)", "en": "flute (笛)"}]},  /* 妖精の笛 */
+        {jp:"ひかりのたま",cat:"item",tier:1,romaji:"hikari no tama",es:"orbe de luz",en:"Ball of Light",morph:[{"jp": "ひかり", "ro": "hikari", "es": "luz (光)", "en": "light (光)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "たま", "ro": "tama", "es": "esfera (玉)", "en": "orb (玉)"}]},  /* 光の玉 */
+        {jp:"おうじょのあい",cat:"item",tier:1,romaji:"oujo no ai",es:"amor de la princesa (objeto)",en:"Gwaelin's Love (item)",morph:[{"jp": "おうじょ", "ro": "oujo", "es": "princesa (王女)", "en": "princess (王女)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "あい", "ro": "ai", "es": "amor (愛)", "en": "love (愛)"}]},  /* 王女の愛 */
+        {jp:"のろいのベルト",cat:"item",tier:1,romaji:"noroi no beruto",es:"cinturón maldito",en:"cursed belt",morph:[{"jp": "のろい", "ro": "noroi", "es": "maldición (呪い)", "en": "curse (呪い)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "ベルト", "ro": "beruto", "es": "cinturón", "en": "belt"}]},  /* 呪いのベルト */
+        {jp:"まほう",cat:"story",tier:1,romaji:"mahou",es:"magia",en:"magic"},  /* 魔法 */
+        {jp:"にじ",cat:"story",tier:1,romaji:"niji",es:"arcoíris",en:"rainbow"},  /* 虹 */
+        {jp:"たいよう",cat:"story",tier:1,romaji:"taiyou",es:"sol",en:"sun"},  /* 太陽 */
+        {jp:"あめ",cat:"story",tier:1,romaji:"ame",es:"lluvia",en:"rain"},  /* 雨 */
+        {jp:"ひかり",cat:"story",tier:1,romaji:"hikari",es:"luz",en:"light"},  /* 光 */
+        {jp:"へいわ",cat:"story",tier:1,romaji:"heiwa",es:"paz",en:"peace"},  /* 平和 */
+        {jp:"せかい",cat:"story",tier:1,romaji:"sekai",es:"mundo",en:"world"},  /* 世界 */
+        {jp:"うわさ",cat:"story",tier:1,romaji:"uwasa",es:"rumor",en:"rumor"},  /* 噂 */
+        {jp:"ふるい",cat:"story",tier:1,romaji:"furui",es:"antiguo / viejo",en:"old, ancient"},  /* 古い */
+        {jp:"いいつたえ",cat:"story",tier:1,romaji:"iitsutae",es:"leyenda (tradición oral)",en:"old saying, legend"},  /* 言い伝え */
+        {jp:"ち",cat:"story",tier:1,romaji:"chi",es:"sangre",en:"blood"},  /* 血 */
+        {jp:"ちをひく",cat:"story",tier:1,romaji:"chi o hiku",es:"descender de (llevar la sangre de)",en:"to descend from (lit. draw blood)",morph:[{"jp": "ち", "ro": "chi", "es": "sangre (血)", "en": "blood (血)"}, {"jp": "を", "ro": "o", "es": "marca el objeto", "en": "marks the object"}, {"jp": "ひく", "ro": "hiku", "es": "tirar / heredar (引く)", "en": "to pull / inherit (引く)"}]},  /* 血を引く */
+        {jp:"たび",cat:"story",tier:1,romaji:"tabi",es:"viaje",en:"journey"},  /* 旅 */
+        {jp:"つよい",cat:"story",tier:1,romaji:"tsuyoi",es:"fuerte",en:"strong"},  /* 強い */
+        {jp:"そなた",cat:"story",tier:1,romaji:"sonata",es:"tú (arcaico: reyes y ancianos)",en:"you (archaic)",reg:{"es": "tú · arcaico (reyes, ancianos)", "en": "you · archaic (kings, elders)"}},
+        {jp:"わし",cat:"story",tier:1,romaji:"washi",es:"yo (viejo o rey)",en:"I (old man / king)",reg:{"es": "yo · viejo o rey", "en": "I · old man or king"}},
+        {jp:"おまえ",cat:"story",tier:1,romaji:"omae",es:"tú (rudo)",en:"you (rough)",reg:{"es": "tú · rudo", "en": "you · rough"}},  /* お前 */
+        {jp:"あなた",cat:"story",tier:1,romaji:"anata",es:"tú / vos (neutro)",en:"you (neutral)",reg:{"es": "tú · neutro", "en": "you · neutral"}},  /* 貴方 */
+        {jp:"わたし",cat:"story",tier:1,romaji:"watashi",es:"yo",en:"I / me",reg:{"es": "yo · cortés", "en": "I · polite"}},  /* 私 */
+        {jp:"ようこそ",cat:"story",tier:1,romaji:"youkoso",es:"bienvenido",en:"welcome"},
+        {jp:"どうか",cat:"story",tier:1,romaji:"douka",es:"por favor (ruego)",en:"please (earnest plea)"},
+        {jp:"なにか",cat:"story",tier:1,romaji:"nanika",es:"algo",en:"something"},  /* 何か */
+        {jp:"ある",cat:"story",tier:1,romaji:"aru",es:"haber (cosas)",en:"to exist (things)"},
+        {jp:"いる",cat:"story",tier:1,romaji:"iru",es:"haber (seres vivos)",en:"to exist (living)"},
+        {jp:"なる",cat:"story",tier:1,romaji:"naru",es:"volverse",en:"to become"},
+        {jp:"する",cat:"story",tier:1,romaji:"suru",es:"hacer",en:"to do"},
+        {jp:"いく",cat:"story",tier:1,romaji:"iku",es:"ir",en:"to go"},  /* 行く */
+        {jp:"くる",cat:"story",tier:1,romaji:"kuru",es:"venir",en:"to come"},  /* 来る */
+        {jp:"もどる",cat:"story",tier:1,romaji:"modoru",es:"volver",en:"to return"},  /* 戻る */
+        {jp:"はいる",cat:"story",tier:1,romaji:"hairu",es:"entrar",en:"to enter"},  /* 入る */
+        {jp:"でる",cat:"story",tier:1,romaji:"deru",es:"salir",en:"to exit"},  /* 出る */
+        {jp:"さがす",cat:"story",tier:1,romaji:"sagasu",es:"buscar",en:"to look for"},  /* 探す */
+        {jp:"みつける",cat:"story",tier:1,romaji:"mitsukeru",es:"encontrar",en:"to find"},  /* 見つける */
+        {jp:"あう",cat:"story",tier:1,romaji:"au",es:"encontrarse / ver a alguien",en:"to meet"},  /* 会う */
+        {jp:"まつ",cat:"story",tier:1,romaji:"matsu",es:"esperar",en:"to wait"},  /* 待つ */
+        {jp:"きく",cat:"story",tier:1,romaji:"kiku",es:"oír / preguntar",en:"to hear, to ask"},  /* 聞く */
+        {jp:"いう",cat:"story",tier:1,romaji:"iu",es:"decir",en:"to say"},  /* 言う */
+        {jp:"おしえる",cat:"story",tier:1,romaji:"oshieru",es:"enseñar / decir",en:"to teach, to tell"},  /* 教える */
+        {jp:"しる",cat:"story",tier:1,romaji:"shiru",es:"saber / conocer",en:"to know"},  /* 知る */
+        {jp:"わたる",cat:"story",tier:1,romaji:"wataru",es:"cruzar",en:"to cross"},  /* 渡る */
+        {jp:"あける",cat:"story",tier:1,romaji:"akeru",es:"abrir",en:"to open"},  /* 開ける */
+        {jp:"もつ",cat:"story",tier:1,romaji:"motsu",es:"tener / llevar",en:"to hold, to carry"},  /* 持つ */
+        {jp:"つかう",cat:"story",tier:1,romaji:"tsukau",es:"usar",en:"to use"},  /* 使う */
+        {jp:"さらう",cat:"story",tier:1,romaji:"sarau",es:"secuestrar",en:"to kidnap"},
+        {jp:"しぬ",cat:"story",tier:1,romaji:"shinu",es:"morir",en:"to die"},  /* 死ぬ */
+        {jp:"たすけだす",cat:"story",tier:1,romaji:"tasukedasu",es:"rescatar",en:"to rescue",morph:[{"jp": "たすける", "ro": "tasukeru", "es": "ayudar (助ける)", "en": "to help (助ける)"}, {"jp": "だす", "ro": "dasu", "es": "sacar hacia afuera (出す)", "en": "to bring out (出す)"}]},  /* 助け出す */
+        {jp:"おかね",cat:"shop",tier:1,romaji:"okane",es:"dinero",en:"money"},  /* お金 */
+        {jp:"たりる",cat:"shop",tier:1,romaji:"tariru",es:"alcanzar / bastar",en:"to be enough"},  /* 足りる */
+        {jp:"とまる",cat:"shop",tier:1,romaji:"tomaru",es:"hospedarse",en:"to stay (overnight)"},  /* 泊まる */
+        {jp:"ひとばん",cat:"shop",tier:1,romaji:"hitoban",es:"una noche",en:"one night"},  /* 一晩 */
+        {jp:"いらっしゃいませ",cat:"shop",tier:1,romaji:"irasshaimase",es:"bienvenido (a la tienda)",en:"welcome (to the shop)"},
+        {jp:"すてる",cat:"menu",tier:1,romaji:"suteru",es:"tirar (descartar)",en:"to discard"},  /* 捨てる */
+        {jp:"ゴーレム",cat:"monster",tier:1,romaji:"gooremu",es:"gólem (jefe)",en:"golem (boss)"},
+        {jp:"ドラゴン",cat:"monster",tier:1,romaji:"doragon",es:"dragón (jefe)",en:"dragon (boss)"},
+        {jp:"スライム",cat:"monster",tier:2,romaji:"suraimu",es:"slime",en:"slime"},
+        {jp:"スライムベス",cat:"monster",tier:2,romaji:"suraimu besu",es:"slime rojo (Bes)",en:"red slime (Bes)"},
+        {jp:"ドラキー",cat:"monster",tier:2,romaji:"dorakii",es:"dracky (murciélago)",en:"dracky (bat monster)"},
+        {jp:"ゴースト",cat:"monster",tier:2,romaji:"goosuto",es:"fantasma",en:"ghost"},
+        {jp:"まほうつかい",cat:"monster",tier:2,romaji:"mahou tsukai",es:"mago",en:"magician",morph:[{"jp": "まほう", "ro": "mahou", "es": "magia (魔法)", "en": "magic (魔法)"}, {"jp": "つかい", "ro": "tsukai", "es": "usuario (使い)", "en": "user (使い)"}]},  /* 魔法使い */
+        {jp:"メーダ",cat:"monster",tier:2,romaji:"meeda",es:"Meda (monstruo de un ojo)",en:"Meda (one-eyed monster)"},
+        {jp:"メイジドラキー",cat:"monster",tier:2,romaji:"meeji dorakii",es:"dracky mago",en:"mage dracky",morph:[{"jp": "メイジ", "ro": "meeji", "es": "mago (mage)", "en": "mage"}, {"jp": "ドラキー", "ro": "dorakii", "es": "dracky", "en": "dracky"}]},
+        {jp:"おおさそり",cat:"monster",tier:2,romaji:"oosasori",es:"escorpión grande",en:"giant scorpion",morph:[{"jp": "おお", "ro": "oo", "es": "grande (大)", "en": "big (大)"}, {"jp": "さそり", "ro": "sasori", "es": "escorpión", "en": "scorpion"}]},  /* 大蠍 */
+        {jp:"がいこつ",cat:"monster",tier:2,romaji:"gaikotsu",es:"esqueleto",en:"skeleton"},  /* 骸骨 */
+        {jp:"ドラキーマ",cat:"monster",tier:2,romaji:"dorakiima",es:"dracky más fuerte (Drakeema)",en:"stronger dracky (Drakeema)"},
+        {jp:"ドロル",cat:"monster",tier:2,romaji:"dororu",es:"Droll (monstruo)",en:"Droll (monster)"},
+        {jp:"メトロゴースト",cat:"monster",tier:2,romaji:"metoro goosuto",es:"fantasma (Metro)",en:"ghost (Metro)"},
+        {jp:"まどうし",cat:"monster",tier:2,romaji:"madoushi",es:"brujo",en:"warlock"},  /* 魔道士 */
+        {jp:"リカント",cat:"monster",tier:2,romaji:"rikanto",es:"lobo humanoide",en:"wolf-man"},
+        {jp:"てつのさそり",cat:"monster",tier:2,romaji:"tetsu no sasori",es:"escorpión de hierro",en:"iron scorpion",morph:[{"jp": "てつ", "ro": "tetsu", "es": "hierro (鉄)", "en": "iron (鉄)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "さそり", "ro": "sasori", "es": "escorpión", "en": "scorpion"}]},  /* 鉄の蠍 */
+        {jp:"しりょう",cat:"monster",tier:2,romaji:"shiryou",es:"espectro (espíritu de un muerto)",en:"wraith (spirit of the dead)"},  /* 死霊 */
+        {jp:"メーダロード",cat:"monster",tier:2,romaji:"meedaroodo",es:"señor Meda",en:"Meda lord",morph:[{"jp": "メーダ", "ro": "meeda", "es": "Meda", "en": "Meda"}, {"jp": "ロード", "ro": "roodo", "es": "señor (lord)", "en": "lord"}]},
+        {jp:"ドロルメイジ",cat:"monster",tier:2,romaji:"dororu meeji",es:"Droll mago",en:"Droll mage",morph:[{"jp": "ドロル", "ro": "dororu", "es": "Droll", "en": "Droll"}, {"jp": "メイジ", "ro": "meeji", "es": "mago (mage)", "en": "mage"}]},
+        {jp:"ヘルゴースト",cat:"monster",tier:2,romaji:"heru goosuto",es:"fantasma infernal",en:"hell ghost",morph:[{"jp": "ヘル", "ro": "heru", "es": "infierno (hell)", "en": "hell"}, {"jp": "ゴースト", "ro": "goosuto", "es": "fantasma", "en": "ghost"}]},
+        {jp:"しりょうのきし",cat:"monster",tier:2,romaji:"shiryou no kishi",es:"caballero espectral",en:"wraith knight",morph:[{"jp": "しりょう", "ro": "shiryou", "es": "espectro (死霊)", "en": "wraith (死霊)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "きし", "ro": "kishi", "es": "caballero (騎士)", "en": "knight (騎士)"}]},  /* 死霊の騎士 */
+        {jp:"リカントマムル",cat:"monster",tier:2,romaji:"rikanto mamuru",es:"señor lobo (Mamuru)",en:"wolf lord (Mamuru)"},
+        {jp:"キメラ",cat:"monster",tier:2,romaji:"kimera",es:"quimera (bestia alada)",en:"chimera (winged beast)"},
+        {jp:"ゴールドマン",cat:"monster",tier:2,romaji:"goorudoman",es:"hombre de oro",en:"goldman",morph:[{"jp": "ゴールド", "ro": "goorudo", "es": "oro (gold)", "en": "gold"}, {"jp": "マン", "ro": "man", "es": "hombre (man)", "en": "man"}]},
+        {jp:"メタルスライム",cat:"monster",tier:2,romaji:"metaru suraimu",es:"slime metálico",en:"metal slime",morph:[{"jp": "メタル", "ro": "metaru", "es": "metal", "en": "metal"}, {"jp": "スライム", "ro": "suraimu", "es": "slime", "en": "slime"}]},
+        {jp:"しのさそり",cat:"monster",tier:2,romaji:"shi no sasori",es:"escorpión de la muerte",en:"death scorpion",morph:[{"jp": "し", "ro": "shi", "es": "muerte (死)", "en": "death (死)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "さそり", "ro": "sasori", "es": "escorpión", "en": "scorpion"}]},  /* 死の蠍 */
+        {jp:"かげのきし",cat:"monster",tier:2,romaji:"kage no kishi",es:"caballero de la sombra",en:"shadow knight",morph:[{"jp": "かげ", "ro": "kage", "es": "sombra (影)", "en": "shadow (影)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "きし", "ro": "kishi", "es": "caballero (騎士)", "en": "knight (騎士)"}]},  /* 影の騎士 */
+        {jp:"よろいのきし",cat:"monster",tier:2,romaji:"yoroi no kishi",es:"caballero acorazado",en:"armored knight",morph:[{"jp": "よろい", "ro": "yoroi", "es": "armadura (鎧)", "en": "armor (鎧)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "きし", "ro": "kishi", "es": "caballero (騎士)", "en": "knight (騎士)"}]},  /* 鎧の騎士 */
+        {jp:"キラーリカント",cat:"monster",tier:2,romaji:"kiraa rikanto",es:"lobo asesino",en:"killer wolf-man",morph:[{"jp": "キラー", "ro": "kiraa", "es": "asesino (killer)", "en": "killer"}, {"jp": "リカント", "ro": "rikanto", "es": "lobo humanoide", "en": "wolf-man"}]},
+        {jp:"メイジキメラ",cat:"monster",tier:2,romaji:"meeji kimera",es:"quimera mago",en:"mage chimera",morph:[{"jp": "メイジ", "ro": "meeji", "es": "mago (mage)", "en": "mage"}, {"jp": "キメラ", "ro": "kimera", "es": "quimera", "en": "chimera"}]},
+        {jp:"スターキメラ",cat:"monster",tier:2,romaji:"sutaa kimera",es:"quimera estelar",en:"star chimera",morph:[{"jp": "スター", "ro": "sutaa", "es": "estrella (star)", "en": "star"}, {"jp": "キメラ", "ro": "kimera", "es": "quimera", "en": "chimera"}]},
+        {jp:"だいまどう",cat:"monster",tier:2,romaji:"daimadou",es:"gran hechicero",en:"grand sorcerer",morph:[{"jp": "だい", "ro": "dai", "es": "gran (大)", "en": "great (大)"}, {"jp": "まどう", "ro": "madou", "es": "magia oscura (魔導)", "en": "dark magic (魔導)"}]},  /* 大魔導 */
+        {jp:"あくまのきし",cat:"monster",tier:2,romaji:"akuma no kishi",es:"caballero demonio",en:"demon knight",morph:[{"jp": "あくま", "ro": "akuma", "es": "demonio (悪魔)", "en": "demon (悪魔)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "きし", "ro": "kishi", "es": "caballero (騎士)", "en": "knight (騎士)"}]},  /* 悪魔の騎士 */
+        {jp:"キースドラゴン",cat:"monster",tier:2,romaji:"kiisu doragon",es:"dragón Kiisu (Keith)",en:"Keith dragon",morph:[{"jp": "キース", "ro": "kiisu", "es": "Kiisu (Keith)", "en": "Keith"}, {"jp": "ドラゴン", "ro": "doragon", "es": "dragón", "en": "dragon"}]},
+        {jp:"ストーンマン",cat:"monster",tier:2,romaji:"sutoonman",es:"hombre de piedra",en:"stoneman",morph:[{"jp": "ストーン", "ro": "sutoon", "es": "piedra (stone)", "en": "stone"}, {"jp": "マン", "ro": "man", "es": "hombre (man)", "en": "man"}]},
+        {jp:"しにがみのきし",cat:"monster",tier:2,romaji:"shinigami no kishi",es:"caballero segador (de la muerte)",en:"reaper knight",morph:[{"jp": "しにがみ", "ro": "shinigami", "es": "dios de la muerte (死神)", "en": "grim reaper (死神)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "きし", "ro": "kishi", "es": "caballero (騎士)", "en": "knight (騎士)"}]},  /* 死神の騎士 */
+        {jp:"ダースドラゴン",cat:"monster",tier:2,romaji:"daasu doragon",es:"dragón Daasu (el más fuerte)",en:"Daasu dragon (strongest)",morph:[{"jp": "ダース", "ro": "daasu", "es": "Daasu", "en": "Daasu"}, {"jp": "ドラゴン", "ro": "doragon", "es": "dragón", "en": "dragon"}]},
+        {jp:"たけざお",cat:"equip",tier:2,romaji:"takezao",es:"caña de bambú (arma)",en:"bamboo pole (weapon)",morph:[{"jp": "たけ", "ro": "take", "es": "bambú (竹)", "en": "bamboo (竹)"}, {"jp": "ざお", "ro": "zao", "es": "vara (竿)", "en": "pole (竿)"}]},  /* 竹竿 */
+        {jp:"こんぼう",cat:"equip",tier:2,romaji:"konbou",es:"garrote",en:"club"},
+        {jp:"どうのつるぎ",cat:"equip",tier:2,romaji:"dou no tsurugi",es:"espada de cobre",en:"copper sword",morph:[{"jp": "どう", "ro": "dou", "es": "cobre / bronce (銅)", "en": "copper (銅)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "つるぎ", "ro": "tsurugi", "es": "espada (剣)", "en": "sword (剣)"}]},  /* 銅の剣 */
+        {jp:"ぬののふく",cat:"equip",tier:2,romaji:"nuno no fuku",es:"ropa de tela",en:"cloth clothes",morph:[{"jp": "ぬの", "ro": "nuno", "es": "tela (布)", "en": "cloth (布)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "ふく", "ro": "fuku", "es": "ropa (服)", "en": "clothes (服)"}]},  /* 布の服 */
+        {jp:"かわのふく",cat:"equip",tier:2,romaji:"kawa no fuku",es:"ropa de cuero",en:"leather clothes",morph:[{"jp": "かわ", "ro": "kawa", "es": "cuero (皮)", "en": "leather (皮)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "ふく", "ro": "fuku", "es": "ropa (服)", "en": "clothes (服)"}]},  /* 皮の服 */
+        {jp:"かわのたて",cat:"equip",tier:2,romaji:"kawa no tate",es:"escudo de cuero",en:"leather shield",morph:[{"jp": "かわ", "ro": "kawa", "es": "cuero (皮)", "en": "leather (皮)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "たて", "ro": "tate", "es": "escudo (盾)", "en": "shield (盾)"}]},  /* 皮の盾 */
+        {jp:"てつのおの",cat:"equip",tier:2,romaji:"tetsu no ono",es:"hacha de hierro",en:"iron axe",morph:[{"jp": "てつ", "ro": "tetsu", "es": "hierro (鉄)", "en": "iron (鉄)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "おの", "ro": "ono", "es": "hacha (斧)", "en": "axe (斧)"}]},  /* 鉄の斧 */
+        {jp:"くさりかたびら",cat:"equip",tier:2,romaji:"kusari katabira",es:"cota de malla",en:"chain mail",morph:[{"jp": "くさり", "ro": "kusari", "es": "cadena (鎖)", "en": "chain (鎖)"}, {"jp": "かたびら", "ro": "katabira", "es": "prenda ligera (帷子)", "en": "light garment (帷子)"}]},  /* 鎖帷子 */
+        {jp:"てつのよろい",cat:"equip",tier:2,romaji:"tetsu no yoroi",es:"armadura de hierro",en:"iron armor",morph:[{"jp": "てつ", "ro": "tetsu", "es": "hierro (鉄)", "en": "iron (鉄)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "よろい", "ro": "yoroi", "es": "armadura (鎧)", "en": "armor (鎧)"}]},  /* 鉄の鎧 */
+        {jp:"てつのたて",cat:"equip",tier:2,romaji:"tetsu no tate",es:"escudo de hierro",en:"iron shield",morph:[{"jp": "てつ", "ro": "tetsu", "es": "hierro (鉄)", "en": "iron (鉄)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "たて", "ro": "tate", "es": "escudo (盾)", "en": "shield (盾)"}]},  /* 鉄の盾 */
+        {jp:"はがねのよろい",cat:"equip",tier:2,romaji:"hagane no yoroi",es:"armadura de acero",en:"steel armor",morph:[{"jp": "はがね", "ro": "hagane", "es": "acero (鋼)", "en": "steel (鋼)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "よろい", "ro": "yoroi", "es": "armadura (鎧)", "en": "armor (鎧)"}]},  /* 鋼の鎧 */
+        {jp:"はがねのつるぎ",cat:"equip",tier:2,romaji:"hagane no tsurugi",es:"espada de acero",en:"steel sword",morph:[{"jp": "はがね", "ro": "hagane", "es": "acero (鋼)", "en": "steel (鋼)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "つるぎ", "ro": "tsurugi", "es": "espada (剣)", "en": "sword (剣)"}]},  /* 鋼の剣 */
+        {jp:"まほうのよろい",cat:"equip",tier:2,romaji:"mahou no yoroi",es:"armadura mágica",en:"magic armor",morph:[{"jp": "まほう", "ro": "mahou", "es": "magia (魔法)", "en": "magic (魔法)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "よろい", "ro": "yoroi", "es": "armadura (鎧)", "en": "armor (鎧)"}]},  /* 魔法の鎧 */
+        {jp:"ほのおのつるぎ",cat:"equip",tier:2,romaji:"honoo no tsurugi",es:"espada de fuego",en:"flame sword",morph:[{"jp": "ほのお", "ro": "honoo", "es": "llama (炎)", "en": "flame (炎)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "つるぎ", "ro": "tsurugi", "es": "espada (剣)", "en": "sword (剣)"}]},  /* 炎の剣 */
+        {jp:"みかがみのたて",cat:"equip",tier:2,romaji:"mikagami no tate",es:"escudo del espejo de agua",en:"water-mirror shield",morph:[{"jp": "みかがみ", "ro": "mikagami", "es": "espejo de agua (水鏡)", "en": "water mirror (水鏡)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "たて", "ro": "tate", "es": "escudo (盾)", "en": "shield (盾)"}]},  /* 水鏡の盾 */
+        {jp:"ロトのよろい",cat:"equip",tier:2,romaji:"Roto no yoroi",es:"armadura de Roto",en:"Roto's armor",morph:[{"jp": "ロト", "ro": "Roto", "es": "Roto", "en": "Roto"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "よろい", "ro": "yoroi", "es": "armadura (鎧)", "en": "armor (鎧)"}]},  /* ロトの鎧 */
+        {jp:"ロトのけん",cat:"equip",tier:2,romaji:"Roto no ken",es:"espada de Roto",en:"Roto's sword",morph:[{"jp": "ロト", "ro": "Roto", "es": "Roto", "en": "Roto"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "けん", "ro": "ken", "es": "espada (剣)", "en": "sword (剣)"}]},  /* ロトの剣 */
+        {jp:"せいすい",cat:"item",tier:2,romaji:"seisui",es:"agua bendita",en:"holy water",morph:[{"jp": "せい", "ro": "sei", "es": "sagrado (聖)", "en": "holy (聖)"}, {"jp": "すい", "ro": "sui", "es": "agua (水)", "en": "water (水)"}]},  /* 聖水 */
+        {jp:"しのくびかざり",cat:"item",tier:2,romaji:"shi no kubikazari",es:"collar de la muerte",en:"death necklace",morph:[{"jp": "し", "ro": "shi", "es": "muerte (死)", "en": "death (死)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "くびかざり", "ro": "kubikazari", "es": "collar (首飾り)", "en": "necklace (首飾り)"}]},  /* 死の首飾り */
+        {jp:"せんしのゆびわ",cat:"item",tier:2,romaji:"senshi no yubiwa",es:"anillo del guerrero",en:"fighter's ring",morph:[{"jp": "せんし", "ro": "senshi", "es": "guerrero (戦士)", "en": "warrior (戦士)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "ゆびわ", "ro": "yubiwa", "es": "anillo (指輪)", "en": "ring (指輪)"}]},  /* 戦士の指輪 */
+        {jp:"りゅうのうろこ",cat:"item",tier:2,romaji:"ryuu no uroko",es:"escama de dragón (defensa)",en:"dragon scale (defense)",morph:[{"jp": "りゅう", "ro": "ryuu", "es": "dragón (竜)", "en": "dragon (竜)"}, {"jp": "の", "ro": "no", "es": "de", "en": "of"}, {"jp": "うろこ", "ro": "uroko", "es": "escama (鱗)", "en": "scale (鱗)"}]},  /* 竜の鱗 */
+        {jp:"ぎょくざ",cat:"world",tier:2,romaji:"gyokuza",es:"trono",en:"throne"},  /* 玉座 */
+        {jp:"はか",cat:"world",tier:2,romaji:"haka",es:"tumba",en:"grave"},  /* 墓 */
+        {jp:"いりくち",cat:"world",tier:2,romaji:"irikuchi",es:"entrada",en:"entrance"},  /* 入り口 */
+        {jp:"ちょうろう",cat:"people",tier:2,romaji:"chourou",es:"anciano (líder)",en:"elder"},  /* 長老 */
+        {jp:"わかもの",cat:"people",tier:2,romaji:"wakamono",es:"joven",en:"young person"},  /* 若者 */
+        {jp:"まおう",cat:"people",tier:2,romaji:"maou",es:"rey demonio",en:"demon king"},  /* 魔王 */
+        {jp:"あくま",cat:"people",tier:2,romaji:"akuma",es:"demonio",en:"demon"},  /* 悪魔 */
+        {jp:"てんしゅ",cat:"people",tier:2,romaji:"tenshu",es:"dueño de la tienda",en:"shopkeeper"},  /* 店主 */
+        {jp:"しょうこ",cat:"story",tier:2,romaji:"shouko",es:"prueba",en:"proof"},  /* 証拠 */
+        {jp:"たから",cat:"story",tier:2,romaji:"takara",es:"tesoro",en:"treasure"},  /* 宝 */
+        {jp:"やみ",cat:"story",tier:2,romaji:"yami",es:"oscuridad",en:"darkness"},  /* 闇 */
+        {jp:"ほのお",cat:"combat",tier:2,romaji:"honoo",es:"llama / fuego",en:"flame"},  /* 炎 */
+        {jp:"きず",cat:"status",tier:2,romaji:"kizu",es:"herida",en:"wound"},  /* 傷 */
+        {jp:"みをかわす",cat:"combat",tier:2,romaji:"mi o kawasu",es:"esquivar",en:"to dodge",morph:[{"jp": "み", "ro": "mi", "es": "cuerpo (身)", "en": "body (身)"}, {"jp": "を", "ro": "o", "es": "marca el objeto", "en": "marks the object"}, {"jp": "かわす", "ro": "kawasu", "es": "esquivar", "en": "to dodge"}]},  /* 身をかわす */
+        {jp:"ふうじこめる",cat:"combat",tier:2,romaji:"fuujikomeru",es:"sellar",en:"to seal away"},  /* 封じ込める */
+        {jp:"みぎ",cat:"place",tier:2,romaji:"migi",es:"derecha",en:"right"},  /* 右 */
+        {jp:"ひだり",cat:"place",tier:2,romaji:"hidari",es:"izquierda",en:"left"}  /* 左 */
+      ]
+    },
+    {
       id: 'gyakuten-saiban', rung: 5,
       name: { es: 'Phoenix Wright (Gyakuten Saiban)', en: 'Phoenix Wright: Ace Attorney' },
       mode: { es: 'N4 + vocabulario legal', en: 'N4 + legal vocabulary' },
@@ -5051,6 +5340,9 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     shop:{es:'Tienda',en:'Shop'},
     hm:{es:'Técnicas de campo (MO)',en:'Field moves (HM)'},
     place:{es:'Rumbos y pisos',en:'Directions & floors'},
+    spell:{es:'Hechizos',en:'Spells'},
+    equip:{es:'Armas y armaduras',en:'Weapons & armor'},
+    monster:{es:'Monstruos',en:'Monsters'},
     general:{es:'General',en:'General'}
   };
   function catLabel(c){ var o=CAT_LABELS[c]; return o?(getLang()==='es'?o.es:o.en):c; }
@@ -5065,7 +5357,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     var s=((w.jp||'')+' '+(w.romaji||'')+' '+(w.es||'')+' '+(w.en||'')+' '+pt).toLowerCase(); return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
   function fichaGroups(g){ var order=[],map={},idx={};
     (g.words||[]).forEach(function(w){ var c=w.cat||'general'; if(!map[c]){map[c]=[];idx[c]=order.length;order.push(c);} map[c].push(w); });
-    var BULK={item:1,move:2,badge:3};   /* secciones grandes de referencia van al final */
+    var BULK={item:1,equip:1,monster:2,move:2,badge:3};   /* secciones grandes de referencia van al final */
     function minTier(c){ var m=99; map[c].forEach(function(w){ var t=(w.tier==null?0:w.tier); if(t<m)m=t; }); return m; }
     order.sort(function(a,b){
       var ba=BULK[a]||0, bb=BULK[b]||0; if(ba!==bb) return ba-bb;
@@ -5170,6 +5462,10 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
           tEn:'Rough / rustic / childish (character flavor)',
           bEs:'Acá el personaje se pinta solo. Pronombres de "yo": おれ (rudo, masc), おいら (rústico, pueblerino), あたし (femenino casual), ぼく (suave, masc). Contracciones que comen sílabas: わからない→わかんない, しかたない→しかたねー. Imperativos rudos: ～ておくれ→～ておくんな. Y colas como や, ぜ, だぜ, o ってさ / だってさ ("dizque…", rumor). Un tendero gruñón o un chiquillo se reconocen SOLO por esto.',
           bEn:'Here the character paints itself. Words for I: おれ (rough, male), おいら (rustic, country), あたし (casual, female), ぼく (soft, male). Contractions that eat syllables: わからない becomes わかんない, しかたない becomes しかたねー. Rough commands: ～ておくれ becomes ～ておくんな. And tails like や, ぜ, だぜ, or ってさ / だってさ (they say that...). A grumpy shopkeeper or a little kid is recognized by this alone.' },
+        { tEs:'Reyes, ancianos y sabios: el habla de la corte',
+          tEn:'Kings, elders and sages: court speech',
+          bEs:'Los personajes de autoridad y los ancianos hablan en un registro antiguo que casi no existe hoy, pero los juegos de rol lo usan siempre. Las señales: そなた (tú, de arriba hacia abajo), わし (yo, de viejo o de rey), じゃ en lugar de だ, ぞ al final para avisar, el verbo en forma de diccionario más がよい (「いくがよい」, «andá, hacelo») y おる en lugar de いる. No sirve para hablar con gente de verdad, pero sí para entender quién manda y quién aconseja. Si el rey o un viejo te dice algo con じゃ o がよい, es una orden o un consejo solemne, no una pregunta.',
+          bEn:'Authority figures and elders speak in an old-fashioned register that barely exists today, but role-playing games use it all the time. The signs: そなた (you, top-down), わし (I, from an old man or a king), じゃ in place of だ, ぞ at the end as a warning, the dictionary-form verb plus がよい (「いくがよい」, "go, do it") and おる in place of いる. It will not help you talk to real people, but it tells you who gives orders and who gives advice. If the king or an old man says something with じゃ or がよい, it is a solemn order or advice, not a question.' },
         { tEs:'Pista rápida: mirá el final de la oración',
           tEn:'Quick tell: look at the sentence ending',
           bEs:'La terminación canta el registro: です・ます = cortés; だ o verbo plano + よ/ね = casual; ～ねー / ～ぜ / ～や / ～おくんな = rudo o rústico. Y el pronombre de "yo" va de わたし (cortés) → ぼく → おれ → おいら/わし (cada vez más informal, masculino o de viejo). El "tú" tiene su propia escalera: あなた (neutro) → あんた (brusco) → きさま／おまえ (hostil). Con eso ubicás el tono antes de traducir una sola palabra.',
@@ -7510,6 +7806,8 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     'いる':{es:'«hay» (seres vivos)',en:'"there is" (living things)'},
     'よ':{es:'énfasis: te aviso',en:'emphasis: heads up'},
     'ね':{es:'¿no? / ¿verdad?',en:'right? / isn\'t it?'},
+    'じゃ':{es:'«es» (viejo o sabio)',en:'"is" (elder speech)'},
+    'がよい':{es:'hacelo (orden o consejo solemne)',en:'do it (solemn order or advice)'},
     'ぞ':{es:'énfasis fuerte',en:'strong emphasis'},
     'みたい':{es:'parece que…',en:'seems like…'},
     'らしい':{es:'según dicen…',en:'apparently…'},
