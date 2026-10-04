@@ -3382,6 +3382,48 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
         {jp:"たいまつははちゴールド",pi:8,romaji:"taimatsu wa hachi goorudo",es:"la antorcha cuesta 8 de oro",en:"the torch costs 8 gold",parts:["たいまつ", "は", "はち", "ゴールド"],note:"X は número + ゴールド = precio"}
       ]
     },
+    'ff7-jp': {
+      patterns:[
+        {pat:"が + ある / いる", es:"existencia: «hay X». いる = seres vivos, ある = cosas. Así se te anuncia casi todo lo que hay en un lugar.", en:"existence: there is X. いる = living things, ある = things. This is how the game tells you what is in a place."},
+        {pat:"を + verbo", es:"を marca el objeto: マテリアをそうびする «equipar la materia».", en:"を marks the object: マテリアをそうびする \"equip the materia\"."},
+        {pat:"に / へ + いく・もどる・はいる", es:"destino: «ir a X», «volver a X», «entrar en X».", en:"destination: go to X, return to X, enter X."},
+        {pat:"～てください", es:"petición cortés: «por favor, haga X». Así te hablan menús, tiendas y empleados.", en:"polite request: \"please do X\". How menus, shops and staff talk to you."},
+        {pat:"～ている", es:"estado o acción en curso: «X está haciendo / tiene X». まっている «está esperando», もっている «tiene».", en:"ongoing state or action: \"is doing / has X\". まっている \"is waiting\", もっている \"has\"."},
+        {pat:"～た (pasado casual)", es:"acción terminada: てにいれた «conseguí», にげた «huí», おちた «cayó». El juego cuenta casi todo en pasado.", en:"a finished action: てにいれた \"got\", にげた \"fled\", おちた \"fell\". The game narrates almost everything in the past."},
+        {pat:"～ない (negativo casual)", es:"negación en habla informal: まけない «no pierdo», あきらめない «no me rindo». Muy común en el habla de los personajes.", en:"casual negation: まけない \"I will not lose\", あきらめない \"I will not give up\". Very common in the characters' speech."},
+        {pat:"～よう / ～おう (¡vamos a...!)", es:"invitación o decisión: いこう «vamos», たたかおう «peleemos». Es la forma volitiva.", en:"invitation or resolve: いこう \"let us go\", たたかおう \"let us fight\". The volitional form."},
+        {pat:"～たい (querer hacer)", es:"deseo propio: まもりたい «quiero proteger». Se agrega a la raíz del verbo.", en:"your own wish: まもりたい \"I want to protect\". Added to the verb stem."},
+        {pat:"か / のか (pregunta)", es:"pregunta al final: «¿...?». のか suena más coloquial y de curiosidad.", en:"question at the end: \"...?\". のか sounds more colloquial and curious."}
+      ],
+      phrases:[
+        {jp:"ミッドガルにスラムがある",pi:0,romaji:"Middogaru ni suramu ga aru",es:"hay un barrio pobre en Midgar",en:"there is a slum in Midgar",parts:["ミッドガル", "に", "スラム", "が", "ある"],note:"が…ある = «hay» (cosas) · に marca el lugar"},
+        {jp:"ミッドガルにソルジャーがいる",pi:0,romaji:"Middogaru ni sorujaa ga iru",es:"hay un SOLDIER en Midgar",en:"there is a SOLDIER in Midgar",parts:["ミッドガル", "に", "ソルジャー", "が", "いる"],note:"が…いる = «hay» (seres vivos)"},
+        {jp:"ひみつのけいかくがある",pi:0,romaji:"himitsu no keikaku ga aru",es:"hay un plan secreto",en:"there is a secret plan",parts:["ひみつ", "の", "けいかく", "が", "ある"],note:"の une dos sustantivos: «plan de lo secreto»"},
+        {jp:"マテリアをそうびする",pi:1,romaji:"materia o soubi suru",es:"equipar la materia",en:"equip the materia",parts:["マテリア", "を", "そうび", "する"],note:"を + verbo · そうび + する = «equipar»"},
+        {jp:"ぶきをかう",pi:1,romaji:"buki o kau",es:"comprar un arma",en:"buy a weapon",parts:["ぶき", "を", "かう"],note:"を + verbo · かう = «comprar»"},
+        {jp:"ほしをまもる",pi:1,romaji:"hoshi o mamoru",es:"proteger el planeta",en:"protect the planet",parts:["ほし", "を", "まもる"],note:"を + verbo · まもる = «proteger»"},
+        {jp:"アイテムをつかう",pi:1,romaji:"aitemu o tsukau",es:"usar un objeto",en:"use an item",parts:["アイテム", "を", "つかう"],note:"を + verbo · つかう = «usar»"},
+        {jp:"ミッドガルへいく",pi:2,romaji:"Middogaru e iku",es:"ir a Midgar",en:"go to Midgar",parts:["ミッドガル", "へ", "いく"],note:"へ = «hacia» · いく = «ir»"},
+        {jp:"むらにもどる",pi:2,romaji:"mura ni modoru",es:"volver a la aldea",en:"return to the village",parts:["むら", "に", "もどる"],note:"に marca el destino de もどる"},
+        {jp:"しんでんにはいる",pi:2,romaji:"shinden ni hairu",es:"entrar al templo",en:"enter the temple",parts:["しんでん", "に", "はいる"],note:"に marca el destino de はいる"},
+        {jp:"ここでまってください",pi:3,romaji:"koko de matte kudasai",es:"espere aquí, por favor",en:"please wait here",parts:["ここ", "で", "まって", "ください"],note:"verbo en forma て + ください = petición cortés · で marca dónde"},
+        {jp:"セーブしてください",pi:3,romaji:"seebu shite kudasai",es:"guarde la partida, por favor",en:"please save",parts:["セーブ", "して", "ください"],note:"する→して + ください"},
+        {jp:"なまえをおしえてください",pi:3,romaji:"namae o oshiete kudasai",es:"dígame su nombre, por favor",en:"please tell me your name",parts:["なまえ", "を", "おしえて", "ください"],note:"おしえる→おしえて + ください"},
+        {jp:"ほしがいきている",pi:4,romaji:"hoshi ga ikite iru",es:"el planeta está vivo",en:"the planet is alive",parts:["ほし", "が", "いきている"],note:"いきる→いきている = «está vivo»"},
+        {jp:"しんらがマテリアをもっている",pi:4,romaji:"Shinra ga materia o motte iru",es:"Shinra tiene la materia",en:"Shinra has the materia",parts:["しんら", "が", "マテリア", "を", "もっている"],note:"もつ→もっている = «tiene»"},
+        {jp:"セフィロスがまっている",pi:4,romaji:"Sefirosu ga matte iru",es:"Sefirot está esperando",en:"Sephiroth is waiting",parts:["セフィロス", "が", "まっている"],note:"まつ→まっている = «está esperando»"},
+        {jp:"マテリアをてにいれた",pi:5,romaji:"materia o te ni ireta",es:"conseguí la materia",en:"I got the materia",parts:["マテリア", "を", "てにいれた"],note:"てにいれる→てにいれた = pasado"},
+        {jp:"ミッドガルからにげた",pi:5,romaji:"Middogaru kara nigeta",es:"huí de Midgar",en:"I fled from Midgar",parts:["ミッドガル", "から", "にげた"],note:"から = «desde» · にげる→にげた = pasado"},
+        {jp:"メテオがおちた",pi:5,romaji:"meteo ga ochita",es:"cayó el meteoro",en:"the meteor fell",parts:["メテオ", "が", "おちた"],note:"おちる→おちた = pasado"},
+        {jp:"ぜったいにまけない",pi:6,romaji:"zettai ni makenai",es:"jamás voy a perder",en:"I will never lose",parts:["ぜったい", "に", "まけない"],note:"まける→まけない = «no pierdo» · ぜったいに = «jamás»"},
+        {jp:"あきらめない",pi:6,romaji:"akiramenai",es:"no me rindo",en:"I will not give up",parts:["あきらめない"],note:"あきらめる→あきらめない = negativo casual"},
+        {jp:"ミッドガルへいこう",pi:7,romaji:"Middogaru e ikou",es:"vamos a Midgar",en:"let us go to Midgar",parts:["ミッドガル", "へ", "いこう"],note:"いく→いこう = «vamos»"},
+        {jp:"いっしょにたたかおう",pi:7,romaji:"issho ni tatakaou",es:"peleemos juntos",en:"let us fight together",parts:["いっしょ", "に", "たたかおう"],note:"たたかう→たたかおう = volitivo"},
+        {jp:"ほしをまもりたい",pi:8,romaji:"hoshi o mamoritai",es:"quiero proteger el planeta",en:"I want to protect the planet",parts:["ほし", "を", "まもり", "たい"],note:"raíz del verbo + たい = «quiero»"},
+        {jp:"セフィロスをしっているか",pi:9,romaji:"Sefirosu o shitte iru ka",es:"¿conocés a Sefirot?",en:"do you know Sephiroth?",parts:["セフィロス", "を", "しっている", "か"],note:"しる→しっている = «conoce» + か = pregunta"},
+        {jp:"ミッドガルにいくのか",pi:9,romaji:"Middogaru ni iku no ka",es:"¿vas a Midgar?",en:"are you going to Midgar?",parts:["ミッドガル", "に", "いく", "のか"],note:"のか = pregunta con curiosidad, más coloquial"}
+      ]
+    },
     'pkmn-gen1': {
       patterns:[
         {pat:"これ/それ + は…だ", es:"demostrativo + cópula: «esto es…».", en:"demonstrative + copula: this is..."},
@@ -5126,6 +5168,382 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       ]
     },
     {
+      id:'ff7-jp', rung:4,
+      name:{ es:'Final Fantasy VII (japonés)', en:'Final Fantasy VII (Japanese)' },
+      mode:{ es:'kanji + katakana + habla coloquial', en:'kanji + katakana + colloquial speech' },
+      words:[
+        {jp:"セーブポイント",cat:"menu",tier:0,romaji:"seebupointo",es:"punto de guardado",en:"save point"},
+        {jp:"そうび",cat:"menu",tier:0,romaji:"soubi",es:"equipo / equipar",en:"equipment, to equip"},  /* 装備 */
+        {jp:"ステータス",cat:"menu",tier:0,romaji:"suteetasu",es:"estado del personaje",en:"status screen"},
+        {jp:"マテリア",cat:"menu",tier:0,romaji:"materia",es:"materia (orbe de magia)",en:"materia (magic orb)"},
+        {jp:"リミット",cat:"combat",tier:0,romaji:"rimitto",es:"límite (ataque Límite)",en:"Limit (Limit Break)"},
+        {jp:"しょうかん",cat:"combat",tier:0,romaji:"shoukan",es:"invocación",en:"summon"},  /* 召喚 */
+        {jp:"ぼうぎょ",cat:"combat",tier:0,romaji:"bougyo",es:"defensa",en:"defense"},  /* 防御 */
+        {jp:"ギル",cat:"stats",tier:0,romaji:"giru",es:"guil (moneda)",en:"Gil (currency)"},
+        {jp:"ぶきや",cat:"shop",tier:0,romaji:"bukiya",es:"tienda de armas",en:"weapon shop"},  /* 武器屋 */
+        {jp:"どうぐや",cat:"shop",tier:0,romaji:"douguya",es:"tienda de objetos",en:"item shop"},  /* 道具屋 */
+        {jp:"コマンド",cat:"menu",tier:0,romaji:"komando",es:"comando",en:"command"},
+        {jp:"バトル",cat:"combat",tier:0,romaji:"batoru",es:"batalla",en:"battle"},
+        {jp:"セーブ",cat:"menu",tier:0,romaji:"seebu",es:"guardar",en:"save"},
+        {jp:"メニュー",cat:"menu",tier:0,romaji:"menyuu",es:"menú",en:"menu"},
+        {jp:"アイテム",cat:"menu",tier:0,romaji:"aitemu",es:"objeto (menú)",en:"item"},
+        {jp:"ボタン",cat:"menu",tier:0,romaji:"botan",es:"botón",en:"button"},
+        {jp:"まほう",cat:"menu",tier:0,romaji:"mahou",es:"magia",en:"magic"},
+        {jp:"たたかう",cat:"combat",tier:0,romaji:"tatakau",es:"pelear",en:"fight"},
+        {jp:"にげる",cat:"combat",tier:0,romaji:"nigeru",es:"huir",en:"run"},
+        {jp:"つかう",cat:"menu",tier:0,romaji:"tsukau",es:"usar",en:"to use"},
+        {jp:"えらぶ",cat:"menu",tier:0,romaji:"erabu",es:"elegir",en:"to choose"},
+        {jp:"てにいれる",cat:"menu",tier:0,romaji:"te ni ireru",es:"conseguir / obtener",en:"to obtain"},
+        {jp:"かう",cat:"shop",tier:0,romaji:"kau",es:"comprar",en:"to buy"},
+        {jp:"うる",cat:"shop",tier:0,romaji:"uru",es:"vender",en:"to sell"},
+        {jp:"はい",cat:"menu",tier:0,romaji:"hai",es:"sí",en:"yes"},
+        {jp:"いいえ",cat:"menu",tier:0,romaji:"iie",es:"no",en:"no"},
+        {jp:"しんら",cat:"world",tier:1,romaji:"Shinra",es:"Shinra (la compañía)",en:"Shinra (the company)"},  /* 神羅 */
+        {jp:"まこう",cat:"story",tier:1,romaji:"makou",es:"Mako (energía vital del planeta)",en:"Mako (the planet's life energy)"},  /* 魔晄 */
+        {jp:"ライフストリーム",cat:"story",tier:1,romaji:"Raifusutoriimu",es:"Corriente Vital",en:"Lifestream"},
+        {jp:"こだい",cat:"story",tier:1,romaji:"kodai",es:"antiguo",en:"ancient"},  /* 古代 */
+        {jp:"こだいしゅ",cat:"story",tier:1,romaji:"kodaishu",es:"los Ancestrales (los Cetra)",en:"the Ancients (the Cetra)"},  /* 古代種 */
+        {jp:"やくそくのち",cat:"story",tier:1,romaji:"yakusokunochi",es:"la Tierra Prometida",en:"the Promised Land"},  /* 約束の地 */
+        {jp:"やくそく",cat:"story",tier:1,romaji:"yakusoku",es:"promesa",en:"promise"},  /* 約束 */
+        {jp:"ソルジャー",cat:"people",tier:1,romaji:"Sorujaa",es:"SOLDIER (soldado de élite)",en:"SOLDIER (elite fighter)"},
+        {jp:"タークス",cat:"people",tier:1,romaji:"Taakusu",es:"los Turcos (agentes de Shinra)",en:"the Turks (Shinra agents)"},
+        {jp:"アバランチ",cat:"people",tier:1,romaji:"Abaranchi",es:"AVALANCHE (grupo rebelde)",en:"AVALANCHE (rebel group)"},
+        {jp:"ミッドガル",cat:"world",tier:1,romaji:"Middogaru",es:"Midgar (la ciudad)",en:"Midgar (the city)"},
+        {jp:"メテオ",cat:"story",tier:1,romaji:"Meteo",es:"Meteoro",en:"Meteor"},
+        {jp:"チョコボ",cat:"story",tier:1,romaji:"chokobo",es:"chocobo (ave de montar)",en:"chocobo (riding bird)"},
+        {jp:"セフィロス",cat:"people",tier:1,romaji:"Sefirosu",es:"Sefirot (Sephiroth)",en:"Sephiroth"},
+        {jp:"ジェノバ",cat:"people",tier:1,romaji:"Jenoba",es:"Jenova",en:"Jenova"},
+        {jp:"カンパニー",cat:"story",tier:1,romaji:"kanpanii",es:"compañía",en:"company"},
+        {jp:"スラム",cat:"world",tier:1,romaji:"suramu",es:"barrio pobre (slum)",en:"slum"},
+        {jp:"れっしゃ",cat:"world",tier:1,romaji:"ressha",es:"tren",en:"train"},  /* 列車 */
+        {jp:"うちゅう",cat:"story",tier:1,romaji:"uchuu",es:"espacio",en:"outer space"},  /* 宇宙 */
+        {jp:"しんでん",cat:"world",tier:1,romaji:"shinden",es:"templo",en:"temple"},  /* 神殿 */
+        {jp:"やしき",cat:"world",tier:1,romaji:"yashiki",es:"mansión",en:"mansion"},  /* 屋敷 */
+        {jp:"ほんしゃ",cat:"world",tier:1,romaji:"honsha",es:"sede central",en:"headquarters"},  /* 本社 */
+        {jp:"こきょう",cat:"story",tier:1,romaji:"kokyou",es:"tierra natal",en:"hometown"},  /* 故郷 */
+        {jp:"ちじょう",cat:"world",tier:1,romaji:"chijou",es:"superficie / sobre el suelo",en:"ground level"},  /* 地上 */
+        {jp:"しゃちょう",cat:"people",tier:1,romaji:"shachou",es:"presidente de la empresa",en:"company president"},  /* 社長 */
+        {jp:"にんげん",cat:"people",tier:1,romaji:"ningen",es:"ser humano",en:"human being"},  /* 人間 */
+        {jp:"むすめ",cat:"people",tier:1,romaji:"musume",es:"hija / muchacha",en:"daughter, girl"},  /* 娘 */
+        {jp:"はかせ",cat:"people",tier:1,romaji:"hakase",es:"doctor / científico",en:"doctor, professor"},  /* 博士 */
+        {jp:"しょうねん",cat:"people",tier:1,romaji:"shounen",es:"muchacho",en:"boy"},  /* 少年 */
+        {jp:"なかま",cat:"people",tier:1,romaji:"nakama",es:"compañero",en:"companion"},  /* 仲間 */
+        {jp:"おさななじみ",cat:"people",tier:1,romaji:"osananajimi",es:"amigo de la infancia",en:"childhood friend"},  /* 幼なじみ */
+        {jp:"えいゆう",cat:"people",tier:1,romaji:"eiyuu",es:"héroe",en:"hero"},  /* 英雄 */
+        {jp:"ボス",cat:"people",tier:1,romaji:"bosu",es:"jefe",en:"boss"},
+        {jp:"リーダー",cat:"people",tier:1,romaji:"riidaa",es:"líder",en:"leader"},
+        {jp:"おきゃく",cat:"people",tier:1,romaji:"okyaku",es:"cliente / visita",en:"customer, guest"},  /* お客 */
+        {jp:"おきゃくさま",cat:"people",tier:1,romaji:"okyakusama",es:"cliente (trato cortés)",en:"customer (polite)"},  /* お客様 */
+        {jp:"きょうみ",cat:"story",tier:1,romaji:"kyoumi",es:"interés",en:"interest"},  /* 興味 */
+        {jp:"ひつよう",cat:"story",tier:1,romaji:"hitsuyou",es:"necesario",en:"necessary"},  /* 必要 */
+        {jp:"じょうたい",cat:"story",tier:1,romaji:"joutai",es:"estado / condición",en:"state, condition"},  /* 状態 */
+        {jp:"かんけい",cat:"story",tier:1,romaji:"kankei",es:"relación",en:"relationship"},  /* 関係 */
+        {jp:"いのち",cat:"story",tier:1,romaji:"inochi",es:"vida",en:"life"},  /* 命 */
+        {jp:"じゅんび",cat:"story",tier:1,romaji:"junbi",es:"preparación",en:"preparation"},  /* 準備 */
+        {jp:"ほぞん",cat:"menu",tier:1,romaji:"hozon",es:"guardar (datos)",en:"saving, preservation"},  /* 保存 */
+        {jp:"さくせん",cat:"story",tier:1,romaji:"sakusen",es:"operación / estrategia",en:"operation, strategy"},  /* 作戦 */
+        {jp:"かいはつ",cat:"story",tier:1,romaji:"kaihatsu",es:"desarrollo",en:"development"},  /* 開発 */
+        {jp:"せんとう",cat:"combat",tier:1,romaji:"sentou",es:"combate",en:"combat"},  /* 戦闘 */
+        {jp:"あいて",cat:"combat",tier:1,romaji:"aite",es:"rival / la otra persona",en:"opponent, other party"},  /* 相手 */
+        {jp:"ばくはつ",cat:"combat",tier:1,romaji:"bakuhatsu",es:"explosión",en:"explosion"},  /* 爆発 */
+        {jp:"ほうこう",cat:"place",tier:1,romaji:"houkou",es:"dirección",en:"direction"},  /* 方向 */
+        {jp:"こころ",cat:"story",tier:1,romaji:"kokoro",es:"corazón / mente",en:"heart, mind"},  /* 心 */
+        {jp:"きけん",cat:"story",tier:1,romaji:"kiken",es:"peligro",en:"danger"},  /* 危険 */
+        {jp:"かくにん",cat:"menu",tier:1,romaji:"kakunin",es:"confirmar",en:"confirmation"},  /* 確認 */
+        {jp:"いどう",cat:"menu",tier:1,romaji:"idou",es:"desplazamiento",en:"movement"},  /* 移動 */
+        {jp:"せいしん",cat:"story",tier:1,romaji:"seishin",es:"espíritu / mente",en:"spirit, mind"},  /* 精神 */
+        {jp:"ほうこく",cat:"story",tier:1,romaji:"houkoku",es:"informe",en:"report"},  /* 報告 */
+        {jp:"ざんねん",cat:"story",tier:1,romaji:"zannen",es:"lástima",en:"too bad"},  /* 残念 */
+        {jp:"さいこう",cat:"story",tier:1,romaji:"saikou",es:"lo mejor",en:"the best"},  /* 最高 */
+        {jp:"たたかい",cat:"combat",tier:1,romaji:"tatakai",es:"batalla",en:"battle"},  /* 戦い */
+        {jp:"へいき",cat:"combat",tier:1,romaji:"heiki",es:"arma de guerra",en:"military weapon"},  /* 兵器 */
+        {jp:"ちしき",cat:"story",tier:1,romaji:"chishiki",es:"conocimiento",en:"knowledge"},  /* 知識 */
+        {jp:"にゅうりょく",cat:"menu",tier:1,romaji:"nyuuryoku",es:"ingresar (datos)",en:"input"},  /* 入力 */
+        {jp:"あんしん",cat:"story",tier:1,romaji:"anshin",es:"tranquilidad",en:"peace of mind"},  /* 安心 */
+        {jp:"ばあい",cat:"story",tier:1,romaji:"baai",es:"caso / situación",en:"case, situation"},  /* 場合 */
+        {jp:"ようす",cat:"story",tier:1,romaji:"yousu",es:"situación / aspecto",en:"state of things, appearance"},  /* 様子 */
+        {jp:"かがく",cat:"story",tier:1,romaji:"kagaku",es:"ciencia",en:"science"},  /* 科学 */
+        {jp:"こうどう",cat:"story",tier:1,romaji:"koudou",es:"acción",en:"action"},  /* 行動 */
+        {jp:"はかい",cat:"story",tier:1,romaji:"hakai",es:"destrucción",en:"destruction"},  /* 破壊 */
+        {jp:"そうさ",cat:"menu",tier:1,romaji:"sousa",es:"manejo (controles)",en:"operation, controls"},  /* 操作 */
+        {jp:"けいかく",cat:"story",tier:1,romaji:"keikaku",es:"plan",en:"plan"},  /* 計画 */
+        {jp:"みらい",cat:"story",tier:1,romaji:"mirai",es:"futuro",en:"future"},  /* 未来 */
+        {jp:"さいしょ",cat:"story",tier:1,romaji:"saisho",es:"el primero / el comienzo",en:"beginning, first"},  /* 最初 */
+        {jp:"じっけん",cat:"story",tier:1,romaji:"jikken",es:"experimento",en:"experiment"},  /* 実験 */
+        {jp:"ひみつ",cat:"story",tier:1,romaji:"himitsu",es:"secreto",en:"secret"},  /* 秘密 */
+        {jp:"じゃま",cat:"story",tier:1,romaji:"jama",es:"estorbo",en:"hindrance"},  /* 邪魔 */
+        {jp:"そんざい",cat:"story",tier:1,romaji:"sonzai",es:"existencia",en:"existence"},  /* 存在 */
+        {jp:"せいかつ",cat:"story",tier:1,romaji:"seikatsu",es:"vida cotidiana",en:"daily life"},  /* 生活 */
+        {jp:"けいび",cat:"story",tier:1,romaji:"keibi",es:"vigilancia",en:"security guard"},  /* 警備 */
+        {jp:"あんぜん",cat:"story",tier:1,romaji:"anzen",es:"seguridad",en:"safety"},  /* 安全 */
+        {jp:"かんたん",cat:"story",tier:1,romaji:"kantan",es:"fácil",en:"simple"},  /* 簡単 */
+        {jp:"しゅうりょう",cat:"menu",tier:1,romaji:"shuuryou",es:"finalizar",en:"end, finish"},  /* 終了 */
+        {jp:"とうろく",cat:"menu",tier:1,romaji:"touroku",es:"registro",en:"registration"},  /* 登録 */
+        {jp:"じこ",cat:"story",tier:1,romaji:"jiko",es:"accidente",en:"accident"},  /* 事故 */
+        {jp:"かんりょう",cat:"menu",tier:1,romaji:"kanryou",es:"completado",en:"completion"},  /* 完了 */
+        {jp:"めいれい",cat:"story",tier:1,romaji:"meirei",es:"orden",en:"order"},  /* 命令 */
+        {jp:"はっけん",cat:"story",tier:1,romaji:"hakken",es:"hallazgo",en:"discovery"},  /* 発見 */
+        {jp:"だっしゅつ",cat:"story",tier:1,romaji:"dasshutsu",es:"escape",en:"escape"},  /* 脱出 */
+        {jp:"きかい",cat:"story",tier:1,romaji:"kikai",es:"máquina",en:"machine"},  /* 機械 */
+        {jp:"おもいで",cat:"story",tier:1,romaji:"omoide",es:"recuerdo",en:"memory"},  /* 思い出 */
+        {jp:"もくてき",cat:"story",tier:1,romaji:"mokuteki",es:"objetivo",en:"purpose"},  /* 目的 */
+        {jp:"げんざい",cat:"story",tier:1,romaji:"genzai",es:"actualidad",en:"present time"},  /* 現在 */
+        {jp:"けいかい",cat:"story",tier:1,romaji:"keikai",es:"estar en guardia",en:"alert, guard"},  /* 警戒 */
+        {jp:"にんむ",cat:"story",tier:1,romaji:"ninmu",es:"misión",en:"mission"},  /* 任務 */
+        {jp:"ちゅうい",cat:"story",tier:1,romaji:"chuui",es:"atención / cuidado",en:"attention, caution"},  /* 注意 */
+        {jp:"しぜん",cat:"story",tier:1,romaji:"shizen",es:"naturaleza",en:"nature"},  /* 自然 */
+        {jp:"きょうりょく",cat:"story",tier:1,romaji:"kyouryoku",es:"colaboración",en:"cooperation"},  /* 協力 */
+        {jp:"さいしゅう",cat:"story",tier:1,romaji:"saishuu",es:"final",en:"final"},  /* 最終 */
+        {jp:"とうちゃく",cat:"story",tier:1,romaji:"touchaku",es:"llegada",en:"arrival"},  /* 到着 */
+        {jp:"ほうしゅう",cat:"story",tier:1,romaji:"houshuu",es:"recompensa",en:"reward"},  /* 報酬 */
+        {jp:"りゆう",cat:"story",tier:1,romaji:"riyuu",es:"razón",en:"reason"},  /* 理由 */
+        {jp:"じょうほう",cat:"story",tier:1,romaji:"jouhou",es:"información",en:"information"},  /* 情報 */
+        {jp:"よてい",cat:"story",tier:1,romaji:"yotei",es:"plan / lo previsto",en:"plan, schedule"},  /* 予定 */
+        {jp:"じゆう",cat:"story",tier:1,romaji:"jiyuu",es:"libertad",en:"freedom"},  /* 自由 */
+        {jp:"ちょうさ",cat:"story",tier:1,romaji:"chousa",es:"investigación",en:"investigation"},  /* 調査 */
+        {jp:"しんじつ",cat:"story",tier:1,romaji:"shinjitsu",es:"verdad",en:"truth"},  /* 真実 */
+        {jp:"しょうひん",cat:"shop",tier:1,romaji:"shouhin",es:"producto",en:"goods, product"},  /* 商品 */
+        {jp:"かんがえる",cat:"verb",tier:1,romaji:"kangaeru",es:"pensar",en:"to think"},  /* 考える */
+        {jp:"いきる",cat:"verb",tier:1,romaji:"ikiru",es:"vivir",en:"to live"},  /* 生きる */
+        {jp:"ひらく",cat:"verb",tier:1,romaji:"hiraku",es:"abrirse",en:"to open (intr.)"},  /* 開く */
+        {jp:"まもる",cat:"verb",tier:1,romaji:"mamoru",es:"proteger",en:"to protect"},  /* 守る */
+        {jp:"おちる",cat:"verb",tier:1,romaji:"ochiru",es:"caer",en:"to fall"},  /* 落ちる */
+        {jp:"たすける",cat:"verb",tier:1,romaji:"tasukeru",es:"ayudar / salvar",en:"to help, to save"},  /* 助ける */
+        {jp:"いそぐ",cat:"verb",tier:1,romaji:"isogu",es:"apurarse",en:"to hurry"},  /* 急ぐ */
+        {jp:"もてる",cat:"verb",tier:1,romaji:"moteru",es:"poder llevar",en:"to be able to carry"},  /* 持てる */
+        {jp:"おう",cat:"verb",tier:1,romaji:"ou",es:"perseguir",en:"to chase"},  /* 追う */
+        {jp:"まける",cat:"combat",tier:1,romaji:"makeru",es:"perder (un combate)",en:"to lose"},  /* 負ける */
+        {jp:"かわる",cat:"verb",tier:1,romaji:"kawaru",es:"cambiar (intr.)",en:"to change"},  /* 変わる */
+        {jp:"しんじる",cat:"verb",tier:1,romaji:"shinjiru",es:"creer / confiar",en:"to believe, to trust"},  /* 信じる */
+        {jp:"とめる",cat:"verb",tier:1,romaji:"tomeru",es:"detener",en:"to stop (tr.)"},  /* 止める */
+        {jp:"うごく",cat:"verb",tier:1,romaji:"ugoku",es:"moverse",en:"to move"},  /* 動く */
+        {jp:"すくう",cat:"verb",tier:1,romaji:"sukuu",es:"rescatar",en:"to rescue"},  /* 救う */
+        {jp:"おもいだす",cat:"verb",tier:1,romaji:"omoidasu",es:"acordarse",en:"to recall"},  /* 思い出す */
+        {jp:"むかう",cat:"verb",tier:1,romaji:"mukau",es:"dirigirse a",en:"to head toward"},  /* 向かう */
+        {jp:"かんじる",cat:"verb",tier:1,romaji:"kanjiru",es:"sentir",en:"to feel"},  /* 感じる */
+        {jp:"きこえる",cat:"verb",tier:1,romaji:"kikoeru",es:"oírse",en:"to be audible"},  /* 聞こえる */
+        {jp:"みえる",cat:"verb",tier:1,romaji:"mieru",es:"verse",en:"to be visible"},  /* 見える */
+        {jp:"おこる",cat:"verb",tier:1,romaji:"okoru",es:"enojarse",en:"to get angry"},  /* 怒る */
+        {jp:"しゅっぱつ",cat:"verb",tier:1,romaji:"shuppatsu",es:"partida",en:"departure"},  /* 出発 */
+        {jp:"あつめる",cat:"verb",tier:1,romaji:"atsumeru",es:"reunir",en:"to gather (tr.)"},  /* 集める */
+        {jp:"あつまる",cat:"verb",tier:1,romaji:"atsumaru",es:"reunirse",en:"to gather (intr.)"},  /* 集まる */
+        {jp:"はこぶ",cat:"verb",tier:1,romaji:"hakobu",es:"transportar",en:"to carry"},  /* 運ぶ */
+        {jp:"ひろう",cat:"verb",tier:1,romaji:"hirou",es:"recoger",en:"to pick up"},  /* 拾う */
+        {jp:"うしなう",cat:"verb",tier:1,romaji:"ushinau",es:"perder (algo)",en:"to lose (something)"},  /* 失う */
+        {jp:"ゆるす",cat:"verb",tier:1,romaji:"yurusu",es:"perdonar",en:"to forgive"},  /* 許す */
+        {jp:"こわす",cat:"verb",tier:1,romaji:"kowasu",es:"romper",en:"to break (tr.)"},  /* 壊す */
+        {jp:"こわれる",cat:"verb",tier:1,romaji:"kowareru",es:"romperse",en:"to break (intr.)"},  /* 壊れる */
+        {jp:"もえる",cat:"verb",tier:1,romaji:"moeru",es:"arder",en:"to burn"},  /* 燃える */
+        {jp:"はなれる",cat:"verb",tier:1,romaji:"hanareru",es:"alejarse",en:"to leave, to be apart"},  /* 離れる */
+        {jp:"うつ",cat:"combat",tier:1,romaji:"utsu",es:"disparar",en:"to shoot"},  /* 撃つ */
+        {jp:"そだてる",cat:"verb",tier:1,romaji:"sodateru",es:"criar",en:"to raise"},  /* 育てる */
+        {jp:"ちかづく",cat:"verb",tier:1,romaji:"chikazuku",es:"acercarse",en:"to approach"},  /* 近づく */
+        {jp:"はらう",cat:"shop",tier:1,romaji:"harau",es:"pagar",en:"to pay"},  /* 払う */
+        {jp:"かつ",cat:"combat",tier:1,romaji:"katsu",es:"ganar",en:"to win"},  /* 勝つ */
+        {jp:"へる",cat:"verb",tier:1,romaji:"heru",es:"disminuir",en:"to decrease"},  /* 減る */
+        {jp:"きまる",cat:"verb",tier:1,romaji:"kimaru",es:"decidirse",en:"to be decided"},  /* 決まる */
+        {jp:"みつかる",cat:"verb",tier:1,romaji:"mitsukaru",es:"ser encontrado",en:"to be found"},  /* 見つかる */
+        {jp:"おこなう",cat:"verb",tier:1,romaji:"okonau",es:"realizar",en:"to carry out"},  /* 行う */
+        {jp:"のこる",cat:"verb",tier:1,romaji:"nokoru",es:"quedar",en:"to remain"},  /* 残る */
+        {jp:"のこす",cat:"verb",tier:1,romaji:"nokosu",es:"dejar atrás",en:"to leave behind"},  /* 残す */
+        {jp:"にがす",cat:"verb",tier:1,romaji:"nigasu",es:"dejar escapar",en:"to let escape"},  /* 逃がす */
+        {jp:"たすかる",cat:"verb",tier:1,romaji:"tasukaru",es:"salvarse",en:"to be saved"},  /* 助かる */
+        {jp:"あきらめる",cat:"verb",tier:1,romaji:"akirameru",es:"rendirse",en:"to give up"},  /* 諦める */
+        {jp:"わける",cat:"verb",tier:1,romaji:"wakeru",es:"dividir",en:"to divide"},  /* 分ける */
+        {jp:"おくれる",cat:"verb",tier:1,romaji:"okureru",es:"retrasarse",en:"to be late"},  /* 遅れる */
+        {jp:"ころす",cat:"combat",tier:1,romaji:"korosu",es:"matar",en:"to kill"},  /* 殺す */
+        {jp:"つくりだす",cat:"verb",tier:1,romaji:"tsukuridasu",es:"crear",en:"to create"},  /* 創り出す */
+        {jp:"はなしかける",cat:"verb",tier:1,romaji:"hanashikakeru",es:"hablarle a alguien",en:"to speak to someone"},  /* 話しかける */
+        {jp:"すごい",cat:"expr",tier:1,romaji:"sugoi",es:"increíble",en:"amazing"},  /* 凄い */
+        {jp:"ひどい",cat:"expr",tier:1,romaji:"hidoi",es:"terrible",en:"awful"},  /* 酷い */
+        {jp:"つらい",cat:"expr",tier:1,romaji:"tsurai",es:"duro / doloroso",en:"painful, hard"},  /* 辛い */
+        {jp:"おかしい",cat:"expr",tier:1,romaji:"okashii",es:"extraño / gracioso",en:"strange, funny"},
+        {jp:"かわいそう",cat:"expr",tier:1,romaji:"kawaisou",es:"pobrecito",en:"pitiful"},  /* 可哀想 */
+        {jp:"くわしい",cat:"expr",tier:1,romaji:"kuwashii",es:"detallado",en:"detailed"},  /* 詳しい */
+        {jp:"ずいぶん",cat:"expr",tier:1,romaji:"zuibun",es:"bastante",en:"quite"},  /* 随分 */
+        {jp:"ぜったい",cat:"expr",tier:1,romaji:"zettai",es:"absolutamente / jamás",en:"absolutely, never"},  /* 絶対 */
+        {jp:"やっぱり",cat:"expr",tier:1,romaji:"yappari",es:"como pensaba",en:"as I thought (colloq.)"},
+        {jp:"きっと",cat:"expr",tier:1,romaji:"kitto",es:"seguro que",en:"surely"},
+        {jp:"なんだか",cat:"expr",tier:1,romaji:"nandaka",es:"no sé por qué",en:"somehow"},  /* 何だか */
+        {jp:"ただ",cat:"expr",tier:1,romaji:"tada",es:"solamente",en:"just, only"},
+        {jp:"そういう",cat:"expr",tier:1,romaji:"souiu",es:"ese tipo de",en:"that kind of"},
+        {jp:"すべて",cat:"expr",tier:1,romaji:"subete",es:"todo",en:"everything"},  /* 全て */
+        {jp:"どんな",cat:"expr",tier:1,romaji:"donna",es:"qué tipo de",en:"what kind of"},
+        {jp:"なんとか",cat:"expr",tier:1,romaji:"nantoka",es:"de alguna manera",en:"somehow, anyhow"},  /* 何とか */
+        {jp:"ちゃんと",cat:"expr",tier:1,romaji:"chanto",es:"como debe ser",en:"properly"},
+        {jp:"さて",cat:"expr",tier:1,romaji:"sate",es:"bueno, entonces",en:"well then"},
+        {jp:"まさか",cat:"expr",tier:1,romaji:"masaka",es:"no puede ser",en:"no way"},
+        {jp:"しっかり",cat:"expr",tier:1,romaji:"shikkari",es:"con firmeza",en:"firmly"},
+        {jp:"とにかく",cat:"expr",tier:1,romaji:"tonikaku",es:"en todo caso",en:"anyway"},
+        {jp:"とりあえず",cat:"expr",tier:1,romaji:"toriaezu",es:"por ahora",en:"for now"},
+        {jp:"もちろん",cat:"expr",tier:1,romaji:"mochiron",es:"por supuesto",en:"of course"},  /* 勿論 */
+        {jp:"なるほど",cat:"expr",tier:1,romaji:"naruhodo",es:"ya veo",en:"I see"},
+        {jp:"それで",cat:"expr",tier:1,romaji:"sorede",es:"y entonces",en:"and so"},
+        {jp:"もしかして",cat:"expr",tier:1,romaji:"moshikashite",es:"¿acaso?",en:"could it be that"},
+        {jp:"ごめん",cat:"expr",tier:1,romaji:"gomen",es:"perdón",en:"sorry"},
+        {jp:"ごめんなさい",cat:"expr",tier:1,romaji:"gomennasai",es:"discúlpame",en:"I am sorry (polite)"},
+        {jp:"よろしく",cat:"expr",tier:1,romaji:"yoroshiku",es:"encantado / un saludo",en:"nice to meet you"},  /* 宜しく */
+        {jp:"ぶじ",cat:"expr",tier:1,romaji:"buji",es:"sano y salvo",en:"safe and sound"},  /* 無事 */
+        {jp:"しかた",cat:"expr",tier:1,romaji:"shikata",es:"manera de hacerlo",en:"way, means"},  /* 仕方 */
+        {jp:"しばらく",cat:"expr",tier:1,romaji:"shibaraku",es:"un rato",en:"for a while"},  /* 暫く */
+        {jp:"たしか",cat:"expr",tier:1,romaji:"tashika",es:"si no me equivoco",en:"if I remember right"},  /* 確か */
+        {jp:"まったく",cat:"expr",tier:1,romaji:"mattaku",es:"realmente",en:"really, completely"},  /* 全く */
+        {jp:"ついに",cat:"expr",tier:1,romaji:"tsuini",es:"por fin",en:"finally"},  /* 遂に */
+        {jp:"さすが",cat:"expr",tier:1,romaji:"sasuga",es:"como era de esperar",en:"as expected"},  /* 流石 */
+        {jp:"かなり",cat:"expr",tier:1,romaji:"kanari",es:"bastante",en:"fairly"},
+        {jp:"ほんとうに",cat:"expr",tier:1,romaji:"hontouni",es:"de verdad",en:"truly"},  /* 本当に */
+        {jp:"いったい",cat:"expr",tier:1,romaji:"ittai",es:"¿qué diablos?",en:"what on earth"},  /* 一体 */
+        {jp:"そろそろ",cat:"expr",tier:1,romaji:"sorosoro",es:"ya casi",en:"soon, about time"},
+        {jp:"もうすぐ",cat:"expr",tier:1,romaji:"mousugu",es:"muy pronto",en:"very soon"},
+        {jp:"さっき",cat:"expr",tier:1,romaji:"sakki",es:"hace un rato",en:"a moment ago"},
+        {jp:"これから",cat:"expr",tier:1,romaji:"korekara",es:"de ahora en adelante",en:"from now on"},
+        {jp:"どうやら",cat:"expr",tier:1,romaji:"douyara",es:"parece que",en:"apparently"},
+        {jp:"なかなか",cat:"expr",tier:1,romaji:"nakanaka",es:"bastante / no tan fácil",en:"quite, not easily"},
+        {jp:"まず",cat:"expr",tier:1,romaji:"mazu",es:"primero",en:"first of all"},  /* 先ず */
+        {jp:"ほら",cat:"expr",tier:1,romaji:"hora",es:"¡mira!",en:"look!"},
+        {jp:"そんな",cat:"expr",tier:1,romaji:"sonna",es:"tal / así",en:"such, like that"},
+        {jp:"あんな",cat:"expr",tier:1,romaji:"anna",es:"así (aquello)",en:"that kind of"},
+        {jp:"こういう",cat:"expr",tier:1,romaji:"kouiu",es:"este tipo de",en:"this kind of"},
+        {jp:"そんなに",cat:"expr",tier:1,romaji:"sonnani",es:"tanto",en:"that much"},
+        {jp:"われわれ",cat:"expr",tier:1,romaji:"wareware",es:"nosotros (formal)",en:"we (formal)"},  /* 我々 */
+        {jp:"あたし",cat:"expr",tier:1,romaji:"atashi",es:"yo (mujer, informal)",en:"I (feminine, casual)",reg:{"es": "yo · mujer, informal", "en": "I · feminine, casual"}},
+        {jp:"あいつ",cat:"expr",tier:1,romaji:"aitsu",es:"ese tipo",en:"that guy",reg:{"es": "ese tipo · coloquial", "en": "that guy · colloquial"}},
+        {jp:"こいつ",cat:"expr",tier:1,romaji:"koitsu",es:"este tipo",en:"this guy",reg:{"es": "este tipo · coloquial", "en": "this guy · colloquial"}},
+        {jp:"そいつ",cat:"expr",tier:1,romaji:"soitsu",es:"ese (cerca de vos)",en:"that guy (near you)",reg:{"es": "ese tipo · coloquial", "en": "that guy · colloquial"}},
+        {jp:"やつ",cat:"expr",tier:1,romaji:"yatsu",es:"tipo / sujeto",en:"guy, fellow",reg:{"es": "tipo · rudo o coloquial", "en": "guy · rough or colloquial"}},  /* 奴 */
+        {jp:"てめえ",cat:"expr",tier:1,romaji:"temee",es:"vos, desgraciado (muy rudo)",en:"you bastard (very rude)",reg:{"es": "vos · muy rudo", "en": "you · very rude"}},
+        {jp:"きみ",cat:"expr",tier:1,romaji:"kimi",es:"tú (informal, de arriba hacia abajo)",en:"you (casual, from above)",reg:{"es": "tú · informal, de arriba hacia abajo", "en": "you · casual, from above"}},  /* 君 */
+        {jp:"いらっしゃる",cat:"expr",tier:1,romaji:"irassharu",es:"estar / venir (honorífico)",en:"to be, to come (honorific)"},
+        {jp:"いらっしゃい",cat:"shop",tier:1,romaji:"irasshai",es:"bienvenido",en:"welcome"},
+        {jp:"くださる",cat:"expr",tier:1,romaji:"kudasaru",es:"dar (honorífico)",en:"to give (honorific)"},  /* 下さる */
+        {jp:"ちゃう",cat:"expr",tier:1,romaji:"chau",es:"contracción de ～てしまう",en:"contraction of ～てしまう"},
+        {jp:"いく",cat:"verb",tier:1,romaji:"iku",es:"ir",en:"to go"},
+        {jp:"いう",cat:"verb",tier:1,romaji:"iu",es:"decir",en:"to say"},
+        {jp:"みる",cat:"verb",tier:1,romaji:"miru",es:"ver",en:"to see"},
+        {jp:"きく",cat:"verb",tier:1,romaji:"kiku",es:"escuchar / preguntar",en:"to listen, ask"},
+        {jp:"しる",cat:"verb",tier:1,romaji:"shiru",es:"saber / conocer",en:"to know"},
+        {jp:"おもう",cat:"verb",tier:1,romaji:"omou",es:"pensar / creer",en:"to think"},
+        {jp:"くる",cat:"verb",tier:1,romaji:"kuru",es:"venir",en:"to come"},
+        {jp:"はなす",cat:"verb",tier:1,romaji:"hanasu",es:"hablar",en:"to speak"},
+        {jp:"まつ",cat:"verb",tier:1,romaji:"matsu",es:"esperar",en:"to wait"},
+        {jp:"でる",cat:"verb",tier:1,romaji:"deru",es:"salir",en:"to go out"},
+        {jp:"はいる",cat:"verb",tier:1,romaji:"hairu",es:"entrar",en:"to enter"},
+        {jp:"もどる",cat:"verb",tier:1,romaji:"modoru",es:"volver / regresar",en:"to return"},
+        {jp:"かえる",cat:"verb",tier:1,romaji:"kaeru",es:"volver",en:"to return"},
+        {jp:"あう",cat:"verb",tier:1,romaji:"au",es:"encontrarse",en:"to meet"},
+        {jp:"わすれる",cat:"verb",tier:1,romaji:"wasureru",es:"olvidar",en:"to forget"},
+        {jp:"おしえる",cat:"verb",tier:1,romaji:"oshieru",es:"enseñar",en:"to teach"},
+        {jp:"おぼえる",cat:"verb",tier:1,romaji:"oboeru",es:"recordar / memorizar",en:"to memorize"},
+        {jp:"みせる",cat:"menu",tier:1,romaji:"miseru",es:"mostrar / enseñar",en:"to show"},
+        {jp:"おす",cat:"menu",tier:1,romaji:"osu",es:"empujar / presionar",en:"to push"},
+        {jp:"すてる",cat:"menu",tier:1,romaji:"suteru",es:"tirar",en:"toss"},
+        {jp:"つける",cat:"verb",tier:1,romaji:"tsukeru",es:"encender",en:"to turn on"},
+        {jp:"のる",cat:"verb",tier:1,romaji:"noru",es:"montar",en:"to ride"},
+        {jp:"やすむ",cat:"verb",tier:1,romaji:"yasumu",es:"descansar / faltar",en:"to rest, take off"},
+        {jp:"しぬ",cat:"combat",tier:1,romaji:"shinu",es:"morir",en:"to die"},
+        {jp:"おわる",cat:"verb",tier:1,romaji:"owaru",es:"terminar",en:"to end, finish"},
+        {jp:"たのむ",cat:"verb",tier:1,romaji:"tanomu",es:"pedir (un favor)",en:"to ask, request"},
+        {jp:"あげる",cat:"verb",tier:1,romaji:"ageru",es:"dar / subir",en:"to give, raise"},
+        {jp:"やめる",cat:"verb",tier:1,romaji:"yameru",es:"salir / dejar",en:"quit"},
+        {jp:"もつ",cat:"verb",tier:1,romaji:"motsu",es:"sostener",en:"to hold"},
+        {jp:"とる",cat:"verb",tier:1,romaji:"toru",es:"tomar / agarrar",en:"to take, grab"},
+        {jp:"ちがう",cat:"verb",tier:1,romaji:"chigau",es:"diferir / estar equivocado",en:"to differ, be wrong"},
+        {jp:"すむ",cat:"verb",tier:1,romaji:"sumu",es:"vivir / residir",en:"to live, reside"},
+        {jp:"ほし",cat:"story",tier:1,romaji:"hoshi",es:"estrella",en:"star"},
+        {jp:"せかい",cat:"story",tier:1,romaji:"sekai",es:"mundo",en:"world"},
+        {jp:"たび",cat:"story",tier:1,romaji:"tabi",es:"viaje",en:"trip"},
+        {jp:"ひと",cat:"people",tier:1,romaji:"hito",es:"persona",en:"person"},
+        {jp:"おとこ",cat:"people",tier:1,romaji:"otoko",es:"hombre",en:"man"},
+        {jp:"こども",cat:"people",tier:1,romaji:"kodomo",es:"niño",en:"child"},
+        {jp:"みんな",cat:"people",tier:1,romaji:"minna",es:"todos",en:"everyone, all"},
+        {jp:"じぶん",cat:"story",tier:1,romaji:"jibun",es:"uno mismo / yo",en:"oneself"},
+        {jp:"なまえ",cat:"menu",tier:1,romaji:"namae",es:"nombre",en:"name"},
+        {jp:"はなし",cat:"story",tier:1,romaji:"hanashi",es:"historia / conversación",en:"story, talk"},
+        {jp:"たから",cat:"item",tier:1,romaji:"takara",es:"tesoro",en:"treasure"},
+        {jp:"ぶき",cat:"stats",tier:1,romaji:"buki",es:"arma",en:"weapon"},
+        {jp:"ちから",cat:"stats",tier:1,romaji:"chikara",es:"fuerza / poder",en:"power / strength"},
+        {jp:"てき",cat:"combat",tier:1,romaji:"teki",es:"enemigo",en:"enemy"},
+        {jp:"つよい",cat:"combat",tier:1,romaji:"tsuyoi",es:"fuerte",en:"strong"},
+        {jp:"おかね",cat:"shop",tier:1,romaji:"okane",es:"dinero",en:"money"},
+        {jp:"みせ",cat:"shop",tier:1,romaji:"mise",es:"tienda",en:"shop"},
+        {jp:"エネルギー",cat:"story",tier:1,romaji:"enerugii",es:"energía",en:"energy"},
+        {jp:"ロケット",cat:"story",tier:1,romaji:"roketto",es:"cohete",en:"rocket"},
+        {jp:"ゲーム",cat:"story",tier:1,romaji:"geemu",es:"videojuego",en:"game"},
+        {jp:"むら",cat:"world",tier:1,romaji:"mura",es:"aldea",en:"village"},
+        {jp:"いえ",cat:"world",tier:1,romaji:"ie",es:"casa / hogar",en:"house / home"},
+        {jp:"へや",cat:"world",tier:1,romaji:"heya",es:"habitación",en:"room"},
+        {jp:"うみ",cat:"world",tier:1,romaji:"umi",es:"mar",en:"sea"},
+        {jp:"そら",cat:"world",tier:1,romaji:"sora",es:"cielo",en:"sky"},
+        {jp:"ばしょ",cat:"world",tier:1,romaji:"basho",es:"lugar",en:"place"},
+        {jp:"きた",cat:"place",tier:1,romaji:"kita",es:"norte",en:"north"},
+        {jp:"うえ",cat:"place",tier:1,romaji:"ue",es:"arriba / encima",en:"up, above"},
+        {jp:"まえ",cat:"place",tier:1,romaji:"mae",es:"frente / antes",en:"front / before"},
+        {jp:"さき",cat:"place",tier:1,romaji:"saki",es:"adelante / antes",en:"ahead, previous"},
+        {jp:"いま",cat:"story",tier:1,romaji:"ima",es:"ahora",en:"now"},
+        {jp:"じかん",cat:"story",tier:1,romaji:"jikan",es:"tiempo",en:"time"},
+        {jp:"さいご",cat:"story",tier:1,romaji:"saigo",es:"lo último / el final",en:"last / the end"},
+        {jp:"しごと",cat:"story",tier:1,romaji:"shigoto",es:"trabajo",en:"work / job"},
+        {jp:"せつめい",cat:"menu",tier:1,romaji:"setsumei",es:"instrucciones",en:"instructions"},
+        {jp:"しんぱい",cat:"story",tier:1,romaji:"shinpai",es:"preocupación",en:"worry"},
+        {jp:"すき",cat:"story",tier:1,romaji:"suki",es:"gustar",en:"to like"},
+        {jp:"わるい",cat:"story",tier:1,romaji:"warui",es:"malo",en:"bad"},
+        {jp:"はやい",cat:"story",tier:1,romaji:"hayai",es:"rápido",en:"fast"},
+        {jp:"くろ",cat:"story",tier:1,romaji:"kuro",es:"negro",en:"black"},
+        {jp:"いっしょ",cat:"story",tier:1,romaji:"issho",es:"juntos",en:"together"},
+        {jp:"ありがとう",cat:"story",tier:1,romaji:"arigatou",es:"gracias",en:"thank you"},
+        {jp:"だいじょうぶ",cat:"story",tier:1,romaji:"daijoubu",es:"está bien / tranquilo",en:"all right, OK"},
+        {jp:"ルーファウス",cat:"people",tier:2,romaji:"Ruufausu",es:"Rufus (presidente de Shinra)",en:"Rufus (Shinra's president)"},
+        {jp:"スカーレット",cat:"people",tier:2,romaji:"Sukaaretto",es:"Scarlet (jefa de armamento)",en:"Scarlet (weapons chief)"},
+        {jp:"ハイデッカー",cat:"people",tier:2,romaji:"Haidekkaa",es:"Heidegger (jefe de seguridad)",en:"Heidegger (Shinra's security chief)"},
+        {jp:"パルマー",cat:"people",tier:2,romaji:"Parumaa",es:"Palmer (jefe de desarrollo espacial)",en:"Palmer (space program head)"},
+        {jp:"ほうじょう",cat:"people",tier:2,romaji:"Houjou",es:"Hojo (científico)",en:"Hojo (scientist)"},  /* 宝条 */
+        {jp:"ツォン",cat:"people",tier:2,romaji:"Tsuon",es:"Tseng (jefe de los Turcos)",en:"Tseng (leader of the Turks)"},
+        {jp:"レノ",cat:"people",tier:2,romaji:"Reno",es:"Reno (de los Turcos)",en:"Reno (of the Turks)"},
+        {jp:"ルード",cat:"people",tier:2,romaji:"Ruudo",es:"Rude (de los Turcos)",en:"Rude (of the Turks)"},
+        {jp:"イリーナ",cat:"people",tier:2,romaji:"Iriina",es:"Elena (de los Turcos)",en:"Elena (of the Turks)"},
+        {jp:"ジェシー",cat:"people",tier:2,romaji:"Jeshii",es:"Jessie (de AVALANCHE)",en:"Jessie (of AVALANCHE)"},
+        {jp:"ビッグス",cat:"people",tier:2,romaji:"Biggusu",es:"Biggs (de AVALANCHE)",en:"Biggs (of AVALANCHE)"},
+        {jp:"ウェッジ",cat:"people",tier:2,romaji:"Wejji",es:"Wedge (de AVALANCHE)",en:"Wedge (of AVALANCHE)"},
+        {jp:"ザックス",cat:"people",tier:2,romaji:"Zakkusu",es:"Zack",en:"Zack"},
+        {jp:"ナナキ",cat:"people",tier:2,romaji:"Nanaki",es:"Nanaki (el nombre real de Red XIII)",en:"Nanaki (Red XIII's real name)"},
+        {jp:"ブーゲンハーゲン",cat:"people",tier:2,romaji:"Buugenhaagen",es:"Bugenhagen (el anciano de Cosmo Canyon)",en:"Bugenhagen (the elder of Cosmo Canyon)"},
+        {jp:"リーブ",cat:"people",tier:2,romaji:"Riibu",es:"Reeve (de Shinra)",en:"Reeve (of Shinra)"},
+        {jp:"ダイン",cat:"people",tier:2,romaji:"Dain",es:"Dyne (amigo de Barret)",en:"Dyne (Barret's friend)"},
+        {jp:"ジョニー",cat:"people",tier:2,romaji:"Jonii",es:"Johnny (guardia de Shinra)",en:"Johnny (Shinra guard)"},
+        {jp:"プリシラ",cat:"people",tier:2,romaji:"Purishira",es:"Priscilla (la niña de Junon)",en:"Priscilla (the girl in Junon)"},
+        {jp:"ニブルヘイム",cat:"world",tier:2,romaji:"Niburuheimu",es:"Nibelheim (pueblo natal de Cloud)",en:"Nibelheim (Cloud's hometown)"},
+        {jp:"ジュノン",cat:"world",tier:2,romaji:"Junon",es:"Junon (ciudad portuaria)",en:"Junon (port city)"},
+        {jp:"コレル",cat:"world",tier:2,romaji:"Koreru",es:"Corel (pueblo minero)",en:"Corel (mining town)"},
+        {jp:"ゴンガガ",cat:"world",tier:2,romaji:"Gongaga",es:"Gongaga (aldea)",en:"Gongaga (village)"},
+        {jp:"ウータイ",cat:"world",tier:2,romaji:"Uutai",es:"Wutai (región lejana)",en:"Wutai (far away land)"},
+        {jp:"ミディール",cat:"world",tier:2,romaji:"Midiiru",es:"Mideel (ciudad)",en:"Mideel (town)"},
+        {jp:"コスモキャニオン",cat:"world",tier:2,romaji:"Kosumokyanion",es:"Cosmo Canyon (cañón)",en:"Cosmo Canyon"},
+        {jp:"ゴールドソーサー",cat:"world",tier:2,romaji:"Goorudosoosaa",es:"Gold Saucer (parque de atracciones)",en:"Gold Saucer (amusement park)"},
+        {jp:"ボーンビレッジ",cat:"world",tier:2,romaji:"Boonbirejji",es:"Aldea Hueso (Bone Village)",en:"Bone Village"},
+        {jp:"カーム",cat:"world",tier:2,romaji:"Kaamu",es:"Kalm (pueblo)",en:"Kalm (town)"},
+        {jp:"かめどうらく",cat:"world",tier:2,romaji:"kamedouraku",es:"La Tortuga (tienda de Wall Market)",en:"Turtle's Paradise (shop)"},  /* かめ道楽 */
+        {jp:"わすらるるみやこ",cat:"world",tier:2,romaji:"wasurarurumiyako",es:"la Ciudad Olvidada",en:"the Forgotten City"},  /* 忘らるる都 */
+        {jp:"ポーション",cat:"item",tier:2,romaji:"pooshon",es:"poción",en:"potion"},
+        {jp:"ハイポーション",cat:"item",tier:2,romaji:"haipooshon",es:"hiperpoción",en:"hi-potion"},
+        {jp:"エーテル",cat:"item",tier:2,romaji:"eeteru",es:"éter (restaura MP)",en:"ether (restores MP)"},
+        {jp:"エリクサー",cat:"item",tier:2,romaji:"erikusaa",es:"elixir",en:"elixir"},
+        {jp:"ラストエリクサー",cat:"item",tier:2,romaji:"rasutoerikusaa",es:"megaelixir",en:"megalixir"},
+        {jp:"フェニックスのお",cat:"item",tier:2,romaji:"fenikkusunoo",es:"pluma de fénix (revive)",en:"phoenix down (revives)"},  /* フェニックスの尾 */
+        {jp:"ばんのうやく",cat:"item",tier:2,romaji:"bannouyaku",es:"panacea (cura estados)",en:"remedy (cures statuses)"},  /* 万能薬 */
+        {jp:"テント",cat:"item",tier:2,romaji:"tento",es:"tienda de campaña",en:"tent"},
+        {jp:"キーアイテム",cat:"item",tier:2,romaji:"kiiaitemu",es:"objeto clave",en:"key item"},
+        {jp:"ヒュージマテリア",cat:"item",tier:2,romaji:"Hyuujimateria",es:"Materia Gigante",en:"Huge Materia"},
+        {jp:"くろマテリア",cat:"item",tier:2,romaji:"Kuromateria",es:"Materia Negra",en:"Black Materia"},  /* 黒マテリア */
+        {jp:"ウェポン",cat:"monster",tier:2,romaji:"Wepon",es:"Arma (monstruo gigante)",en:"Weapon (giant monster)"},
+        {jp:"ホーリー",cat:"spell",tier:2,romaji:"Hoorii",es:"Sacro (hechizo)",en:"Holy (spell)"},
+        {jp:"おい",cat:"expr",tier:2,romaji:"oi",es:"¡oye!",en:"hey!"},
+        {jp:"うん",cat:"expr",tier:2,romaji:"un",es:"sí (informal)",en:"yeah"},
+        {jp:"ねえ",cat:"expr",tier:2,romaji:"nee",es:"oye",en:"hey"},
+        {jp:"えっ",cat:"expr",tier:2,romaji:"e",es:"¿eh?",en:"huh?"},
+        {jp:"ふん",cat:"expr",tier:2,romaji:"fun",es:"¡bah!",en:"hmph"}
+      ]
+    },
+    {
       id: 'gyakuten-saiban', rung: 5,
       name: { es: 'Phoenix Wright (Gyakuten Saiban)', en: 'Phoenix Wright: Ace Attorney' },
       mode: { es: 'N4 + vocabulario legal', en: 'N4 + legal vocabulary' },
@@ -5352,6 +5770,8 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     spell:{es:'Hechizos',en:'Spells'},
     equip:{es:'Armas y armaduras',en:'Weapons & armor'},
     monster:{es:'Monstruos',en:'Monsters'},
+    verb:{es:'Verbos',en:'Verbs'},
+    expr:{es:'Expresiones y habla coloquial',en:'Expressions & colloquial speech'},
     general:{es:'General',en:'General'}
   };
   function catLabel(c){ var o=CAT_LABELS[c]; return o?(getLang()==='es'?o.es:o.en):c; }
