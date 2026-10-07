@@ -8733,6 +8733,10 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   }
   function buildComplete(){ var pt=ensurePatterns(), ph=ensurePhrases(), q=ptsess, td=today();
     ph.built[q.phrase.jp]=(ph.built[q.phrase.jp]||0)+1;         // cuenta la construcción de esta frase
+    /* Armar la frase es producir: tambien madura la caja de FRASES (antes solo contaba
+       en ph.built y el contador de frases nunca subia). Una vez por dia, via wordSrsMove.
+       Si hubo fichas equivocadas no sube, pero tampoco baja: es un ejercicio guiado. */
+    if(!q.hadBad) wordSrsMove(q.phrase.jp,true,ph);
     /* El patrón sube de nivel como máximo UNA vez por día (igual que el SRS de
        palabras). Así madurar hasta el reconocimiento toma varios días, no 4 clics
        de la misma sesión. Podés seguir armando hoy: practica sin adelantar el box. */
@@ -8844,6 +8848,17 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       if(w.leech&&w.leech[k]!==undefined){ if(!ph.leech[k])ph.leech[k]=w.leech[k]; delete w.leech[k]; moved=true; }
     });
     return moved;
+  }
+  /* Siembra unica: las frases armadas 3+ veces antes de que armar moviera la caja
+     arrancan en nivel 2 (nunca mas). Reconoce el trabajo previo sin declarar nada
+     dominado: igual hacen falta dos dias mas para llegar a 4. Idempotente por flag. */
+  var PHRASE_SEED_MIN_BUILT=3, PHRASE_SEED_BOX=2;
+  function seedPhraseBoxesFromBuild(){
+    if(typeof PHRASES==='undefined')return false;
+    var ph=ensurePhrases(); if(ph.bseeded)return false;
+    PHRASES.forEach(function(p){ var n=ph.built[p.jp]||0;
+      if(n>=PHRASE_SEED_MIN_BUILT && (ph.box[p.jp]||0)<PHRASE_SEED_BOX) ph.box[p.jp]=PHRASE_SEED_BOX; });
+    ph.bseeded=1; return true;
   }
   function seedKnownFromBuild(){ var ex=ensureWords(), changed=false;
     /* one-time: undo the old over-seed so words start fresh and get taught (kana-style pool) */
@@ -9553,8 +9568,10 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       q.slot++; q.badIdx=-1;
       if(q.slot>=q.target.length){
         q.done=true;
-        var jp=q.phrase.jp, box=rsess.box, cur=box[jp]||0; box[jp]=Math.min(5,cur+1);
-        if(rsess.ex.leech)rsess.ex.leech[jp]=0;
+        var jp=q.phrase.jp;
+        /* Antes subia la caja sin tope diario (5 clics = dominada). Ahora usa la misma
+           regla que el resto del SRS: una vez por dia y solo si se armo sin errores. */
+        if(!q.hadBad) wordSrsMove(jp,true,ensurePhrases());
         if(rsess.ex.seen)rsess.ex.seen[jp]=1;  /* building it counts as first contact for recognition */
         rsess.done++; rsess.correct++;
         var td=today(); rsess.ex.daily[td]=(rsess.ex.daily[td]||0)+1; stampDay();
@@ -9562,7 +9579,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       }
       renderPhraseBuild();
     }else{
-      q.badIdx=i; renderPhraseBuild();
+      q.badIdx=i; q.hadBad=true; renderPhraseBuild();
     }
   }
   function bindPhraseBuild(){
@@ -9945,6 +9962,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     if(!loaded)Persistence.save(state);
     if(!state.lang){state.lang=detectLang();Persistence.save(state);}
     try{ if(migratePhraseBoxes())Persistence.save(state); }catch(e){}
+    try{ if(seedPhraseBoxesFromBuild())Persistence.save(state); }catch(e){}
     try{seedKnownFromBuild();}catch(e){}
     render();
     if(!state.onboardSeen) openOnboard();
