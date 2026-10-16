@@ -739,6 +739,18 @@
   .pt-opt.ok{background:var(--green);color:#fff;border-color:var(--green)}
   .pt-opt.bad{background:var(--shu);color:#fff;border-color:var(--shu)}
   .pt-opt.dim{opacity:.4}
+  .ls-opts{grid-template-columns:repeat(2,1fr)}
+  .ls-opts .pt-opt{font-size:20px;padding:14px 4px;line-height:1.25;word-break:keep-all}
+  .ls-play{display:flex;justify-content:center;gap:10px;margin:2px 0 14px}
+  .ls-play button{display:inline-flex;align-items:center;gap:6px;background:none;border:1.5px solid var(--ink);border-radius:20px;padding:7px 16px;font-size:15px;cursor:pointer;color:var(--ink)}
+  .ls-play button.main{border-color:var(--shu);color:var(--shu)}
+  .ls-hide{text-align:center;font-size:13px;color:var(--ink-soft);margin:6px 0 16px;letter-spacing:.04em}
+  .bd-word.ls-hit .bd-w-text{color:var(--green);border-bottom:2px solid var(--green)}
+  .ls-pair{display:flex;flex-direction:column;gap:8px;margin:12px 0 6px}
+  .ls-pair-row{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ink-soft)}
+  .ls-pair-row b{font-size:20px;color:var(--ink)}
+  .ls-pair-row.ok b{color:var(--green)}
+  .ls-pair-row.bad b{color:var(--shu)}
   .pt-fb{margin-top:16px;border-top:1px dashed var(--line);padding-top:12px;font-size:14px;color:var(--ink-soft);text-align:center}
   .pt-fb b{color:var(--shu);font-size:20px}
 
@@ -8496,6 +8508,8 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     var bp=nextBuildPhrase(true);
     if(bp){ var mature=phraseReadyIdxMature(PHRASES).length>0;
       if(!mature || Math.random()<GUIDED_PROB){ launchGuidedBuild(bp); return true; } }
+    // 3b) cloze auditivo ocasional: escuchar la frase y elegir la palabra que falta
+    if(Math.random()<LISTEN_PROB && canListen()){ if(launchListenCloze()) return true; }
     // 4) refuerzo ocasional: cloze de un patrón ya visto
     if(Math.random()<PATTERN_DRILL_PROB){ var s=anySeenPatternForDrill(); if(s){ launchPatternCloze(s.id,false); return true; } }
     return false;
@@ -8608,6 +8622,137 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     pt.daily[td]=(pt.daily[td]||0)+1; stampDay();
     if(rsess){ rsess.done++; if(correct)rsess.correct++; else rsess.wrong++; }
     Persistence.save(state); renderPatternCloze(); }
+
+  /* =========================================================================
+     CLOZE AUDITIVO: suena la frase entera, falta UNA palabra y se elige
+     entre opciones que suenan parecido (pares mínimos: vocal larga, っ,
+     dakuten, ゃゅょ). Solo usa frases que el usuario ya armó o ya tiene en
+     SRS, y distractores que puede leer (wordReadable). La traducción queda
+     oculta hasta responder, si no se vuelve comprensión lectora. No mueve
+     cajas de SRS: es práctica de oído, y no hay señal honesta que acreditar.
+     ========================================================================= */
+  var LISTEN_PROB=0.18, LISTEN_PARTICLE_PROB=0.2, lsRecent=[];
+  var LS_VOWEL={a:'あかさたなはまやらわがざだばぱぁゃ',i:'いきしちにひみりぎじぢびぴぃ',u:'うくすつぬふむゆるぐずづぶぷぅゅ',e:'えけせてねへめれげぜでべぺぇ',o:'おこそとのほもよろをごぞどぼぽぉょ'};
+  function lsVowel(m){ var c=m.charAt(m.length-1); for(var v in LS_VOWEL){ if(LS_VOWEL[v].indexOf(c)>=0) return v; } return ''; }
+  /* clave fonética: dos escrituras que suenan igual (づ/ず, ぢ/じ, をお, おう/おお, えい/ええ) nunca pueden ser distractor */
+  function lsPhon(x){ var m=splitMora(kataToHira(x).replace(/ぢ/g,'じ').replace(/づ/g,'ず').replace(/を/g,'お')), out=[];
+    for(var i=0;i<m.length;i++){ var c=m[i], v=i?lsVowel(out[i-1]):'';
+      if(c==='う'&&v==='o') c='お'; else if(c==='い'&&v==='e') c='え'; else if(c==='ー'&&v) c={a:'あ',i:'い',u:'う',e:'え',o:'お'}[v];
+      out.push(c); }
+    return out.join(''); }
+  function lsBase(m){ return m.normalize('NFD').replace(/[゙゚]/g,''); }
+  /* inserción "barata": alargar vocal, っ, ー (el par mínimo típico del hispanohablante) */
+  function lsCheapIns(m,prev){ if(m==='っ'||m==='ー') return true; if(!prev) return false;
+    var v=lsVowel(prev);
+    return (m==='あ'&&v==='a')||(m==='い'&&(v==='i'||v==='e'))||(m==='う'&&(v==='u'||v==='o'))||(m==='え'&&v==='e')||(m==='お'&&v==='o'); }
+  function lsSubCost(a,b){ if(a===b) return 0;
+    if(lsBase(a)===lsBase(b)) return 0.5;                     // dakuten: か/が, は/ば/ぱ
+    if(a.charAt(0)===b.charAt(0)) return 0.5;                 // yōon: き/きょ
+    if(lsVowel(a)&&lsVowel(a)===lsVowel(b)&&lsBase(a).length===1&&lsBase(b).length===1) return 0.8; // misma vocal
+    return 1; }
+  /* distancia por moras con costos reducidos para los pares mínimos */
+  function lsDist(x,y){ var a=splitMora(kataToHira(x)), b=splitMora(kataToHira(y)), n=a.length, m=b.length, d=[], i, j;
+    for(i=0;i<=n;i++){ d[i]=[]; for(j=0;j<=m;j++) d[i][j]=0; }
+    for(i=1;i<=n;i++) d[i][0]=d[i-1][0]+(lsCheapIns(a[i-1],a[i-2])?0.5:1);
+    for(j=1;j<=m;j++) d[0][j]=d[0][j-1]+(lsCheapIns(b[j-1],b[j-2])?0.5:1);
+    for(i=1;i<=n;i++) for(j=1;j<=m;j++){
+      d[i][j]=Math.min(d[i-1][j]+(lsCheapIns(a[i-1],a[i-2])?0.5:1), d[i][j-1]+(lsCheapIns(b[j-1],b[j-2])?0.5:1), d[i-1][j-1]+lsSubCost(a[i-1],b[j-1])); }
+    return d[n][m]; }
+  /* pool de candidatos: piezas de frases + palabras del pool, todo en kana y legible */
+  var _lsPool=null;
+  function lsCandidates(){ if(_lsPool) return _lsPool; var seen={}, out=[];
+    function add(w){ if(!w||seen[w]||!isAllKana(w)) return; seen[w]=1; out.push(w); }
+    PHRASES.forEach(function(p){ (p.parts||[]).forEach(add); });
+    WORD_POOL.forEach(function(o){ add(o.jp); });
+    _lsPool=out; return out; }
+  function listenablePhrases(){ var ph=ensurePhrases();
+    return PHRASES.filter(function(p){ return p.parts && p.parts.length>=2 && isAllKana(p.jp) && wordReadable(p.jp) &&
+      (((ph.built&&ph.built[p.jp])||0)>=1 || (ph.box[p.jp]||0)>=1); }); }
+  function canListen(){ return !!window.speechSynthesis && listenablePhrases().length>0; }
+  function lsDistractors(answer,phrase){
+    var hAns=kataToHira(answer), excl={}; phrase.parts.forEach(function(w){ excl[kataToHira(w)]=1; });
+    if(PARTICLES[answer]){
+      var conf=Object.keys(PCONF[answer]||{}).concat(['は','が','を','に','で','へ','の','も','と']);
+      var o=[]; conf.forEach(function(x){ if(x!==answer&&!excl[kataToHira(x)]&&o.indexOf(x)<0) o.push(x); });
+      return shuffle(o.slice(0,5)).slice(0,3); }
+    var aLen=splitMora(hAns).length, scored=[], pAns=lsPhon(hAns);
+    lsCandidates().forEach(function(w){ var hw=kataToHira(w);
+      if(hw===hAns||excl[hw]||PARTICLES[w]||!wordReadable(w)||lsPhon(hw)===pAns||!lsGloss(w,true)) return;
+      if(Math.abs(splitMora(hw).length-aLen)>2) return;
+      var d=lsDist(hAns,hw); if(d>0&&d<=2.5) scored.push({w:w,d:d+Math.random()*0.3}); });
+    scored.sort(function(a,b){ return a.d-b.d; });
+    var out=[], used={};
+    for(var i=0;i<scored.length&&out.length<3;i++){ var hw=lsPhon(scored[i].w); if(used[hw]) continue; used[hw]=1; out.push(scored[i].w); }
+    return out; }
+  function launchListenCloze(){
+    var cands=listenablePhrases().filter(function(p){ return lsRecent.indexOf(p.jp)<0; });
+    if(!cands.length) return false;
+    shuffle(cands);
+    for(var k=0;k<Math.min(cands.length,12);k++){
+      var phrase=cands[k], idx=[], pidx=[];
+      phrase.parts.forEach(function(w,i){ if(PARTICLES[w]) pidx.push(i); else if(isAllKana(w)) idx.push(i); });
+      var pool=(pidx.length&&(Math.random()<LISTEN_PARTICLE_PROB||!idx.length))?pidx:idx;
+      shuffle(pool);
+      for(var z=0;z<pool.length;z++){
+        var slot=pool[z], answer=phrase.parts[slot], dis=lsDistractors(answer,phrase);
+        if(dis.length<3) continue;
+        lsRecent.push(phrase.jp); if(lsRecent.length>4) lsRecent.shift();
+        ptsess={mode:'listen',phrase:phrase,slot:slot,answer:answer,opts:shuffle([answer].concat(dis)),answered:false,picked:null,plays:0};
+        renderListenCloze(); readingEl.classList.remove('hidden');
+        lsPlay(false);
+        return true; }
+    }
+    return false; }
+  function lsPlay(slow){ var q=ptsess; if(!q||q.mode!=='listen') return; q.plays++;
+    try{ var synth=window.speechSynthesis; if(!synth) return;
+      var u=new SpeechSynthesisUtterance(q.phrase.jp); u.lang='ja-JP'; u.rate=slow?.55:.8;
+      var vs=synth.getVoices(), jp=vs.filter(function(v){return /ja(-|_)?JP/i.test(v.lang);})[0]; if(jp) u.voice=jp;
+      synth.cancel(); synth.speak(u); }catch(e){} }
+  function lsGloss(w,es){ var gl=BLOCK_GLOSS[w], wd=WORD_BY_JP[w], cj=CONJ_BY_JP[w];
+    if(gl) return es?gl.es:gl.en; if(PARTICLES[w]) return PARTICLES[w].fn; if(wd) return es?wd.es:wd.en;
+    if(cj&&WORD_BY_JP[cj.base]) return es?WORD_BY_JP[cj.base].es:WORD_BY_JP[cj.base].en; return ''; }
+  function renderListenCloze(){
+    var q=ptsess, phrase=q.phrase, es=getLang()==='es';
+    var h=ptHead();
+    h+='<div class="pt-card"><div class="pt-kind">'+(es?'Escuchá: ¿qué palabra falta?':'Listen: which word is missing?')+'</div>';
+    if(q.answered){ h+=sentenceBreakdownHTML(phrase.parts,es,!!q.showBreak); h+='<div class="pt-clmean">'+(es?phrase.es:phrase.en)+'</div>'; }
+    else {
+      var jp=''; phrase.parts.forEach(function(w,i){ jp+= i===q.slot ? '<span class="pt-hole">▢</span>' : w; });
+      h+='<div class="pt-cloze mincho">'+jp+'</div>';
+      h+='<div class="ls-hide">'+(es?'La traducción aparece al responder':'The translation shows after you answer')+'</div>';
+      h+='<div class="ls-play"><button class="main" id="lsPlay"><i class=ico-spk></i> <span>'+(es?'Escuchar':'Listen')+'</span></button><button id="lsSlow"><i class=ico-spk></i> <span>'+(es?'Lento':'Slow')+'</span></button></div>';
+    }
+    h+='<div class="pt-opts ls-opts">';
+    q.opts.forEach(function(w){ var cls='pt-opt mincho'; if(q.answered){ if(w===q.answer)cls+=' ok'; else if(w===q.picked)cls+=' bad'; else cls+=' dim'; } h+='<button class="'+cls+'" data-w="'+w+'">'+w+'</button>'; });
+    h+='</div>';
+    if(q.answered){
+      var ok=q.picked===q.answer;
+      h+='<div class="ls-pair">';
+      h+='<div class="ls-pair-row ok">'+spkBtn(q.answer,true)+'<b class="mincho">'+q.answer+'</b><span>'+lsGloss(q.answer,es)+'</span></div>';
+      if(!ok) h+='<div class="ls-pair-row bad">'+spkBtn(q.picked,true)+'<b class="mincho">'+q.picked+'</b><span>'+lsGloss(q.picked,es)+'</span></div>';
+      h+='</div>';
+      if(!ok) h+='<div class="sg-note">'+(es?'Suenan parecido. Tocá cada bocina y compará las dos.':'They sound alike. Tap each speaker and compare them.')+'</div>';
+      h+='<button class="bw-toggle" id="lsBreakToggle">'+(q.showBreak?'☑':'☐')+' '+(es?'Ver cada bloque':'See each block')+'</button>';
+      h+='<div class="rq-ans" style="text-align:center;margin:4px 0 2px"><button class="d-spk-word" id="lsAgain"><i class=ico-spk></i> <span>'+t('hear it')+'</span></button></div><div class="d-actions"><button class="d-next" id="ptNext">'+t('Next →')+'</button></div>';
+    }
+    readingInner.innerHTML=h;
+    var c=document.getElementById('rClose'); if(c)c.addEventListener('click',closeReading);
+    if(!q.answered){
+      var pb=document.getElementById('lsPlay'); if(pb) pb.addEventListener('click',function(){ lsPlay(false); });
+      var sb=document.getElementById('lsSlow'); if(sb) sb.addEventListener('click',function(){ lsPlay(true); });
+      readingInner.querySelectorAll('.pt-opt').forEach(function(o){ o.addEventListener('click',function(){ listenAnswer(o.getAttribute('data-w')); }); });
+    } else {
+      var hit=readingInner.querySelectorAll('.bd-sentence .bd-word')[q.slot]; if(hit) hit.classList.add('ls-hit');
+      var nx=document.getElementById('ptNext'); if(nx) nx.addEventListener('click',function(){ ptsess=null; nextReadingQ(); });
+      var ag=document.getElementById('lsAgain'); if(ag) ag.addEventListener('click',function(){ speakSweep(phrase.jp, readingInner.querySelector('.sweepline')); });
+      readingInner.querySelectorAll('.ls-pair .pt-spk').forEach(function(b){ b.addEventListener('click',function(){ speak(b.getAttribute('data-say')); }); });
+      bindBreakdownToggle('lsBreakToggle',q,es);
+      setTimeout(function(){ speakSweep(phrase.jp, readingInner.querySelector('.sweepline')); },250);
+    }
+  }
+  function listenAnswer(w){ var q=ptsess; if(!q||q.mode!=='listen'||q.answered) return; q.answered=true; q.picked=w;
+    if(rsess){ rsess.done++; if(w===q.answer) rsess.correct++; else rsess.wrong++; }
+    stampDay(); Persistence.save(state); renderListenCloze(); }
 
   /* =========================================================================
      MADURACIÓN + CONSTRUCTOR GUIADO + FICHA DE SEGMENTACIÓN
