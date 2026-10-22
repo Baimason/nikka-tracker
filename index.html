@@ -978,6 +978,64 @@
   .kd-row{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 6px}
   .kd-row .kd-mini,.teach-compare .kd-mini{width:64px}
   .kd-foot{margin:2px 0 16px}
+  /* ===== Taller de kanji ===== */
+  .tl-big{font-size:92px;line-height:1.05;margin:4px 0 2px}
+  .tl-big-sm{font-size:64px;margin:6px 0 0}
+  .tl-kw{font-size:22px;font-weight:600;color:var(--ink);margin-top:4px}
+  .tl-kw-q{font-size:26px}
+  .tl-emo{margin-right:8px}
+  .tl-sub{font-size:13px;color:var(--ink-soft);margin-top:6px}
+  .tl-diag{position:relative;margin:16px auto 12px;width:min(220px,60vw);aspect-ratio:1;display:grid;gap:6px}
+  .tl-diag.lay-solo{grid-template-areas:"c"}
+  .tl-diag.lay-lr{grid-template-columns:1fr 1.25fr;grid-template-areas:"l r"}
+  .tl-diag.lay-tb{grid-template-rows:1fr 1.2fr;grid-template-areas:"t" "b"}
+  .tl-diag.lay-enc{grid-template-areas:"c"}
+  .tl-diag.lay-mix{width:min(280px,76vw);aspect-ratio:2.3/1;grid-template-columns:1fr auto 1fr;align-items:stretch}
+  .tl-diag.lay-ltb{grid-template-columns:1fr 1.25fr;grid-template-rows:1fr 1fr;grid-template-areas:"l rt" "l rb"}
+  .tl-diag.lay-tlr{grid-template-rows:1fr 1.2fr;grid-template-columns:1fr 1fr;grid-template-areas:"t t" "bl br"}
+  .tl-diag.lay-tb3{grid-template-rows:.8fr .55fr 1.2fr;grid-template-areas:"t" "m" "b"}
+  .tl-slot{min-width:0;min-height:0;display:flex;align-items:center;justify-content:center;background:transparent;border:1.6px dashed var(--ink-faint);border-radius:4px;color:var(--ink);font:inherit;padding:0;cursor:pointer;transition:opacity .3s,transform .3s,border-color .2s,background .2s}
+  .tl-slot.filled{border-style:solid;border-color:var(--ink);background:var(--card)}
+  .tl-slot span{font-size:52px;line-height:1}
+  .lay-solo .tl-slot span{font-size:96px}
+  .lay-mix .tl-slot span{font-size:56px}
+  .lay-ltb .tl-slot span,.lay-tlr .tl-slot span,.lay-tb3 .tl-slot span{font-size:38px}
+  .lay-tb3 .s-m span{font-size:28px}
+  .s-c{grid-area:c}.s-l{grid-area:l}.s-r{grid-area:r}.s-t{grid-area:t}.s-b{grid-area:b}.s-m{grid-area:m}
+  .s-rt{grid-area:rt}.s-rb{grid-area:rb}.s-bl{grid-area:bl}.s-br{grid-area:br}
+  .s-o{grid-area:c}
+  .s-i{grid-area:c;width:52%;height:52%;justify-self:center;align-self:center;z-index:1;background:var(--paper)}
+  .lay-enc .s-o{align-items:flex-start;justify-content:flex-start;padding:6px}
+  .lay-enc .s-o span{font-size:40px}
+  .lay-enc .s-i span{font-size:44px}
+  .tl-mixplus{align-self:center;font-size:22px;color:var(--ink-soft);padding:0 4px}
+  .tl-slot.right{border-color:var(--green)}
+  .tl-slot.wrong{border-color:var(--shu);background:var(--bad-bg)}
+  .tl-diag.fused .tl-slot,.tl-diag.fused .tl-mixplus{opacity:0;transform:scale(.88);transition-delay:.15s}
+  .tl-fused{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:120px;line-height:1;color:var(--green);animation:tlFuse .55s .2s both}
+  .lay-mix .tl-fused{font-size:96px}
+  @keyframes tlFuse{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
+  .tl-bank{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:6px auto 10px;max-width:360px}
+  .tl-chip{width:56px;height:56px;font-size:32px;line-height:1;color:var(--ink);background:var(--card);border:1.6px solid var(--ink);border-radius:4px;cursor:pointer;padding:0;transition:opacity .2s,transform .08s}
+  .tl-chip:active{transform:scale(.94)}
+  .tl-chip.used{opacity:.2;cursor:default}
+  .tl-hint{max-width:420px;margin:4px auto 8px;font-size:14px;color:var(--ink-soft);font-style:italic;text-align:center}
+  .tl-recipe{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px;margin:12px auto 0}
+  .tl-rp{display:flex;flex-direction:column;align-items:center;min-width:44px}
+  .tl-rp .mincho{font-size:30px;line-height:1.1}
+  .tl-rp small{font-size:11px;color:var(--ink-soft);max-width:90px;text-align:center}
+  .tl-rp-out .mincho{color:var(--green)}
+  .tl-plus{font-size:18px;color:var(--ink-faint);padding-bottom:14px}
+  .tl-story{margin:14px auto 0;padding:10px 12px;background:var(--card);border-radius:6px;border:1px solid var(--line);text-align:left;max-width:480px;width:100%;box-sizing:border-box}
+  .tl-story-lbl{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:6px}
+  .tl-story-txt{font-size:15px;line-height:1.45;color:var(--ink)}
+  .tl-story-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .tl-sbtn{font:inherit;font-size:13px;padding:6px 10px;border-radius:4px;border:1.4px solid var(--ink);background:var(--ink);color:var(--card);cursor:pointer}
+  .tl-sbtn.ghost{background:transparent;color:var(--ink)}
+  .tl-story-ta{width:100%;box-sizing:border-box;min-height:84px;font:inherit;font-size:16px;padding:8px;border:1.4px solid var(--ink-faint);border-radius:4px;background:var(--paper);color:var(--ink);resize:vertical}
+  .tl-nudge{margin-top:8px;font-size:13px;color:var(--shu)}
+  .tl-ex{margin:12px auto 0;font-size:14px;color:var(--ink-soft);text-align:center;max-width:480px}
+  @media (prefers-reduced-motion:reduce){ .tl-fused{animation:none} .tl-slot,.tl-chip{transition:none} }
 </style>
 
 <div class="wrap">
@@ -1934,7 +1992,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
         '<div class="sub">'+t("Automatic sync across devices: no passwords, no data of yours to guard.")+'</div></div>'+
         '<span class="tag">'+t("COMING SOON")+'</span></div></details>';
   }
-  function dayReps(s){ var k=ensureKana(),w=ensureWords(),p=ensurePhrases(),pt=ensurePatterns(); return (k.daily[s]?k.daily[s].done:0)+(w.daily[s]||0)+(p.daily[s]||0)+(pt.daily?(pt.daily[s]||0):0); }
+  function dayReps(s){ var k=ensureKana(),w=ensureWords(),p=ensurePhrases(),pt=ensurePatterns(); return (k.daily[s]?k.daily[s].done:0)+(w.daily[s]||0)+(p.daily[s]||0)+(pt.daily?(pt.daily[s]||0):0)+((state.exercises&&state.exercises.taller&&state.exercises.taller.daily)?(state.exercises.taller.daily[s]||0):0); }
   function todayReps(){ return dayReps(today()); }
   function stampDay(){ var td=today(); if(todayReps()>=15 && !(state.days[td]&&state.days[td].practiced)){ state.days[td]=state.days[td]||{}; state.days[td].practiced=true; return true; } return false; }
   function kanaOptsHTML(){
@@ -2001,6 +2059,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     h+='<button class="ex-custom-btn" data-fn="openCustom">🎛 '+t("Custom exercise")+'</button>';
     if(kanjiUnlockReady()) h+='<button class="ex-custom-btn" data-fn="activateKanji">漢字 '+t("Activate kanji")+'</button>';
     else if(kanjiDueCount()>0) h+='<button class="ex-custom-btn" data-fn="startKanji">漢字 '+t("Kanji")+' ('+kanjiDueCount()+')</button>';
+    if(kanjiOn()){ var _tb=tallerBadge(); h+='<button class="ex-custom-btn" data-fn="startTaller">工 '+(getLang()==="es"?"Taller de kanji":"Kanji workshop")+(_tb?' ('+_tb+')':'')+'</button>'; }
     if(phraseUnlockReady()) h+='<button class="ex-custom-btn" data-fn="activatePhrases">🗣 '+t("Activate phrases")+'</button>';
     var ext=tasksForStage(st).filter(function(x){return x.id!=="kana"&&x.id!=="words"&&x.id!=="phrases";});
     if(ext.length){
@@ -2367,6 +2426,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     var d=document.getElementById("drill"), r=document.getElementById("reading");
     try{ if(d && !d.classList.contains("hidden") && typeof sess!=="undefined" && sess){ renderDrill(); } }catch(e){}
     try{ if(r && !r.classList.contains("hidden") && typeof rsess!=="undefined" && rsess && rsess.q){ renderReading(); } }catch(e){}
+    try{ if(r && !r.classList.contains("hidden") && typeof tsess!=="undefined" && tsess && tsess.q){ renderTaller(); } }catch(e){}
   }
   function renderSheet(){
     var es=getLang()==="es", font=getFont(), lang=getLang(), theme=getTheme(), sw=getSweep(), ms=getSweepMs();
@@ -5590,7 +5650,11 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     var seen={}; WORD_POOL.forEach(function(w){ seen[w.jp]=1; });
     GAMES.forEach(function(g){ (g.words||[]).forEach(function(o){
       if(!o||!o.jp||seen[o.jp])return; seen[o.jp]=1;
-      WORD_POOL.push({jp:o.jp,romaji:o.romaji||'',en:(o.en||o.es||''),es:(o.es||o.en||''),emoji:(o.emoji||EMOJI[o.jp]||'')});
+      var gw={jp:o.jp,romaji:o.romaji||'',en:(o.en||o.es||''),es:(o.es||o.en||''),emoji:(o.emoji||EMOJI[o.jp]||'')};
+      WORD_POOL.push(gw);
+      /* WORD_BY_JP se construye antes de este fold; sin esto las palabras que
+         solo existen en un juego (ej. さいご) quedan sin glosa en el desglose */
+      if(!WORD_BY_JP[o.jp]) WORD_BY_JP[o.jp]=gw;
     }); });
   })();
 
@@ -8416,7 +8480,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     if(w.length>2 && (w.slice(-2)==='ても'||w.slice(-2)==='でも')){ var dt=deinflectPlain(w.slice(0,-1)); if(dt) return {base:dt.base,kind:'te'}; }
     var tails=['ますか','ですか','ます','です','か','の'];
     for(var xi=0;xi<tails.length;xi++){ var xf=tails[xi]; if(w.length>xf.length && w.slice(-xf.length)===xf){ var xb=w.slice(0,-xf.length);
-        if(WORD_BY_JP[xb]) return {base:xb,kind:null};
+        if(WORD_BY_JP[xb]) return {base:xb,kind:(xf==='の'?'no':null)};
         if(xf==='ます'||xf==='ますか'){ var dm=deinflectMasu(xf==='ますか'?w.slice(0,-1):w); if(dm) return {base:dm.base,kind:null}; } } }
     return null;
   }
@@ -8439,7 +8503,10 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       if(gl) cap=es?gl.es:gl.en;
       else if(wd) cap=es?wd.es:wd.en;
       else if(cj){ var base=WORD_BY_JP[cj.base], lbl=cj.kind?CONJ_KIND_LABEL[cj.kind]:null;
-        cap=base?((es?base.es:base.en)+(lbl?' ('+(es?lbl.es:lbl.en)+')':'')):''; }
+        cap=base?((es?base.es:base.en)+(cj.kind==='no'?' + の':(lbl?' ('+(es?lbl.es:lbl.en)+')':''))):''; }
+      if(!cap){ /* compuesto de dos palabras conocidas: でんわばんごう = teléfono + número */
+        for(var k=1;k<w.length;k++){ var a1=WORD_BY_JP[w.slice(0,k)], a2=WORD_BY_JP[w.slice(k)];
+          if(a1&&a2){ cap=(es?a1.es:a1.en).split(' / ')[0]+' + '+(es?a2.es:a2.en).split(' / ')[0]; break; } } }
       var txt=sweepOn?moraSpansOnly(w):w;
       h+='<span class="bd-word mincho'+(teach&&isFixedTok(w)?' fx':'')+'"><span class="bd-w-text">'+txt+'</span>'+(cap?'<span class="bd-w-cap">'+cap+'</span>':'')+'</span>';
     });
@@ -9051,6 +9118,568 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     "mastery check: write the whole reading yourself":"prueba de dominio: escribí vos toda la lectura",
     "<b>Type the word</b>: instead of tapping tiles, you write the whole reading yourself, with no kana hint. Only kicks in for words already solid in your word SRS; shakier ones stay tap-to-build. Accepts every standard spelling and forgives a single spelling slip.":"<b>Escribí la palabra</b>: en vez de tocar fichas, escribís vos toda la lectura, sin pista de kana. Solo aparece en palabras que ya tenés sólidas en el SRS de palabras; las más nuevas siguen siendo de armar con fichas. Acepta todas las escrituras estándar y perdona un solo detalle de ortografía."
   }; for(var k in add){ if(typeof TR==="object" && !(k in TR))TR[k]=add[k]; } })();
+
+  /* ================= TALLER DE KANJI: DATOS =================
+     Orden = currículo: cada pieza aparece antes que cualquier kanji que la use
+     (lo verifica tallerCheck() en las pruebas). Campos por fila:
+     [glifo, tipo ('p' pieza que no es N5 / 'k' kanji N5), clave ES, clave EN, emoji pista,
+      forma ('solo','lr','tb','enc','mix','ltb','tlr','tb3'), piezas en orden de casilla,
+      historia ES, historia EN, etiqueta ('E' = así se dibujaba, 'M' = truco de memoria)]
+     Las descomposiciones son las del taller: a veces simplifican el kanji real
+     (lo dice la historia), igual que hace Heisig con sus primitivas. */
+  var TALLER_ROWS=[
+    ["一","k","uno","one","1️⃣","solo",[],
+      "Un solo palo acostado. Es tan simple que los demás kanji lo usan de piso, de techo y de cinturón. El ladrillo de LEGO del japonés.",
+      "One stick lying down. So simple that other kanji use it as a floor, a roof and a belt. The LEGO brick of Japanese.","E"],
+    ["二","k","dos","two","2️⃣","tb",["一","一"],
+      "Un 一 se sintió solo y llamó a su gemelo. Ahora duermen en literas: el de arriba más corto porque se encogió de frío.",
+      "One 一 felt lonely and called its twin. Now they sleep in bunk beds; the top one is shorter because it shrank from the cold.","E"],
+    ["三","k","tres","three","3️⃣","tb",["一","二"],
+      "Llegó un tercer 一 a la fiesta de los gemelos. Nadie lo invitó, pero trajo pizza, así que se quedó en el medio.",
+      "A third 一 crashed the twins' party. Nobody invited it, but it brought pizza, so it got the middle spot.","E"],
+    ["十","k","diez","ten","🔟","solo",[],
+      "Una cruz perfecta: el 一 se cruzó con un palo vertical y juntos suman diez. Es la marca del tesoro en todos los mapas piratas.",
+      "A perfect cross: 一 crossed a vertical stick and together they make ten. It's the X that marks the treasure on every pirate map.","E"],
+    ["ノ","p","tobogán","slide","🛝","solo",[],
+      "Un trazo que baja en curva de derecha a izquierda. Parece la katakana ノ y funciona igual: un tobogán por donde se resbalan las cosas.",
+      "A stroke curving down from right to left. It looks like the katakana ノ and works the same: a slide things slip down.","M"],
+    ["千","k","mil","thousand","","tb",["ノ","十"],
+      "Al diez le pusieron un tobogán en la cabeza. Mil niños hicieron fila para tirarse. Mil exactos, los contó el diez.",
+      "Someone put a slide on top of ten. A thousand kids lined up to ride it. Exactly a thousand; ten counted them.","M"],
+    ["口","k","boca","mouth","👄","solo",[],
+      "Una boca cuadrada, bien abierta. En japonés todo lo que habla, come o grita lleva esta cajita.",
+      "A square mouth, wide open. In Japanese anything that talks, eats or yells carries this little box.","E"],
+    ["丨","p","palo","stick","🥢","solo",[],
+      "Un palo vertical, nada más. El primo parado del 一. Sirve para atravesar cosas.",
+      "A vertical stick, nothing more. The standing cousin of 一. Good for skewering things.","M"],
+    ["中","k","medio","middle","🎯","mix",["口","丨"],
+      "Una boca atravesada por un palo justo en el centro, como un pincho. Así sabés que algo está en el medio: lo ensartaron por el centro.",
+      "A mouth skewered by a stick right through the center, like a kebab. That's how you know something is in the middle.","E"],
+    ["日","k","sol / día","sun / day","☀️","solo",[],
+      "Un sol cuadrado con una raya en la panza. Antes era redondo, pero el pincel no sabía hacer círculos y se rindió.",
+      "A square sun with a line across its belly. It used to be round, but the brush couldn't draw circles and gave up.","E"],
+    ["白","k","blanco","white","🤍","tb",["ノ","日"],
+      "Al sol se le cayó un rayito por el tobogán y quedó todo encandilado. Tanta luz que todo se ve blanco.",
+      "A sunbeam slid down the slide onto the sun and everything got dazzled. So much light that everything looks white.","M"],
+    ["百","k","cien","hundred","💯","tb",["一","白"],
+      "Un 一 encima del blanco: el récord de la pantalla en blanco del arcade. Cien puntos y ni uno más.",
+      "A 一 on top of white: the high score on the blank arcade screen. A hundred points and not one more.","M"],
+    ["人","k","persona","person","🚶","solo",[],
+      "Dos piernas caminando, vista de lado. Un NPC apurado que nunca se detiene a darte la misión.",
+      "Two legs walking, seen from the side. A busy NPC who never stops to give you the quest.","E"],
+    ["大","k","grande","big","🐘","mix",["一","人"],
+      "Una persona con los brazos abiertos de par en par: el pescador mostrando el tamaño del pez. Era así de grande. Mentira.",
+      "A person with arms spread wide: the fisherman showing how big the fish was. It was THIS big. It wasn't.","E"],
+    ["天","k","cielo","sky","🌌","tb",["一","大"],
+      "Encima del grandote hay un techo más: lo único más grande que lo grande es el cielo. Hasta el pescador se calla.",
+      "Above the big guy there's one more ceiling: the only thing bigger than big is the sky. Even the fisherman goes quiet.","M"],
+    ["木","k","árbol","tree","🌳","solo",[],
+      "Un árbol: tronco, dos ramas y raíces. Se ve tranquilo porque todavía no sabe cuántos kanji lo van a usar de pieza.",
+      "A tree: trunk, two branches, roots. It looks calm because it doesn't know how many kanji will use it as a part.","E"],
+    ["本","k","libro / origen","book / origin","📖","mix",["木","一"],
+      "Al árbol le marcaron una raya en la raíz: ahí empieza todo, el origen. Y de los árboles salen los libros, cerrando el círculo.",
+      "The tree gets a line at its root: that's where everything starts, the origin. And books come from trees, full circle.","E"],
+    ["亻","p","persona de lado","person (side)","🧍","solo",[],
+      "Es 人 cuando se para a la izquierda de otra pieza: se pone de costado y se hace flaquito para dejar espacio.",
+      "It's 人 when it stands on the left of another part: it turns sideways and slims down to make room.","E"],
+    ["休","k","descansar","rest","😴","lr",["亻","木"],
+      "Una persona recostada contra un árbol. No hay más misterio: hasta el héroe necesita sombra entre jefe y jefe.",
+      "A person leaning against a tree. No mystery here: even the hero needs some shade between bosses.","E"],
+    ["東","k","este","east","🌅","mix",["木","日"],
+      "El sol saliendo por detrás del árbol. Por donde sale el sol es el este. Alarma natural, sin botón de posponer.",
+      "The sun rising behind the tree. Where the sun rises is east. A natural alarm clock with no snooze button.","E"],
+    ["山","k","montaña","mountain","⛰️","solo",[],
+      "Tres picos, el del medio más alto. El dibujo de montaña que hacías en primer grado, pero oficial.",
+      "Three peaks, the middle one tallest. The mountain you drew in first grade, but official.","E"],
+    ["出","k","salir","exit","🚪","tb",["山","山"],
+      "Una montaña encima de otra montaña. Para salir de este nivel hay que escalar las dos. Nadie dijo que salir era fácil.",
+      "A mountain stacked on a mountain. To exit this level you have to climb both. Nobody said leaving was easy.","M"],
+    ["川","k","río","river","🏞️","solo",[],
+      "Tres líneas de agua corriendo hacia abajo. Un río visto desde un dron.",
+      "Three lines of water running down. A river seen from a drone.","E"],
+    ["月","k","luna / mes","moon / month","🌙","solo",[],
+      "Una luna menguante parada, con dos rayas por dentro. Una vuelta de la luna dura un mes.",
+      "A crescent moon standing up, two lines inside. One lap of the moon takes a month.","E"],
+    ["目","k","ojo","eye","👁️","solo",[],
+      "Un ojo puesto de pie. Como el 日 pero con una raya más: el sol se puso pestañas.",
+      "An eye stood on end. Like 日 with one extra line: the sun put on eyelashes.","E"],
+    ["儿","p","piernas","legs","🦵","solo",[],
+      "Dos piernitas sin cuerpo. Cuando se ponen debajo de algo, ese algo sale caminando.",
+      "Two little legs with no body. Put them under anything and it walks away.","E"],
+    ["見","k","ver","see","👀","tb",["目","儿"],
+      "Un ojo gigante con piernas. Camina por todos lados para verlo todo. El chismoso del pueblo.",
+      "A giant eye on legs. It walks everywhere so it can see everything. The village gossip.","E"],
+    ["囗","p","caja","box","📦","solo",[],
+      "Es la boca 口 pero agrandada hasta volverse un recinto: una caja donde se guarda otra pieza.",
+      "It's the mouth 口 blown up into an enclosure: a box that holds another part.","E"],
+    ["四","k","cuatro","four","4️⃣","enc",["囗","儿"],
+      "Una caja con piernas metidas adentro. Cuatro esquinas, cuatro paredes, y las piernas quieren salir. Cuatro.",
+      "A box with legs stuck inside. Four corners, four walls, and the legs want out. Four.","M"],
+    ["王","p","rey","king","🤴","solo",[],
+      "Tres rayas unidas por un palo: el cielo, la gente y la tierra, y el rey es el que las une. Eso decían los reyes, claro.",
+      "Three lines joined by a stick: heaven, people and earth, and the king connects them. Or so kings claimed.","E"],
+    ["玉","p","joya","jewel","💎","solo",[],
+      "Es el rey 王 con un puntito brillante: la joya de la corona. Sin ella, es solo un señor.",
+      "It's the king 王 with a shiny dot: the crown jewel. Without it he's just a guy.","E"],
+    ["国","k","país","country","🗺️","enc",["囗","玉"],
+      "La joya del rey guardada en una caja fuerte. Una caja con fronteras y un tesoro adentro: eso es un país.",
+      "The king's jewel locked in a safe. A box with borders and a treasure inside: that's a country.","M"],
+    ["金","k","oro / dinero","gold / money","💰","tb",["人","王"],
+      "Bajo el techito de la persona, el rey escondió sus pepitas de oro. Las dos rayitas brillan. Todo esto es dinero.",
+      "Under the person-shaped roof, the king hid his gold nuggets. The two little marks are them shining. It's all money.","M"],
+    ["田","k","campo","rice field","🌾","solo",[],
+      "Una parcela de arroz dividida en cuatro, vista desde arriba. Como el tablero de un juego de granjas.",
+      "A rice paddy split into four, seen from above. Like the board of a farming game.","E"],
+    ["力","k","fuerza","power","💪","solo",[],
+      "Un brazo flexionado sacando músculo. Parece la katakana カ, que también suena fuerte: ka.",
+      "A flexed arm showing off muscle. It looks like the katakana カ, which sounds strong too: ka.","E"],
+    ["男","k","hombre","man","👨","tb",["田","力"],
+      "Fuerza puesta en el campo. Así definían al hombre en el Japón antiguo: el que suda en la parcela. Hoy suda en el gimnasio.",
+      "Strength applied to the field. That's how old Japan defined a man: the one sweating in the paddy. Now he sweats at the gym.","E"],
+    ["女","k","mujer","woman","👩","solo",[],
+      "Una figura con las piernas cruzadas en pose de kung fu. Se ve tranquila, pero ya ganó la pelea.",
+      "A figure with crossed legs in a kung fu stance. She looks calm, but she already won the fight.","M"],
+    ["子","k","niño","child","👶","solo",[],
+      "Un bebé envuelto en su manta, brazos afuera. Sin piernas porque todavía no camina.",
+      "A baby wrapped in a blanket, arms out. No legs because it can't walk yet.","E"],
+    ["母","k","madre","mother","🤱","solo",[],
+      "Es la mujer 女 doblada en una caja, con dos puntos adentro. Mamá cargando a dos bebés a la vez y sin despeinarse.",
+      "It's the woman 女 folded into a box, with two dots inside. Mom carrying two babies at once without breaking a sweat.","E"],
+    ["毎","k","cada","every","🔁","tb",["人","母"],
+      "Una persona con sombrero visita a mamá. Cada domingo, sin falta, cada semana. Aunque haya jefe final.",
+      "A person in a hat visits mom. Every Sunday, without fail, every week. Even if there's a final boss.","M"],
+    ["ナ","p","brazo","arm","🦾","solo",[],
+      "Parece la katakana ナ, pero acá es un brazo largo estirado. Siempre va arriba, agarrando algo.",
+      "It looks like the katakana ナ, but here it's a long reaching arm. It always sits on top, grabbing something.","M"],
+    ["又","p","mano","hand","✋","solo",[],
+      "Una mano vista de lado, con los dedos cruzados. La mano que agarra, pega y saluda.",
+      "A hand seen from the side, fingers crossed. The hand that grabs, hits and waves.","E"],
+    ["友","k","amigo","friend","🤝","tb",["ナ","又"],
+      "Un brazo y una mano que se juntan: el saludo secreto con tu mejor amigo. Si te equivocás de mano, ya no son amigos.",
+      "An arm and a hand coming together: the secret handshake with your best friend. Wrong hand and the friendship is over.","E"],
+    ["右","k","derecha","right","👉","tb",["ナ","口"],
+      "El brazo que lleva la comida a la boca. La mayoría come con la derecha. La izquierda está ocupada con el control.",
+      "The arm that carries food to the mouth. Most people eat with the right. The left is busy holding the controller.","E"],
+    ["工","p","herramienta","tool","🔧","solo",[],
+      "Una viga en forma de I mayúscula, la herramienta del carpintero. Parece la katakana エ: construcción, obra, trabajo.",
+      "An I-beam, the carpenter's tool. It looks like the katakana エ: building, work.","E"],
+    ["左","k","izquierda","left","👈","tb",["ナ","工"],
+      "El brazo que sostiene la herramienta mientras la derecha martilla. Si fuera al revés, adiós dedo.",
+      "The arm that holds the tool while the right one hammers. The other way around, goodbye finger.","E"],
+    ["夕","p","atardecer","dusk","🌆","solo",[],
+      "Es la luna 月 a medio salir: le falta una raya porque todavía no termina de aparecer. El cielo del atardecer.",
+      "It's the moon 月 half risen: one line missing because it hasn't fully come out yet. The evening sky.","E"],
+    ["名","k","nombre","name","🏷️","tb",["夕","口"],
+      "Al atardecer ya no se ve nada, así que gritás con la boca tu nombre para que sepan quién sos. Como en el multijugador sin nombres.",
+      "At dusk you can't see anyone, so you shout your name with your mouth so they know who you are. Like multiplayer without nametags.","E"],
+    ["卜","p","adivina","fortune","🔮","solo",[],
+      "Las grietas en un caparazón de tortuga quemado: así adivinaban el futuro en la China antigua. Parece la katakana ト.",
+      "Cracks on a burned turtle shell: that's how ancient China read the future. It looks like the katakana ト.","E"],
+    ["外","k","afuera","outside","🏕️","lr",["夕","卜"],
+      "La adivina no trabaja adentro: espera el atardecer y lee el futuro afuera, bajo el cielo. Wifi cero.",
+      "The fortune teller doesn't work indoors: she waits for dusk and reads the future outside, under the sky. Zero wifi.","M"],
+    ["火","k","fuego","fire","🔥","solo",[],
+      "Una fogata: la llama del medio y dos chispas saltando a los lados. No tocar.",
+      "A campfire: the middle flame and two sparks jumping to the sides. Do not touch.","E"],
+    ["水","k","agua","water","💧","solo",[],
+      "Un chorro de agua en el medio salpicando a los lados. Es como 火, pero mojado.",
+      "A stream of water in the middle splashing to the sides. Like 火, but wet.","E"],
+    ["土","k","tierra","earth","🟫","solo",[],
+      "Un brote saliendo del suelo: la raya larga es la tierra, la cruz es la planta. Al revés de 士 (guerrero), que tiene la raya larga arriba.",
+      "A sprout coming out of the ground: the long line is the earth, the cross is the plant. Opposite of 士 (warrior), which has the long line on top.","E"],
+    ["先","k","primero (el que va adelante)","ahead / previous","🥇","tb",["土","儿"],
+      "Unas piernas que salen corriendo de la tierra apenas suena el disparo. Siempre llega primero. Por eso 先生 es el que va adelante.",
+      "Legs bursting out of the ground the moment the gun fires. Always arrives first. That's why 先生 is the one who went ahead.","M"],
+    ["雨","k","lluvia","rain","🌧️","solo",[],
+      "Una ventana con gotas cayendo adentro. Te olvidaste de cerrarla, otra vez.",
+      "A window with raindrops falling inside. You forgot to close it again.","E"],
+    ["申","p","rayo","lightning","⚡","solo",[],
+      "Un relámpago que parte el cielo de arriba a abajo, atravesando una caja. Los antiguos lo veían como un mensaje de los dioses.",
+      "A lightning bolt splitting the sky top to bottom, through a box. The ancients saw it as a message from the gods.","E"],
+    ["電","k","electricidad","electricity","🔌","tb",["雨","申"],
+      "Lluvia arriba, rayo abajo con la cola enroscada: una tormenta eléctrica. De ahí sale la luz de tu cuarto. Sin tormenta, sin carga.",
+      "Rain on top, lightning below with a curly tail: an electric storm. That's where your bedroom light comes from. No storm, no charge.","E"],
+    ["門","p","portón","gate","⛩️","solo",[],
+      "Las dos hojas de una puerta de saloon, abiertas. Entrás al bar de un western.",
+      "The two swinging doors of a saloon, open. You're walking into a western bar.","E"],
+    ["間","k","entre / espacio","between / interval","↔️","enc",["門","日"],
+      "El sol se cuela entre las dos hojas del portón. Ese espacio entre medio es exactamente lo que significa.",
+      "The sun peeks between the two halves of the gate. That gap in between is exactly what it means.","E"],
+    ["耳","k","oreja","ear","👂","solo",[],
+      "Una oreja vista de frente con sus pliegues. La vas a necesitar para el siguiente kanji.",
+      "An ear seen head on, with its folds. You will need it for the next kanji.","E"],
+    ["聞","k","oír / preguntar","hear / ask","🎧","enc",["門","耳"],
+      "Una oreja pegada al portón del saloon, escuchando el chisme. Si oís algo raro, preguntás.",
+      "An ear pressed to the saloon doors, listening to gossip. If you hear something odd, you ask.","E"],
+    ["言","p","decir","say","💬","solo",[],
+      "Una boca abajo y rayas de palabras saliendo hacia arriba. Un globo de diálogo apilado.",
+      "A mouth at the bottom with lines of words rising up. A stacked speech bubble.","E"],
+    ["舌","p","lengua","tongue","👅","solo",[],
+      "Es 千 sobre 口: de la boca salen mil cosas porque la lengua no para. La lengua del que no sabe guardar secretos.",
+      "It's 千 over 口: a thousand things come out of the mouth because the tongue never stops.","M"],
+    ["話","k","hablar","talk","🗣️","lr",["言","舌"],
+      "Palabras más una lengua imparable. Una charla que no termina nunca. Saltar diálogo: no disponible.",
+      "Words plus an unstoppable tongue. A conversation that never ends. Skip dialogue: not available.","E"],
+    ["五","k","cinco","five","5️⃣","solo",[],
+      "Un sándwich con una Z de relleno, entre dos panes 一. Cinco ingredientes, contalos.",
+      "A sandwich with a Z filling between two 一 slices. Five ingredients, count them.","M"],
+    ["語","k","idioma / palabra","language / word","🌐","ltb",["言","五","口"],
+      "Decir algo con cinco bocas a la vez. Así se siente aprender un idioma nuevo: todos hablan y vos solo entendés cinco palabras.",
+      "Saying something with five mouths at once. That's learning a language: everyone talks and you catch five words.","M"],
+    ["売","p","vender","sell","🏷️","solo",[],
+      "Un vendedor con su gorrito de feria, gritando ofertas sobre sus piernas. Siempre te quiere vender algo.",
+      "A vendor in his market hat, shouting deals while standing. He always wants to sell you something.","M"],
+    ["読","k","leer","read","📚","lr",["言","売"],
+      "Las palabras del vendedor en voz alta: leer en japonés antiguo era leer en voz alta, como el que anuncia ofertas en la feria.",
+      "The vendor's words read out loud: in old Japan reading meant reading aloud, like calling out deals at the market.","M"],
+    ["可","p","se puede","can","✅","solo",[],
+      "Una boca con un gancho al lado: el gancho de aprobado. ¿Se puede? Sí, se puede.",
+      "A mouth with a hook next to it: the approval checkmark. Can I? Yes, you can.","M"],
+    ["何","k","qué","what","❓","lr",["亻","可"],
+      "Una persona al lado del se puede, rascándose la cabeza: ¿qué se puede? ¿qué hago? ¿qué es esto? El NPC confundido.",
+      "A person next to the yes-you-can, scratching their head: what can I do? what is this? The confused NPC.","M"],
+    ["ツ","p","chispas","sparks","✨","solo",[],
+      "Tres chispitas que saltan, igual que la katakana ツ. Algo brilla ahí abajo.",
+      "Three little sparks flying, just like the katakana ツ. Something is shining underneath.","M"],
+    ["冖","p","tapa","lid","🔲","solo",[],
+      "Una tapa sin chimenea, como un techo plano. Cubre lo que tiene abajo.",
+      "A lid with no chimney, like a flat roof. It covers whatever is below.","E"],
+    ["学","k","estudiar","study","🎓","tb3",["ツ","冖","子"],
+      "Un niño bajo un techo que echa chispas: la escuelita, donde el cerebro del niño se recalienta estudiando.",
+      "A child under a sparking roof: the little schoolhouse, where the kid's brain overheats from studying.","M"],
+    ["亠","p","sombrero","top hat","🎩","solo",[],
+      "Un sombrero de copa visto de lado: un puntito y el ala. Lo que tenga abajo se vuelve elegante.",
+      "A top hat seen from the side: a dot and the brim. Whatever is underneath becomes fancy.","M"],
+    ["八","k","ocho","eight","8️⃣","solo",[],
+      "Dos trazos que se separan, como una puerta que se abre. Ocho, y además significa dividir.",
+      "Two strokes pulling apart, like a door opening. Eight, and it also means divide.","E"],
+    ["六","k","seis","six","6️⃣","tb",["亠","八"],
+      "El ocho se puso sombrero y se le subió el ego. Ahora se cree seis. Nadie le explica que seis es menos que ocho.",
+      "Eight put on a top hat and got a big head. Now it thinks it's six. Nobody tells it six is less than eight.","M"],
+    ["父","k","padre","father","👨‍👧","solo",[],
+      "Dos brazos cruzando dos palos en X: papá con el hacha cortando leña. O con el control, gritándole al juego.",
+      "Two arms crossing two sticks in an X: dad chopping wood with an axe. Or holding the controller, yelling at the game.","E"],
+    ["交","p","cruce","cross","🔀","solo",[],
+      "Un papá 父 con sombrero 亠 en un cruce de calles, dirigiendo el tráfico. Todos se cruzan y se intercambian.",
+      "A dad 父 in a top hat 亠 at a crossroads, directing traffic. Everyone crosses and swaps places.","M"],
+    ["校","k","escuela","school","🏫","lr",["木","交"],
+      "Un árbol en el cruce donde todos se juntan: el patio de la escuela. El edificio es de madera, por supuesto.",
+      "A tree at the crossroads where everyone meets: the schoolyard. The building is made of wood, of course.","M"],
+    ["丷","p","cuernitos","horns","🐮","solo",[],
+      "Dos rayitas inclinadas, como cuernos de una vaca. Siempre van arriba, como corona.",
+      "Two little slanted lines, like cow horns. They always sit on top, like a crown.","M"],
+    ["来","k","venir","come","🫴","tb",["丷","木"],
+      "Un árbol con cuernos y una rama extra. Viene caminando hacia vos. No sabés por qué, pero viene. Corré.",
+      "A tree with horns and an extra branch. It's coming toward you. You don't know why, but it's coming. Run.","M"],
+    ["刂","p","cuchillo","knife","🔪","solo",[],
+      "Es 刀 (espada) cuando se para a la derecha de otra pieza: se pone de pie y se afila hasta quedar en dos palos.",
+      "It's 刀 (sword) when it stands on the right of another part: it stands up and sharpens down to two sticks.","E"],
+    ["前","k","delante / antes","front / before","⏩","tlr",["丷","月","刂"],
+      "Una vaca con cuchillo hace guardia delante de la luna. Antes de llegar a la noche, tenés que pasar por ella.",
+      "A cow with a knife stands guard in front of the moon. Before you reach the night, you have to get past her.","M"],
+    ["彳","p","paso","step","👣","solo",[],
+      "Es 亻 con un trazo extra: una persona dando pasos, con las piernas en movimiento. Siempre va a la izquierda.",
+      "It's 亻 with an extra stroke: a person taking steps, legs in motion. It always goes on the left.","E"],
+    ["亍","p","zancada","stride","🦶","solo",[],
+      "El otro pie del paso. Juntos 彳 y 亍 forman un cruce de caminos visto desde arriba.",
+      "The other foot of the step. Together 彳 and 亍 form a crossroads seen from above.","E"],
+    ["行","k","ir","go","🏃","lr",["彳","亍"],
+      "Paso izquierdo, paso derecho: un cruce de calles. Agarrás uno y te vas. Así de simple es ir.",
+      "Left step, right step: a crossroads. Pick one and go. That's all going is.","E"],
+    ["幺","p","hilo","thread","🧵","solo",[],
+      "Un hilito enredado, chiquito y fino. Tan fino que cualquiera tropieza con él.",
+      "A tangled little thread, thin and tiny. So thin that anyone trips on it.","E"],
+    ["夂","p","arrastrar los pies","dragging feet","🐌","solo",[],
+      "Unas piernas que se arrastran despacio, como zombie de la primera temporada.",
+      "Legs shuffling slowly, like a first season zombie.","E"],
+    ["後","k","detrás / después","behind / after","🔙","ltb",["彳","幺","夂"],
+      "Das pasos, pero un hilo te tiene atado el pie y te hace arrastrarlo. Siempre llegás detrás, siempre después. Como el compañero lento de la party.",
+      "You take steps, but a thread ties your foot and makes you drag it. You always arrive behind, always after. Like the slow party member.","E"],
+    ["气","p","vapor","steam","♨️","solo",[],
+      "Vapor subiendo en capas desde una olla. Envuelve lo que tiene adentro.",
+      "Steam rising in layers from a pot. It wraps whatever is inside.","E"],
+    ["メ","p","equis","X","❌","solo",[],
+      "Una X, como la katakana メ. Aquí es el arroz que se cocina adentro del vapor.",
+      "An X, like the katakana メ. Here it's the rice cooking inside the steam.","M"],
+    ["気","k","energía / ánimo","spirit / energy","🔋","enc",["气","メ"],
+      "Vapor subiendo de una olla de arroz: comida que te recarga. Por eso 元気 es estar con la barra de energía llena.",
+      "Steam rising from a pot of rice: food that recharges you. That's why 元気 means your energy bar is full.","E"],
+    ["聿","p","pincel","brush","🖌️","solo",[],
+      "Una mano que sostiene un pincel vertical, con las cerdas abajo. Lista para escribir.",
+      "A hand holding an upright brush, bristles down. Ready to write.","E"],
+    ["書","k","escribir","write","✍️","tb",["聿","日"],
+      "El pincel encima del sol: escribís tanto que te dan las doce del día sobre la hoja. Tinta hasta el atardecer.",
+      "The brush above the sun: you write so much the day passes over the page. Ink until sundown.","M"],
+    ["寺","p","templo","temple","🛕","solo",[],
+      "Tierra 土 arriba y una mano con regla 寸 abajo: el terreno medido con cuidado donde construyen el templo.",
+      "Earth 土 on top and a hand with a ruler 寸 below: the carefully measured land where they build the temple.","M"],
+    ["時","k","hora / tiempo","time / hour","⏰","lr",["日","寺"],
+      "El sol al lado del templo: la campana del templo marcaba las horas según el sol. El primer reloj del pueblo.",
+      "The sun next to the temple: the temple bell marked the hours by the sun. The town's first clock.","M"],
+    ["上","k","arriba","up","⬆️","solo",[],
+      "Una raya en el piso y algo parado encima, señalando hacia arriba. La flecha de saltar.",
+      "A line on the floor and something standing on it, pointing up. The jump arrow.","E"],
+    ["下","k","abajo","down","⬇️","solo",[],
+      "Una raya de techo y algo colgando por debajo. Es 上 de cabeza: la flecha de agacharse.",
+      "A ceiling line with something hanging below. It's 上 upside down: the crouch arrow.","E"],
+    ["小","k","pequeño","small","🐜","solo",[],
+      "Un palo con dos gotitas a los lados. Tan chiquito que hay que mirar con lupa.",
+      "A stick with two little drops beside it. So small you need a magnifying glass.","E"],
+    ["七","k","siete","seven","7️⃣","solo",[],
+      "Un siete al revés con la raya cruzada, como lo escriben en Europa. El siete que se dio vuelta para mirarte.",
+      "A backwards seven with a crossed stroke, the European way. The seven that turned around to look at you.","M"],
+    ["九","k","nueve","nine","9️⃣","solo",[],
+      "Parece un nueve con una pata pegada: un nueve tirándose una barrida. A uno de cumplir diez y se lesionó.",
+      "It looks like a nine sliding in for a tackle. One away from ten and it got injured.","M"],
+    ["年","k","año","year","📅","solo",[],
+      "Un espantapájaros con sombrero vigilando el grano todo el año. Cada cosecha suma un año a su contador.",
+      "A scarecrow in a hat guarding the grain all year. Every harvest adds one year to its counter.","M"],
+    ["長","k","largo / jefe","long / chief","🧙","solo",[],
+      "Un anciano con el pelo tan largo que le arrastra. El jefe del clan: entre más largo el pelo, más rango.",
+      "An old man with hair so long it drags. The clan chief: the longer the hair, the higher the rank.","E"],
+    ["生","k","vida / nacer","life / birth","🌱","solo",[],
+      "Un brote que sale de la tierra 土 y le crecen hojitas. La vida empezando, nivel uno.",
+      "A sprout coming out of the earth 土 and growing little leaves. Life starting at level one.","E"],
+    ["今","k","ahora","now","⏳","solo",[],
+      "Un techito y debajo una flecha que dice aquí. Bajo este techo, en este segundo, ahora. Guardado automático.",
+      "A little roof with an arrow below saying here. Under this roof, this second, now. Autosave.","M"],
+    ["入","k","entrar","enter","🚪","solo",[],
+      "Como 人 pero con la pierna larga del otro lado: una persona metiéndose en una carpa. Ojo, no los confundas.",
+      "Like 人 but the long leg is on the other side: a person ducking into a tent. Don't mix them up.","M"],
+    ["高","k","alto / caro","tall / expensive","🗼","solo",[],
+      "Una torre de varios pisos con sombrero en la punta. Alto y caro, como el piso de arriba del hotel.",
+      "A multi-story tower with a hat on top. Tall and expensive, like the top floor of the hotel.","E"],
+    ["円","k","yen / círculo","yen / circle","💴","solo",[],
+      "Una ventanilla de banco con una moneda adentro, lista para cobrarte. La moneda de Japón.",
+      "A bank window with a coin inside, ready to charge you. Japan's currency.","M"],
+    ["北","k","norte","north","🧭","solo",[],
+      "Dos personas sentadas espalda con espalda, peleadas, dándole la espalda al viento frío del norte.",
+      "Two people sitting back to back, mad at each other, turning their backs to the cold north wind.","E"],
+    ["午","k","mediodía","noon","🕛","solo",[],
+      "Es 牛 (vaca) sin el cuerno de arriba: la vaca se lo quitó porque al mediodía hace demasiado calor.",
+      "It's 牛 (cow) without the top horn: the cow took it off because it's too hot at noon.","M"],
+    ["半","k","mitad","half","🌗","solo",[],
+      "Unos cuernitos sobre un palo que corta todo justo por la mitad. Partilo parejo o hay pleito.",
+      "Little horns over a stick that cuts everything right down the middle. Split it evenly or there's a fight.","E"],
+    ["西","k","oeste","west","🌇","solo",[],
+      "Un pájaro metiéndose al nido al atardecer. El sol se va por el oeste y el pájaro se va a dormir.",
+      "A bird settling into its nest at sunset. The sun sets in the west and the bird goes to bed.","E"],
+    ["食","k","comer","eat","🍙","solo",[],
+      "Un techo encima de un plato lleno de arroz humeante. Tapá la comida que se enfría.",
+      "A lid over a plate full of steaming rice. Cover the food before it gets cold.","E"],
+    ["車","k","carro","car","🚗","solo",[],
+      "Un carruaje visto desde arriba: el eje en el medio y las dos ruedas aplastadas a los lados.",
+      "A cart seen from above: the axle in the middle and the two wheels squashed flat on the sides.","E"],
+    ["南","k","sur","south","🏝️","solo",[],
+      "Una carpa en la playa con un cartel de diez arriba. Al sur siempre hace calor y los precios suben.",
+      "A beach tent with a ten sign on top. Down south it's always hot and prices go up.","M"],
+    ["万","k","diez mil","ten thousand","","solo",[],
+      "Un escorpión con la cola levantada. Antes eran tan comunes que diez mil era el número para muchísimos. Como los Pidgey.",
+      "A scorpion with its tail raised. They used to be so common that ten thousand meant a huge amount. Like Pidgeys.","E"]
+  ];
+  /* glifos parecidos: alimentan las trampas del banco */
+  var TALLER_SIMILAR=["日目白田口","土士工王玉","人入八大亻","木本来休","夕名多","刀力刂","彳亻行","千午十","一二三","又友右左ナ","山出","月円","上下","門間聞","言語話読","小少","子学","気气","父交","丷ツ八"];
+  /* ================= TALLER DE KANJI: MOTOR =================
+     Minijuego de producción: ves el significado (clave + emoji) y armás el kanji
+     con piezas, cada una en su casilla. Va en orden de construcción, no de frecuencia:
+     un kanji entra solo cuando ya viste todas sus piezas. SRS propio en
+     state.exercises.taller, separado del quiz de lectura, y "dominado" solo cuando
+     lo armaste de memoria en dos días distintos (caja >= TALLER_SOLID). */
+  var TALLER=(function(){ var list=[],by={};
+    TALLER_ROWS.forEach(function(r){ var o={g:r[0],piece:!N5_KANJI.has(r[0]),es:r[2],en:r[3],emo:r[4],lay:r[5],parts:r[6],s:{es:r[7],en:r[8]},kind:r[9]};
+      list.push(o); by[o.g]=o; });
+    return {list:list,by:by}; })();
+  var TALLER_SIM=(function(){ var m={}; TALLER_SIMILAR.forEach(function(grp){ var a=Array.from(grp);
+    a.forEach(function(c){ m[c]=(m[c]||[]).concat(a.filter(function(x){return x!==c;})); }); }); return m; })();
+  var TALLER_SLOTS={solo:['c'],lr:['l','r'],tb:['t','b'],enc:['o','i'],mix:['ma','mb'],ltb:['l','rt','rb'],tlr:['t','bl','br'],tb3:['t','m','b']};
+  var TALLER_IV=[0,0,1,3,7,14,30], TALLER_SOLID=3, TALLER_NEW_PER_SESSION=4, TALLER_MAX_YOUNG=8, TALLER_NEW_PER_DAY=8, TALLER_SESSION_MAX=14;
+
+  function ensureTaller(){ if(!state.exercises)state.exercises={};
+    if(!state.exercises.taller)state.exercises.taller={box:{},due:{},seen:{},leech:{},story:{},daily:{}};
+    var t=state.exercises.taller; ['box','due','seen','leech','story','daily','newDay'].forEach(function(k){ if(!t[k]||typeof t[k]!=='object')t[k]={}; }); return t; }
+  function tlEsc(x){ return String(x==null?'':x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function tlAddDays(n){ var d=new Date(); d.setDate(d.getDate()+n); return fmt(d); }
+  function tallerDue(g){ var t=ensureTaller(); return !!t.seen[g] && (!t.due[g] || t.due[g]<=today()); }
+  function tallerDueList(){ return TALLER.list.filter(function(o){ return tallerDue(o.g); }); }
+  function tallerYoung(){ var t=ensureTaller(); return TALLER.list.filter(function(o){ return t.seen[o.g] && (t.box[o.g]||0)<TALLER_SOLID; }).length; }
+  function tallerUnseen(){ var t=ensureTaller(); return TALLER.list.filter(function(o){ return !t.seen[o.g]; }); }
+  function tallerSolidCount(n5Only){ var t=ensureTaller(); return TALLER.list.filter(function(o){ return (!n5Only||!o.piece) && (t.box[o.g]||0)>=TALLER_SOLID; }).length; }
+  function tallerBadge(){ var d=tallerDueList().length; if(d) return String(d);
+    return (tallerUnseen().length && tallerYoung()<TALLER_MAX_YOUNG && (ensureTaller().newDay[today()]||0)<TALLER_NEW_PER_DAY)?'+':''; }
+  function tallerStory(o){ var t=ensureTaller(), own=t.story[o.g]; return own?{own:true,txt:own}:{own:false,txt:(getLang()==='es'?o.s.es:o.s.en)}; }
+  function tallerExample(ch){ var best=null,bestM=false;
+    WORD_POOL.forEach(function(w){ var kf=kanjiForm(w); if(!kf||kf.indexOf(ch)<0)return; var m=wordMature(w.jp);
+      if(!best || (m&&!bestM) || (m===bestM && kf.length<kanjiForm(best).length)){ best=w; bestM=m; } });
+    return best; }
+
+  var tsess=null;
+  function startTaller(){ pbsess=null; bsess=null; wsess=null; rsess=null; ksess=null;
+    var t=ensureTaller(), queue=[], due=tallerDueList();
+    due.sort(function(a,b){ return (t.box[a.g]||0)-(t.box[b.g]||0); });
+    due.slice(0,TALLER_SESSION_MAX).forEach(function(o){ queue.push({g:o.g,mode:'build'}); });
+    var room=Math.min(TALLER_NEW_PER_SESSION, TALLER_MAX_YOUNG-tallerYoung(), TALLER_NEW_PER_DAY-(t.newDay[today()]||0), Math.max(0,TALLER_SESSION_MAX-queue.length));
+    var fresh=room>0?tallerUnseen().slice(0,room):[];
+    /* cada nuevo: ficha, y su primera armada dos turnos después (deja que la memoria trabaje) */
+    fresh.forEach(function(o,i){ var at=Math.min(queue.length, i*2); queue.splice(at,0,{g:o.g,mode:'teach'});
+      queue.splice(Math.min(queue.length, at+3),0,{g:o.g,mode:'build'}); });
+    var extra=false;
+    if(!queue.length){ /* nada pendiente: repaso libre de lo ya visto, sin mover el SRS */
+      var seen=TALLER.list.filter(function(o){ return t.seen[o.g]; }); shuffle(seen);
+      seen.slice(0,8).forEach(function(o){ queue.push({g:o.g,mode:'build'}); }); extra=true; }
+    tsess={done:0,correct:0,wrong:0,queue:queue,q:null,counted:{},requeued:{},extra:extra,learned:[]};
+    tallerNext(); }
+  function tallerEnd(){ tsess=null; readingEl.classList.add('hidden');
+    try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){} render(); }
+
+  function tallerBank(o){ var t=ensureTaller(), want=o.parts.length?o.parts.slice():[o.g], uniq={}, out=[];
+    want.forEach(function(g){ if(!uniq[g]){ uniq[g]=1; out.push(g); } });
+    var size=(want.length>=3?8:6), cand=[];
+    want.forEach(function(g){ (TALLER_SIM[g]||[]).forEach(function(c){ if(TALLER.by[c]) cand.push(c); }); });
+    shuffle(cand);
+    var pool=TALLER.list.filter(function(x){ return t.seen[x.g]; }).map(function(x){return x.g;}); shuffle(pool);
+    var later=TALLER.list.map(function(x){return x.g;}); shuffle(later);
+    /* 口 y 囗 se ven casi iguales en pantalla: nunca juntos en el mismo banco */
+    var twin={'口':'囗','囗':'口'};
+    cand.concat(pool,later).forEach(function(c){ if(out.length>=size)return; if(uniq[c]||c===o.g&&o.parts.length)return;
+      if(twin[c]&&uniq[twin[c]])return; uniq[c]=1; out.push(c); });
+    /* una pieza repetida (二 = 一 + 一) necesita dos fichas iguales */
+    var cnt={}; want.forEach(function(g){ cnt[g]=(cnt[g]||0)+1; });
+    var chips=[]; out.forEach(function(g){ for(var i=0;i<(cnt[g]||1);i++) chips.push(g); });
+    return shuffle(chips).map(function(g,i){ return {id:i,g:g,used:false}; }); }
+
+  function tallerNext(){ if(!tsess)return;
+    var nx=tsess.queue.shift();
+    if(!nx){ tsess.q={mode:'end'}; renderTaller(); readingEl.classList.remove('hidden'); return; }
+    var o=TALLER.by[nx.g];
+    if(nx.mode==='teach'){ tsess.q={mode:'teach',o:o,editing:false}; }
+    else { var slots=TALLER_SLOTS[o.lay]||['c'];
+      tsess.q={mode:'build',o:o,slots:slots.map(function(){return null;}),bank:tallerBank(o),answered:false,ok:false,hinted:false,showHint:false,editing:false}; }
+    renderTaller(); readingEl.classList.remove('hidden'); }
+
+  function tallerSeen(g){ var t=ensureTaller(); if(!t.seen[g]){ t.seen[g]=today(); var nd=(t.newDay[today()]||0)+1; t.newDay={}; t.newDay[today()]=nd; if(!t.box[g])t.box[g]=1; t.due[g]=today(); } }
+
+  function tallerCheck(q){ var want=q.o.parts.length?q.o.parts:[q.o.g], got=q.slots.map(function(c){ return c?c.g:null; });
+    if(q.o.lay==='mix' || want.every(function(g){return g===want[0];})){
+      return want.slice().sort().join('')===got.slice().sort().join(''); }
+    for(var i=0;i<want.length;i++){ if(want[i]!==got[i]) return false; } return true; }
+
+  function tallerAnswer(){ var q=tsess.q, t=ensureTaller(), g=q.o.g;
+    q.answered=true; q.ok=tallerCheck(q);
+    tsess.done++; if(q.ok&&!q.hinted)tsess.correct++; else if(!q.ok)tsess.wrong++;
+    /* el SRS solo se mueve con la primera armada de la sesión y solo si estaba pendiente */
+    if(!tsess.counted[g] && !tsess.extra){ tsess.counted[g]=1;
+      var box=t.box[g]||1, wasDue=tallerDue(g);
+      if(q.ok&&!q.hinted){ if(wasDue){ box=Math.min(box+1,TALLER_IV.length-1); t.due[g]=tlAddDays(TALLER_IV[box]);
+          if(box===TALLER_SOLID) tsess.learned.push(g); } }
+      else if(!q.ok){ box=1; t.due[g]=today(); t.leech[g]=(t.leech[g]||0)+1; }
+      /* con pista: no sube ni baja, vuelve mañana */
+      else { t.due[g]=tlAddDays(1); }
+      t.box[g]=box; }
+    if(!q.ok && !tsess.requeued[g]){ tsess.requeued[g]=1; tsess.queue.push({g:g,mode:'build'}); }
+    var td=today(); t.daily[td]=(t.daily[td]||0)+1;
+    stampDay(); Persistence.save(state); renderTaller(); }
+
+  function tallerHead(){ return '<div class="d-sticky"><div class="d-head"><div class="d-head-l"><button class="d-close" id="tlClose">✕ '+t("Close")+'</button>'+gearBtn()+'</div>'+
+    '<div class="d-stats"><div class="d-stat"><div class="n">'+tsess.done+'</div><div class="l">'+t("Done")+'</div></div>'+
+    '<div class="d-stat wrong"><div class="n">'+tsess.wrong+'</div><div class="l">'+t("Wrong")+'</div></div>'+
+    '<div class="d-stat right"><div class="n">'+tsess.correct+'</div><div class="l">'+t("Correct")+'</div></div></div></div></div>'; }
+
+  function tallerRecipeHTML(o){ if(!o.parts.length) return '';
+    var h='<div class="tl-recipe">'; o.parts.forEach(function(p,i){ var po=TALLER.by[p], es=getLang()==='es';
+      h+=(i?'<span class="tl-plus">+</span>':'')+'<span class="tl-rp"><span class="mincho">'+p+'</span><small>'+(po?tlEsc(es?po.es:po.en):'')+'</small></span>'; });
+    return h+'<span class="tl-plus">=</span><span class="tl-rp tl-rp-out"><span class="mincho">'+o.g+'</span><small>'+tlEsc(getLang()==='es'?o.es:o.en)+'</small></span></div>'; }
+
+  function tallerStoryHTML(o,q){ var es=getLang()==='es', st=tallerStory(o), t=ensureTaller();
+    var lbl=st.own?(es?'Tu historia':'Your story'):(o.kind==='E'?(es?'Así se dibujaba':'How it was drawn'):(es?'Truco de memoria':'Memory trick'));
+    var h='<div class="tl-story"><div class="tl-story-lbl">'+lbl+'</div>';
+    if(q.editing){
+      h+='<textarea id="tlStoryTxt" class="tl-story-ta" maxlength="300" placeholder="'+(es?'Inventá la escena más rara que puedas con las piezas…':'Make up the weirdest scene you can with the parts…')+'">'+tlEsc(t.story[o.g]||'')+'</textarea>'+
+         '<div class="tl-story-btns"><button class="tl-sbtn" id="tlStorySave">'+(es?'Guardar':'Save')+'</button><button class="tl-sbtn ghost" id="tlStoryCancel">'+(es?'Cancelar':'Cancel')+'</button></div>';
+    } else {
+      h+='<div class="tl-story-txt">'+tlEsc(st.txt)+'</div><div class="tl-story-btns">'+
+         '<button class="tl-sbtn ghost" id="tlStoryEdit">'+(st.own?(es?'Editar la mía':'Edit mine'):(es?'Escribí la tuya':'Write your own'))+'</button>'+
+         (st.own?'<button class="tl-sbtn ghost" id="tlStoryReset">'+(es?'Volver a la original':'Back to original')+'</button>':'')+'</div>';
+      if(!st.own && (t.leech[o.g]||0)>=2) h+='<div class="tl-nudge">'+(es?'Esta se te resiste. Una historia inventada por vos suele pegar mejor que la mía.':'This one keeps slipping. A story you make up usually sticks better than mine.')+'</div>';
+    }
+    return h+'</div>'; }
+
+  function tallerExampleHTML(o){ if(o.piece) return ''; var w=tallerExample(o.g); if(!w) return '';
+    var es=getLang()==='es';
+    return '<div class="tl-ex">'+(es?'Lo vas a ver en':'You will see it in')+' <span class="mincho">'+rubySweepHTML(kanjiForm(w),w.jp)+'</span> · '+tlEsc(es?w.es:w.en)+'</div>'; }
+
+  function tallerDiagramHTML(q,reveal){ var o=q.o, slots=TALLER_SLOTS[o.lay]||['c'];
+    var h='<div class="tl-diag lay-'+o.lay+(reveal?' fused':'')+(q.answered?(q.ok?' ok':' bad'):'')+'">';
+    slots.forEach(function(s,i){ var c=q.slots[i], want=o.parts.length?o.parts[i]:o.g;
+      var cls='tl-slot s-'+s+(c?' filled':'');
+      if(q.answered && o.lay!=='mix') cls+=(c&&c.g===want?' right':' wrong');
+      h+='<button class="'+cls+'" data-slot="'+i+'"'+(q.answered?' disabled':'')+'><span class="mincho">'+(c?c.g:'')+'</span></button>';
+      if(o.lay==='mix'&&i===0) h+='<span class="tl-mixplus">+</span>'; });
+    if(reveal) h+='<div class="tl-fused mincho">'+o.g+'</div>';
+    return h+'</div>'; }
+
+  function renderTaller(){ var q=tsess.q, es=getLang()==='es', h=tallerHead();
+    if(q.mode==='end'){ var nN5=tallerSolidCount(true);
+      h+='<div class="rq-prompt teach-word"><div class="rq-kind">'+(es?'Taller cerrado':'Workshop closed')+'</div>'+
+        '<div class="rq-jp mincho" style="font-size:56px;line-height:1.1">工</div>'+
+        '<div class="rq-mean">'+(tsess.done?(es?'Armaste ':'You built ')+tsess.correct+(es?' de ':' of ')+tsess.done+'.':(es?'Nada que armar por hoy.':'Nothing to build today.'))+'</div>'+
+        (tsess.learned.length?'<div class="tl-ex">'+(es?'Ya los armás de memoria: ':'You now build these from memory: ')+'<span class="mincho">'+tsess.learned.join(' ')+'</span></div>':'')+
+        '<div class="tl-ex">'+(es?'Kanji N5 dominados en el taller: ':'N5 kanji mastered in the workshop: ')+nN5+' / '+N5_KANJI.size+'</div>'+
+        (tsess.extra?'<div class="tl-ex" style="opacity:.7">'+(es?'Fue repaso libre: no cambia tus fechas de repaso.':'Free practice: your review dates did not change.')+'</div>':'')+
+        '</div><div class="d-actions"><button class="d-next" id="tlDone">'+(es?'Listo':'Done')+'</button></div>';
+      readingInner.innerHTML=h; bindTaller(); return; }
+    var o=q.o, kw=es?o.es:o.en, emo=(getEmoji()&&o.emo)?'<span class="tl-emo">'+o.emo+'</span>':'';
+    if(q.mode==='teach'){
+      h+='<div class="rq-prompt teach-word"><div class="rq-kind">'+(o.piece?(es?'Pieza nueva':'New part'):(es?'Kanji nuevo':'New kanji'))+'</div>'+
+        '<div class="tl-big mincho">'+o.g+'</div><div class="tl-kw">'+emo+tlEsc(kw)+'</div>'+
+        tallerRecipeHTML(o)+'</div>'+tallerStoryHTML(o,q)+tallerExampleHTML(o)+
+        '<div class="d-actions"><button class="d-next" id="tlGot">'+(es?'Lo tengo →':'Got it →')+'</button></div>';
+      readingInner.innerHTML=h; bindTaller(); return; }
+    /* armado */
+    var kind=o.parts.length?(es?'Armá el kanji':'Build the kanji'):(o.piece?(es?'Buscá la pieza':'Find the part'):(es?'¿Cuál es?':'Which one?'));
+    h+='<div class="rq-prompt"><div class="rq-kind">'+kind+'</div><div class="tl-kw tl-kw-q">'+emo+tlEsc(kw)+'</div>'+
+       (o.parts.length&&!q.answered?'<div class="tl-sub">'+tallerOrderHint(o.lay,es)+'</div>':'')+'</div>';
+    h+=tallerDiagramHTML(q,q.answered&&q.ok);
+    if(!q.answered){
+      h+='<div class="tl-bank">'; q.bank.forEach(function(c){ h+='<button class="tl-chip mincho'+(c.used?' used':'')+'" data-chip="'+c.id+'"'+(c.used?' disabled':'')+'>'+c.g+'</button>'; }); h+='</div>';
+      if(q.showHint) h+='<div class="tl-hint">'+tlEsc(tallerStory(o).txt)+'</div>';
+      h+='<div class="d-actions"><button class="d-spk-word" id="tlHint"'+(q.showHint?' disabled':'')+'>'+(es?'Pista':'Hint')+'</button>'+
+         '<button class="d-spk-word" id="tlClear">'+(es?'Vaciar':'Clear')+'</button></div>';
+    } else {
+      h+='<div class="rq-fb"><div class="rq-msg '+(q.ok?'ok':'no')+'">'+(q.ok?(q.hinted?(es?'Armado, con pista':'Built, with a hint'):(es?'¡Armado!':'Built!')):(es?'Era así':'It goes like this'))+'</div>';
+      if(!q.ok) h+='<div class="tl-big mincho tl-big-sm">'+o.g+'</div>';
+      h+=tallerRecipeHTML(o)+'</div>'+tallerStoryHTML(o,q)+tallerExampleHTML(o)+
+         '<div class="d-actions"><button class="d-next" id="tlNext">'+t("Next →")+'</button></div>';
+    }
+    readingInner.innerHTML=h; bindTaller(); }
+
+  function tallerOrderHint(lay,es){ var p=es?'Tocá las piezas en orden: ':'Tap the parts in order: ';
+    return ({lr:p+(es?'izquierda, derecha.':'left, right.'),tb:p+(es?'arriba, abajo.':'top, bottom.'),
+    enc:p+(es?'la de afuera, la de adentro.':'outside, inside.'),mix:(es?'Tocá las dos piezas: van una encima de la otra, el orden no importa.':'Tap both parts: they overlap, order does not matter.'),
+    ltb:p+(es?'izquierda, luego derecha arriba y derecha abajo.':'left, then right top and right bottom.'),tlr:p+(es?'arriba, luego abajo izquierda y abajo derecha.':'top, then bottom left and bottom right.'),
+    tb3:p+(es?'arriba, medio, abajo.':'top, middle, bottom.')})[lay]||''; }
+
+  function tallerPlace(chipId){ var q=tsess.q; if(q.answered)return; var c=null;
+    q.bank.forEach(function(x){ if(x.id===chipId&&!x.used)c=x; }); if(!c)return;
+    var i=q.slots.indexOf(null); if(i<0)return; q.slots[i]=c; c.used=true;
+    if(q.slots.indexOf(null)<0){ tallerAnswer(); return; } renderTaller(); }
+  function tallerUnplace(i){ var q=tsess.q; if(q.answered)return; var c=q.slots[i]; if(!c)return; c.used=false; q.slots[i]=null; renderTaller(); }
+
+  function bindTaller(){ var q=tsess.q, $=function(id){return document.getElementById(id);};
+    if($('tlClose'))$('tlClose').addEventListener('click',tallerEnd);
+    if($('tlDone'))$('tlDone').addEventListener('click',tallerEnd);
+    if($('tlNext'))$('tlNext').addEventListener('click',tallerNext);
+    if($('tlGot'))$('tlGot').addEventListener('click',function(){ tallerSeen(q.o.g); Persistence.save(state); tallerNext(); });
+    if($('tlHint'))$('tlHint').addEventListener('click',function(){ q.showHint=true; q.hinted=true; renderTaller(); });
+    if($('tlClear'))$('tlClear').addEventListener('click',function(){ q.slots=q.slots.map(function(){return null;}); q.bank.forEach(function(c){c.used=false;}); renderTaller(); });
+    readingInner.querySelectorAll('.tl-chip').forEach(function(b){ b.addEventListener('click',function(){ tallerPlace(+b.getAttribute('data-chip')); }); });
+    readingInner.querySelectorAll('.tl-slot').forEach(function(b){ b.addEventListener('click',function(){ tallerUnplace(+b.getAttribute('data-slot')); }); });
+    if($('tlStoryEdit'))$('tlStoryEdit').addEventListener('click',function(){ q.editing=true; renderTaller(); var ta=$('tlStoryTxt'); if(ta)ta.focus(); });
+    if($('tlStoryCancel'))$('tlStoryCancel').addEventListener('click',function(){ q.editing=false; renderTaller(); });
+    if($('tlStorySave'))$('tlStorySave').addEventListener('click',function(){ var v=($('tlStoryTxt').value||'').trim().slice(0,300), tt=ensureTaller();
+      if(v) tt.story[q.o.g]=v; else delete tt.story[q.o.g]; q.editing=false; Persistence.save(state); renderTaller(); });
+    if($('tlStoryReset'))$('tlStoryReset').addEventListener('click',function(){ delete ensureTaller().story[q.o.g]; Persistence.save(state); renderTaller(); });
+    var sp=readingInner.querySelector('.tl-ex .sweepline'); if(sp&&sp.parentNode)sp.parentNode.addEventListener('click',function(){ var w=tallerExample(q.o.g); if(w)speakSweep(w.jp,sp); });
+  }
 
   var ksess=null;
   function exampleWordFor(ch){ var best=null; WORD_POOL.forEach(function(w){ if(!wordMature(w.jp))return;
@@ -10013,7 +10642,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   }
 
   function bindMain(){
-    app.querySelectorAll("[data-fn]").forEach(function(b){var fn=b.getAttribute("data-fn");b.addEventListener("click",function(){if(fn==="startDrill")startDrill();else if(fn==="startGap")startGapDrill();else if(fn==="startDaily")startDaily();else if(fn==="startWords")startWords();else if(fn==="startPhrases")startPhrases();else if(fn==="startBuild")startBuild();else if(fn==="startMatch")startMatch();else if(fn==="openCustom")openCustom();else if(fn==="startKanji")startKanji();else if(fn==="activateKanji")activateKanji();else if(fn==="activatePhrases")activatePhrases();else if(fn==="startPlacement")startPlacement();else if(fn==="toggleGames")toggleGames();else if(fn==="toggleRoad")toggleRoad();else if(fn==="toggleRes")toggleRes();else if(fn==="openOnboard")openOnboard();});});
+    app.querySelectorAll("[data-fn]").forEach(function(b){var fn=b.getAttribute("data-fn");b.addEventListener("click",function(){if(fn==="startDrill")startDrill();else if(fn==="startGap")startGapDrill();else if(fn==="startDaily")startDaily();else if(fn==="startWords")startWords();else if(fn==="startPhrases")startPhrases();else if(fn==="startBuild")startBuild();else if(fn==="startMatch")startMatch();else if(fn==="openCustom")openCustom();else if(fn==="startKanji")startKanji();else if(fn==="startTaller")startTaller();else if(fn==="activateKanji")activateKanji();else if(fn==="activatePhrases")activatePhrases();else if(fn==="startPlacement")startPlacement();else if(fn==="toggleGames")toggleGames();else if(fn==="toggleRoad")toggleRoad();else if(fn==="toggleRes")toggleRes();else if(fn==="openOnboard")openOnboard();});});
 
     var wd=app.querySelector(".wotd[data-say]"); if(wd)wd.addEventListener("click",function(){speak(wd.getAttribute("data-say"));});
     app.querySelectorAll("[data-aim]").forEach(function(b){ b.addEventListener("click",function(){ setAim(b.getAttribute("data-aim")); }); });
