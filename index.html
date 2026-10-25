@@ -1036,6 +1036,9 @@
   .tl-nudge{margin-top:8px;font-size:13px;color:var(--shu)}
   .tl-ex{margin:12px auto 0;font-size:14px;color:var(--ink-soft);text-align:center;max-width:480px}
   @media (prefers-reduced-motion:reduce){ .tl-fused{animation:none} .tl-slot,.tl-chip{transition:none} }
+  .rq-part-story{font-size:13px;line-height:1.4;color:var(--ink);margin-top:6px}
+  .rq-part-slbl{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:2px}
+  .rq-part-story.own .rq-part-slbl{color:var(--green)}
 </style>
 
 <div class="wrap">
@@ -1723,7 +1726,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
      (nunca el de un contador compartido), igual de honesto que el resto del camino. */
   function patternsWithExamplesCount(){ var s={}; PHRASES.forEach(function(p){ if(p.pattern)s[p.pattern]=1; }); return Object.keys(s).length; }
   function patternsMasteredCount(){ var pt=ensurePatterns(),n=0; PATTERNS.forEach(function(p){ if((pt.box[p.id]||0)>=PAT_MATURE && patternExamples(p.id,1).length)n++; }); return n; }
-  function n5KanjiLearnedCount(){ var L=ensureKanji().learned||{},n=0; for(var ch in L){ if(L[ch]&&N5_KANJI.has(ch))n++; } return n; }
+  function n5KanjiLearnedCount(){ var n=0; N5_KANJI.forEach(function(ch){ if(kanjiMastered(ch))n++; }); return n; }
   /* Kana is "done" only when all six rungs (base/dak/yōon × both scripts) are solid.
      Used to keep directing the user to the kana drill until yōon is actually learned,
      even if they advanced to later stages back when yōon didn't exist. */
@@ -2058,7 +2061,6 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     h+='<button class="start-btn'+(reps>=15?" done-today":"")+'" data-fn="'+rec.fn+'">'+(rec.fn==="startDaily"?rec.label:(t("Recommended")+': '+rec.label))+' →</button>';
     h+='<button class="ex-custom-btn" data-fn="openCustom">🎛 '+t("Custom exercise")+'</button>';
     if(kanjiUnlockReady()) h+='<button class="ex-custom-btn" data-fn="activateKanji">漢字 '+t("Activate kanji")+'</button>';
-    else if(kanjiDueCount()>0) h+='<button class="ex-custom-btn" data-fn="startKanji">漢字 '+t("Kanji")+' ('+kanjiDueCount()+')</button>';
     if(kanjiOn()){ var _tb=tallerBadge(); h+='<button class="ex-custom-btn" data-fn="startTaller">工 '+(getLang()==="es"?"Taller de kanji":"Kanji workshop")+(_tb?' ('+_tb+')':'')+'</button>'; }
     if(phraseUnlockReady()) h+='<button class="ex-custom-btn" data-fn="activatePhrases">🗣 '+t("Activate phrases")+'</button>';
     var ext=tasksForStage(st).filter(function(x){return x.id!=="kana"&&x.id!=="words"&&x.id!=="phrases";});
@@ -4456,7 +4458,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     keys.forEach(function(r){ if((k.box[r]||0)>=4)s++; if((k.kbox[r]||0)>=4)s++; }); return tot?s/tot:0; }
   function n5VocabPillar(){ var b=ensureWords().box,n=0; for(var jp in b){ if((b[jp]||0)>=4&&N5_READINGS.has(jp))n++; }
     return Math.min(1,n/N5_VOCAB_TOTAL); }
-  function n5KanjiPillar(){ var L=ensureKanji().learned||{},n=0; for(var ch in L){ if(L[ch]&&N5_KANJI.has(ch))n++; }
+  function n5KanjiPillar(){ var n=n5KanjiLearnedCount();
     return Math.min(1,n/N5_KANJI_TOTAL); }
   function n5GramPillar(){ if(typeof PHRASES==='undefined')return 0; var b=ensurePhrases().box,pats={},n=0;
     for(var i=0;i<PHRASES.length;i++){ var p=PHRASES[i]; if(p.pattern && (b[p.jp]||0)>=4) pats[p.pattern]=1; }
@@ -7797,12 +7799,31 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     var k=state.exercises.kanji; if(!k.box)k.box={}; if(!k.learned)k.learned={}; if(!k.due)k.due={}; if(!k.leech)k.leech={}; if(!k.daily)k.daily={}; if(typeof k.kanjiConceptSeen!=="boolean")k.kanjiConceptSeen=false; return k; }
   function isKanjiChar(ch){ var c=ch.charCodeAt(0); return c>=0x4E00&&c<=0x9FFF; }
   function kanjiLearned(ch){ return !!ensureKanji().learned[ch]; }
+  /* "Aprendido" para mostrar (chuleta, barra N5, camino): leído bien en palabras Y, si el
+     kanji está en el taller, armado de memoria ahí. kanjiLearned sigue siendo solo la
+     lectura porque decide si una palabra se muestra con kanji. */
+  function kanjiMastered(ch){ if(!kanjiLearned(ch))return false;
+    var tlo=(typeof TALLER!=='undefined'&&TALLER)?TALLER.by[ch]:null; if(!tlo)return true;
+    var tt=state.exercises&&state.exercises.taller; return !!(tt&&tt.box&&(tt.box[ch]||0)>=TALLER_SOLID); }
   function kanjiReadable(str){ if(!str)return false; for(var i=0;i<str.length;i++){ if(isKanjiChar(str[i])&&!kanjiLearned(str[i]))return false; } return true; }
   function kanjiForm(w){ if(!w)return null; if(w.kanji)return w.kanji; var jp=(typeof w==='string')?w:w.jp; return KANJI_WORDS[jp]||null; }
   /* Builds the radical-breakdown panel HTML for a word's kanji form.
      Shown in post-answer feedback — pure exposition, never examined. */
   /* Bloque de componentes de UN kanji (panel post-respuesta y ficha de la chuleta). */
+  /* Kanji (o pieza) del taller: receta y la historia del taller, la del usuario primero.
+     Así el panel dice lo mismo en el quiz, en la chuleta y en el taller. */
+  function tallerBlockHTML(o){ var es=getLang()==='es', st=tallerStory(o);
+    var lbl=st.own?(es?'Tu historia':'Your story'):(o.kind==='E'?(es?'Así se dibujaba':'How it was drawn'):(es?'Truco de memoria':'Memory trick'));
+    var h='<div class="rq-part-kanji"><span class="rq-part-head mincho">'+o.g+'</span><div class="rq-part-rows">';
+    var rows=o.parts.length?o.parts:[];
+    rows.forEach(function(p){ var po=TALLER.by[p];
+      h+='<div class="rq-part-row"><span class="rq-part-comp mincho">'+p+'</span><span class="rq-part-cn">'+tlEsc(po?(es?po.es:po.en):'')+'</span></div>'; });
+    if(!rows.length) h+='<div class="rq-part-row"><span class="rq-part-cn">'+tlEsc(es?o.es:o.en)+'</span><span class="rq-part-role">'+(es?'pieza base, no se arma con otras':'base part, not built from others')+'</span></div>';
+    h+='<div class="rq-part-story'+(st.own?' own':'')+'"><span class="rq-part-slbl">'+lbl+'</span>'+tlEsc(st.txt)+'</div>';
+    return h+'</div></div>'; }
   function kanjiBlockHTML(ch){
+    var tlo=(typeof TALLER!=='undefined'&&TALLER)?TALLER.by[ch]:null;
+    if(tlo) return tallerBlockHTML(tlo);
     var parts=KANJI_PARTS[ch];
     if(!parts){
       /* null = no se descompone más. Se muestra igual, nunca se omite en silencio:
@@ -7859,7 +7880,9 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     try{ x=x.normalize('NFD').replace(/[\u0300-\u036f]/g,''); }catch(e){}
     return x.replace(/[\u30a1-\u30f6]/g,function(c){ return String.fromCharCode(c.charCodeAt(0)-0x60); }).replace(/[.\-・]/g,'');
   }
-  function kjStateOf(ch){ if(kanjiLearned(ch))return 'mastered'; return (ensureKanji().box[ch]||0)>0?'progress':'new'; }
+  function kjStateOf(ch){ if(kanjiMastered(ch))return 'mastered';
+    var tt=state.exercises&&state.exercises.taller;
+    return (kanjiLearned(ch) || (ensureKanji().box[ch]||0)>0 || (tt&&tt.seen&&tt.seen[ch]))?'progress':'new'; }
   /* piezas de un kanji: [{g,name}] a partir de KANJI_PARTS */
   function kjPiecesOf(ch){
     var parts=KANJI_PARTS[ch]; if(!parts)return [];
@@ -9504,7 +9527,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   function tallerYoung(){ var t=ensureTaller(); return TALLER.list.filter(function(o){ return t.seen[o.g] && (t.box[o.g]||0)<TALLER_SOLID; }).length; }
   function tallerUnseen(){ var t=ensureTaller(); return TALLER.list.filter(function(o){ return !t.seen[o.g]; }); }
   function tallerSolidCount(n5Only){ var t=ensureTaller(); return TALLER.list.filter(function(o){ return (!n5Only||!o.piece) && (t.box[o.g]||0)>=TALLER_SOLID; }).length; }
-  function tallerBadge(){ var d=tallerDueList().length; if(d) return String(d);
+  function tallerBadge(){ var d=tallerDueList().length+(tallerReadAvail()?kanjiWordPool().length:0); if(d) return String(d);
     return (tallerUnseen().length && tallerYoung()<TALLER_MAX_YOUNG && (ensureTaller().newDay[today()]||0)<TALLER_NEW_PER_DAY)?'+':''; }
   function tallerStory(o){ var t=ensureTaller(), own=t.story[o.g]; return own?{own:true,txt:own}:{own:false,txt:(getLang()==='es'?o.s.es:o.s.en)}; }
   function tallerExample(ch){ var best=null,bestM=false;
@@ -9512,24 +9535,72 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       if(!best || (m&&!bestM) || (m===bestM && kf.length<kanjiForm(best).length)){ best=w; bestM=m; } });
     return best; }
 
-  var tsess=null;
-  function startTaller(){ pbsess=null; bsess=null; wsess=null; rsess=null; ksess=null;
-    var t=ensureTaller(), queue=[], due=tallerDueList();
+  /* El taller absorbe el viejo quiz de lectura de kanji (botón "Kanji"): además de
+     armar, la sesión intercala pasos 'read' (leer una palabra con kanji en vuelo, el
+     mismo motor de kanjiCredit) y 'kteach' (ficha de lectura para kanji fuera del taller,
+     o sea los que no son N5). Un kanji del taller cuenta como aprendido solo con las
+     dos cosas: armado de memoria y leído (ver kanjiMastered). */
+  var TALLER_READ_PER_SESSION=6, TALLER_DAILY_BURST={build:2,fresh:1,read:1};
+  function tallerReadAvail(){ return kanjiOn() && kanjiWordPool().length>0; }
+  function tallerCanNew(){ var t=ensureTaller(); return tallerUnseen().length>0 && tallerYoung()<TALLER_MAX_YOUNG && (t.newDay[today()]||0)<TALLER_NEW_PER_DAY; }
+  function tallerHasWork(){ return tallerDueList().length>0 || tallerCanNew() || tallerReadAvail(); }
+  function tallerPlan(maxBuild,maxNew,maxRead){ var t=ensureTaller(), queue=[], due=tallerDueList();
     due.sort(function(a,b){ return (t.box[a.g]||0)-(t.box[b.g]||0); });
-    due.slice(0,TALLER_SESSION_MAX).forEach(function(o){ queue.push({g:o.g,mode:'build'}); });
-    var room=Math.min(TALLER_NEW_PER_SESSION, TALLER_MAX_YOUNG-tallerYoung(), TALLER_NEW_PER_DAY-(t.newDay[today()]||0), Math.max(0,TALLER_SESSION_MAX-queue.length));
+    due.slice(0,maxBuild).forEach(function(o){ queue.push({g:o.g,mode:'build'}); });
+    var room=Math.min(maxNew, TALLER_MAX_YOUNG-tallerYoung(), TALLER_NEW_PER_DAY-(t.newDay[today()]||0), Math.max(0,maxBuild-queue.length));
     var fresh=room>0?tallerUnseen().slice(0,room):[];
     /* cada nuevo: ficha, y su primera armada dos turnos después (deja que la memoria trabaje) */
     fresh.forEach(function(o,i){ var at=Math.min(queue.length, i*2); queue.splice(at,0,{g:o.g,mode:'teach'});
       queue.splice(Math.min(queue.length, at+3),0,{g:o.g,mode:'build'}); });
+    /* lectura intercalada: una cada dos pasos del taller, el resto al final */
+    var nRead=tallerReadAvail()?Math.min(maxRead, kanjiWordPool().length+unseenKanji().length):0;
+    for(var r=0;r<nRead;r++){ var at2=Math.min(queue.length, (r+1)*3-1); queue.splice(at2,0,{mode:'read'}); }
+    return queue; }
+  var tsess=null;
+  function startTaller(){ pbsess=null; bsess=null; wsess=null; rsess=null; ksess=null;
+    var t=ensureTaller(), queue=tallerPlan(TALLER_SESSION_MAX,TALLER_NEW_PER_SESSION,TALLER_READ_PER_SESSION);
     var extra=false;
     if(!queue.length){ /* nada pendiente: repaso libre de lo ya visto, sin mover el SRS */
       var seen=TALLER.list.filter(function(o){ return t.seen[o.g]; }); shuffle(seen);
       seen.slice(0,8).forEach(function(o){ queue.push({g:o.g,mode:'build'}); }); extra=true; }
+    if(!ensureKanji().kanjiConceptSeen) queue.unshift({mode:'concept'});
     tsess={done:0,correct:0,wrong:0,queue:queue,q:null,counted:{},requeued:{},extra:extra,learned:[]};
     tallerNext(); }
-  function tallerEnd(){ tsess=null; readingEl.classList.add('hidden');
+  /* ráfaga corta dentro de la práctica diaria: reusa el mismo tsess entre ráfagas
+     para que los contadores de arriba sigan sumando */
+  function tallerDailyBurst(){ pbsess=null; wsess=null;
+    var q=tallerPlan(TALLER_DAILY_BURST.build,TALLER_DAILY_BURST.fresh,TALLER_DAILY_BURST.read);
+    if(!ensureKanji().kanjiConceptSeen) q.unshift({mode:'concept'});
+    if(!tsess||!tsess.daily) tsess={done:0,correct:0,wrong:0,queue:[],q:null,counted:{},requeued:{},extra:false,learned:[],daily:true};
+    tsess.queue=q; tallerNext(); }
+  function tallerEnd(){ if(tsess&&tsess.daily&&dsess){ dailyEnd(); return; }
+    tsess=null; readingEl.classList.add('hidden');
     try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){} render(); }
+  /* paso de lectura: primero, si toca, presentar un kanji nuevo que no está en el taller;
+     si no, una palabra con kanji en vuelo (mismo criterio que el viejo kanjiNextUnit) */
+  function tallerReadItem(){
+    var tt=ensureTaller();
+    /* lo que el taller ya enseñó entra a lectura sin ficha aparte */
+    unseenKanji().forEach(function(ch){ if(TALLER.by[ch]&&tt.seen[ch]) kanjiSeen(ch); });
+    var unseen=unseenKanji().filter(function(ch){ return !TALLER.by[ch]; }), inflight=inFlightKanji();
+    if(unseen.length && inflight.length<KANJI_LEARN_POOL){ for(var i=0;i<unseen.length;i++){ var ex=exampleWordFor(unseen[i]);
+        if(ex) return {mode:'kteach',ch:unseen[i],ex:ex,kf:kanjiForm(ex)}; } }
+    var quizWords=kanjiWordPool(); if(!quizWords.length) return null;
+    var withInflight=quizWords.filter(function(w){ var kf=kanjiForm(w);
+      for(var j=0;j<kf.length;j++){ if(inflight.indexOf(kf.charAt(j))>=0)return true; } return false; });
+    var pool=withInflight.length?withInflight:quizWords, last=tsess.lastRead, noRep=pool.filter(function(w){return w.jp!==last;});
+    if(noRep.length) pool=noRep;
+    var target=pool[Math.floor(Math.random()*pool.length)]; tsess.lastRead=target.jp;
+    var distSrc=WORD_POOL.filter(function(w){ return w.jp!==target.jp && wordReadable(w.jp); });
+    shuffle(distSrc);
+    return {mode:'read',word:target,opts:shuffle([target].concat(distSrc.slice(0,5))),answered:false,picked:-1,settled:false}; }
+  function tallerReadAnswer(jp){ var q=tsess.q; if(!q||q.answered)return;
+    q.answered=true; for(var i=0;i<q.opts.length;i++){ if(q.opts[i].jp===jp){ q.picked=i; break; } }
+    var ok=jp===q.word.jp, kf=kanjiForm(q.word);
+    for(var j=0;j<kf.length;j++){ var ch=kf.charAt(j); if(isKanjiChar(ch)&&!kanjiLearned(ch))kanjiCredit(ch,ok); }
+    tsess.done++; if(ok)tsess.correct++; else tsess.wrong++;
+    var t=ensureTaller(), td=today(); t.daily[td]=(t.daily[td]||0)+1;
+    stampDay(); Persistence.save(state); renderTaller(); speakSweep(q.word.jp, readingInner.querySelector(".sweepline")); }
 
   function tallerBank(o){ var t=ensureTaller(), want=o.parts.length?o.parts.slice():[o.g], uniq={}, out=[];
     want.forEach(function(g){ if(!uniq[g]){ uniq[g]=1; out.push(g); } });
@@ -9549,14 +9620,19 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
 
   function tallerNext(){ if(!tsess)return;
     var nx=tsess.queue.shift();
-    if(!nx){ tsess.q={mode:'end'}; renderTaller(); readingEl.classList.remove('hidden'); return; }
+    if(!nx){ if(tsess.daily&&dsess){ dailyAfterUnit(); return; }
+      tsess.q={mode:'end'}; renderTaller(); readingEl.classList.remove('hidden'); return; }
+    if(nx.mode==='concept'){ if(ensureKanji().kanjiConceptSeen){ tallerNext(); return; } tsess.q={mode:'concept'}; renderTaller(); readingEl.classList.remove('hidden'); return; }
+    if(nx.mode==='read'){ var it=tallerReadItem(); if(!it){ tallerNext(); return; }
+      tsess.q=it; renderTaller(); readingEl.classList.remove('hidden');
+      if(it.mode==='read') setTimeout(function(){ if(tsess&&tsess.q===it) speak(it.word.jp); },250); return; }
     var o=TALLER.by[nx.g];
     if(nx.mode==='teach'){ tsess.q={mode:'teach',o:o,editing:false}; }
     else { var slots=TALLER_SLOTS[o.lay]||['c'];
       tsess.q={mode:'build',o:o,slots:slots.map(function(){return null;}),bank:tallerBank(o),answered:false,ok:false,hinted:false,showHint:false,editing:false}; }
     renderTaller(); readingEl.classList.remove('hidden'); }
 
-  function tallerSeen(g){ var t=ensureTaller(); if(!t.seen[g]){ t.seen[g]=today(); var nd=(t.newDay[today()]||0)+1; t.newDay={}; t.newDay[today()]=nd; if(!t.box[g])t.box[g]=1; t.due[g]=today(); } }
+  function tallerSeen(g){ var t=ensureTaller(); if(TALLER.by[g]&&!TALLER.by[g].piece) kanjiSeen(g); if(!t.seen[g]){ t.seen[g]=today(); var nd=(t.newDay[today()]||0)+1; t.newDay={}; t.newDay[today()]=nd; if(!t.box[g])t.box[g]=1; t.due[g]=today(); } }
 
   function tallerCheck(q){ var want=q.o.parts.length?q.o.parts:[q.o.g], got=q.slots.map(function(c){ return c?c.g:null; });
     if(q.o.lay==='mix' || want.every(function(g){return g===want[0];})){
@@ -9618,6 +9694,37 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     return h+'</div>'; }
 
   function renderTaller(){ var q=tsess.q, es=getLang()==='es', h=tallerHead();
+    if(q.mode==='concept'){
+      h+='<div class="rq-prompt teach-word"><div class="rq-kind">'+t("What is a kanji?")+'</div>'+
+         '<div class="rq-jp mincho" style="font-size:56px;line-height:1.1">回</div>'+
+         '<div class="rq-mean" style="text-align:left;max-width:36ch;margin:10px auto 0">'+t("A kanji is a symbol for a <b>meaning</b>, not a sound. The same kanji can be read different ways depending on the word: the small kana on top tells you how to read it <b>here</b>.")+'</div>'+
+         '<div class="rq-mean" style="text-align:left;max-width:36ch;margin:10px auto 0">'+(es?'En el taller los vas a <b>armar</b> con piezas, como LEGO, y después a <b>leer</b> en palabras que ya conocés. Cuenta como aprendido cuando hacés las dos cosas.':'In the workshop you will <b>build</b> them from parts, like LEGO, and then <b>read</b> them in words you already know. It counts as learned once you do both.')+'</div></div>'+
+         '<div class="d-actions"><button class="d-next" id="tlConcept">'+t("Got it →")+'</button></div>';
+      readingInner.innerHTML=h; bindTaller(); return; }
+    if(q.mode==='kteach'){ var ex=q.ex;
+      h+='<div class="rq-prompt teach-word"><div class="rq-kind">'+(es?'Kanji nuevo para leer':'New kanji to read')+'</div>'+
+         '<div class="rq-jp mincho" style="font-size:64px;line-height:1.1">'+q.ch+'</div>'+
+         '<div class="rq-mean">'+t("appears in")+' <span class="mincho">'+rubySweepHTML(q.kf,ex.jp)+'</span> · '+(es?ex.es:ex.en)+'</div>'+
+         '<div class="rq-note" style="opacity:.65;font-size:13px;margin-top:8px">'+t("The reading shows how it's read in this word: it can change in others.")+'</div></div>'+
+         kanjiPartsHTML(ex.jp)+
+         '<div class="d-actions"><button class="d-spk-word" id="tlKSpk"><i class=ico-spk></i> <span>'+t("hear it")+'</span></button><button class="d-next" id="tlKGot">'+t("Got it →")+'</button></div>';
+      readingInner.innerHTML=h; bindTaller(); return; }
+    if(q.mode==='read'){ var w=q.word;
+      h+='<div class="rq-prompt"><div class="rq-kind">'+t("How do you read it?")+'</div>'+
+         '<div class="rq-jp mincho">'+kanjiForm(w)+'</div>'+
+         '<div class="d-actions"><button class="d-spk-word" id="tlRSpkQ"><i class=ico-spk></i> <span>'+t("hear it")+'</span></button></div></div><div class="ropts">';
+      q.opts.forEach(function(o){ var cls="ropt jp mincho",already=false;
+        if(q.answered){ if(o.jp===w.jp)cls+=" correct"; else if(q.picked>=0&&q.opts[q.picked]&&q.opts[q.picked].jp===o.jp)cls+=" bad";
+          else { cls+=" dim"; if(q.settled){ cls+=" ropt-collapse"; already=true; } } }
+        h+='<button class="'+cls+'" data-jp="'+o.jp+'"'+(already?' style="display:none"':'')+'>'+o.jp+'</button>'; });
+      h+='</div><div class="rq-fb">';
+      if(q.answered){ var okR=q.opts[q.picked]&&q.opts[q.picked].jp===w.jp;
+        h+='<div class="rq-msg '+(okR?"ok":"no")+'">'+t(okR?"Correct!":"It was")+'</div>'+
+           '<div class="rq-ans"><span class="mincho">'+rubySweepHTML(kanjiForm(w),w.jp)+'</span> <span class="rq-rom">'+w.romaji+'</span> · <span class="mean">'+(es?w.es:w.en)+'</span> <button class="d-spk-word" id="tlRSpkW"><i class=ico-spk></i> <span>'+t("hear it")+'</span></button></div>'+
+           kanjiPartsHTML(w.jp); }
+      h+='</div>';
+      if(q.answered) h+='<div class="d-actions"><button class="d-next" id="tlNext">'+t("Next →")+'</button></div>';
+      readingInner.innerHTML=h; bindTaller(); return; }
     if(q.mode==='end'){ var nN5=tallerSolidCount(true);
       h+='<div class="rq-prompt teach-word"><div class="rq-kind">'+(es?'Taller cerrado':'Workshop closed')+'</div>'+
         '<div class="rq-jp mincho" style="font-size:56px;line-height:1.1">工</div>'+
@@ -9665,6 +9772,14 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   function tallerUnplace(i){ var q=tsess.q; if(q.answered)return; var c=q.slots[i]; if(!c)return; c.used=false; q.slots[i]=null; renderTaller(); }
 
   function bindTaller(){ var q=tsess.q, $=function(id){return document.getElementById(id);};
+    if($('tlConcept'))$('tlConcept').addEventListener('click',function(){ ensureKanji().kanjiConceptSeen=true; Persistence.save(state); tallerNext(); });
+    if($('tlKGot'))$('tlKGot').addEventListener('click',function(){ kanjiSeen(q.ch); Persistence.save(state); tallerNext(); });
+    if($('tlKSpk'))$('tlKSpk').addEventListener('click',function(){ speakSweep(q.ex.jp, readingInner.querySelector(".sweepline")); });
+    if($('tlRSpkQ'))$('tlRSpkQ').addEventListener('click',function(){ speak(q.word.jp); });
+    if($('tlRSpkW'))$('tlRSpkW').addEventListener('click',function(){ speakSweep(q.word.jp, readingInner.querySelector(".sweepline")); });
+    if(q.mode==='read'){
+      if(!q.answered) readingInner.querySelectorAll(".ropt").forEach(function(o){ o.addEventListener("click",function(){ tallerReadAnswer(o.getAttribute("data-jp")); }); });
+      else collapseNoiseOpts(q); }
     if($('tlClose'))$('tlClose').addEventListener('click',tallerEnd);
     if($('tlDone'))$('tlDone').addEventListener('click',tallerEnd);
     if($('tlNext'))$('tlNext').addEventListener('click',tallerNext);
@@ -9685,6 +9800,8 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   function exampleWordFor(ch){ var best=null; WORD_POOL.forEach(function(w){ if(!wordMature(w.jp))return;
     var kf=kanjiForm(w); if(kf&&kf.indexOf(ch)>=0){ if(!best||kf.length<kanjiForm(best).length)best=w; } }); return best; }
 
+  /* Desde la integración con el taller, startKanji/kanjiNextUnit/renderKanji quedan como
+     código muerto (nadie los llama): el taller hace su trabajo en tallerReadItem. */
   function startKanji(){ pbsess=null; bsess=null; wsess=null; rsess=null;
     ksess={done:0,correct:0,wrong:0,q:null}; kanjiNextUnit(); }
   function kanjiEnd(){ ksess=null; readingEl.classList.add("hidden");
@@ -10398,14 +10515,17 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     else { drill=100; match=0; build=0; }                     // day 1: only characters
     /* frases tejidas en el mismo flujo (no una etapa aparte), sólo si están activadas */
     var phrase=(canBuild && anyPhraseWork())?25:0;
-    var tot=drill+match+build+phrase;
-    return {drill:drill/tot, match:match/tot, build:build/tot, phrase:phrase/tot, canMatch:canMatch, canBuild:canBuild, m:m, days:days, learnedN:learnedN};
+    /* taller de kanji: ráfaga corta tejida igual que las frases, solo con kanji activado */
+    var taller=(kanjiOn() && tallerHasWork())?15:0;
+    var tot=drill+match+build+phrase+taller;
+    return {drill:drill/tot, match:match/tot, build:build/tot, phrase:phrase/tot, taller:taller/tot, canMatch:canMatch, canBuild:canBuild, m:m, days:days, learnedN:learnedN};
   }
   function pickDailyType(mix){ mix=mix||dailyMix(); var r=Math.random();
     if(r<mix.drill)return "drill";
     if(r<mix.drill+mix.match)return "match";
     if(r<mix.drill+mix.match+mix.build)return "build";
-    return "phrase"; }
+    if(r<mix.drill+mix.match+mix.build+mix.phrase)return "phrase";
+    return "taller"; }
   function startDaily(){ ensureKana(); dsess={active:true,cur:null}; dailyNextUnit(); }
   function dailyNextUnit(){
     if(!dsess)return;
@@ -10413,6 +10533,12 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     if(type==="match" && !mix.canMatch)type="drill";
     if(type==="build" && !mix.canBuild)type="drill";
     if(type==="phrase" && !(phrasesOn() && anyPhraseWork()))type="drill";
+    if(type==="taller" && !(kanjiOn() && tallerHasWork()))type="drill";
+    /* nunca dos ráfagas de taller seguidas */
+    if(type==="taller" && dsess.cur==="taller")type="drill";
+    /* el tsess del diario conserva sus contadores, pero sin pregunta activa mientras
+       se ven otros ejercicios (si no, refreshOpenView lo pintaría encima) */
+    if(type!=="taller" && tsess) tsess.q=null;
     dsess.cur=type;
     if(type!=="phrase"){ dsess.inPhrase=false; ptsess=null; }
     if(type==="drill"){
@@ -10427,6 +10553,9 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       drillEl.classList.add("hidden");
       if(!bsess) bsess={done:0,correct:0,wrong:0,q:null};
       buildNextQ(); readingEl.classList.remove("hidden"); renderBuild();
+    }else if(type==="taller"){
+      drillEl.classList.add("hidden");
+      tallerDailyBurst();
     }else{ /* phrase: ráfaga corta de frases tejida en el mismo flujo, luego vuelve a palabras */
       drillEl.classList.add("hidden");
       dsess.inPhrase=true; dsess.phraseBudget=PHRASE_DAILY_BURST;
@@ -10436,7 +10565,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     }
   }
   function dailyAfterUnit(){ if(!dsess)return; dailyNextUnit(); }
-  function dailyEnd(){ dsess=null; sess=null; bsess=null; msess=null;
+  function dailyEnd(){ dsess=null; sess=null; bsess=null; msess=null; tsess=null;
     drillEl.classList.add("hidden"); readingEl.classList.add("hidden");
     try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){} render(); }
 
@@ -10642,7 +10771,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   }
 
   function bindMain(){
-    app.querySelectorAll("[data-fn]").forEach(function(b){var fn=b.getAttribute("data-fn");b.addEventListener("click",function(){if(fn==="startDrill")startDrill();else if(fn==="startGap")startGapDrill();else if(fn==="startDaily")startDaily();else if(fn==="startWords")startWords();else if(fn==="startPhrases")startPhrases();else if(fn==="startBuild")startBuild();else if(fn==="startMatch")startMatch();else if(fn==="openCustom")openCustom();else if(fn==="startKanji")startKanji();else if(fn==="startTaller")startTaller();else if(fn==="activateKanji")activateKanji();else if(fn==="activatePhrases")activatePhrases();else if(fn==="startPlacement")startPlacement();else if(fn==="toggleGames")toggleGames();else if(fn==="toggleRoad")toggleRoad();else if(fn==="toggleRes")toggleRes();else if(fn==="openOnboard")openOnboard();});});
+    app.querySelectorAll("[data-fn]").forEach(function(b){var fn=b.getAttribute("data-fn");b.addEventListener("click",function(){if(fn==="startDrill")startDrill();else if(fn==="startGap")startGapDrill();else if(fn==="startDaily")startDaily();else if(fn==="startWords")startWords();else if(fn==="startPhrases")startPhrases();else if(fn==="startBuild")startBuild();else if(fn==="startMatch")startMatch();else if(fn==="openCustom")openCustom();else if(fn==="startKanji")startTaller();else if(fn==="startTaller")startTaller();else if(fn==="activateKanji")activateKanji();else if(fn==="activatePhrases")activatePhrases();else if(fn==="startPlacement")startPlacement();else if(fn==="toggleGames")toggleGames();else if(fn==="toggleRoad")toggleRoad();else if(fn==="toggleRes")toggleRes();else if(fn==="openOnboard")openOnboard();});});
 
     var wd=app.querySelector(".wotd[data-say]"); if(wd)wd.addEventListener("click",function(){speak(wd.getAttribute("data-say"));});
     app.querySelectorAll("[data-aim]").forEach(function(b){ b.addEventListener("click",function(){ setAim(b.getAttribute("data-aim")); }); });
