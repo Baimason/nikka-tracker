@@ -1039,6 +1039,8 @@
   .rq-part-story{font-size:13px;line-height:1.4;color:var(--ink);margin-top:6px}
   .rq-part-slbl{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:2px}
   .rq-part-story.own .rq-part-slbl{color:var(--green)}
+  .tl-posmiss{max-width:420px;margin:2px auto 8px;font-size:14px;color:var(--gold);text-align:center;line-height:1.4}
+  .tl-posbtn{display:flex;justify-content:center;margin:0 0 10px}
 </style>
 
 <div class="wrap">
@@ -7843,6 +7845,8 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     parts.forEach(function(p){
       var g=p.rad&&RADICALS[p.rad]?RADICALS[p.rad].glyph:(p.glyph||'');
       var n=p.rad&&RADICALS[p.rad]?RADICALS[p.rad].name:(p.name||'');
+      /* si la pieza también está en el taller, se nombra igual que allá */
+      var tp=(typeof TALLER!=='undefined'&&TALLER)?TALLER.by[g]:null; if(tp){ var es0=getLang()==='es'; n=(es0?tp.es:tp.en); n=n.charAt(0).toUpperCase()+n.slice(1); }
       bh+='<div class="rq-part-row"><span class="rq-part-comp mincho">'+g+'</span><span class="rq-part-cn">'+n+'</span><span class="rq-part-role">'+p.role+'</span></div>';
     });
     return bh+'</div></div>';
@@ -9527,7 +9531,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   function tallerYoung(){ var t=ensureTaller(); return TALLER.list.filter(function(o){ return t.seen[o.g] && (t.box[o.g]||0)<TALLER_SOLID; }).length; }
   function tallerUnseen(){ var t=ensureTaller(); return TALLER.list.filter(function(o){ return !t.seen[o.g]; }); }
   function tallerSolidCount(n5Only){ var t=ensureTaller(); return TALLER.list.filter(function(o){ return (!n5Only||!o.piece) && (t.box[o.g]||0)>=TALLER_SOLID; }).length; }
-  function tallerBadge(){ var d=tallerDueList().length+(tallerReadAvail()?kanjiWordPool().length:0); if(d) return String(d);
+  function tallerBadge(){ var d=tallerDueList().length+(tallerReadAvail()?tallerReadPool().length:0); if(d) return String(d);
     return (tallerUnseen().length && tallerYoung()<TALLER_MAX_YOUNG && (ensureTaller().newDay[today()]||0)<TALLER_NEW_PER_DAY)?'+':''; }
   function tallerStory(o){ var t=ensureTaller(), own=t.story[o.g]; return own?{own:true,txt:own}:{own:false,txt:(getLang()==='es'?o.s.es:o.s.en)}; }
   function tallerExample(ch){ var best=null,bestM=false;
@@ -9541,7 +9545,18 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
      o sea los que no son N5). Un kanji del taller cuenta como aprendido solo con las
      dos cosas: armado de memoria y leído (ver kanjiMastered). */
   var TALLER_READ_PER_SESSION=6, TALLER_DAILY_BURST={build:2,fresh:1,read:1};
-  function tallerReadAvail(){ return kanjiOn() && kanjiWordPool().length>0; }
+  /* Lectura dentro del taller: solo palabras con al menos un kanji que el taller ya
+     enseñó y todavía no se lee bien, y como mucho un kanji de afuera (土曜日, 友達,
+     子供: el de afuera acompaña, no se evalúa). Los kanji avanzados que trae el
+     vocabulario de los juegos quedan para la chuleta y los paneles de después de
+     responder, no para el camino didáctico. */
+  function tallerTaught(ch){ var tt=ensureTaller(); return !!(TALLER.by[ch]&&!TALLER.by[ch].piece&&tt.seen[ch]); }
+  function tallerReadPool(){ return WORD_POOL.filter(function(w){ if(!wordMature(w.jp))return false; var kf=kanjiForm(w); if(!kf)return false;
+    var due=0,taught=0,other=0;
+    for(var i=0;i<kf.length;i++){ var ch=kf.charAt(i); if(!isKanjiChar(ch))continue;
+      if(tallerTaught(ch)){ taught++; if(!kanjiLearned(ch))due++; } else other++; }
+    return due>0 && other<=1 && taught>=other; }); }
+  function tallerReadAvail(){ return kanjiOn() && tallerReadPool().length>0; }
   function tallerCanNew(){ var t=ensureTaller(); return tallerUnseen().length>0 && tallerYoung()<TALLER_MAX_YOUNG && (t.newDay[today()]||0)<TALLER_NEW_PER_DAY; }
   function tallerHasWork(){ return tallerDueList().length>0 || tallerCanNew() || tallerReadAvail(); }
   function tallerPlan(maxBuild,maxNew,maxRead){ var t=ensureTaller(), queue=[], due=tallerDueList();
@@ -9553,7 +9568,10 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     fresh.forEach(function(o,i){ var at=Math.min(queue.length, i*2); queue.splice(at,0,{g:o.g,mode:'teach'});
       queue.splice(Math.min(queue.length, at+3),0,{g:o.g,mode:'build'}); });
     /* lectura intercalada: una cada dos pasos del taller, el resto al final */
-    var nRead=tallerReadAvail()?Math.min(maxRead, kanjiWordPool().length+unseenKanji().length):0;
+    /* cuenta también lo que se enseña en esta misma sesión: si no hay palabra para leer,
+       tallerReadItem devuelve null y el paso se salta solo */
+    var freshK=fresh.filter(function(o){ return !o.piece; }).length;
+    var nRead=kanjiOn()?Math.min(maxRead, tallerReadPool().length+freshK):0;
     for(var r=0;r<nRead;r++){ var at2=Math.min(queue.length, (r+1)*3-1); queue.splice(at2,0,{mode:'read'}); }
     return queue; }
   var tsess=null;
@@ -9579,16 +9597,8 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   /* paso de lectura: primero, si toca, presentar un kanji nuevo que no está en el taller;
      si no, una palabra con kanji en vuelo (mismo criterio que el viejo kanjiNextUnit) */
   function tallerReadItem(){
-    var tt=ensureTaller();
-    /* lo que el taller ya enseñó entra a lectura sin ficha aparte */
-    unseenKanji().forEach(function(ch){ if(TALLER.by[ch]&&tt.seen[ch]) kanjiSeen(ch); });
-    var unseen=unseenKanji().filter(function(ch){ return !TALLER.by[ch]; }), inflight=inFlightKanji();
-    if(unseen.length && inflight.length<KANJI_LEARN_POOL){ for(var i=0;i<unseen.length;i++){ var ex=exampleWordFor(unseen[i]);
-        if(ex) return {mode:'kteach',ch:unseen[i],ex:ex,kf:kanjiForm(ex)}; } }
-    var quizWords=kanjiWordPool(); if(!quizWords.length) return null;
-    var withInflight=quizWords.filter(function(w){ var kf=kanjiForm(w);
-      for(var j=0;j<kf.length;j++){ if(inflight.indexOf(kf.charAt(j))>=0)return true; } return false; });
-    var pool=withInflight.length?withInflight:quizWords, last=tsess.lastRead, noRep=pool.filter(function(w){return w.jp!==last;});
+    var pool=tallerReadPool(); if(!pool.length) return null;
+    var last=tsess.lastRead, noRep=pool.filter(function(w){return w.jp!==last;});
     if(noRep.length) pool=noRep;
     var target=pool[Math.floor(Math.random()*pool.length)]; tsess.lastRead=target.jp;
     var distSrc=WORD_POOL.filter(function(w){ return w.jp!==target.jp && wordReadable(w.jp); });
@@ -9597,7 +9607,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   function tallerReadAnswer(jp){ var q=tsess.q; if(!q||q.answered)return;
     q.answered=true; for(var i=0;i<q.opts.length;i++){ if(q.opts[i].jp===jp){ q.picked=i; break; } }
     var ok=jp===q.word.jp, kf=kanjiForm(q.word);
-    for(var j=0;j<kf.length;j++){ var ch=kf.charAt(j); if(isKanjiChar(ch)&&!kanjiLearned(ch))kanjiCredit(ch,ok); }
+    for(var j=0;j<kf.length;j++){ var ch=kf.charAt(j); if(isKanjiChar(ch)&&!kanjiLearned(ch)&&tallerTaught(ch))kanjiCredit(ch,ok); }
     tsess.done++; if(ok)tsess.correct++; else tsess.wrong++;
     var t=ensureTaller(), td=today(); t.daily[td]=(t.daily[td]||0)+1;
     stampDay(); Persistence.save(state); renderTaller(); speakSweep(q.word.jp, readingInner.querySelector(".sweepline")); }
@@ -9632,7 +9642,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       tsess.q={mode:'build',o:o,slots:slots.map(function(){return null;}),bank:tallerBank(o),answered:false,ok:false,hinted:false,showHint:false,editing:false}; }
     renderTaller(); readingEl.classList.remove('hidden'); }
 
-  function tallerSeen(g){ var t=ensureTaller(); if(TALLER.by[g]&&!TALLER.by[g].piece) kanjiSeen(g); if(!t.seen[g]){ t.seen[g]=today(); var nd=(t.newDay[today()]||0)+1; t.newDay={}; t.newDay[today()]=nd; if(!t.box[g])t.box[g]=1; t.due[g]=today(); } }
+  function tallerSeen(g){ var t=ensureTaller(); if(!t.seen[g]){ t.seen[g]=today(); var nd=(t.newDay[today()]||0)+1; t.newDay={}; t.newDay[today()]=nd; if(!t.box[g])t.box[g]=1; t.due[g]=today(); } }
 
   function tallerCheck(q){ var want=q.o.parts.length?q.o.parts:[q.o.g], got=q.slots.map(function(c){ return c?c.g:null; });
     if(q.o.lay==='mix' || want.every(function(g){return g===want[0];})){
@@ -9748,28 +9758,44 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     h+=tallerDiagramHTML(q,q.answered&&q.ok);
     if(!q.answered){
       h+='<div class="tl-bank">'; q.bank.forEach(function(c){ h+='<button class="tl-chip mincho'+(c.used?' used':'')+'" data-chip="'+c.id+'"'+(c.used?' disabled':'')+'>'+c.g+'</button>'; }); h+='</div>';
+      if(q.posMiss) h+='<div class="tl-posmiss">'+(es?'Las piezas son esas, pero no van en ese lugar. ':'Right parts, wrong place. ')+tallerPosTip(o,es)+'</div>'+
+        (q.slots.length===2?'<div class="tl-posbtn"><button class="tl-sbtn" id="tlSwap">'+(es?'Intercambiar':'Swap')+'</button></div>':'');
       if(q.showHint) h+='<div class="tl-hint">'+tlEsc(tallerStory(o).txt)+'</div>';
       h+='<div class="d-actions"><button class="d-spk-word" id="tlHint"'+(q.showHint?' disabled':'')+'>'+(es?'Pista':'Hint')+'</button>'+
          '<button class="d-spk-word" id="tlClear">'+(es?'Vaciar':'Clear')+'</button></div>';
     } else {
-      h+='<div class="rq-fb"><div class="rq-msg '+(q.ok?'ok':'no')+'">'+(q.ok?(q.hinted?(es?'Armado, con pista':'Built, with a hint'):(es?'¡Armado!':'Built!')):(es?'Era así':'It goes like this'))+'</div>';
+      h+='<div class="rq-fb"><div class="rq-msg '+(q.ok?'ok':'no')+'">'+(q.ok?(q.hinted?(q.hintKind==='pos'?(es?'Armado, después de reacomodar':'Built, after rearranging'):(es?'Armado, con pista':'Built, with a hint')):(es?'¡Armado!':'Built!')):(es?'Era así':'It goes like this'))+'</div>';
       if(!q.ok) h+='<div class="tl-big mincho tl-big-sm">'+o.g+'</div>';
       h+=tallerRecipeHTML(o)+'</div>'+tallerStoryHTML(o,q)+tallerExampleHTML(o)+
          '<div class="d-actions"><button class="d-next" id="tlNext">'+t("Next →")+'</button></div>';
     }
     readingInner.innerHTML=h; bindTaller(); }
 
+  /* pista concreta de posición: dónde va la primera pieza de la receta */
+  function tallerPosTip(o,es){ var p=o.parts[0], slot=(TALLER_SLOTS[o.lay]||[])[0];
+    var where={l:es?'a la izquierda':'on the left',t:es?'arriba':'on top',o:es?'afuera, rodeando':'outside, around'}[slot];
+    return where?((es?'Pista: ':'Tip: ')+'<span class="mincho">'+p+'</span> '+(es?'va ':'goes ')+where+'.'):''; }
   function tallerOrderHint(lay,es){ var p=es?'Tocá las piezas en orden: ':'Tap the parts in order: ';
     return ({lr:p+(es?'izquierda, derecha.':'left, right.'),tb:p+(es?'arriba, abajo.':'top, bottom.'),
     enc:p+(es?'la de afuera, la de adentro.':'outside, inside.'),mix:(es?'Tocá las dos piezas: van una encima de la otra, el orden no importa.':'Tap both parts: they overlap, order does not matter.'),
     ltb:p+(es?'izquierda, luego derecha arriba y derecha abajo.':'left, then right top and right bottom.'),tlr:p+(es?'arriba, luego abajo izquierda y abajo derecha.':'top, then bottom left and bottom right.'),
     tb3:p+(es?'arriba, medio, abajo.':'top, middle, bottom.')})[lay]||''; }
 
+  /* las piezas son las correctas pero alguna quedó en otra casilla */
+  function tallerSameSet(q){ var want=(q.o.parts.length?q.o.parts:[q.o.g]).slice().sort().join(''),
+    got=q.slots.map(function(c){ return c?c.g:''; }).sort().join(''); return want===got; }
   function tallerPlace(chipId){ var q=tsess.q; if(q.answered)return; var c=null;
     q.bank.forEach(function(x){ if(x.id===chipId&&!x.used)c=x; }); if(!c)return;
-    var i=q.slots.indexOf(null); if(i<0)return; q.slots[i]=c; c.used=true;
-    if(q.slots.indexOf(null)<0){ tallerAnswer(); return; } renderTaller(); }
-  function tallerUnplace(i){ var q=tsess.q; if(q.answered)return; var c=q.slots[i]; if(!c)return; c.used=false; q.slots[i]=null; renderTaller(); }
+    var i=q.slots.indexOf(null); if(i<0)return; q.slots[i]=c; c.used=true; q.posMiss=false;
+    if(q.slots.indexOf(null)<0){
+      /* saber las piezas ya es la mitad: no es error, se reacomoda. Cuenta como
+         armado con ayuda (no sube la caja, tampoco la baja) */
+      if(!tallerCheck(q) && tallerSameSet(q)){ q.posMiss=true; q.hinted=true; q.hintKind='pos'; renderTaller(); return; }
+      tallerAnswer(); return; }
+    renderTaller(); }
+  function tallerSwap(){ var q=tsess.q; if(q.answered||q.slots.length!==2)return; q.slots.reverse(); q.posMiss=false;
+    if(tallerCheck(q)){ tallerAnswer(); return; } renderTaller(); }
+  function tallerUnplace(i){ var q=tsess.q; if(q.answered)return; var c=q.slots[i]; if(!c)return; c.used=false; q.slots[i]=null; q.posMiss=false; renderTaller(); }
 
   function bindTaller(){ var q=tsess.q, $=function(id){return document.getElementById(id);};
     if($('tlConcept'))$('tlConcept').addEventListener('click',function(){ ensureKanji().kanjiConceptSeen=true; Persistence.save(state); tallerNext(); });
@@ -9784,7 +9810,8 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     if($('tlDone'))$('tlDone').addEventListener('click',tallerEnd);
     if($('tlNext'))$('tlNext').addEventListener('click',tallerNext);
     if($('tlGot'))$('tlGot').addEventListener('click',function(){ tallerSeen(q.o.g); Persistence.save(state); tallerNext(); });
-    if($('tlHint'))$('tlHint').addEventListener('click',function(){ q.showHint=true; q.hinted=true; renderTaller(); });
+    if($('tlHint'))$('tlHint').addEventListener('click',function(){ q.showHint=true; q.hinted=true; if(!q.hintKind)q.hintKind='hint'; renderTaller(); });
+    if($('tlSwap'))$('tlSwap').addEventListener('click',tallerSwap);
     if($('tlClear'))$('tlClear').addEventListener('click',function(){ q.slots=q.slots.map(function(){return null;}); q.bank.forEach(function(c){c.used=false;}); renderTaller(); });
     readingInner.querySelectorAll('.tl-chip').forEach(function(b){ b.addEventListener('click',function(){ tallerPlace(+b.getAttribute('data-chip')); }); });
     readingInner.querySelectorAll('.tl-slot').forEach(function(b){ b.addEventListener('click',function(){ tallerUnplace(+b.getAttribute('data-slot')); }); });
