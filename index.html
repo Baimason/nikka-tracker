@@ -263,6 +263,8 @@
     transition:transform .32s cubic-bezier(.32,.72,0,1),opacity .22s ease,visibility 0s linear 0s}
   .drill.hidden,.reading.hidden,.custom.hidden{transform:translateY(100%);opacity:0;visibility:hidden;pointer-events:none;
     transition:transform .32s cubic-bezier(.32,.72,0,1),opacity .22s ease,visibility 0s linear .32s}
+  /* Cambio de ejercicio DENTRO de una practica: sin deslizamiento (solo al abrir y al cerrar) */
+  body.ov-swap .drill,body.ov-swap .reading,body.ov-swap .custom{transition:none!important}
   .custom-inner{max-width:520px;margin:0 auto;width:100%;display:flex;flex-direction:column;flex:1}
   .ob-dots{display:flex;gap:6px;justify-content:center;margin:6px 0 18px}
   .ob-dot{width:7px;height:7px;border-radius:50%;background:var(--line)}
@@ -9148,7 +9150,8 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     if(!ex.deseeded){ buildWordPool().forEach(function(w){ if((ex.box[w.jp]||0)>0){ ex.box[w.jp]=0; changed=true; } }); ex.deseeded=1; changed=true; }
     if(changed)Persistence.save(state); }
   function startWordsMix(){ var ex=ensureWords(); seedKnownFromBuild(); rsess={pool:WORD_POOL,box:ex.box,ex:ex,done:0,correct:0,wrong:0,q:null,teach:true,newIntro:0}; bsess=null; wsess={active:true,cur:null,wr:rsess}; wordsNextUnit(); }
-  function wordsNextUnit(){ if(!wsess)return;
+  function wordsNextUnit(){ return swapOverlays(_wordsNextUnit); }
+  function _wordsNextUnit(){ if(!wsess)return;
     rsess = wsess.wr || rsess;   // por defecto: sesión de palabras
     if(wsess.forceBuild){ var _fb=wsess.forceBuild; wsess.forceBuild=null; if(!bsess)bsess={done:0,correct:0,wrong:0,q:null}; buildNextQ(_fb); if(bsess.q){ wsess.cur="build"; renderBuild(); readingEl.classList.remove("hidden"); return; } }
     /* Frases tejidas en el MISMO flujo: de vez en cuando una unidad del director de
@@ -10665,7 +10668,18 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     var mm=scriptMastery("kata"), kataReady=mm.total&&mm.solid/mm.total>=0.9;
     return cs>=5 || (cs===4&&kataReady); }
   function startDaily(){ ensureKana(); if(readingEra()){ startWordsMix(); return; } dsess={active:true,cur:null}; dailyNextUnit(); }
-  function dailyNextUnit(){
+  /* Las practicas mezclan pantallas (#drill y #reading). El deslizamiento desde abajo es
+     para abrir y cerrar una practica; al pasar de un ejercicio al siguiente con una pantalla
+     ya abierta, el cambio es instantaneo. Contador de profundidad por si se anidan. */
+  var _ovSwapDepth=0;
+  function anyOverlayOpen(){ return ['drill','reading','custom'].some(function(id){ var e=document.getElementById(id); return e && !e.classList.contains('hidden'); }); }
+  function swapOverlays(fn){
+    var on=_ovSwapDepth>0 || anyOverlayOpen();
+    if(on){ _ovSwapDepth++; document.body.classList.add('ov-swap'); }
+    try{ return fn(); }
+    finally{ if(on){ _ovSwapDepth--; if(!_ovSwapDepth){ void document.body.offsetHeight; document.body.classList.remove('ov-swap'); } } } }
+  function dailyNextUnit(){ return swapOverlays(_dailyNextUnit); }
+  function _dailyNextUnit(){
     if(!dsess)return;
     var mix=dailyMix(), type=pickDailyType(mix);
     if(type==="match" && !mix.canMatch)type="drill";
@@ -10813,7 +10827,8 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     if(csess.last && types.length>1){ var f=types.filter(function(x){return x!==csess.last;}); if(f.length)types=f; }
     var pick=types[Math.floor(Math.random()*types.length)]; csess.last=pick; return pick;
   }
-  function customNextUnit(){
+  function customNextUnit(){ return swapOverlays(_customNextUnit); }
+  function _customNextUnit(){
     if(!csess)return;
     var a=customActs();
     var types=csess.types.filter(function(ty){ return a[ty]&&a[ty].ok; });
