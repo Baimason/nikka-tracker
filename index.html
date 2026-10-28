@@ -8336,8 +8336,8 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     {id:'v-neg-u',   order:24, needs:['v-neg'],            intro:[], mold:'｛cosa｝を｛verbo う→あ＋ない｝', gloss:'«no V» en verbos う: la última sílaba pasa a la fila あ + ない: のむ→のまない · かく→かかない · はなす→はなさない. (う→わ: かう→かわない)'},
     {id:'v-cond-tara',order:25, needs:['v-past-u'],       intro:[], mold:'｛cosa｝を｛verbo-たら｝', gloss:'«cuando/si (hacés) V»: es la forma ～た (pasado) + ら. Presenta una condición: «si pasa esto…»'},
     {id:'v-cond-ba',  order:26, needs:['v-cond-tara'],    intro:[], mold:'｛cosa｝を｛verbo-ば｝',   gloss:'«si V»: verbos う: última sílaba a la fila え + ば (のむ→のめば); verbos る: る→れば (みる→みれば)'},
-    {id:'fp-yo',        order:27, needs:['cop-da'],       intro:['よ'], mold:'｛frase｝よ',              gloss:'«～よ» al final = te aviso / enfatizo (info nueva para quien escucha)'},
-    {id:'fp-ne',        order:28, needs:['cop-da'],       intro:['ね'], mold:'｛frase｝ね',              gloss:'«～ね» al final = ¿no? / ¿verdad?: buscás que el otro confirme'},
+    {id:'fp-yo',        order:3.5, needs:['cop-da'],       intro:['よ'], mold:'｛frase｝よ',              gloss:'«～よ» al final = te aviso / enfatizo (info nueva para quien escucha)'},
+    {id:'fp-ne',        order:3.6, needs:['cop-da'],       intro:['ね'], mold:'｛frase｝ね',              gloss:'«～ね» al final = ¿no? / ¿verdad?: buscás que el otro confirme'},
     {id:'fp-zo',        order:29, needs:['fp-yo'],        intro:['ぞ'], mold:'｛frase｝ぞ',              gloss:'«～ぞ» al final = énfasis fuerte, tono masculino e informal'},
     {id:'v-potential',  order:30, needs:['v-cond-ba'],    intro:[],     mold:'｛cosa｝が｛verbo→える/られる｝', gloss:'«poder V» (forma corta): verbos う: う→える (のむ→のめる); verbos る: る→られる (みる→みられる). El objeto suele ir con が'},
     {id:'mod-mitai',    order:31, needs:['v-past-u'],     intro:[],     mold:'｛frase｝みたい',           gloss:'«～みたい» = parece que / como si. Va tras sustantivo o verbo en forma plana'},
@@ -8350,13 +8350,13 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     {id:'v-irregular',  order:38, needs:['v-past-u'],     intro:[],     mold:'する→した · くる→きた · いく→いった', gloss:'verbos irregulares: no siguen las reglas de sonido. Memorizá: する→した, くる→きた, y la excepción いく→いった'},
     {id:'v-tearu',       order:39, needs:['v-te-u','exist-aru'], intro:[], mold:'｛cosa｝が｛verbo-て｝ある', gloss:'«está V-ado»: ～て + ある = algo quedó hecho y sigue así (estado resultante). Ej: かいてある = «está escrito»'},
     {id:'conn-nakutemo', order:40, needs:['v-neg-u'],            intro:[], mold:'｛cosa｝を｛verbo-なくてもよい｝', gloss:'«no hace falta V»: del negativo ～ない → ～なくても + よい/いい'},
-    {id:'conn-kara-cause',order:41,needs:['cop-da'],             intro:[], mold:'｛frase｝から',              gloss:'«porque ~»: から tras una frase plana marca la RAZÓN (distinto de から = «desde/origen»)'},
+    {id:'conn-kara-cause',order:16.5,needs:['cop-da'],             intro:[], mold:'｛frase｝から',              gloss:'«porque ~»: から tras una frase plana marca la RAZÓN (distinto de から = «desde/origen»)'},
     {id:'req-temoii',   order:19.5,needs:['v-te'],               intro:['もいい'], mold:'｛verbo-て｝もいいですか', gloss:'«¿puedo V?»: pedir permiso: て-form + もいいですか'},
     {id:'mod-kamoshirenai',order:1.7,needs:['cop-da'],           intro:['かもしれない'], mold:'｛frase｝かもしれない', gloss:'«puede que ~ / quizás»: menos seguro que でしょう, va tras la forma plana'},
     {id:'prob-deshou', order:2.5,needs:['cop-desu'],             intro:['でしょう'], mold:'｛frase｝でしょう',      gloss:'«probablemente ~»: va tras la forma plana (sin だ delante de でしょう)'},
     {id:'oblig-nakereba',order:24.5,needs:['v-neg-u'],           intro:['なければならない'], mold:'｛cosa｝を｛verbo-なければならない｝', gloss:'«tengo que V / hay que V»: del negativo ～ない: quitá い, poné ければならない. のむ→のまない→のまなければならない'},
     {id:'conn-nagara',  order:25.5,needs:['v-past-u'],           intro:['ながら'], mold:'｛verbo-stem｝ながら｛otro verbo｝', gloss:'«mientras V»: dos acciones al mismo tiempo: verbo en su raíz ます (のみます→のみ) + ながら'},
-    {id:'proh-tewaikenai',order:20.5,needs:['v-te','v-te-u'],    intro:['てはいけない'], mold:'｛verbo-て｝はいけない', gloss:'«no se puede V / está prohibido V»: て-form + はいけない (más fuerte que だめ)'},
+    {id:'proh-tewaikenai',order:23.5,needs:['v-te','v-te-u'],    intro:['てはいけない'], mold:'｛verbo-て｝はいけない', gloss:'«no se puede V / está prohibido V»: て-form + はいけない (más fuerte que だめ)'},
     {id:'conn-tari',    order:26.5,needs:['v-past-u','v-past'],  intro:['たり'], mold:'｛verbo-た｝り｛verbo-た｝りする', gloss:'«hacer cosas como V1 y V2»: lista acciones de ejemplo (no todas): forma た + り, repetido, cerrando con する'},
     {id:'give-ageru',   order:42,  needs:['obj-wo','loc-ni'],    intro:['あげる'], mold:'｛alguien｝に｛cosa｝をあげる', gloss:'«darle X a alguien»: あげる es dar (yo a otro, o entre terceros)'},
     {id:'give-kureru',  order:43,  needs:['give-ageru'],         intro:['くれる'], mold:'｛alguien｝が｛cosa｝をくれる', gloss:'«alguien me da X»: くれる es cuando la dirección es HACIA mí/nosotros'},
@@ -8860,7 +8860,8 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
      a patrones maduros (box>=PAT_MATURE). Patrón joven = se practica armando,
      con andamiaje: sólo las piezas de la frase + 1 distractor confundible.
      ========================================================================= */
-  var PAT_MATURE=4, GUIDED_PROB=0.85, BUILD_NOPAT=2;
+  var PAT_MATURE=4, GUIDED_PROB=0.85, BUILD_NOPAT=2, PHRASE_MAX_INFLIGHT=40;
+  function phrasesInFlight(){ var ph=ensurePhrases(), n=0; PHRASES.forEach(function(p){ var b=ph.box[p.jp]||0, seen=(ph.seen&&ph.seen[p.jp])||(ph.built&&ph.built[p.jp]); if(seen && b<4)n++; }); return n; }
   function patternMature(pid){ return (ensurePatterns().box[pid]||0)>=PAT_MATURE; }
   function phraseMature(p){ if(!p.parts)return true;
     var ph=ensurePhrases(), built=(ph.built&&ph.built[p.jp])||0, pid=patternOf(p);
@@ -8869,7 +8870,12 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   }
   function phraseReadyMature(p){ if(!phraseReady(p))return false; return phraseMature(p); }
   /* frase construible sólo si su patrón ya fue enseñado (o no tiene patrón) */
-  function buildableGate(p){ var pid=patternOf(p); if(!pid||!PATTERN_BY_ID[pid])return true; return !!ensurePatterns().seen[pid]; }
+  var INTRO_PATTERN=null;
+  function introPatternOf(tok){ if(!INTRO_PATTERN){ INTRO_PATTERN={}; PATTERNS.slice().sort(function(a,b){return a.order-b.order;}).forEach(function(pp){ (pp.intro||[]).forEach(function(t){ if(!INTRO_PATTERN[t])INTRO_PATTERN[t]=pp.id; }); }); } return INTRO_PATTERN[tok]||null; }
+  function buildableGate(p){ var pid=patternOf(p), pt=ensurePatterns();
+    if(pid&&PATTERN_BY_ID[pid]&&!pt.seen[pid])return false;
+    if(p.parts){ for(var i=0;i<p.parts.length;i++){ var ip=introPatternOf(p.parts[i]); if(ip&&ip!==pid&&!pt.seen[ip])return false; } }
+    return true; }
   /* próxima frase a construir: patrón de menor order primero, y dentro, la menos construida */
   function nextBuildPhrase(skipRecent){ var ph=ensurePhrases();
     var blt=function(p){ return (ph.built&&ph.built[p.jp])||0; };
@@ -8878,6 +8884,10 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
        NO exigimos vocab dominado (box>=3): armar la frase, con las piezas a la
        vista y el molde recién explicado, ES la forma de aprender ese vocab. */
     var cand=PHRASES.filter(function(p){ return p.parts && wordReadable(p.jp) && buildableGate(p) && !phraseMature(p); });
+    /* Tope de frases en vuelo: con demasiadas a medio camino cada una se ve muy de vez en
+       cuando y ninguna llega a dominada. Pasado el tope solo se siguen armando las que ya
+       empezaste; las nuevas esperan a que las de ahora suban. */
+    if(phrasesInFlight()>=PHRASE_MAX_INFLIGHT){ cand=cand.filter(function(p){ return blt(p)>0; }); }
     if(!cand.length)return null;
     /* anti-repetición: no re-servir una frase recién construida (evita que un
        pool minúsculo — a veces una sola frase — repita el mismo build 3-4 veces
@@ -9062,7 +9072,8 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       // 3) introduce a general new word while fewer than LEARN_POOL are still being learned (box < PROMOTE)
       var inFlight=seenSet.filter(function(i){return (box[pool[i].jp]||0) < WORD_PROMOTE_AT;}).length;
       var _cap=(pool===PHRASES)?2:READ_LEARN_POOL;   // frases de a poco, no en tanda de 12
-      if(unseen.length && (inFlight < _cap || seenSet.length===0)){
+      var _phFull=(pool===PHRASES && phrasesInFlight()>=PHRASE_MAX_INFLIGHT);   /* mismo tope que el armado */
+      if(unseen.length && !_phFull && (inFlight < _cap || seenSet.length===0)){
         var tn;
         if(aimS){ var aimU=unseen.filter(function(i){return aimS[pool[i].jp];});
           if(aimU.length && Math.random()<aimBias()) tn=aimU[Math.floor(Math.random()*aimU.length)]; }
@@ -9088,6 +9099,8 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
      - si el kana esta completo pero hay caracteres con repaso vencido (incluidos los yoon,
        que el armado de palabras nunca toca), entra de vez en cuando como mantenimiento.
      Un peldano por encima del nivel no se fuerza: se respeta el "Si, desbloquear". */
+  var PHRASE_RECOG_SHARE=0.5;
+  function phraseRecogDue(){ var b=ensurePhrases().box; return phraseReadyIdxMature(PHRASES).some(function(i){ return (b[PHRASES[i].jp]||0)<5; }); }
   var WORDS_KANA_GAP_PROB=0.4, WORDS_KANA_DUE_PROB=0.1, WORDS_TALLER_PROB=0.15;
   function wordsKanaGapRung(){ var g=firstKanaGap(), lvl=ensureKana().level||1; return (g && g<=lvl)?g:0; }
   function wordsKanaProb(){ if(wordsKanaGapRung())return WORDS_KANA_GAP_PROB; return dueCount()>0?WORDS_KANA_DUE_PROB:0; }
@@ -9146,6 +9159,11 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       if(!wsess.pr) wsess.pr={pool:PHRASES,box:ensurePhrases().box,ex:ensurePhrases(),done:0,correct:0,wrong:0,q:null,teach:true,newIntro:0};
       rsess = wsess.pr;
       if(tsess)tsess.q=null; drillEl.classList.add("hidden");
+      /* Reconocer frases ya armadas: es la unica via por la que una frase madura (armada y
+         con su patron maduro) sube hasta "dominada". Antes este flujo nunca la ofrecia, asi
+         que las frases quedaban trabadas en 1-3. Mitad reconocer, mitad director de patrones. */
+      if(phraseRecogDue() && Math.random()<PHRASE_RECOG_SHARE){
+        wsess.cur="phraseRead"; buildReadingQ(); renderReading(); readingEl.classList.remove("hidden"); return; }
       if(maybePattern()){ wsess.cur="phrase"; return; }
       rsess = wsess.wr;   // no había trabajo de frases → seguimos con palabras
     }
@@ -9966,8 +9984,9 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   function activatePhrases(){ setPhrasesOn(true); render(); }
 
   function startPhrases(){ if(!phrasesOn())return; startQuiz(PHRASES, ensurePhrases(), true); if(maybePattern())return; }
-  function closeReading(){ if(csess){ customEnd(); return; } if(wsess){ wordsEnd(); return; } pbsess=null; ptsess=null; readingEl.classList.add("hidden"); try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){} render(); }
+  function closeReading(){ if(csess){ customEnd(); return; } if(wsess){ wordsEnd(); return; } if(dsess){ dailyEnd(); return; } pbsess=null; ptsess=null; readingEl.classList.add("hidden"); try{window.speechSynthesis&&window.speechSynthesis.cancel();}catch(e){} render(); }
   function nextReadingQ(){ if(csess){ customAfterUnit(); return; } if(wsess){ wordsAfterUnit(); return; }
+    if(dsess && dsess.cur==="words"){ dailyAfterUnit(); return; }
     if(dsess && dsess.inPhrase){                      // dentro de una ráfaga de frases del diario
       if(dsess.phraseBudget<=0){ dsess.inPhrase=false; ptsess=null; dailyAfterUnit(); return; }
       dsess.phraseBudget--;
@@ -10623,16 +10642,20 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     else { drill=100; match=0; build=0; }                     // day 1: only characters
     /* frases tejidas en el mismo flujo (no una etapa aparte), sólo si están activadas */
     var phrase=(canBuild && anyPhraseWork())?25:0;
+    /* palabras (ficha + quiz de lectura) desde que hay con que armar: asi el vocabulario
+       empieza a subir de caja ya en la etapa de kana, no recien al llegar al katakana */
+    var words=(canBuild && readableIdx(WORD_POOL).length>=8)?20:0;
     /* taller de kanji: ráfaga corta tejida igual que las frases, solo con kanji activado */
     var taller=(kanjiOn() && tallerHasWork())?15:0;
-    var tot=drill+match+build+phrase+taller;
-    return {drill:drill/tot, match:match/tot, build:build/tot, phrase:phrase/tot, taller:taller/tot, canMatch:canMatch, canBuild:canBuild, m:m, days:days, learnedN:learnedN};
+    var tot=drill+match+build+phrase+taller+words;
+    return {drill:drill/tot, match:match/tot, build:build/tot, phrase:phrase/tot, taller:taller/tot, words:words/tot, canMatch:canMatch, canBuild:canBuild, m:m, days:days, learnedN:learnedN};
   }
   function pickDailyType(mix){ mix=mix||dailyMix(); var r=Math.random();
     if(r<mix.drill)return "drill";
     if(r<mix.drill+mix.match)return "match";
     if(r<mix.drill+mix.match+mix.build)return "build";
     if(r<mix.drill+mix.match+mix.build+mix.phrase)return "phrase";
+    if(r<mix.drill+mix.match+mix.build+mix.phrase+(mix.words||0))return "words";
     return "taller"; }
   /* Practica diaria = una sola puerta. Antes de poder leer (kana todavia en hiragana)
      corre el director de kana (dsess: drill/emparejar/armar). Desde que el katakana
@@ -10651,6 +10674,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     if(type==="taller" && !(kanjiOn() && tallerHasWork()))type="drill";
     /* nunca dos ráfagas de taller seguidas */
     if(type==="taller" && dsess.cur==="taller")type="drill";
+    if(type==="words" && !(mix.words>0))type="drill";
     /* el tsess del diario conserva sus contadores, pero sin pregunta activa mientras
        se ven otros ejercicios (si no, refreshOpenView lo pintaría encima) */
     if(type!=="taller" && tsess) tsess.q=null;
@@ -10671,6 +10695,10 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     }else if(type==="taller"){
       drillEl.classList.add("hidden");
       tallerDailyBurst();
+    }else if(type==="words"){
+      drillEl.classList.add("hidden");
+      if(!rsess || rsess.pool!==WORD_POOL){ startQuiz(WORD_POOL, ensureWords(), true); }
+      else { readingEl.classList.remove("hidden"); buildReadingQ(); renderReading(); }
     }else{ /* phrase: ráfaga corta de frases tejida en el mismo flujo, luego vuelve a palabras */
       drillEl.classList.add("hidden");
       dsess.inPhrase=true; dsess.phraseBudget=PHRASE_DAILY_BURST;
