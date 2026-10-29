@@ -320,6 +320,8 @@
   .rq-ans .mincho{font-size:19px}
   .rq-ans .rq-rom{color:var(--ink-soft);font-style:italic;font-size:13px}
   .rq-ans .mean{color:var(--ink-soft)}
+  .rq-ans .bw-toggle{margin:0}
+  .rq-ans-ph{margin-top:2px}
   .read-launch{display:flex;gap:8px}
   .read-launch .start-btn.half{flex:1}
   .mrow{margin-bottom:14px} .mrow:last-child{margin-bottom:0}
@@ -665,6 +667,10 @@
   .pb-gloss-dot:active{border-color:var(--shu)}
   .bd-sentence{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:0;transition:gap .3s ease}
   .bd-sentence.split{gap:11px}
+  .bd-sentence.split .bd-word{cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .bd-word.bd-say .bd-w-text{animation:bdSay .5s ease}
+  @keyframes bdSay{0%{transform:scale(1)}35%{transform:scale(1.12);color:var(--ink)}100%{transform:scale(1)}}
+  @media (prefers-reduced-motion:reduce){.bd-word.bd-say .bd-w-text{animation:none}}
   .bd-word{display:flex;flex-direction:column;align-items:center}
   .bd-w-text{font-size:22px;color:var(--green)}
   .bd-w-cap{font-size:11px;color:var(--ink-soft);text-align:center;line-height:1.3;
@@ -3559,7 +3565,10 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     Object.keys(OPENINGS).forEach(function(gid){
       (OPENINGS[gid].phrases||[]).forEach(function(o){
         if(!o||!o.jp||seen[o.jp])return; seen[o.jp]=1;
-        PHRASES.push({jp:o.jp,romaji:o.romaji||'',es:o.es||o.en||'',en:o.en||o.es||'',note:o.note||''});
+        /* bparts: bloques solo para mostrar el desglose al responder. A propósito no
+           es "parts": eso las metería en los motores de armado y en buildableGate,
+           que usan los patrones globales (el pi de estas frases es de la chuleta). */
+        PHRASES.push({jp:o.jp,romaji:o.romaji||'',es:o.es||o.en||'',en:o.en||o.es||'',note:o.note||'',bparts:(o.parts&&o.parts.length>1&&o.parts.join('')===o.jp)?o.parts.slice():null});
       });
     });
   })();
@@ -6510,6 +6519,15 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   function closeFicha(){ var el=document.getElementById('ficha'); if(el)el.classList.add('hidden'); fichaGameId=null; kanaDetail=null; kjDetail=null; noteCur.id=null; }
 
   var readingEl=document.getElementById("reading"), readingInner=document.getElementById("readingInner");
+  /* Con "Ver cada bloque" activo, tocar un bloque lo pronuncia solo (para repasar
+     su sonido). Delegado en el overlay: sirve para todos los motores que usan
+     sentenceBreakdownHTML sin tocar cada uno. Con la frase pegada no hace nada. */
+  if(readingInner) readingInner.addEventListener("click",function(e){
+    var bw=e.target&&e.target.closest?e.target.closest(".bd-sentence.split .bd-word"):null;
+    if(!bw||!readingInner.contains(bw))return;
+    speak(bw.getAttribute("data-say")||bw.textContent);
+    bw.classList.remove("bd-say"); void bw.offsetWidth; bw.classList.add("bd-say");
+  });
   var rsess=null;
   var READ_LEARN_POOL=12, WORD_PROMOTE_AT=3, WORD_LEECH_AT=3;
   var WORD_KEYSET=(function(){var m={};WORD_POOL.forEach(function(w){m[w.jp]=1;});return m;})();
@@ -8528,6 +8546,9 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     return m;
   })();
   function moraSpansOnly(kana){ var m=splitMora(kana),s=""; for(var i=0;i<m.length;i++) s+='<span class="mora">'+m[i]+'</span>'; return s; }
+  /* Al tocar un bloque suelto, el TTS leería la partícula como se escribe (は "ha",
+     へ "he"); como partícula suenan "wa" y "e". を ya la leen "o". */
+  var BLOCK_SAY={'は':'わ','へ':'え','を':'お','では':'でわ','には':'にわ','とは':'とわ','へは':'えわ','からは':'からわ','までは':'までわ'};
   function sentenceBreakdownHTML(words,es,split,teach){
     var joined=words.join(''), sweepOn=!teach&&getSweep()&&isAllKana(joined);
     var h='<div class="bd-sentence'+(teach?' bd-teach':'')+(sweepOn?' sweepline':'')+(split?' split':'')+'">';
@@ -8542,7 +8563,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
         for(var k=1;k<w.length;k++){ var a1=WORD_BY_JP[w.slice(0,k)], a2=WORD_BY_JP[w.slice(k)];
           if(a1&&a2){ cap=(es?a1.es:a1.en).split(' / ')[0]+' + '+(es?a2.es:a2.en).split(' / ')[0]; break; } } }
       var txt=sweepOn?moraSpansOnly(w):w;
-      h+='<span class="bd-word mincho'+(teach&&isFixedTok(w)?' fx':'')+'"><span class="bd-w-text">'+txt+'</span>'+(cap?'<span class="bd-w-cap">'+cap+'</span>':'')+'</span>';
+      h+='<span class="bd-word mincho'+(teach&&isFixedTok(w)?' fx':'')+'" data-say="'+(BLOCK_SAY[w]||w)+'"><span class="bd-w-text">'+txt+'</span>'+(cap?'<span class="bd-w-cap">'+cap+'</span>':'')+'</span>';
     });
     h+='</div>';
     return h;
@@ -10069,6 +10090,14 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     if(q.answered){
       var correct=q.picked===q.target;
       h+='<div class="rq-msg '+(correct?"ok":"no")+'">'+t(correct?"Correct!":"It was")+'</div>';
+      /* Frases con bloques: la respuesta usa el mismo desglose que los motores de
+         armado (pegado por defecto, "Ver cada bloque" para repasar cada pieza). */
+      var rqParts=it.parts||it.bparts, rqBlocks=rqParts&&rqParts.length>1&&rqParts.join('')===it.jp;
+      if(rqBlocks){
+        h+='<div class="rq-ans rq-ans-ph">'+(getEmoji()&&it.emoji?'<span class="rq-emoji">'+it.emoji+'</span> ':'')+sentenceBreakdownHTML(rqParts,es,!!q.showBreak)+'</div>';
+        h+='<div class="rq-ans"><span class="rq-rom">'+it.romaji+'</span> · <span class="mean">'+(es?it.es:it.en)+'</span></div>';
+        h+='<div class="rq-ans"><button class="d-spk-word" id="rSpkW"><i class=ico-spk></i> <span>'+t("hear it")+'</span></button><button class="bw-toggle" id="rqBreakToggle">'+(q.showBreak?'☑':'☐')+' '+(es?'Ver cada bloque':'See each block')+'</button></div>';
+      } else
       h+='<div class="rq-ans">'+(getEmoji()&&it.emoji?'<span class="rq-emoji">'+it.emoji+'</span> ':'')+'<span class="mincho">'+jpSweepHTML(it)+'</span> <span class="rq-rom">'+it.romaji+'</span> · <span class="mean">'+(es?it.es:it.en)+'</span> <button class="d-spk-word" id="rSpkW"><i class=ico-spk></i> <span>'+t("hear it")+'</span></button></div>';
       if(q.gated) h+='<div class="d-typenote">'+(es?'Bien. Para marcarla como dominada falta un paso: reconocerla a partir del significado. Va a aparecer así pronto.':'Good. One step left to mark it mastered: recognizing it from its meaning. It will show up that way soon.')+'</div>';
       h+=kanjiPartsHTML(it.jp);
@@ -10088,6 +10117,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     var spw=document.getElementById("rSpkW"); if(spw)spw.addEventListener("click",function(){speakSweep(rsess.pool[rsess.q.target].jp, readingInner.querySelector(".sweepline"));});
     var rem=document.getElementById("rEmoji"); if(rem)rem.addEventListener("click",toggleEmoji);
     var gt=document.getElementById("rGot"); if(gt)gt.addEventListener("click",teachWordDone);
+    bindBreakdownToggle("rqBreakToggle",rsess.q,getLang()==="es");
     if(!rsess.q.answered){ readingInner.querySelectorAll(".ropt").forEach(function(o){ o.addEventListener("click",function(){answerReading(parseInt(o.getAttribute("data-i"),10));}); }); }
     else collapseNoiseOpts(rsess.q);
   }
