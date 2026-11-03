@@ -569,6 +569,7 @@
   .wm-p{display:inline-flex;flex-direction:column;align-items:center;padding:0 2px}
   .wm-jp{font-size:18px;font-weight:700}
   .wm-gl{font-size:11px;color:var(--ink-soft);line-height:1.3}
+  .wm-head{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px}
   .wm-lit{font-size:13px;color:var(--ink-soft);margin-top:6px;line-height:1.45}
   .bw-slots.cue .bw-slot.blank{color:var(--ink-faint)}
   .cue-note{font-size:12px;color:var(--ink-soft);text-align:center;margin-top:4px;letter-spacing:.04em}
@@ -5957,9 +5958,11 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
      nakaguro (・), el mismo que la app ya enseña para dividir compuestos
      en préstamo, cero guiones. */
   function fichaPartsHTML(w){
-    if(!w.morph || !w.morph.length) return '';
+    var mo=w.morph;
+    if(!mo||!mo.length){ var hk=wordHook(WORD_BY_JP[w.jp]||w); if(hk&&!hk.weak&&hk.p) mo=hk.p; }   /* gancho automático */
+    if(!mo || !mo.length) return '';
     var es=getLang()==='es';
-    var seg=w.morph.map(function(p,i){
+    var seg=mo.map(function(p,i){
       var cls=(i%2===0)?'fx-part-a':'fx-part-b';
       return '<span class="'+cls+'">'+(p.ro||p.jp)+'</span> '+(es?(p.es||p.en||''):(p.en||p.es||''));
     }).join('<span class="fx-part-sep">&#12539;</span>');
@@ -6636,21 +6639,149 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     'おもい':{es:'Lo contrario es かるい (liviano).',en:'The opposite is かるい (light).'},
     'ためる':{es:'En los juegos: cargar un ataque. En la vida: ahorrar o juntar algo.',en:'In games: charge up an attack. In life: save up or store something.'}
   };
-  (function(){
-    var gm={}; GAMES.forEach(function(g){ (g.words||[]).forEach(function(o){ if(o&&o.morph&&!gm[o.jp])gm[o.jp]=o.morph; }); });
-    WORD_POOL.forEach(function(w){ var e=WORD_MORPH[w.jp];
-      if(e){ if(e.p&&!w.morph)w.morph=e.p; w.lit={es:e.es,en:e.en}; }
-      else if(!w.morph&&gm[w.jp]) w.morph=gm[w.jp]; });
-  })();
-  function wordMorphHTML(w){
-    if(!w||(!(w.morph&&w.morph.length)&&!w.lit))return '';
+  /* =========================================================================
+     MOTOR DE GANCHOS (hooks) — escalable, sin escribir contenido por palabra.
+     Una cadena de proveedores: cada uno recibe la palabra y devuelve un gancho
+     {p:[piezas {jp,k?,es,en}], lit:{es,en}, src, weak?} o null. Gana el primero
+     que responde, en este orden de confianza:
+       manual (WORD_MORPH) > juego (morph de GAMES) > kanji (alineado con
+       KANJI_WORDS + KANJI_DB) > afijos y compuestos por regla > katakana.
+     Los automáticos solo usan datos ya verificados de la app y prefieren no dar
+     gancho a dar uno falso: si la alineación no cierra exacta, no hay gancho.
+     weak = gancho genérico (no específico de la palabra): se muestra solo en la
+     ficha de palabra nueva y después de fallar, para no llenar cada respuesta.
+     Para otro idioma (ej. Ward en árabe) se reemplaza la lista de proveedores
+     por los suyos (raíz trilítera, prefijos), el resto del motor es igual.
+     ========================================================================= */
+  var GAME_MORPH=(function(){ var m={}; GAMES.forEach(function(g){ (g.words||[]).forEach(function(o){ if(o&&o.morph&&!m[o.jp])m[o.jp]=o.morph; }); }); return m; })();
+  function firstSense(t){ return String(t||'').split(/[,;/]/)[0].trim(); }
+  /* hasta dos sentidos del kanji si son cortos: 御 "honorífico, controlar" es más
+     honesto que solo "honorífico" cuando la palabra usa el segundo */
+  function kSense(t){ var a=String(t||'').split(/[,;/]/).map(function(x){return x.trim();}).filter(Boolean);
+    return (a.length>1 && (a[0]+', '+a[1]).length<=20)?a[0]+', '+a[1]:(a[0]||''); }
+  /* kanji que al final de un compuesto funcionan como sufijo, no por su sentido */
+  var KANJI_SUFFIX={'子':{r:['し','す'],es:'sufijo de cosas',en:'noun suffix'}};
+  var VOICE={'か':'が','き':'ぎ','く':'ぐ','け':'げ','こ':'ご','さ':'ざ','し':'じ','す':'ず','せ':'ぜ','そ':'ぞ','た':'だ','ち':'じ','つ':'ず','て':'で','と':'ど','は':'ば','ひ':'び','ふ':'ぶ','へ':'べ','ほ':'ぼ'};
+  var HALFV={'は':'ぱ','ひ':'ぴ','ふ':'ぷ','へ':'ぺ','ほ':'ぽ'};
+  function isKanjiCh(c){ return /[一-鿿]/.test(c); }
+  /* lecturas candidatas de un kanji, con sus variantes fonéticas en compuesto:
+     rendaku (かみ→がみ), p tras っ/ん (ふん→ぷん) y sokuon (がく→がっ). */
+  function kanjiReadings(c){
+    var e=KANJI_DB[c]; if(!e)return [];
+    var base=[]; String(e[3]||'').split(',').forEach(function(r){ r=kataToHira(r.replace(/-/g,'').trim()); if(r)base.push(r); });
+    var TOI={'う':'い','く':'き','ぐ':'ぎ','す':'し','つ':'ち','ぬ':'に','ぶ':'び','む':'み','る':'り'};
+    String(e[4]||'').split(',').forEach(function(r){ r=r.replace(/-/g,'').trim(); var d=r.split('.'), x=d[0], y=d[1]||'';
+      if(x)base.push(x);
+      /* forma escrita sin okurigana (建物 = たて·もの, 飲物 = のみ·もの): raíz del verbo */
+      if(x&&y){ var l=y.charAt(y.length-1), st=y.slice(0,-1);
+        if(TOI[l]) base.push(x+st+TOI[l]);
+        if(l==='る'&&st) base.push(x+st); } });
+    var out=[], seen={};
+    function add(r,v,b){ if(r&&!seen[r+'|'+v]){ seen[r+'|'+v]=1; out.push({r:r,v:v,b:b}); } }
+    base.forEach(function(r){ add(r,'',r);
+      var f=r.charAt(0);
+      if(VOICE[f]) add(VOICE[f]+r.slice(1),'voice',r);
+      if(HALFV[f]) add(HALFV[f]+r.slice(1),'pvoice',r);
+      var l=r.charAt(r.length-1);
+      if(r.length>=2 && 'つちくきり'.indexOf(l)>=0) add(r.slice(0,-1)+'っ','sokuon',r);
+    });
+    out.sort(function(a,b){ return b.r.length-a.r.length || (a.v?1:0)-(b.v?1:0); });
+    return out;
+  }
+  /* alinea la forma escrita (kanji + okurigana) contra el kana de la palabra.
+     Devuelve la lista de segmentos o null si no cierra exacto. */
+  function alignKanji(form,kana){
+    var best=null, steps=0;
+    function go(i,j,acc){
+      if(best||++steps>4000)return;
+      if(i===form.length){ if(j===kana.length)best=acc.slice(); return; }
+      var c=form.charAt(i);
+      if(!isKanjiCh(c)){
+        if(kataToHira(c)!==kana.charAt(j))return;
+        var last=acc[acc.length-1];
+        if(last && last.k){ var cp=acc.slice(0,-1).concat([Object.assign({},last,{jp:last.jp+c,oku:(last.oku||'')+c})]); go(i+1,j+1,cp); }
+        else go(i+1,j+1,acc.concat([{jp:c}]));
+        return;
+      }
+      var rs=kanjiReadings(c); if(!rs.length)return;
+      for(var t=0;t<rs.length&&!best;t++){ var r=rs[t];
+        if(r.v==='sokuon' && i===form.length-1)continue;      /* っ nunca cierra palabra */
+        if((r.v==='voice'||r.v==='pvoice') && acc.filter(function(x){return x.k;}).length===0)continue; /* rendaku no va al inicio */
+        if(kana.substr(j,r.r.length)===r.r) go(i+1,j+r.r.length,acc.concat([{jp:r.r,k:c,v:r.v,b:r.b}]));
+      }
+    }
+    go(0,0,[]); return best;
+  }
+  function hookKanji(w){
+    var form=KANJI_WORDS[w.jp]; if(!form||/[々〆ヶ]/.test(form))return null;
+    var nk=0; for(var i=0;i<form.length;i++) if(isKanjiCh(form.charAt(i)))nk++;
+    if(nk<2)return null;                                    /* un solo kanji: lo cubre el panel de componentes */
+    var seg=alignKanji(form,kataToHira(w.jp)); if(!seg)return null;
+    var pos=0; seg=seg.map(function(x){ var o=Object.assign({},x,{jp:w.jp.substr(pos,x.jp.length)}); pos+=x.jp.length; return o; });
+    var p=[], nes=[], nen=[];
+    seg.forEach(function(x){
+      if(!x.k){ var pol=(x.jp==='お'||x.jp==='ご'); p.push({jp:x.jp,es:pol?'cortesía':'',en:pol?'politeness':''}); return; }
+      var e=KANJI_DB[x.k], ses=kSense(e[5]), sen=kSense(e[6]);
+      var last=(seg.indexOf(x)===seg.length-1);
+      if(KANJI_SUFFIX[x.k] && last && KANJI_SUFFIX[x.k].r.indexOf(kataToHira(x.jp))>=0){ ses=KANJI_SUFFIX[x.k].es; sen=KANJI_SUFFIX[x.k].en; }
+      p.push({jp:x.jp,k:x.k,es:ses+' ('+x.k+')',en:sen+' ('+x.k+')'});
+      if(x.v==='sokuon'){ nes.push(x.b+' se acorta a '+x.jp.slice(0,x.jp.length-(x.oku||'').length)+' pegado a lo que sigue'); nen.push(x.b+' shortens to '+x.jp.slice(0,x.jp.length-(x.oku||'').length)+' before what follows'); }
+      if(x.v==='pvoice'){ nes.push(x.b+' cambia a '+x.jp.slice(0,x.jp.length-(x.oku||'').length)+' dentro del compuesto'); nen.push(x.b+' changes to '+x.jp.slice(0,x.jp.length-(x.oku||'').length)+' inside the compound'); }
+      if(x.v==='voice'){ nes.push(x.b+' se suaviza a '+x.jp.slice(0,x.jp.length-(x.oku||'').length)+' dentro del compuesto'); nen.push(x.b+' softens to '+x.jp.slice(0,x.jp.length-(x.oku||'').length)+' inside the compound'); }
+    });
+    return {p:p,lit:nes.length?{es:nes.join('. ')+'.',en:nen.join('. ')+'.'}:null,src:'kanji',head:{es:'Se escribe con',en:'Written with'}};
+  }
+  function enTokens(t){ return String(t||'').toLowerCase().replace(/\(.*?\)/g,' ').split(/[^a-z]+/).filter(function(x){return x.length>=3 && ['the','and','for','one','thing'].indexOf(x)<0;}); }
+  function glossOverlap(a,b){ var A=enTokens(a.en), B=enTokens(b.en); return A.some(function(x){return B.indexOf(x)>=0;}); }
+  function hookSa(w){
+    var jp=w.jp; if(jp.length<3||jp.charAt(jp.length-1)!=='さ')return null;
+    var base=jp.slice(0,-1)+'い', bw=WORD_BY_JP[base], bf=KANJI_WORDS[base];
+    if(!bw||!bf||bf.charAt(bf.length-1)!=='い'||!isKanjiCh(bf.charAt(0)))return null;   /* base = adjetivo en い verificado por su forma escrita */
+    return {p:[{jp:jp.slice(0,-1),es:firstSense(bw.es)+' (de '+base+')',en:firstSense(bw.en)+' (from '+base+')'},{jp:'さ',es:'la cualidad de',en:'the quality of'}],
+      lit:{es:'Con さ un adjetivo en い se vuelve su cualidad.',en:'さ turns an い adjective into its quality.'},src:'rule'};
+  }
+  function hookPolite(w){
+    var f=w.jp.charAt(0); if(f!=='お'&&f!=='ご')return null;
+    var rest=w.jp.slice(1), rw=WORD_BY_JP[rest]; if(rest.length<2||!rw||!glossOverlap(w,rw))return null;
+    return {p:[{jp:f,es:'cortesía',en:'politeness'},{jp:rest,es:firstSense(rw.es),en:firstSense(rw.en)}],
+      lit:{es:'El '+f+' es cortesía. Lo que significa está en '+rest+'.',en:'The '+f+' is politeness. The meaning is in '+rest+'.'},src:'rule'};
+  }
+  function hookNo(w){
+    var i=w.jp.indexOf('の'); if(i<2||i>w.jp.length-3)return null;
+    var a=WORD_BY_JP[w.jp.slice(0,i)], b=WORD_BY_JP[w.jp.slice(i+1)];
+    if(!a||!b||!(glossOverlap(w,a)||glossOverlap(w,b)))return null;
+    return {p:[{jp:a.jp,es:firstSense(a.es),en:firstSense(a.en)},{jp:'の',es:'de',en:'of'},{jp:b.jp,es:firstSense(b.es),en:firstSense(b.en)}],lit:null,src:'rule'};
+  }
+  function hookKatakana(w){
+    if(!/^[ァ-ーー]+$/.test(w.jp)||KANJI_WORDS[w.jp])return null;
+    return {p:null,lit:{es:'Está en katakana: casi siempre es una palabra prestada de otro idioma. Decila en voz alta y buscale el parecido.',
+      en:'It is in katakana: almost always a word borrowed from another language. Say it out loud and look for the resemblance.'},src:'rule',weak:true};
+  }
+  var HOOK_PROVIDERS=[
+    function(w){ var e=WORD_MORPH[w.jp]; return e?{p:e.p||null,lit:(e.es||e.en)?{es:e.es,en:e.en}:null,src:'manual'}:null; },
+    function(w){ var m=GAME_MORPH[w.jp]; return m?{p:m,lit:null,src:'game'}:null; },
+    hookKanji, hookSa, hookPolite, hookNo, hookKatakana
+  ];
+  var _hookCache={};
+  function wordHook(w){
+    if(!w||!w.jp)return null;
+    if(w.jp in _hookCache)return _hookCache[w.jp];
+    var r=null; for(var i=0;i<HOOK_PROVIDERS.length&&!r;i++){ try{ r=HOOK_PROVIDERS[i](w); }catch(e){ r=null; } }
+    _hookCache[w.jp]=r; return r;
+  }
+  /* opt.teach (ficha de palabra nueva) / opt.missed (se acaba de fallar): solo
+     ahí aparecen los ganchos genéricos (weak). */
+  function wordMorphHTML(w,opt){
+    var hk=wordHook(w); if(!hk)return '';
+    opt=opt||{}; if(hk.weak && !opt.teach && !opt.missed)return '';
     var es=getLang()==='es', h='<div class="wm-box">';
-    if(w.morph&&w.morph.length){
-      h+='<div class="wm-parts">'+w.morph.map(function(p,i){
+    if(hk.head) h+='<div class="wm-head">'+(es?hk.head.es:hk.head.en)+'</div>';
+    if(hk.p&&hk.p.length){
+      h+='<div class="wm-parts">'+hk.p.map(function(p,i){
         return '<span class="wm-p"><span class="wm-jp mincho '+(i%2===0?'fx-part-a':'fx-part-b')+'">'+(p.jp||'')+'</span><span class="wm-gl">'+(es?(p.es||p.en||''):(p.en||p.es||''))+'</span></span>';
       }).join('<span class="fx-part-sep">&#12539;</span>')+'</div>';
     }
-    if(w.lit) h+='<div class="wm-lit">'+(es?w.lit.es:w.lit.en)+'</div>';
+    if(hk.lit) h+='<div class="wm-lit">'+(es?hk.lit.es:hk.lit.en)+'</div>';
     return h+'</div>';
   }
   function markWordKnown(jp){ if(!WORD_KEYSET[jp])return; var w=ensureWords(); w.seen[jp]=1; w.known[jp]=1; w.leech[jp]=0; }
@@ -10197,7 +10328,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
         '<div class="rq-jp mincho'+(rsess.pool===PHRASES?' rq-jp-ph':'')+'">'+jpSweepHTML(it)+'</div>'+
         (rsess.pool===PHRASES&&it.parts&&it.parts.length>1?'<div class="tw-cut mincho">'+phraseCutHTML(it)+'</div>'+cutNoteHTML(es):'')+
         '<div class="tw-rom">'+it.romaji+'</div>'+
-        '<div class="rq-mean">'+em+(es?it.es:it.en)+'</div>'+(it.note?'<div class="rq-note">'+it.note+'</div>':'')+(rsess.pool===WORD_POOL?wordMorphHTML(it):'')+'</div>'+
+        '<div class="rq-mean">'+em+(es?it.es:it.en)+'</div>'+(it.note?'<div class="rq-note">'+it.note+'</div>':'')+(rsess.pool===WORD_POOL?wordMorphHTML(it,{teach:true}):'')+'</div>'+
         '<div class="d-actions"><button class="d-spk-word" id="rSpkW"><i class=ico-spk></i> <span>'+t("hear it")+'</span></button><button class="d-next" id="rGot">'+t("Got it →")+'</button></div>';
       bindReading(); return;
     }
@@ -10234,7 +10365,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       if(pool===WORD_POOL){
         if(q.retry) h+='<div class="d-typenote">'+(correct?(es?'Bien. Este repaso corto no cambia su nivel: mañana se mide de nuevo.':'Good. This quick review does not change its level: it gets measured again tomorrow.'):(es?'Todavía no. Mañana vuelve a aparecer.':'Not yet. It shows up again tomorrow.'))+'</div>';
         else if(q.mode==="recall"&&!correct&&q.retryQueued) h+='<div class="d-typenote">'+(es?'Vuelve en un ratito para que se te quede.':'It comes back in a bit so it sticks.')+'</div>';
-        h+=wordMorphHTML(it);
+        h+=wordMorphHTML(it,{missed:!correct});
       }
       h+=kanjiPartsHTML(it.jp);
     }
@@ -10578,7 +10709,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
         if(q.result==="wrong" && q.typed) h+='<div class="d-typenote dim">'+(es?"Escribiste":"You wrote")+': «'+q.typed+'»</div>';
         if(q.gated) h+='<div class="d-typenote">'+(es?'Bien leída. Para marcarla como dominada falta recordarla a partir del significado.':'Well read. To mark it mastered you still need to recall it from its meaning.')+'</div>';
         h+=cueNoteHTML(q,es);
-        if(q.recall) h+=wordMorphHTML(WORD_BY_JP[w.jp]||w);
+        if(q.recall) h+=wordMorphHTML(WORD_BY_JP[w.jp]||w,{missed:q.result==='wrong'});
         h+='</div>';
         h+='<div class="d-actions"><button class="d-next" id="xNext">'+t("Next →")+'</button></div>';
       }
