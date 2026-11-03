@@ -348,7 +348,12 @@
 .d-romaji{font-family: var(--display-font);font-weight:800;font-size:70px;line-height:1;color:var(--ink)}
   .d-spk{margin-top:14px;background:none;border:1.5px solid var(--ink);border-radius:50%;width:44px;height:44px;
     font-size:20px;cursor:pointer;color:var(--ink)}
-  .d-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:8px}
+  .d-grid{--gg:9px;display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gg);margin-top:8px}
+  /* tras responder: solo quedan la correcta (y la elegida si falló), centradas */
+  .d-grid.settled{display:flex;justify-content:center}
+  .d-grid.settled .opt{flex:0 0 calc((100% - 2*var(--gg))/3)}
+  .d-grid .opt.dim.fading{opacity:0;transition:opacity .25s ease;pointer-events:none}
+  .d-grid .opt.dim.gone{display:none}
 
   .opt{aspect-ratio:1.5;border:1.6px solid var(--ink);background:var(--card);border-radius:3px;
     display:flex;align-items:center;justify-content:center;cursor:pointer;
@@ -559,6 +564,14 @@
   .fx-part-a{color:var(--shu);font-weight:700}
   .fx-part-b{color:var(--green);font-weight:700}
   .fx-part-sep{color:var(--ink-faint);padding:0 2px}
+  .wm-box{max-width:420px;margin:10px auto 0;padding:8px 12px;border-top:1px dashed var(--line);text-align:center}
+  .wm-parts{display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;gap:2px 4px}
+  .wm-p{display:inline-flex;flex-direction:column;align-items:center;padding:0 2px}
+  .wm-jp{font-size:18px;font-weight:700}
+  .wm-gl{font-size:11px;color:var(--ink-soft);line-height:1.3}
+  .wm-lit{font-size:13px;color:var(--ink-soft);margin-top:6px;line-height:1.45}
+  .bw-slots.cue .bw-slot.blank{color:var(--ink-faint)}
+  .cue-note{font-size:12px;color:var(--ink-soft);text-align:center;margin-top:4px;letter-spacing:.04em}
   .fx-foot{font-size:11px;color:var(--ink-soft);margin:22px 0 6px;line-height:1.5;border-top:1px dashed var(--rule,#d8cfc0);padding-top:12px}
   .d-aim{font-size:12px;font-weight:700;color:var(--shu);margin-bottom:4px}
   .mastery-card h3{font-family: var(--display-font);font-weight:700;font-size:17px;margin:0}
@@ -588,7 +601,7 @@
     .d-prompt{min-height:78px;padding:8px 0 6px}
     .d-glyph{font-size:62px} .d-romaji{font-size:40px}
     .d-spk{width:36px;height:36px;font-size:16px;margin-top:6px}
-    .d-grid{gap:7px} .opt{font-size:23px;aspect-ratio:1.7}
+    .d-grid{--gg:7px} .opt{font-size:23px;aspect-ratio:1.7}
     .d-fb{min-height:92px;margin-top:8px} .d-fb .msg{font-size:20px}
     .d-type{margin-top:10px} .d-type-in{font-size:24px;padding:11px 12px} .d-typenote{font-size:13px;margin-top:8px}
     .reward-card{margin-top:6px} .reward-card .rw-word{font-size:26px} .reward-card .rw-sub{font-size:13px}
@@ -2700,14 +2713,15 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     }
     h+='</div>';
 
-    // options
-    h+='<div class="d-grid">';
+    // options (ya respondida y asentada: nacen colapsadas, sin repetir la animación)
+    var gSet=q.answered&&q.settled;
+    h+='<div class="d-grid'+(gSet?' settled':'')+'">';
     q.opts.forEach(function(o,idx){
       var cls="opt"+(o.rom?" rom":"");
       if(q.answered){
         if(o.romaji===q.target)cls+=" correct";
         else if(o.romaji===q.picked)cls+=" bad";
-        else cls+=" dim";
+        else cls+=" dim"+(gSet?" gone":"");
       }
       h+='<div class="'+cls+'" data-r="'+o.romaji+'">'+o.label+'</div>';
     });
@@ -2737,6 +2751,51 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     }
     drillInner.innerHTML=h;
     bindDrill();
+    if(q.answered) collapseGridOpts(q);
+  }
+
+  /* Igual que collapseNoiseOpts pero para la cuadrícula del drill de kana: las
+     opciones ruido se ven un instante, se desvanecen, y lo que queda (correcta y
+     elegida) se desliza al centro con FLIP mientras la cuadrícula encoge su alto,
+     así el feedback (dibujo, palabra, Siguiente) sube. Una vez por pregunta
+     (q.settled); un re-render posterior pinta el estado final directo. */
+  function collapseGridOpts(q){
+    if(!q||!q.answered||q.settled)return;
+    q.settled=true;
+    var grid=drillInner.querySelector(".d-grid");
+    if(!grid||!grid.querySelector(".opt.dim"))return;
+    var reduce=false; try{reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;}catch(e){}
+    function settle(){
+      grid.querySelectorAll(".opt.dim").forEach(function(o){o.classList.add("gone");});
+      grid.classList.add("settled");
+    }
+    if(reduce){ settle(); return; }
+    setTimeout(function(){
+      if(!grid.isConnected)return;
+      grid.querySelectorAll(".opt.dim").forEach(function(o){o.classList.add("fading");});
+      setTimeout(function(){
+        if(!grid.isConnected)return;
+        var keep=[].slice.call(grid.querySelectorAll(".opt:not(.dim)"));
+        var before=keep.map(function(el){return el.getBoundingClientRect();});
+        var h0=grid.offsetHeight;
+        settle();
+        var h1=grid.offsetHeight;
+        keep.forEach(function(el,i){
+          var r=el.getBoundingClientRect();
+          el.style.transition="none";
+          el.style.transform="translate("+(before[i].left-r.left)+"px,"+(before[i].top-r.top)+"px)";
+        });
+        grid.style.height=h0+"px";
+        void grid.offsetHeight;
+        grid.style.transition="height .35s ease";
+        grid.style.height=h1+"px";
+        keep.forEach(function(el){ el.style.transition="transform .35s ease"; el.style.transform=""; });
+        setTimeout(function(){
+          grid.style.height=""; grid.style.transition="";
+          keep.forEach(function(el){ el.style.transition=""; });
+        },400);
+      },260);
+    },700);
   }
 
   /* =========================================================================
@@ -6531,8 +6590,71 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   var rsess=null;
   var READ_LEARN_POOL=12, WORD_PROMOTE_AT=3, WORD_LEECH_AT=3;
   var WORD_KEYSET=(function(){var m={};WORD_POOL.forEach(function(w){m[w.jp]=1;});return m;})();
+  /* Ganchos de significado para vocabulario general (mismo campo morph que los
+     ataques de Pokémon). p = piezas {jp,ro,es,en}; lit = la lectura literal o un
+     dato que ancla la palabra. Solo para palabras que de verdad se pueden partir
+     o tienen un ancla verificable; las nativas de una pieza se apoyan en la pista
+     que se retira (cue) del recuerdo escrito. Se ve DESPUÉS de responder y en la
+     ficha de palabra nueva, nunca antes de un recuerdo (regalaría la respuesta). */
+  var WORD_MORPH={
+    'なくなる':{p:[{jp:'なく',ro:'naku',es:'sin haber (de ない)',en:'not there (from ない)'},{jp:'なる',ro:'naru',es:'volverse',en:'become'}],
+      es:'Volverse inexistente: algo que había deja de haber.',en:'Become not-there: something that was there stops being there.'},
+    'かいふく':{p:[{jp:'かい',ro:'kai',es:'dar la vuelta (回)',en:'turn back (回)'},{jp:'ふく',ro:'fuku',es:'restaurar (復)',en:'restore (復)'}],
+      es:'Volver a como estaba. En los juegos: curarse, recuperar vida.',en:'Go back to how it was. In games: heal, recover HP.'},
+    'すばやさ':{p:[{jp:'すばや',ro:'subaya',es:'ágil (de すばやい)',en:'quick (from すばやい)'},{jp:'さ',ro:'sa',es:'la cualidad de',en:'the quality of'}],
+      es:'La rapidez. Con さ un adjetivo en い se vuelve su cualidad: たかい alto, たかさ altura.',en:'Quickness. さ turns an い adjective into its quality: たかい tall, たかさ height.'},
+    'ざせき':{p:[{jp:'ざ',ro:'za',es:'sentarse (座)',en:'sit (座)'},{jp:'せき',ro:'seki',es:'lugar (席)',en:'place (席)'}],
+      es:'Lugar donde uno se sienta.',en:'A place where you sit.'},
+    'かようび':{p:[{jp:'か',ro:'ka',es:'fuego (火)',en:'fire (火)'},{jp:'よう',ro:'you',es:'día de la semana (曜)',en:'weekday (曜)'},{jp:'び',ro:'bi',es:'día (日)',en:'day (日)'}],
+      es:'Día del fuego. La semana va por elementos: げつ luna, か fuego, すい agua, もく madera, きん metal, ど tierra, にち sol.',en:'Fire day. The week goes by elements: げつ moon, か fire, すい water, もく wood, きん metal, ど earth, にち sun.'},
+    'でんわ':{p:[{jp:'でん',ro:'den',es:'electricidad (電)',en:'electricity (電)'},{jp:'わ',ro:'wa',es:'conversación (話)',en:'talk (話)'}],
+      es:'Conversación eléctrica.',en:'Electric talk.'},
+    'がっこう':{p:[{jp:'がっ',ro:'gak',es:'aprender (学, がく)',en:'learn (学, がく)'},{jp:'こう',ro:'kou',es:'escuela (校)',en:'school (校)'}],
+      es:'Escuela de aprender. がく se acorta a がっ pegado a こう.',en:'Learning school. がく shortens to がっ before こう.'},
+    'ひけん':{p:[{jp:'ひ',ro:'hi',es:'secreto (秘)',en:'secret (秘)'},{jp:'けん',ro:'ken',es:'espada (剣)',en:'sword (剣)'}],
+      es:'Espada secreta: la técnica oculta de un espadachín.',en:'Secret sword: a swordsman\'s hidden technique.'},
+    'いちぞく':{p:[{jp:'いち',ro:'ichi',es:'uno (一)',en:'one (一)'},{jp:'ぞく',ro:'zoku',es:'familia, tribu (族)',en:'family, tribe (族)'}],
+      es:'Una sola familia: todos los de una misma sangre.',en:'One single family: everyone of the same blood.'},
+    'バクダン':{p:[{jp:'バク',ro:'baku',es:'explosión (爆)',en:'explosion (爆)'},{jp:'ダン',ro:'dan',es:'proyectil (弾)',en:'projectile (弾)'}],
+      es:'Proyectil que explota. Acá va en katakana, pero es una palabra japonesa con kanji (爆弾).',en:'A projectile that explodes. Written in katakana here, but it is a native word with kanji (爆弾).'},
+    'キサマ':{p:[{jp:'キ',ro:'ki',es:'noble (貴)',en:'noble (貴)'},{jp:'サマ',ro:'sama',es:'señor (様, el de さま)',en:'sir (様, as in さま)'}],
+      es:'Literalmente «noble señor». Antes era respetuoso; con los siglos se volvió insulto, por eso suena tan hostil.',en:'Literally "noble sir". It used to be respectful; over the centuries it turned into an insult, which is why it sounds so hostile.'},
+    'それぞれ':{p:[{jp:'それ',ro:'sore',es:'eso',en:'that'},{jp:'ぞれ',ro:'zore',es:'eso otra vez',en:'that again'}],
+      es:'Eso y eso: cada cual por su lado. La segunda それ se suaviza a ぞれ.',en:'That and that: each on its own. The second それ softens to ぞれ.'},
+    'おかし':{p:[{jp:'お',ro:'o',es:'cortesía',en:'politeness'},{jp:'かし',ro:'kashi',es:'golosina (菓子)',en:'confection (菓子)'}],
+      es:'El お es cortesía, como en おちゃ. Lo que significa es かし.',en:'The お is politeness, as in おちゃ. The meaning is in かし.'},
+    'ワープ':{p:[{jp:'ワープ',ro:'waapu',es:'del inglés warp',en:'English "warp"'}],
+      es:'Préstamo: «warp» dicho con sonidos japoneses.',en:'Loanword: "warp" said with Japanese sounds.'},
+    'ナイフ':{p:[{jp:'ナイフ',ro:'naifu',es:'del inglés knife',en:'English "knife"'}],
+      es:'Préstamo: la k de knife no suena en inglés, así que queda naifu.',en:'Loanword: the k in knife is silent, so it becomes naifu.'},
+    'ぺこり':{es:'Imita el gesto: ぺこ es una inclinación rápida de cabeza; ぺこぺこ es inclinarse una y otra vez.',en:'It mimics the gesture: ぺこ is a quick bob of the head; ぺこぺこ is bowing again and again.'},
+    'いれる':{es:'Pareja de はいる (entrar): はいる es entrar uno mismo; いれる es hacer entrar algo, meterlo.',en:'Partner of はいる (to enter): はいる is going in yourself; いれる is making something go in.'},
+    'ぼく':{es:'«Yo» de chico, suave. Más brusco es オレ; neutro, わたし.',en:'A soft male "I". Rougher is オレ; neutral is わたし.'},
+    'オレ':{es:'«Yo» masculino y brusco. Más suave es ぼく; neutro, わたし.',en:'A rough male "I". Softer is ぼく; neutral is わたし.'},
+    'やむ':{es:'Lo que hace la lluvia: あめがやむ, para de llover. Mismo kanji que とまる (止).',en:'What rain does: あめがやむ, the rain stops. Same kanji as とまる (止).'},
+    'ほそい':{es:'Lo contrario es ふとい (grueso).',en:'The opposite is ふとい (thick).'},
+    'おもい':{es:'Lo contrario es かるい (liviano).',en:'The opposite is かるい (light).'},
+    'ためる':{es:'En los juegos: cargar un ataque. En la vida: ahorrar o juntar algo.',en:'In games: charge up an attack. In life: save up or store something.'}
+  };
+  (function(){
+    var gm={}; GAMES.forEach(function(g){ (g.words||[]).forEach(function(o){ if(o&&o.morph&&!gm[o.jp])gm[o.jp]=o.morph; }); });
+    WORD_POOL.forEach(function(w){ var e=WORD_MORPH[w.jp];
+      if(e){ if(e.p&&!w.morph)w.morph=e.p; w.lit={es:e.es,en:e.en}; }
+      else if(!w.morph&&gm[w.jp]) w.morph=gm[w.jp]; });
+  })();
+  function wordMorphHTML(w){
+    if(!w||(!(w.morph&&w.morph.length)&&!w.lit))return '';
+    var es=getLang()==='es', h='<div class="wm-box">';
+    if(w.morph&&w.morph.length){
+      h+='<div class="wm-parts">'+w.morph.map(function(p,i){
+        return '<span class="wm-p"><span class="wm-jp mincho '+(i%2===0?'fx-part-a':'fx-part-b')+'">'+(p.jp||'')+'</span><span class="wm-gl">'+(es?(p.es||p.en||''):(p.en||p.es||''))+'</span></span>';
+      }).join('<span class="fx-part-sep">&#12539;</span>')+'</div>';
+    }
+    if(w.lit) h+='<div class="wm-lit">'+(es?w.lit.es:w.lit.en)+'</div>';
+    return h+'</div>';
+  }
   function markWordKnown(jp){ if(!WORD_KEYSET[jp])return; var w=ensureWords(); w.seen[jp]=1; w.known[jp]=1; w.leech[jp]=0; }
-  function ensureWords(){ if(!state.exercises)state.exercises={}; if(!state.exercises.words)state.exercises.words={box:{},daily:{}}; var w=state.exercises.words; if(!w.box)w.box={}; if(!w.daily)w.daily={}; if(!w.seen)w.seen={}; if(!w.leech)w.leech={}; if(!w.known)w.known={}; if(!w.lastMove)w.lastMove={}; if(!w.up)w.up={}; if(!w.mas)w.mas={}; if(w.produce===undefined)w.produce=false; return w; }
+  function ensureWords(){ if(!state.exercises)state.exercises={}; if(!state.exercises.words)state.exercises.words={box:{},daily:{}}; var w=state.exercises.words; if(!w.box)w.box={}; if(!w.daily)w.daily={}; if(!w.seen)w.seen={}; if(!w.leech)w.leech={}; if(!w.known)w.known={}; if(!w.lastMove)w.lastMove={}; if(!w.up)w.up={}; if(!w.mas)w.mas={}; if(!w.cue)w.cue={}; if(w.produce===undefined)w.produce=false; return w; }
   function ensurePhrases(){ if(!state.exercises)state.exercises={}; if(!state.exercises.phrases)state.exercises.phrases={box:{},daily:{}}; var w=state.exercises.phrases; if(!w.box)w.box={}; if(!w.daily)w.daily={}; if(!w.seen)w.seen={}; if(!w.leech)w.leech={}; if(!w.built)w.built={}; if(!w.glossSeen)w.glossSeen={}; if(!w.lastMove)w.lastMove={}; if(!w.up)w.up={}; if(!w.mas)w.mas={}; return w; }
   function poolMastery(pool,box){ var total=pool.length,solid=0,sum=0; pool.forEach(function(it){var b=Math.min(5,box[it.jp]||0);sum+=b;if(b>=4)solid++;}); return {pct:total?Math.round(sum/(total*5)*100):0,solid:solid,total:total,seen:Object.keys(box).length}; }
   function readingCardHTML(){
@@ -9061,16 +9183,19 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       if(aimS){ var aimDue=setIdx.filter(function(i){return aimS[pool[i].jp] && (box[pool[i].jp]||0)<4;});
         if(aimDue.length && Math.random()<aimReviewBias()) useIdx=aimDue; }
       var target=weightedPick(pool,box,useIdx,rsess.recent||[]);
+      var _fr=rsess.forceRecall; if(_fr!=null){ rsess.forceRecall=null; target=_fr; }
       var distSrc=(readable.length>=6?readable:all).filter(function(i){return i!==target;});
       shuffle(distSrc); var opts=shuffle(distSrc.slice(0,5).concat([target]));
       var modes=["read","listen","recall"],mode=modes[Math.floor(Math.random()*modes.length)];
       if(pool===WORD_POOL) mode=wordQuizMode(box[pool[target].jp]||0);
-      rsess.q={target:target,mode:mode,opts:opts,answered:false,picked:-1,settled:false};
+      if(_fr!=null) mode="recall";
+      rsess.q={target:target,mode:mode,opts:opts,answered:false,picked:-1,settled:false,retry:_fr!=null};
       /* ring buffer of the last few targets to avoid the same phrase spamming */
       if(!rsess.recent)rsess.recent=[];
       rsess.recent.push(target); var _rcap=(rsess.pool===PHRASES)?5:3; if(rsess.recent.length>_rcap)rsess.recent.shift();
       if(mode==="listen") setTimeout(function(){speak(pool[target].jp);},250);
     }
+    if(rsess.forceRecall!=null){ quiz(tgtSet); return; }
     if(rsess.teach){
       var seen=rsess.ex.seen||(rsess.ex.seen={}), leech=rsess.ex.leech||(rsess.ex.leech={}), known=rsess.ex.known||(rsess.ex.known={});
       // 1) a word that started failing a lot resurfaces as a re-teach
@@ -9174,6 +9299,9 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   function wordsNextUnit(){ return swapOverlays(_wordsNextUnit); }
   function _wordsNextUnit(){ if(!wsess)return;
     rsess = wsess.wr || rsess;   // por defecto: sesión de palabras
+    wsess.n=(wsess.n||0)+1;
+    /* reintento corto de un recuerdo fallado (ver scheduleRetry) */
+    var _rj=takeRetry(); if(_rj && launchRetry(_rj)) return;
     if(wsess.forceBuild){ var _fb=wsess.forceBuild; wsess.forceBuild=null; if(!bsess)bsess={done:0,correct:0,wrong:0,q:null}; buildNextQ(_fb); if(bsess.q){ wsess.cur="build"; renderBuild(); readingEl.classList.remove("hidden"); return; } }
     /* Frases tejidas en el MISMO flujo: de vez en cuando una unidad del director de
        patrones (enseñar molde / armar frase / cloze), y luego vuelve solo a las
@@ -10047,7 +10175,10 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
            distintos = dominio espaciado de verdad, no una racha de un mismo minuto.
        (shared with the word-production typing mode via wordSrsMove) */
     q.gated = (pool===WORD_POOL && correct && q.mode!=="recall" && (rsess.ex.box[key]||0)===WORD_RECALL_GATE);
-    if(!q.gated) wordSrsMove(key,correct,rsess.ex);
+    var _isRecall=(pool===WORD_POOL && q.mode==="recall");
+    if(q.retry){ if(!correct)cueUp(key); }          /* reintento corto: no mide, solo consolida */
+    else if(!q.gated) wordSrsMove(key,correct,rsess.ex);
+    if(_isRecall && !correct && !q.retry){ cueUp(key); scheduleRetry(key); q.retryQueued=!!(wsess&&wsess.retry&&wsess.retry.some(function(r){return r.jp===key;})); }
     rsess.done++; if(correct)rsess.correct++; else rsess.wrong++;
     var td=today(); rsess.ex.daily[td]=(rsess.ex.daily[td]||0)+1; stampDay();
     Persistence.save(state); renderReading(); speakSweep(pool[q.target].jp, readingInner.querySelector(".sweepline"));
@@ -10066,7 +10197,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
         '<div class="rq-jp mincho'+(rsess.pool===PHRASES?' rq-jp-ph':'')+'">'+jpSweepHTML(it)+'</div>'+
         (rsess.pool===PHRASES&&it.parts&&it.parts.length>1?'<div class="tw-cut mincho">'+phraseCutHTML(it)+'</div>'+cutNoteHTML(es):'')+
         '<div class="tw-rom">'+it.romaji+'</div>'+
-        '<div class="rq-mean">'+em+(es?it.es:it.en)+'</div>'+(it.note?'<div class="rq-note">'+it.note+'</div>':'')+'</div>'+
+        '<div class="rq-mean">'+em+(es?it.es:it.en)+'</div>'+(it.note?'<div class="rq-note">'+it.note+'</div>':'')+(rsess.pool===WORD_POOL?wordMorphHTML(it):'')+'</div>'+
         '<div class="d-actions"><button class="d-spk-word" id="rSpkW"><i class=ico-spk></i> <span>'+t("hear it")+'</span></button><button class="d-next" id="rGot">'+t("Got it →")+'</button></div>';
       bindReading(); return;
     }
@@ -10100,6 +10231,11 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       } else
       h+='<div class="rq-ans">'+(getEmoji()&&it.emoji?'<span class="rq-emoji">'+it.emoji+'</span> ':'')+'<span class="mincho">'+jpSweepHTML(it)+'</span> <span class="rq-rom">'+it.romaji+'</span> · <span class="mean">'+(es?it.es:it.en)+'</span> <button class="d-spk-word" id="rSpkW"><i class=ico-spk></i> <span>'+t("hear it")+'</span></button></div>';
       if(q.gated) h+='<div class="d-typenote">'+(es?'Bien. Para marcarla como dominada falta un paso: reconocerla a partir del significado. Va a aparecer así pronto.':'Good. One step left to mark it mastered: recognizing it from its meaning. It will show up that way soon.')+'</div>';
+      if(pool===WORD_POOL){
+        if(q.retry) h+='<div class="d-typenote">'+(correct?(es?'Bien. Este repaso corto no cambia su nivel: mañana se mide de nuevo.':'Good. This quick review does not change its level: it gets measured again tomorrow.'):(es?'Todavía no. Mañana vuelve a aparecer.':'Not yet. It shows up again tomorrow.'))+'</div>';
+        else if(q.mode==="recall"&&!correct&&q.retryQueued) h+='<div class="d-typenote">'+(es?'Vuelve en un ratito para que se te quede.':'It comes back in a bit so it sticks.')+'</div>';
+        h+=wordMorphHTML(it);
+      }
       h+=kanjiPartsHTML(it.jp);
     }
     h+='</div>';
@@ -10169,6 +10305,40 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
      word out of memory (real recall, not kana-to-romaji transcription). Box 3 keeps
      the kana on screen as the bridge step. Kana and audio come back as the reward. */
   var PRODUCE_RECALL_BOX_WORD=4;
+  /* Recuerdo con pista que se retira (cued recall). cue 0 = solo el significado;
+     1 = casillas vacías (cuántos kana tiene); 2 = primera casilla llena + el resto
+     vacías. Fallar el recuerdo sube un escalón de pista; acertar en un encuentro
+     normal (no en el reintento corto) baja uno. Con pista NO se sube de caja: es
+     el puente, no el examen. Una palabra con pista sigue saliendo como recuerdo
+     aunque haya caído a caja 3, en vez de volver al paso con el kana a la vista. */
+  var CUE_MAX=2, RETRY_GAP_MIN=3, RETRY_GAP_MAX=5;
+  function wordCue(jp){ return ensureWords().cue[jp]||0; }
+  function cueUp(jp){ var c=ensureWords().cue; c[jp]=Math.min(CUE_MAX,(c[jp]||0)+1); }
+  /* bajar la pista a 0 deja la clave en 0 ("en recuerdo, sin pista"): la palabra
+     sigue saliendo como recuerdo hasta acertarla sin ayuda una vez; ahí se borra. */
+  function cueDown(jp){ var c=ensureWords().cue; if(c[jp]) c[jp]--; }
+  function cueClear(jp){ delete ensureWords().cue[jp]; }
+  function recallEligible(jp){ var ew=ensureWords(), b=ew.box[jp]||0;
+    return b>=PRODUCE_RECALL_BOX_WORD || ((jp in ew.cue) && b>=PRODUCE_MIN_BOX_WORD); }
+  function makeTypeQ(w,retry){ var rc=!!retry||recallEligible(w.jp);
+    return {mode:"type",word:w,chars:wordChars(w.jp),done:false,typed:"",result:null,note:"",
+            recall:rc,cue:rc?Math.max(retry?1:0,wordCue(w.jp)):0,retry:!!retry,alt:null}; }
+  /* Reintento corto: un recuerdo fallado vuelve 3 a 5 unidades después en la misma
+     sesión de lectura, con pista. Una vez por palabra por sesión. No mueve la caja
+     (ya se movió hoy) ni baja la pista: es consolidación, no medición. */
+  function scheduleRetry(jp){ if(!wsess)return; wsess.retried=wsess.retried||{}; if(wsess.retried[jp])return;
+    wsess.retried[jp]=1; wsess.retry=wsess.retry||[];
+    wsess.retry.push({jp:jp,at:(wsess.n||0)+RETRY_GAP_MIN+Math.floor(Math.random()*(RETRY_GAP_MAX-RETRY_GAP_MIN+1))}); }
+  function takeRetry(){ if(!wsess||!wsess.retry||!wsess.retry.length)return null;
+    for(var i=0;i<wsess.retry.length;i++){ if(wsess.retry[i].at<=(wsess.n||0)){ return wsess.retry.splice(i,1)[0].jp; } } return null; }
+  function launchRetry(jp){
+    var w=null; buildWordPool().some(function(x){ if(x.jp===jp){w=x;return true;} return false; });
+    if(tsess)tsess.q=null; drillEl.classList.add("hidden");
+    if(ensureWords().produce && w){ if(!bsess)bsess={done:0,correct:0,wrong:0,q:null};
+      bsess.q=makeTypeQ(w,true); wsess.cur="build"; renderBuild(); readingEl.classList.remove("hidden"); return true; }
+    var idx=-1; for(var i=0;i<WORD_POOL.length;i++){ if(WORD_POOL[i].jp===jp){idx=i;break;} }
+    if(idx<0)return false;
+    rsess=wsess.wr; rsess.forceRecall=idx; wsess.cur="recog"; buildReadingQ(); renderReading(); readingEl.classList.remove("hidden"); return true; }
 
   /* shared: mirror the drill's SRS + daily semantics for one character event */
   function srsMark(script,romaji,correct){
@@ -10248,8 +10418,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       var tpool=typeWordPool();
       if(tpool.length && Math.random()<typeProb(tpool)){
         var tw=tpool[Math.floor(Math.random()*tpool.length)];
-        bsess.q={mode:"type",word:tw,chars:wordChars(tw.jp),done:false,typed:"",result:null,note:"",
-                 recall:(ensureWords().box[tw.jp]||0)>=PRODUCE_RECALL_BOX_WORD,alt:null};
+        bsess.q=makeTypeQ(tw,false);
         return;
       }
     }
@@ -10303,8 +10472,15 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     if(m.res!=="ok" && q.recall){ var alt=recallSynonym(q.word,raw);
       if(alt){ q.result="alt"; q.alt=alt; var _sa=bstat(); _sa.done++; Persistence.save(state); renderBuild(); return; } }
     q.chars.forEach(function(c){ srsMark(c.script,c.romaji,correct); });
-    q.gated = (correct && !q.recall && (ensureWords().box[q.word.jp]||0)===WORD_RECALL_GATE);
-    bumpDaily(correct); if(!q.gated) wordSrsMove(q.word.jp,correct); if(correct)markWordKnown(q.word.jp);
+    var _jp=q.word.jp;
+    q.gated = (correct && !q.recall && (ensureWords().box[_jp]||0)===WORD_RECALL_GATE);
+    q.cueGated=false;
+    if(q.retry){ if(!correct)cueUp(_jp); }                      /* reintento: ni caja ni bajar pista */
+    else if(q.recall && !correct){ cueUp(_jp); wordSrsMove(_jp,false); scheduleRetry(_jp); q.retryQueued=!!(wsess&&wsess.retry&&wsess.retry.some(function(r){return r.jp===_jp;})); }
+    else if(q.recall && q.cue>0){ cueDown(_jp); q.cueGated=true; } /* acierto con pista: puente, no sube */
+    else { if(!q.gated) wordSrsMove(_jp,correct); if(q.recall && correct) cueClear(_jp); }
+    q.cueAfter=wordCue(_jp);
+    bumpDaily(correct); if(correct)markWordKnown(_jp);
     var _st=bstat(); _st.done++; if(correct)_st.correct++; else _st.wrong++;
     speak(q.word.jp); Persistence.save(state); renderBuild();
   }
@@ -10342,6 +10518,18 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       '<div class="d-stat right"><div class="n">'+s.correct+'</div><div class="l">'+t("Correct")+'</div></div>'+
       '</div></div>'+wordsGoalHTML()+'</div>';
   }
+  function cueNoteHTML(q,es){
+    if(!q.recall||q.result==="alt")return '';
+    var ok=q.result!=="wrong", m;
+    if(q.retry) m=ok?(es?'Bien. Este repaso corto no cambia su nivel: mañana se mide de nuevo.':'Good. This quick review doesn\'t change its level: it gets measured again tomorrow.')
+                    :(es?'Todavía no. Mañana vuelve con más pista.':'Not yet. It comes back tomorrow with more of a hint.');
+    else if(!ok) m=q.retryQueued?(es?'Vuelve en un ratito, con una pista, para que se te quede.':'It comes back in a bit, with a hint, so it sticks.')
+                                :(es?'La próxima vez vuelve con una pista.':'Next time it comes back with a hint.');
+    else if(q.cueGated) m=q.cueAfter>0?(es?'Bien. Con pista no sube de nivel; la próxima vez la pista es menor.':'Good. With a hint it doesn\'t level up; next time the hint is smaller.')
+                                       :(es?'Bien. Con pista no sube de nivel; la próxima vez va sin pista.':'Good. With a hint it doesn\'t level up; next time there\'s no hint.');
+    else return '';
+    return '<div class="d-typenote">'+m+'</div>';
+  }
   function renderBuild(){
     var q=bsess.q, h=buildHeaderHTML(bstat());
     if(!q){ h+='<div class="rq-prompt"><div class="rq-kind">'+t("Build the word")+'</div><div class="rq-mean">'+t("Learn a few characters first.")+'</div></div>'; readingInner.innerHTML=h; bindBuild(); return; }
@@ -10362,6 +10550,12 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
         h+='<div class="bw-slots mincho">';
         q.chars.forEach(function(c){ h+='<span class="bw-slot fixed">'+c.ch+'</span>'; });
         h+='</div>';
+      } else if(q.cue>0){
+        /* pista: cuántos kana tiene (y con cue 2, el primero) */
+        h+='<div class="bw-slots cue mincho">';
+        q.chars.forEach(function(c,i){ h+=(q.cue>=2&&i===0)?'<span class="bw-slot fixed">'+c.ch+'</span>':'<span class="bw-slot blank">＿</span>'; });
+        h+='</div>';
+        h+='<div class="cue-note">'+(es?('Pista: '+q.chars.length+' kana'+(q.cue>=2?', empieza con '+q.chars[0].ch:'')):('Hint: '+q.chars.length+' kana'+(q.cue>=2?', starts with '+q.chars[0].ch:'')))+'</div>';
       }
       if(!q.done){
         h+='<div class="d-type"><input id="xType" class="d-type-in" type="text" inputmode="latin" '+
@@ -10383,6 +10577,8 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
         if(q.result!=="ok" && q.note) h+='<div class="d-typenote">'+q.note+'</div>';
         if(q.result==="wrong" && q.typed) h+='<div class="d-typenote dim">'+(es?"Escribiste":"You wrote")+': «'+q.typed+'»</div>';
         if(q.gated) h+='<div class="d-typenote">'+(es?'Bien leída. Para marcarla como dominada falta recordarla a partir del significado.':'Well read. To mark it mastered you still need to recall it from its meaning.')+'</div>';
+        h+=cueNoteHTML(q,es);
+        if(q.recall) h+=wordMorphHTML(WORD_BY_JP[w.jp]||w);
         h+='</div>';
         h+='<div class="d-actions"><button class="d-next" id="xNext">'+t("Next →")+'</button></div>';
       }
