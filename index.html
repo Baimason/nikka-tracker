@@ -1519,6 +1519,28 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     }
     return d[m][n];
   }
+  /* Kana typed with the phone's Japanese keyboard. Recall answers accept it: writing
+     スマホ is as much "pulling the word out of memory" as writing sumaho. */
+  var KANA_IN_RE=/[\u3041-\u3096\u30a1-\u30fa\u30fc]/;
+  function hasKanaInput(s){ return KANA_IN_RE.test(s||""); }
+  function kanaFold(s){ s=(s||"").normalize("NFKC").replace(/[\s\u3000]/g,"");
+    return s.replace(/[\u30a1-\u30f6]/g,function(ch){return String.fromCharCode(ch.charCodeAt(0)-0x60);}); }
+  /* ok = exact; close = right reading in the wrong script (すまほ for スマホ) or one
+     kana slip, same forgiveness as the romaji matcher; wrong otherwise. */
+  function matchKanaWord(raw,jp){
+    var inp=(raw||"").normalize("NFKC").replace(/[\s\u3000]/g,""), es=getLang()==="es";
+    if(!inp) return {res:"wrong",note:""};
+    if(inp===jp) return {res:"ok",note:""};
+    var fi=kanaFold(inp), ft=kanaFold(jp);
+    if(fi===ft){
+      var kata=/[\u30a1-\u30fa]/.test(jp);
+      return {res:"close",note:kata?
+        (es?"Lectura correcta, pero esta palabra va en katakana: "+jp+". Las palabras prestadas casi siempre se escriben así.":"Right reading, but this word is written in katakana: "+jp+". Loanwords almost always are."):
+        (es?"Lectura correcta, pero esta palabra va en hiragana: "+jp+".":"Right reading, but this word is written in hiragana: "+jp+".")};
+    }
+    if(levenshtein(fi,ft)===1) return {res:"close",note:es?"Casi: un kana no es el que va, pero la lectura está encaminada.":"Almost: one kana is off, but the reading is on track."};
+    return {res:"wrong",note:""};
+  }
   function matchRomajiWord(raw,chars){
     var target=chars.map(function(c){return c.romaji;}).join("");
     var inp=foldRomajiStr(raw), tgt=foldRomajiStr(target);
@@ -2575,6 +2597,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   /* Typed production answer: "close" keeps credit (the sound was right) but shows a note. */
   function answerType(raw){
     var q=sess.q; if(!q||q.answered)return;
+    if(hasKanaInput(raw)){ q.kanaWarn=true; renderDrill(); return; }
     var m=matchRomaji(raw,q.target);
     q.answered=true; q.typed=(raw||"").trim(); q.result=m.res; q.note=m.note; q.picked=q.typed;
     recordKanaOutcome(q,m.res!=="wrong");
@@ -2682,6 +2705,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
         h+='<div class="d-type"><input id="dType" class="d-type-in" type="text" inputmode="latin" '+
            'autocapitalize="none" autocorrect="off" autocomplete="off" spellcheck="false" '+
            'placeholder="rōmaji…" aria-label="'+t("Which sound is this?")+'"></div>';
+        if(q.kanaWarn) h+='<div class="d-typenote">'+(es?'Acá se pide el sonido: escribilo en rōmaji.':'This one asks for the sound: type it in rōmaji.')+'</div>';
         h+='<div class="d-actions two"><button class="d-skip" id="dPass">'+t("Pass")+'</button>'+
            '<button class="d-next" id="dSubmit">'+t("Submit")+'</button></div>';
       } else {
@@ -10583,7 +10607,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       if(o.jp===w.jp)return false;
       var oes=(o.es||"").trim().toLowerCase(), oen=(o.en||"").trim().toLowerCase();
       if(!((es&&oes===es)||(en&&oen===en)))return false;
-      if(matchRomajiWord(raw,wordChars(o.jp)).res==="ok"){ hit=o; return true; }
+      if(hasKanaInput(raw)?(kanaFold(raw)===kanaFold(o.jp)):(matchRomajiWord(raw,wordChars(o.jp)).res==="ok")){ hit=o; return true; }
       return false; });
     return hit;
   }
@@ -10593,7 +10617,9 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
      itself, so a slip anywhere still shows up honestly in the kana SRS too. */
   function buildAnswerType(raw){
     var q=bsess.q; if(!q||q.done||q.mode!=="type")return;
-    var m=matchRomajiWord(raw,q.chars), correct=(m.res!=="wrong");
+    var _kin=hasKanaInput(raw);
+    if(_kin && !q.recall){ q.kanaWarn=true; renderBuild(); return; }
+    var m=_kin?matchKanaWord(raw,q.word.jp):matchRomajiWord(raw,q.chars), correct=(m.res!=="wrong");
     q.done=true; q.typed=(raw||"").trim(); q.result=m.res; q.note=m.note;
     /* Recall shows only the meaning, so another real word with that same meaning is a
        valid answer, not a mistake. It doesn't move the target's box either way: the
@@ -10621,7 +10647,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     q.done=true; q.picked=rom; q.correct=correct;
     srsMark(q.tgt.script,q.tgt.romaji,correct); bumpDaily(correct); if(correct)markWordKnown(q.word.jp);
     var _st=bstat(); _st.done++; if(correct)_st.correct++; else _st.wrong++;
-    speak(q.word.jp); Persistence.save(state); renderBuild();
+    q.sayNow=true; Persistence.save(state); renderBuild();
   }
   function buildTapTile(gl){
     var q=bsess.q; if(!q||q.done||q.mode!=="full")return;
@@ -10629,7 +10655,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     if(gl===need.ch){
       if(firstTry){ q.attempted[slot]=1; srsMark(need.script,need.romaji,true); bumpDaily(true); var _st=bstat(); _st.done++; _st.correct++; }
       q.placed[slot]=gl; q.badTile=""; q.slot++;
-      if(q.slot>=q.chars.length){ q.done=true; speak(q.word.jp); markWordKnown(q.word.jp); }
+      if(q.slot>=q.chars.length){ q.done=true; q.sayNow=true; markWordKnown(q.word.jp); }
       Persistence.save(state); renderBuild();
     }else{
       if(firstTry){ q.attempted[slot]=1; srsMark(need.script,need.romaji,false); bumpDaily(false); var _st=bstat(); _st.done++; _st.wrong++; Persistence.save(state); }
@@ -10689,9 +10715,10 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
         h+='<div class="cue-note">'+(es?('Pista: '+q.chars.length+' kana'+(q.cue>=2?', empieza con '+q.chars[0].ch:'')):('Hint: '+q.chars.length+' kana'+(q.cue>=2?', starts with '+q.chars[0].ch:'')))+'</div>';
       }
       if(!q.done){
-        h+='<div class="d-type"><input id="xType" class="d-type-in" type="text" inputmode="latin" '+
+        h+='<div class="d-type"><input id="xType" class="d-type-in" type="text"'+(q.recall?'':' inputmode="latin"')+' '+
            'autocapitalize="none" autocorrect="off" autocomplete="off" spellcheck="false" '+
-           'placeholder="rōmaji…" aria-label="'+_kind+'"></div>';
+           'placeholder="'+(q.recall?(es?'rōmaji o kana…':'rōmaji or kana…'):'rōmaji…')+'" aria-label="'+_kind+'"></div>';
+        if(q.kanaWarn) h+='<div class="d-typenote">'+(es?'Acá el kana ya está a la vista: escribí cómo se lee, en rōmaji.':'The kana is already on screen here: write how it reads, in rōmaji.')+'</div>';
         h+='<div class="d-actions two"><button class="d-skip" id="xPass">'+t("Pass")+'</button>'+
            '<button class="d-next" id="xSubmit">'+t("Submit")+'</button></div>';
       }else{
@@ -10733,6 +10760,8 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       }
     });
     h+='</div>';
+    /* armado completo: al terminar las fichas ya no sirven, se esconden como en los demás ejercicios */
+    if(!(q.mode==="full" && q.done)){
     h+='<div class="d-grid bw-grid">';
     if(q.mode==="cloze"){
       q.opts.forEach(function(o){
@@ -10744,19 +10773,27 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       q.tiles.forEach(function(g){ h+='<button class="opt mincho'+(q.badTile===g?" bad":"")+'" data-tile="'+g+'">'+g+'</button>'; });
     }
     h+='</div>';
+    }
     h+='<div class="rd-toggles">';
-    h+='<button class="bw-toggle" id="xRom">'+t(showRom?"Hide romaji":"Show romaji")+'</button>';
+    /* al terminar la respuesta ya trae el romaji: el toggle sobra */
+    if(!q.done) h+='<button class="bw-toggle" id="xRom">'+t(showRom?"Hide romaji":"Show romaji")+'</button>';
     if(w.emoji) h+='<button class="emoji-toggle" id="xEmoji">'+(getEmoji()?"☑":"☐")+' Emojis</button>';
     h+='</div>';
     if(q.done){
-      h+='<div class="rq-fb"><div class="rq-ans"><span class="mincho">'+sweepKanaHTML(w.jp)+'</span> <span class="rq-rom">'+w.romaji+'</span> · <span class="mean">'+mean+'</span></div></div>';
+      h+='<div class="rq-fb"><div class="rq-ans" id="xAns" style="cursor:pointer"><span class="mincho">'+sweepKanaHTML(w.jp)+'</span> <span class="rq-rom">'+w.romaji+'</span> · <span class="mean">'+mean+'</span></div></div>';
       h+='<div class="d-actions"><button class="d-next" id="xNext">'+t("Next →")+'</button></div>';
     }
     readingInner.innerHTML=h; bindBuild();
+    /* el audio de la respuesta resalta la palabra kana por kana, como en las demás respuestas */
+    if(q.done){
+      var _ans=document.getElementById("xAns"), _sw=_ans&&_ans.querySelector(".sweepline");
+      if(_ans) _ans.addEventListener("click",function(){ speakSweep(w.jp,_sw); });
+      if(q.sayNow){ q.sayNow=false; setTimeout(function(){ speakSweep(w.jp,_sw); },250); }
+    }
   }
   function bindBuild(){
     var c=document.getElementById("xClose"); if(c)c.addEventListener("click",closeExtra);
-    var sp=document.getElementById("xSpk"); if(sp)sp.addEventListener("click",function(){ if(bsess&&bsess.q)speakSweep(bsess.q.word.jp, readingInner.querySelector(".sweepline")); });
+    var sp=document.getElementById("xSpk"); if(sp)sp.addEventListener("click",function(){ if(bsess&&bsess.q)speakSweep(bsess.q.word.jp, readingInner.querySelector(".rq-ans .sweepline")||readingInner.querySelector(".sweepline")); });
     var rt=document.getElementById("xRom"); if(rt)rt.addEventListener("click",function(){ state.buildRomaji=!(state.buildRomaji!==false); Persistence.save(state); renderBuild(); });
     var et=document.getElementById("xEmoji"); if(et)et.addEventListener("click",function(){ state.emoji=!getEmoji(); Persistence.save(state); renderBuild(); });
     var nx=document.getElementById("xNext"); if(nx)nx.addEventListener("click",function(){ if(csess){ customAfterUnit(); } else if(dsess){ dailyAfterUnit(); } else if(wsess){ wordsAfterUnit(); } else { buildNextQ(); renderBuild(); } });
