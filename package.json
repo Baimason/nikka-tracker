@@ -1,0 +1,7 @@
+{
+  "name": "nikka-tracker",
+  "private": true,
+  "description": "Pruebas automáticas de Nikka (la app sigue siendo un solo index.html, sin build)",
+  "scripts": { "test": "node tests/run.js" },
+  "devDependencies": { "jsdom": "^24.1.0" }
+}

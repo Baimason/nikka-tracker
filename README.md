@@ -52,3 +52,18 @@ Progress is saved in your browser via `localStorage` — it lives on your device
 ## Stack
 
 Plain HTML/CSS/JS in a single file — no framework, no build. Fonts: Shippori Mincho, Zen Kaku Gothic New, and Noto Sans JP (Google Fonts). Study resources link out to Tofugu, AnkiWeb, the Kaishi 1.5k deck, Tae Kim's grammar guide, and HelloTalk.
+
+## Tests / Pruebas
+
+The app is still one `index.html` with no build step. The tests live next to it and run the real file inside a simulated browser (jsdom):
+
+```
+npm install
+npm test
+```
+
+They check syntax, a clean boot, content integrity (every grammar pattern is teachable on the day it is introduced, the kanji workshop builds each kanji only from pieces already taught, every N5 kanji has a word), that every bridge and mock-exam question has exactly one correct answer, the spaced-repetition rules, that a backup code round-trips, thousands of random taps across the daily practice, and that kana stays maintained over several simulated days.
+
+To also run them against a real backup code (never committed): `NIKKA_SAVE=path/to/backup.txt npm test`.
+
+GitHub Actions runs them on every push (`.github/workflows/tests.yml`); a red mark on the commit means something broke.

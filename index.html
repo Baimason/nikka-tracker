@@ -836,6 +836,23 @@
   .pr-restart{background:none!important;border:1px solid var(--line)!important;color:var(--ink)!important}
   .pr-reg{display:inline-block;margin-top:6px;background:none;border:1px solid var(--line);border-radius:999px;padding:4px 12px;font:inherit;font-size:12px;color:var(--ink-soft);cursor:pointer}
 
+  /* ---- Diccionario de bolsillo ---- */
+  .dw{cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .pr-text .dw,.pr-q .dw,.pr-jp .dw{border-bottom:1px dotted color-mix(in srgb,var(--ink-soft) 28%,transparent)}
+  .dw:active{background:color-mix(in srgb,var(--shu) 18%,transparent)}
+  #dictPop{position:fixed;left:0;right:0;bottom:0;z-index:9999;transform:translateY(110%);transition:transform .22s ease;pointer-events:none;padding:0 10px calc(10px + env(safe-area-inset-bottom))}
+  #dictPop.show{transform:none;pointer-events:auto}
+  .dp-card{position:relative;max-width:520px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:0 -8px 30px rgba(0,0,0,.35);text-align:left}
+  .dp-w{font-size:30px;line-height:1.3}
+  .dp-r{font-size:13px;color:var(--ink-soft)}
+  .dp-m{font-size:17px;margin-top:6px}
+  .dp-k{font-size:13px;color:var(--ink-soft);margin-top:6px}
+  .dp-s{font-size:12px;letter-spacing:.06em;color:var(--shu);margin-top:8px}
+  .dp-btns{display:flex;gap:10px;align-items:center;margin-top:12px}
+  .dp-ext{font-size:14px;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:8px 12px;text-decoration:none}
+  .dp-close{position:absolute;top:8px;right:10px;background:none;border:none;font-size:18px;color:var(--ink-soft);cursor:pointer}
+  @media (prefers-reduced-motion:reduce){#dictPop{transition:none}}
+
   /* ---- Engranaje en las cabeceras de práctica ---- */
   .d-head-l{display:flex;align-items:center;gap:10px}
   .d-gear{background:none;border:none;font:inherit;font-size:17px;color:var(--ink-soft);
@@ -1823,7 +1840,14 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
      en paralelo desde que arranca "Words". Cada uno reporta SU propio estado real
      (nunca el de un contador compartido), igual de honesto que el resto del camino. */
   function patternsWithExamplesCount(){ var s={}; PHRASES.forEach(function(p){ if(p.pattern)s[p.pattern]=1; }); return Object.keys(s).length; }
-  function patternsMasteredCount(){ var pt=ensurePatterns(),n=0; PATTERNS.forEach(function(p){ if((pt.box[p.id]||0)>=PAT_MATURE && patternExamples(p.id,1).length)n++; }); return n; }
+  /* Una sola definición de "patrón dominado" para toda la app (el camino, la barra N5 y
+     el dominio de lectura): practicado hasta madurar Y con al menos una frase suya ya
+     dominada (caja 4+). Antes el camino contaba solo lo primero (31 con sus datos) y la
+     barra N5 solo lo segundo (2), y se contradecían. "Practicado" queda aparte. */
+  function patternPhraseSolid(pid){ var b=ensurePhrases().box; for(var i=0;i<PHRASES.length;i++){ var p=PHRASES[i]; if((b[p.jp]||0)>=4 && patternOf(p)===pid) return true; } return false; }
+  function patternMastered(p){ var pt=ensurePatterns(); return (pt.box[p.id]||0)>=PAT_MATURE && patternPhraseSolid(p.id); }
+  function patternsPracticedCount(){ var pt=ensurePatterns(),n=0; PATTERNS.forEach(function(p){ if((pt.box[p.id]||0)>=PAT_MATURE && patternExamples(p.id,1).length)n++; }); return n; }
+  function patternsMasteredCount(){ var n=0; PATTERNS.forEach(function(p){ if(patternMastered(p))n++; }); return n; }
   function n5KanjiLearnedCount(){ var n=0; N5_KANJI.forEach(function(ch){ if(kanjiMastered(ch))n++; }); return n; }
   /* Kana is "done" only when all six rungs (base/dak/yōon × both scripts) are solid.
      Used to keep directing the user to the kana drill until yōon is actually learned,
@@ -1860,9 +1884,9 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
         badge='<span class="stg-badge'+(pm.seen?"":" dim")+'">'+pm.solid+' '+t("phrases")+'</span>'; }
       else { badge='<span class="stg-badge dim">'+masteredWordCount()+'/'+PHRASE_UNLOCK_AT+' '+(es?'para activarlas':'to unlock')+'</span>'; }
     } else if(pl.key==="grammar"){
-      var pMast=patternsMasteredCount(), pTot=patternsWithExamplesCount();
-      st=pMast>0?"on":""; if(pTot>0&&pMast>=pTot)st="done";
-      badge='<span class="stg-badge'+(st==="done"?" done":"")+'">'+pMast+' / '+pTot+' '+(es?'patrones':'patterns')+'</span>';
+      var pMast=patternsMasteredCount(), pPrac=patternsPracticedCount(), pTot=patternsWithExamplesCount();
+      st=(pMast||pPrac)>0?"on":""; if(pTot>0&&pMast>=pTot)st="done";
+      badge='<span class="stg-badge'+(st==="done"?" done":"")+'">'+pMast+' / '+pTot+' '+(es?'dominados':'mastered')+(pPrac>pMast?' · '+pPrac+' '+(es?'practicados':'practiced'):'')+'</span>';
     } else {
       if(kanjiOn()){ var kL=n5KanjiLearnedCount(), kTot=N5_KANJI.size;
         st=kL>0?"on":""; if(kL>=kTot)st="done";
@@ -2373,6 +2397,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       sess.focusWeak=null; // all blockers cleared — drop back to the normal flow
     }
     if(sess.force){ var f=sess.force; sess.force=null; setupQuiz(f.romaji,f.script); return; }
+    if(sess.dueFirst){ sess.dueFirst=false; var od=mostOverdueKana(); if(od){ setupQuiz(od.romaji,od.script); return; } }
     /* --- Gap drill: restrict the whole session to ONE rung (script+tier), so the
        "Practice X now" button from the mastery card teaches exactly that rung —
        untaught chars first (paced like the normal flow), then weak-first review —
@@ -2627,11 +2652,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   function recordKanaOutcome(q,correct){
     var k=ensureKana();
     // SRS box update (per script + sound)
-    var _b=boxFor(q.script),cur=_b[q.target]||0;
-    _b[q.target]=correct?Math.min(5,cur+1):0;
-    // cross-day scheduling + leech tracking
-    setDue(q.script,q.target,_b[q.target]);
-    if(correct){ if(_b[q.target]>=PROMOTE_AT)clearLeech(q.script,q.target); } else { bumpLeech(q.script,q.target); }
+    srsMark(q.script,q.target,correct);   /* misma regla que el resto del kana */
     // session + daily counters (goal counts attempts, right or wrong)
     sess.done++; if(correct)sess.correct++; else sess.wrong++;
     var t=today(); if(!k.daily[t])k.daily[t]={done:0,correct:0};
@@ -4760,9 +4781,8 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     return Math.min(1,n/N5_VOCAB_TOTAL); }
   function n5KanjiPillar(){ var n=n5KanjiLearnedCount();
     return Math.min(1,n/N5_KANJI_TOTAL); }
-  function n5GramPillar(){ if(typeof PHRASES==='undefined')return 0; var b=ensurePhrases().box,pats={},n=0;
-    for(var i=0;i<PHRASES.length;i++){ var p=PHRASES[i]; var pp=(typeof patternOf==='function')?patternOf(p):p.pattern; if(pp && (b[p.jp]||0)>=4 && !(PATTERN_BY_ID[pp]&&PATTERN_BY_ID[pp].reg==='casual')) pats[pp]=1; }
-    for(var k in pats)n++; return Math.min(1,n/N5_GRAMMAR_TOTAL); }
+  function n5GramPillar(){ if(typeof PHRASES==='undefined')return 0; var n=0;
+    PATTERNS.forEach(function(p){ if(p.reg!=='casual' && patternMastered(p)) n++; }); return Math.min(1,n/N5_GRAMMAR_TOTAL); }
   function n5Progress(){ var w=N5_W;
     var v=n5KanaPillar()*w.kana + n5VocabPillar()*w.vocab + n5KanjiPillar()*w.kanji + n5GramPillar()*w.gram;
     return Math.max(0,Math.min(1,v)); }
@@ -9140,7 +9160,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     ba:{es:'condicional ～ば',en:'conditional ～ば'},pot:{es:'potencial',en:'potential'},vol:{es:'vamos a…',en:'let\'s…'},
     tai:{es:'querer…',en:'want to…'},teiru:{es:'en curso',en:'ongoing'},tekara:{es:'después de…',en:'after…'},tearu:{es:'estado resultante',en:'resulting state'},
     nakereba:{es:'tiene que…',en:'must…'},nakutemo:{es:'no hace falta…',en:'no need to…'},nagara:{es:'mientras…',en:'while…'},tari:{es:'lista de acciones',en:'list of actions'},
-    koto:{es:'poder…',en:'can…'},younini:{es:'llegar a…',en:'come to…'},aneg:{es:'negativo',en:'negative'},apast:{es:'pasado',en:'past'},anegpast:{es:'pasado negativo',en:'past neg.'},inv:{es:'¿y si…? (invitar)',en:'shall we…?'},chau:{es:'(del todo / sin querer)',en:'(completely / oops)'},teru:{es:'(está…, = ている)',en:'(is …ing)'},proh:{es:'¡no…!',en:'don\'t…!'},imp:{es:'¡…! (orden)',en:'(command)'},mashou:{es:'hagamos…',en:'let\'s…'},mashouka:{es:'¿te ayudo a…?',en:'shall I…?'},purpose:{es:'(ir) a…',en:'(go) to…'},naide:{es:'sin… / no…',en:'without… / don\'t'},kute:{es:'…y',en:'…and'},adv:{es:'(se vuelve)…',en:'(becomes)…'},notyet:{es:'todavía no…',en:'not yet…'}};
+    koto:{es:'poder…',en:'can…'},younini:{es:'llegar a…',en:'come to…'},aneg:{es:'negativo',en:'negative'},apast:{es:'pasado',en:'past'},anegpast:{es:'pasado negativo',en:'past neg.'},inv:{es:'¿y si…? (invitar)',en:'shall we…?'},suru:{es:'verbo con する',en:'する verb'},chau:{es:'(del todo / sin querer)',en:'(completely / oops)'},teru:{es:'(está…, = ている)',en:'(is …ing)'},proh:{es:'¡no…!',en:'don\'t…!'},imp:{es:'¡…! (orden)',en:'(command)'},mashou:{es:'hagamos…',en:'let\'s…'},mashouka:{es:'¿te ayudo a…?',en:'shall I…?'},purpose:{es:'(ir) a…',en:'(go) to…'},naide:{es:'sin… / no…',en:'without… / don\'t'},kute:{es:'…y',en:'…and'},adv:{es:'(se vuelve)…',en:'(becomes)…'},notyet:{es:'todavía no…',en:'not yet…'}};
   /* Desinflexion plana (た/て/ない/たら/ば/たい/potencial/volitivo + compuestos). Cada candidato se valida
      contra WORD_BY_JP: si la base no existe en el vocabulario, no se inventa nada. */
   var _GODAN_ROWS={'う':['わ','い','え','お'],'く':['か','き','け','こ'],'ぐ':['が','ぎ','げ','ご'],'す':['さ','し','せ','そ'],'つ':['た','ち','て','と'],'ぬ':['な','に','ね','の'],'ぶ':['ば','び','べ','ぼ'],'む':['ま','み','め','も'],'る':['ら','り','れ','ろ']};
@@ -9804,11 +9824,22 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   function phraseRecogDue(){ var b=ensurePhrases().box; return phraseReadyIdxMature(PHRASES).some(function(i){ return (b[PHRASES[i].jp]||0)<5; }); }
   var WORDS_KANA_GAP_PROB=0.4, WORDS_KANA_DUE_PROB=0.1, WORDS_TALLER_PROB=0.15;
   function wordsKanaGapRung(){ var g=firstKanaGap(), lvl=ensureKana().level||1; return (g && g<=lvl)?g:0; }
-  function wordsKanaProb(){ if(wordsKanaGapRung())return WORDS_KANA_GAP_PROB; return dueCount()>0?WORDS_KANA_DUE_PROB:0; }
+  /* Arreglo del kana que se caía (sesión 2026-11-08): con un hueco abierto en un peldaño,
+     cada unidad de kana quedaba fijada a ese peldaño y el resto (con sus datos, 80
+     katakana vencidos, algunos hace un mes) nunca se repasaba, así que se caía también.
+     Ahora la mitad de las unidades atiende el hueco y la otra mitad repasa lo más
+     vencido de cualquier silabario; y sin hueco, la cuota crece con la cantidad vencida. */
+  var WORDS_KANA_DUE_MAX=0.35, KANA_GAP_SHARE=0.5;
+  function wordsKanaProb(){ if(wordsKanaGapRung())return WORDS_KANA_GAP_PROB; var d=dueCount(); return d>0?Math.min(WORDS_KANA_DUE_MAX,WORDS_KANA_DUE_PROB+d/200):0; }
+  function mostOverdueKana(){ var best=null, bd=null, last=sess&&sess.q?sess.q.target:null;
+    activePairs().forEach(function(p){ if(!isLearned(p.script,p.romaji)||!isDue(p.script,p.romaji)||p.romaji===last)return; var d=getDue(p.script,p.romaji)||'0000';
+      if(bd===null||d<bd){ bd=d; best=p; } }); return best; }
   function wordsKanaUnit(){
     if(!sess) sess={done:0,correct:0,wrong:0,q:null,hitGoalShown:false,newCount:0,maxNew:5,mode:"quiz",teach:null,force:null};
     var g=wordsKanaGapRung();
-    if(g && !sess.focusRung){ sess.focusRung={script:g>=4?"kata":"hira",tier:(g-1)%3}; sess.maxNew=99; }
+    sess.focusRung=null; sess.dueFirst=false;
+    if(g && (Math.random()<KANA_GAP_SHARE || !mostOverdueKana())){ sess.focusRung={script:g>=4?"kata":"hira",tier:(g-1)%3}; sess.maxNew=99; }
+    else if(mostOverdueKana()) sess.dueFirst=true;
     readingEl.classList.add("hidden");
     buildQuestion(); drillEl.classList.remove("hidden"); renderDrill(); }
   /* Rescata el progreso de frases que quedo guardado en la caja de PALABRAS por el bug
@@ -10515,7 +10546,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     return out; }
   function bridgeMeaning(c,es){ var d=KANJI_DB[c]; if(!d)return ''; return firstSense(es?(d[5]||d[6]):(d[6]||d[5])); }
   function bridgeFill(out,want,seen,jp){ /* último recurso: otras palabras legibles del mismo largo */
-    var n=splitMora(jp).length, src=WORD_POOL.filter(function(x){ return !seen[x.jp] && isAllKana(x.jp) && splitMora(x.jp).length===n && wordReadable(x.jp); });
+    var n=splitMora(jp).length, src=WORD_POOL.filter(function(x){ return !seen[x.jp] && isAllKana(x.jp) && /^[\u3041-\u3096ー]+$/.test(x.jp) && splitMora(x.jp).length===n; });
     shuffle(src); src.forEach(function(x){ if(out.length<want){ seen[x.jp]=1; out.push({jp:x.jp,blame:null}); } }); }
   function bridgeReadOpts(w){ var jp=w.jp, kf=kanjiForm(w), seg=bridgeSegs(w), seen={}, sw=[], pt=[], out=[];
     seen[jp]=1; WORD_POOL.forEach(function(x){ if(kanjiForm(x)===kf)seen[x.jp]=1; });   /* otra lectura válida de la misma forma nunca es trampa */
@@ -10558,8 +10589,9 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       if(!moved)break; }
     if(out.length<2){ /* último recurso: cambiar un kanji por otro ya visto en el taller */
       var idx=-1; for(var j=0;j<kf.length;j++){ if(isKanjiChar(kf.charAt(j))){ idx=j; break; } }
-      var pool=TALLER.list.filter(function(o){ return !o.piece && tallerTaught(o.g) && o.g!==kf.charAt(idx); }); shuffle(pool);
-      pool.forEach(function(o){ var s=sub(idx,o.g); if(out.length<3 && !seen[s]){ seen[s]=1; out.push({jp:s,blame:kf.charAt(idx),why:null}); } }); }
+      /* primero kanji ya vistos en el taller; si no alcanzan (usuario nuevo, simulacro), cualquier kanji N5 */
+      var pool=shuffle(TALLER.list.filter(function(o){ return !o.piece && tallerTaught(o.g) && o.g!==kf.charAt(idx); })).concat(shuffle(TALLER.list.filter(function(o){ return !o.piece && !tallerTaught(o.g) && o.g!==kf.charAt(idx); })));
+      pool.forEach(function(o){ var s2=sub(idx,o.g); if(out.length<3 && !seen[s2]){ seen[s2]=1; out.push({jp:s2,blame:kf.charAt(idx),why:null}); } }); }
     return shuffle([{jp:kf,ok:true}].concat(out)); }
 
   function bridgeFamilyHTML(w){ var es=getLang()==='es', seg=bridgeSegs(w), wb=ensureWords().box; if(!seg)return '';
@@ -11192,9 +11224,15 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     rsess=wsess.wr; rsess.forceRecall=idx; wsess.cur="recog"; buildReadingQ(); renderReading(); readingEl.classList.remove("hidden"); return true; }
 
   /* shared: mirror the drill's SRS + daily semantics for one character event */
+  /* Movimiento único de la caja de kana (drill, armado, cloze, fichas). Antes: un error
+     mandaba la caja a 0 y cada acierto subía sin tope, así que un kana dominado caía a cero
+     por un descuido. Ahora, igual que palabras y kanji: el error baja dos cajas y de la
+     caja 2 para arriba se sube una vez por día (los primeros pasos siguen siendo rápidos
+     para no frenar el aprendizaje de kana nuevo). */
   function srsMark(script,romaji,correct){
-    var b=boxFor(script),cur=b[romaji]||0;
-    b[romaji]=correct?Math.min(5,cur+1):0;
+    var k=ensureKana(), b=boxFor(script), cur=b[romaji]||0, lm=k.lastMove||(k.lastMove={}), key=script+':'+romaji, td=today();
+    if(correct){ if(cur<2 || lm[key]!==td){ b[romaji]=Math.min(5,cur+1); if(cur>=2)lm[key]=td; } }
+    else { b[romaji]=Math.max(0,cur-2); lm[key]=td; }
     setDue(script,romaji,b[romaji]);
     if(correct){ if(b[romaji]>=PROMOTE_AT)clearLeech(script,romaji); } else { bumpLeech(script,romaji); }
   }
@@ -11324,7 +11362,10 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
        is a different real word, not a typo. */
     if(m.res!=="ok" && q.recall){ var alt=recallSynonym(q.word,raw);
       if(alt){ q.result="alt"; q.alt=alt; var _sa=bstat(); _sa.done++; Persistence.save(state); renderBuild(); return; } }
-    q.chars.forEach(function(c){ srsMark(c.script,c.romaji,correct); });
+    /* Un error al escribir la palabra no se le cobra al kana: en modo recuerdo falló la
+       palabra (vocabulario), y con el kana a la vista no se sabe cuál carácter se leyó mal.
+       Antes cada fallo mandaba TODOS sus kana a 0: por eso し, ま o い se caían solos. */
+    if(correct) q.chars.forEach(function(c){ srsMark(c.script,c.romaji,true); });
     var _jp=q.word.jp;
     q.gated = (correct && !q.recall && (ensureWords().box[_jp]||0)===WORD_RECALL_GATE);
     q.cueGated=false;
@@ -12463,8 +12504,12 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
      listo está el usuario y para dibujar con kanji lo que ya ve con kanji. ---- */
   var PREP_STOP={'から':1,'まで':1,'より':1,'など':1,'だけ':1,'ごろ':1,'ぐらい':1,'この':1,'その':1,'あの':1,'これ':1,'それ':1,'あれ':1,'です':1,'でした':1,'じゃ':1,'では':1,'でも':1,'それから':1,'じゃあ':1};
   var PREP_TAIL=['から','まで','より','だけ','など','ごろ','ぐらい','です','でした','じゃ','は','が','を','に','で','へ','と','の','も','や','か','よ','ね'];
+  /* nombres propios de los textos: sin esto, きょうと se leía como きょう (hoy) + と */
+  var PREP_PROPER={'きょうと':{es:'Kioto (ciudad)',en:'Kyoto (city)'},'とうきょう':{es:'Tokio (ciudad)',en:'Tokyo (city)'},'コスタリカ':{es:'Costa Rica',en:'Costa Rica'},
+    'やまだ':{es:'Yamada (apellido)',en:'Yamada (surname)'},'たなか':{es:'Tanaka (apellido)',en:'Tanaka (surname)'},'リン':{es:'Lin (nombre)',en:'Lin (name)'},'キム':{es:'Kim (nombre)',en:'Kim (name)'},'さくら':{es:'Sakura (nombre; también «cerezo»)',en:'Sakura (name; also "cherry blossom")'}};
   function prepSegBlock(b){ /* devuelve [{t,w}] para un bloque sin espacios */
     var out=[], i=0, L, c, rest, okNext;
+    for(var pn in PREP_PROPER){ if(b.indexOf(pn)===0){ out.push({t:pn,w:null,prop:pn}); if(b.length>pn.length)out.push({t:b.slice(pn.length),w:null}); return out; } }
     for(L=Math.min(10,b.length);L>=2;L--){ c=b.substr(0,L);
       if(WORD_BY_JP[c] && !PREP_STOP[c]){ rest=b.slice(L);
         okNext=!rest || PREP_TAIL.some(function(tl){ return rest.indexOf(tl)===0; }) || /^[、。？！」「…]/.test(rest);
@@ -12484,9 +12529,59 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   function prepReadiness(it){ var ws=PREP_WCACHE[it.id]||(PREP_WCACHE[it.id]=prepWordsOf(prepItemText(it))), b=ensureWords().box, k=0;
     ws.forEach(function(w){ if((b[w]||0)>=1)k++; }); return ws.length?k/ws.length:1; }
   function prepReady(it){ return readingEra() && prepReadiness(it)>=PREP_READY; }
-  function prepTextHTML(text){ return String(text||'').split('\n').map(function(line){
-      return line.split(' ').map(function(b){ if(!b)return '';
-        return prepSegBlock(b).map(function(x){ if(x.w && wordKanjiStage(x.w)!=='kana') return wordFormHTML(x.w); return tlEsc(x.t); }).join(''); }).join(' '); }).join('<br>'); }
+  /* Texto para leer: cada palabra se dibuja con kanji según su etapa del puente y, salvo
+     en el simulacro y en las opciones (noDict), se puede tocar para verla en el diccionario. */
+  var PREP_PUNCT=/^([「『（(]*)(.*?)([、。？！」』…：）)]*)$/;
+  function prepDictCore(core){ /* bloque sin palabra al inicio: probar desconjugar quitando partículas del final */
+    var c=core, tries=[c], tails=PREP_TAIL.concat(['ませんか','ましょう','な']), changed=true, guard=0;
+    while(changed&&guard++<6){ changed=false; tails.forEach(function(tl){ if(c.length>tl.length+1&&c.slice(-tl.length)===tl&&!WORD_BY_JP[c]){ c=c.slice(0,-tl.length); tries.push(c); changed=true; } }); }
+    /* verbos con する (べんきょうする): la raíz es el sustantivo */
+    for(var j=0;j<tries.length;j++){ var sm=tries[j].match(/^(.+?)(します|しました|しません|しませんでした|して|した|する|しない|しよう)$/); if(sm&&WORD_BY_JP[sm[1]]) return {len:tries[j].length,base:sm[1],kind:'suru'}; }
+    for(var i=0;i<tries.length;i++){ var d=deinflectMasu(tries[i])||deinflectPlain(tries[i]); if(d&&d.base&&WORD_BY_JP[d.base]){
+        /* raíces ambiguas de una sílaba: し→する, き→くる, い→いる son las que aparecen en los textos */
+        var amb={'しる':'する','きる':'くる','いう':'いる','いきる':'いく'}; if(/^(し|き|い|いき)(ま|ませ|まし)/.test(tries[i]) && amb[d.base] && WORD_BY_JP[amb[d.base]]) d={base:amb[d.base],kind:d.kind};
+        return {len:tries[i].length,base:d.base,kind:d.kind}; } }
+    return null; }
+  function prepDictBlock(b){ /* un bloque sin espacios ni signos */
+    if(PREP_STOP[b] || PREP_TAIL.indexOf(b)>=0) return tlEsc(b);   /* partículas y palabras de función: texto normal */
+    var seg=prepSegBlock(b);
+    if(seg[0].prop) return '<span class="dw" data-p="'+tlEsc(seg[0].t)+'">'+tlEsc(seg[0].t)+'</span>'+(seg[1]?prepDictBlock(seg[1].t):'');
+    if(seg[0].w){ var h0=wordKanjiStage(seg[0].w)!=='kana'?wordFormHTML(seg[0].w):tlEsc(seg[0].t);
+      return '<span class="dw" data-w="'+tlEsc(seg[0].t)+'">'+h0+'</span>'+(seg[1]?tlEsc(seg[1].t):''); }
+    var d=prepDictCore(b);
+    if(d) return '<span class="dw" data-w="'+tlEsc(d.base)+'" data-k="'+(d.kind||'')+'" data-f="'+tlEsc(b.slice(0,d.len))+'">'+tlEsc(b.slice(0,d.len))+'</span>'+tlEsc(b.slice(d.len));
+    return '<span class="dw dw-unk" data-raw="'+tlEsc(b)+'">'+tlEsc(b)+'</span>'; }
+  var PREP_PUNCT_SPLIT=/([、。？！「」『』…：（）()～※▶／]+)/;
+  function prepTextHTML(text,noDict){ return String(text||'').split('\n').map(function(line){
+      return line.split(' ').map(function(chunk){ if(!chunk)return '';
+        return chunk.split(PREP_PUNCT_SPLIT).map(function(b){ if(!b)return ''; if(PREP_PUNCT_SPLIT.test(b)&&b.replace(PREP_PUNCT_SPLIT,'')==='')return tlEsc(b);
+          if(noDict) return prepSegBlock(b).map(function(x){ if(x.w && wordKanjiStage(x.w)!=='kana') return wordFormHTML(x.w); return tlEsc(x.t); }).join('');
+          return prepDictBlock(b); }).join(''); }).join(' '); }).join('<br>'); }
+  /* ---- diccionario de bolsillo: toque en una palabra -> ficha abajo ---- */
+  function dictWordStatus(jp,es){ var w=ensureWords(), b=w.box[jp]||0;
+    if(b>=4) return es?'La dominás':'Mastered'; if(b>0) return (es?'La estás aprendiendo (nivel ':'Learning it (level ')+b+')';
+    if(w.seen&&w.seen[jp]) return es?'Ya la viste':'Seen'; return es?'Todavía no la viste en Nikka':'Not seen in Nikka yet'; }
+  function openDict(el){ var es=getLang()==='es', jp=el.getAttribute('data-w'), raw=el.getAttribute('data-raw'), kind=el.getAttribute('data-k'), form=el.getAttribute('data-f'), pn=el.getAttribute('data-p');
+    var pop=document.getElementById('dictPop'); if(!pop){ pop=document.createElement('div'); pop.id='dictPop'; document.body.appendChild(pop); }
+    var h='<div class="dp-card" role="dialog">';
+    if(pn && PREP_PROPER[pn]){ h+='<div class="dp-w mincho">'+tlEsc(pn)+'</div><div class="dp-m">'+tlEsc(es?PREP_PROPER[pn].es:PREP_PROPER[pn].en)+'</div><div class="dp-s">'+(es?'Nombre propio':'Proper noun')+'</div>'; }
+    else if(jp && WORD_BY_JP[jp]){ var w=WORD_BY_JP[jp], kf=kanjiForm(w);
+      h+='<div class="dp-w"><span class="mincho">'+(kf?rubyHTML(kf,w.jp):w.jp)+'</span></div>'+
+        '<div class="dp-r">'+tlEsc(w.romaji||'')+'</div><div class="dp-m">'+tlEsc(es?(w.es||w.en):(w.en||w.es))+'</div>';
+      if(kind&&CONJ_KIND_LABEL[kind]) h+='<div class="dp-k">'+(es?'Acá aparece como ':'Here as ')+'<b class="mincho">'+tlEsc(form||'')+'</b>: '+(es?CONJ_KIND_LABEL[kind].es:CONJ_KIND_LABEL[kind].en)+'</div>';
+      h+='<div class="dp-s">'+dictWordStatus(jp,es)+'</div>';
+      h+='<div class="dp-btns"><button class="d-spk-word" id="dpSpk"><i class=ico-spk></i> <span>'+t("hear it")+'</span></button>'+
+        '<a class="dp-ext" href="https://jisho.org/search/'+encodeURIComponent(w.jp)+'" target="_blank" rel="noopener">Jisho ↗</a></div>'; }
+    else { h+='<div class="dp-w mincho">'+tlEsc(raw||jp||'')+'</div><div class="dp-m">'+(es?'Esta palabra todavía no está en el vocabulario de Nikka.':'This word is not in Nikka\'s vocabulary yet.')+'</div>'+
+        '<div class="dp-btns"><a class="dp-ext" href="https://jisho.org/search/'+encodeURIComponent(raw||jp||'')+'" target="_blank" rel="noopener">'+(es?'Buscar en Jisho ↗':'Look up on Jisho ↗')+'</a></div>'; }
+    h+='<button class="dp-close" id="dpClose" aria-label="close">✕</button></div>';
+    pop.innerHTML=h; pop.className='show';
+    var sp=document.getElementById('dpSpk'); if(sp) sp.addEventListener('click',function(e){ e.stopPropagation(); speak(WORD_BY_JP[jp].jp); });
+    document.getElementById('dpClose').addEventListener('click',function(e){ e.stopPropagation(); closeDict(); }); }
+  function closeDict(){ var pop=document.getElementById('dictPop'); if(pop) pop.className=''; }
+  document.addEventListener('click',function(e){ var t0=e.target; if(!t0||!t0.closest)return;
+    var dw=t0.closest('.dw'); if(dw){ openDict(dw); return; }
+    if(!t0.closest('#dictPop')) closeDict(); });
 
   /* ---- qué toca: vencidos primero, después nuevos listos; los no listos esperan ---- */
   /* escenas: si apuntás a un juego, solo las de ese juego; si no, todas */
@@ -12574,7 +12669,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   function prepOptsHTML(q,order,answered,picked,hideText,isJp){ var es=getLang()==='es', h='<div class="ropts pr-opts">';
     order.forEach(function(oi,pos){ var o=q.opts[oi], cls='ropt pr-opt'+(isJp?' jp':''), already=false;
       if(answered){ if(oi===q.a)cls+=' correct'; else if(oi===picked)cls+=' bad'; else cls+=' dim'; }
-      var label=hideText&&!answered?((es?'Opción ':'Option ')+(pos+1)):prepTextHTML(o.jp);
+      var label=hideText&&!answered?((es?'Opción ':'Option ')+(pos+1)):prepTextHTML(o.jp,true);
       h+='<div class="pr-row">'+(hideText?'<button class="pr-play" data-play="'+oi+'" aria-label="play"><i class=ico-spk></i> '+(pos+1)+'</button>':'')+
         '<button class="'+cls+'" data-i="'+oi+'">'+label+(answered?'<span class="pr-oes">'+tlEsc(es?o.es:(o.en||o.es))+'</span>':'')+'</button></div>'; });
     return h+'</div>'; }
@@ -12615,7 +12710,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       h+=prepOptsHTML(it,prs.order,prs.answered,prs.picked,hide,true);
       if(prs.answered){ var okL=prs.picked===it.a;
         h+='<div class="rq-fb"><div class="rq-msg '+(okL?'ok':'no')+'">'+t(okL?"Correct!":"It was")+'</div>'+
-          (!okL?'<div class="rq-ans">'+prepTextHTML(it.opts[it.a].jp)+' · <span class="mean">'+tlEsc(it.opts[it.a].es)+'</span></div>':'')+
+          (!okL?'<div class="rq-ans">'+prepTextHTML(it.opts[it.a].jp,true)+' · <span class="mean">'+tlEsc(it.opts[it.a].es)+'</span></div>':'')+
           '<div class="br-why">'+tlEsc(es?it.why.es:it.why.en)+'</div>'+prepTranscriptHTML(it)+'</div>'+
           '<div class="d-actions"><button class="d-next" id="prNext">'+t("Next →")+'</button></div>'; }
       readingInner.innerHTML=h; bindPrep(); if(prs.answered) collapseNoiseOpts(prs); return; }
@@ -12717,22 +12812,22 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     if(q.k==='kread') h='<div class="rq-kind">'+(es?'¿Cómo se lee?':'How is it read?')+'</div><div class="rq-jp mincho">'+kanjiForm(q.w)+'</div>';
     else if(q.k==='kwrite') h='<div class="rq-kind">'+(es?'¿Cómo se escribe?':'How is it written?')+'</div><div class="rq-jp">'+q.w.jp+'</div><div class="rq-mean">'+tlEsc(es?q.w.es:q.w.en)+'</div>';
     else if(q.k==='ctx') h='<div class="rq-kind">'+(es?'¿Qué palabra va?':'Which word fits?')+'</div><div class="pt-cloze mincho">'+sentence(q.p,q.slot)+'</div><div class="pt-clmean">'+tlEsc(es?q.p.es:q.p.en)+'</div>';
-    else if(q.k==='para') h='<div class="rq-kind">'+(es?'¿Cuál dice lo mismo?':'Which means the same?')+'</div><div class="pr-q">'+prepTextHTML(q.it.jp)+'</div>';
+    else if(q.k==='para') h='<div class="rq-kind">'+(es?'¿Cuál dice lo mismo?':'Which means the same?')+'</div><div class="pr-q">'+prepTextHTML(q.it.jp,true)+'</div>';
     else if(q.k==='gram') h='<div class="rq-kind">'+(es?'¿Qué va en el hueco?':'What goes in the gap?')+'</div><div class="pt-cloze mincho">'+sentence(q.p,q.slot)+'</div><div class="pt-clmean">'+tlEsc(es?q.p.es:q.p.en)+'</div>';
     else if(q.k==='order'){ var parts=q.p.parts.map(function(x,i){ if(i<q.st||i>q.st+3)return tlEsc(x); return i===q.star?'<span class="pr-star">★</span>':'<span class="pr-gap">＿＿</span>'; });
       h='<div class="rq-kind">'+(es?'Ordená las piezas: ¿cuál va en la ★?':'Order the pieces: which goes on the ★?')+'</div><div class="pt-cloze mincho">'+parts.join(' ')+'</div><div class="pt-clmean">'+tlEsc(es?q.p.es:q.p.en)+'</div>'; }
-    else if(q.k==='read'){ var it=q.item, rq=it.qs[q.qi]; h='<div class="rq-kind">'+(es?'Lectura':'Reading')+' · <span class="mincho">'+PREP_KIND_LABEL[it.type].jp+'</span></div><div class="pr-text">'+prepTextHTML(it.text)+'</div><div class="pr-q">'+prepTextHTML(rq.q.jp)+'</div>'; }
+    else if(q.k==='read'){ var it=q.item, rq=it.qs[q.qi]; h='<div class="rq-kind">'+(es?'Lectura':'Reading')+' · <span class="mincho">'+PREP_KIND_LABEL[it.type].jp+'</span></div><div class="pr-text">'+prepTextHTML(it.text,true)+'</div><div class="pr-q">'+prepTextHTML(rq.q.jp,true)+'</div>'; }
     else if(q.k==='listen'){ var li=q.item; h='<div class="rq-kind">'+(es?'Escucha':'Listening')+' · <span class="mincho">'+PREP_KIND_LABEL[li.type].jp+'</span></div>'+
-      (li.type==='utter'?'<div class="pr-q">'+prepTextHTML(li.setup.jp)+'</div>':(li.type!=='quick'?'<div class="pr-q">'+prepTextHTML(li.q.jp)+'</div>':''))+
+      (li.type==='utter'?'<div class="pr-q">'+prepTextHTML(li.setup.jp,true)+'</div>':(li.type!=='quick'?'<div class="pr-q">'+prepTextHTML(li.q.jp,true)+'</div>':''))+
       '<div class="d-actions pr-audio"><button class="d-spk-word" id="prPlay"><i class=ico-spk></i> <span>'+(es?'Escuchar de nuevo':'Play again')+'</span></button></div>'; }
     return h; }
   function mockOptsHTML(q,pick){ var h='<div class="ropts pr-opts">', es=getLang()==='es';
     if(q.k==='read'||q.k==='listen'){ var src=q.k==='read'?q.item.qs[q.qi]:q.item, hide=q.k==='listen'&&(q.item.type==='utter'||q.item.type==='quick');
       q.order.forEach(function(oi,pos){ h+='<div class="pr-row">'+(hide?'<button class="pr-play" data-play="'+oi+'"><i class=ico-spk></i> '+(pos+1)+'</button>':'')+
-        '<button class="ropt pr-opt jp'+(pick===oi?' pr-picked':'')+'" data-i="'+oi+'">'+(hide?(es?'Opción ':'Option ')+(pos+1):prepTextHTML(src.opts[oi].jp))+'</button></div>'; });
+        '<button class="ropt pr-opt jp'+(pick===oi?' pr-picked':'')+'" data-i="'+oi+'">'+(hide?(es?'Opción ':'Option ')+(pos+1):prepTextHTML(src.opts[oi].jp,true))+'</button></div>'; });
       return h+'</div>'; }
     var mincho=(q.k==='kwrite'||q.k==='order'||q.k==='gram'||q.k==='ctx');
-    q.opts.forEach(function(o,i){ h+='<div class="pr-row"><button class="ropt pr-opt jp'+(mincho?' mincho':'')+(pick===i?' pr-picked':'')+'" data-i="'+i+'">'+(q.k==='para'?prepTextHTML(o.jp):tlEsc(o.jp))+'</button></div>'; });
+    q.opts.forEach(function(o,i){ h+='<div class="pr-row"><button class="ropt pr-opt jp'+(mincho?' mincho':'')+(pick===i?' pr-picked':'')+'" data-i="'+i+'">'+(q.k==='para'?prepTextHTML(o.jp,true):tlEsc(o.jp))+'</button></div>'; });
     return h+'</div>'; }
   function mockCorrectText(q){ if(q.k==='read'){ var rq=q.item.qs[q.qi]; return rq.opts[rq.a].jp; } if(q.k==='listen') return q.item.opts[q.item.a].jp;
     for(var i=0;i<q.opts.length;i++) if(q.opts[i].ok) return (q.k==='kread'||q.k==='kwrite')?q.opts[i].jp:q.opts[i].jp; return ''; }
