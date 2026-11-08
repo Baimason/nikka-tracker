@@ -800,6 +800,39 @@
   .br-rd b{font-weight:600;color:var(--ink)}
   .br-rd.here b{color:var(--shu)}
 
+  /* ---- Preparación N5 ---- */
+  .pr-card{border:1px solid var(--line);border-radius:12px;padding:14px;margin:12px 0;text-align:left;background:var(--card)}
+  .pr-card-t{font-weight:700;font-size:16px;margin-bottom:4px}
+  .pr-card-s{font-size:13px;color:var(--ink-soft);line-height:1.45;margin-bottom:10px}
+  .pr-go{width:100%}
+  .pr-go[disabled]{opacity:.45}
+  .pr-q{font-size:19px;line-height:1.6;margin-top:8px}
+  .pr-qn{font-size:12px;color:var(--ink-soft);margin-right:4px}
+  .pr-qes{font-size:13px;color:var(--ink-soft);margin-top:4px;display:none}
+  .pr-qes.show{display:block}
+  .pr-text{text-align:left;font-size:17px;line-height:1.9;border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:10px 0;background:var(--card)}
+  .pr-es-text{text-align:left;font-size:13px;color:var(--ink-soft);line-height:1.5;margin:4px 0 8px}
+  .pr-row{display:flex;gap:8px;align-items:stretch}
+  .pr-row .ropt{flex:1}
+  .ropt.correct .pr-oes,.ropt.bad .pr-oes{color:inherit;opacity:.85}
+  .pr-play{flex:0 0 66px;justify-content:center;background:none;border:1px solid var(--line);border-radius:10px;padding:0 12px;font:inherit;color:var(--ink);cursor:pointer;white-space:nowrap}
+  .pr-oes{display:block;font-size:12px;color:var(--ink-soft);margin-top:2px;font-family:inherit}
+  .pr-picked{outline:2px solid var(--shu);outline-offset:-2px}
+  .pr-tr{margin-top:14px;text-align:left}
+  .pr-line{display:flex;flex-direction:column;padding:6px 0;border-top:1px dashed var(--line)}
+  .pr-who{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+  .pr-jp{font-size:16px;line-height:1.7}
+  .pr-es{font-size:13px;color:var(--ink-soft)}
+  .pr-sechead{font-size:12px;letter-spacing:.12em;color:var(--ink-soft);text-align:center;margin-top:6px}
+  .pr-star{color:var(--shu);font-weight:700;padding:0 4px}
+  .pr-gap{color:var(--ink-soft);padding:0 4px}
+  .pr-score{font-size:14px;line-height:1.7;margin-top:10px}
+  .pr-secs{display:grid;gap:4px;margin-top:10px;font-size:14px}
+  .pr-rev{padding:8px 0;border-top:1px dashed var(--line)}
+  .pr-rev-h{font-size:11px;color:var(--ink-soft)}
+  .pr-rev-l{font-size:15px}
+  .pr-audio{margin-top:8px}
+
   /* ---- Engranaje en las cabeceras de práctica ---- */
   .d-head-l{display:flex;align-items:center;gap:10px}
   .d-gear{background:none;border:none;font:inherit;font-size:17px;color:var(--ink-soft);
@@ -2057,7 +2090,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
         '<div class="sub">'+t("Automatic sync across devices: no passwords, no data of yours to guard.")+'</div></div>'+
         '<span class="tag">'+t("COMING SOON")+'</span></div></details>';
   }
-  function dayReps(s){ var k=ensureKana(),w=ensureWords(),p=ensurePhrases(),pt=ensurePatterns(); return (k.daily[s]?k.daily[s].done:0)+(w.daily[s]||0)+(p.daily[s]||0)+(pt.daily?(pt.daily[s]||0):0)+((state.exercises&&state.exercises.taller&&state.exercises.taller.daily)?(state.exercises.taller.daily[s]||0):0); }
+  function dayReps(s){ var k=ensureKana(),w=ensureWords(),p=ensurePhrases(),pt=ensurePatterns(); return (k.daily[s]?k.daily[s].done:0)+(w.daily[s]||0)+(p.daily[s]||0)+(pt.daily?(pt.daily[s]||0):0)+((state.exercises&&state.exercises.taller&&state.exercises.taller.daily)?(state.exercises.taller.daily[s]||0):0)+((state.exercises&&state.exercises.prep&&state.exercises.prep.daily)?(state.exercises.prep.daily[s]||0):0); }
   function todayReps(){ return dayReps(today()); }
   function stampDay(){ var td=today(); if(todayReps()>=15 && !(state.days[td]&&state.days[td].practiced)){ state.days[td]=state.days[td]||{}; state.days[td].practiced=true; return true; } return false; }
   function kanaOptsHTML(){
@@ -2125,6 +2158,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     if(kanjiUnlockReady()) h+='<button class="ex-custom-btn" data-fn="activateKanji">漢字 '+t("Activate kanji")+'</button>';
     if(kanjiOn()){ var _tb=tallerBadge(); h+='<button class="ex-custom-btn" data-fn="startTaller">工 '+(getLang()==="es"?"Taller de kanji":"Kanji workshop")+(_tb?' ('+_tb+')':'')+'</button>'; }
     if(phraseUnlockReady()) h+='<button class="ex-custom-btn" data-fn="activatePhrases">🗣 '+t("Activate phrases")+'</button>';
+    if(readingEra()){ var _pl=prepCounts('l'), _pr=prepCounts('r'), _pn=_pl.due+_pr.due; h+='<button class="ex-custom-btn" data-fn="openPrep"><span class="mincho">試</span> '+(getLang()==="es"?"Preparación N5: escucha, lectura y simulacro":"N5 prep: listening, reading and mock exam")+(_pn?' ('+_pn+')':'')+'</button>'; }
     var ext=tasksForStage(st).filter(function(x){return x.id!=="kana"&&x.id!=="words"&&x.id!=="phrases";});
     if(ext.length){
       h+='<div class="ex-sep">'+t("Support")+'</div>';
@@ -3095,6 +3129,94 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   }
   // ---- READING QUIZ (Paso C) — Palabras + Frases, 3 modos con SRS ----
   var PHRASES=[
+    /* ===== Patrones N5 que faltaban (sesión 2026-11-08). Frases propias, vocabulario del pool. ===== */
+    {jp:"みずをのみます",romaji:"mizu o nomimasu",es:"tomo agua",en:"I drink water",parts:["みず", "を", "のみます"],pattern:"v-masu",note:"のむ→のみます: verbo う, む pasa a み + ます"},
+    {jp:"パンをたべます",romaji:"pan o tabemasu",es:"como pan",en:"I eat bread",parts:["パン", "を", "たべます"],pattern:"v-masu",note:"たべる→たべます: verbo る, quitá る y poné ます"},
+    {jp:"テレビをみません",romaji:"terebi o mimasen",es:"no veo la tele",en:"I don't watch TV",parts:["テレビ", "を", "みません"],pattern:"v-masu",note:"みる→みます→みません: el negativo cortés es ～ません"},
+    {jp:"にほんごをべんきょうします",romaji:"nihongo o benkyou shimasu",es:"estudio japonés",en:"I study Japanese",parts:["にほんご", "を", "べんきょうします"],pattern:"v-masu",note:"べんきょうする→べんきょうします: する pasa a します"},
+    {jp:"コーヒーをのみません",romaji:"koohii o nomimasen",es:"no tomo café",en:"I don't drink coffee",parts:["コーヒー", "を", "のみません"],pattern:"v-masu",note:"のみます→のみません"},
+    {jp:"きのうえいがをみました",romaji:"kinou eiga o mimashita",es:"ayer vi una película",en:"I watched a movie yesterday",parts:["きのう", "えいが", "を", "みました"],pattern:"v-mashita",note:"みます→みました: el pasado cortés cambia ます por ました"},
+    {jp:"あさごはんをたべました",romaji:"asagohan o tabemashita",es:"desayuné",en:"I ate breakfast",parts:["あさごはん", "を", "たべました"],pattern:"v-mashita",note:"たべます→たべました"},
+    {jp:"しゅくだいをしませんでした",romaji:"shukudai o shimasen deshita",es:"no hice la tarea",en:"I didn't do my homework",parts:["しゅくだい", "を", "しませんでした"],pattern:"v-mashita",note:"しません→しませんでした: el negativo pasado suma でした"},
+    {jp:"ほんをよみませんでした",romaji:"hon o yomimasen deshita",es:"no leí el libro",en:"I didn't read the book",parts:["ほん", "を", "よみませんでした"],pattern:"v-mashita",note:"よみません→よみませんでした"},
+    {jp:"いっしょにえいがをみませんか",romaji:"issho ni eiga o mimasen ka",es:"¿vemos una película juntos?",en:"Shall we watch a movie together?",parts:["いっしょに", "えいが", "を", "みませんか"],pattern:"inv-masenka",note:"みます→みませんか: invitar con el negativo en pregunta"},
+    {jp:"コーヒーをのみませんか",romaji:"koohii o nomimasen ka",es:"¿tomamos un café?",en:"Would you like some coffee?",parts:["コーヒー", "を", "のみませんか"],pattern:"inv-masenka",note:"のみます→のみませんか"},
+    {jp:"あしたテニスをしませんか",romaji:"ashita tenisu o shimasen ka",es:"¿jugamos tenis mañana?",en:"Shall we play tennis tomorrow?",parts:["あした", "テニス", "を", "しませんか"],pattern:"inv-masenka",note:"します→しませんか"},
+    {jp:"いっしょにかえりましょう",romaji:"issho ni kaerimashou",es:"volvamos juntos",en:"Let's go home together",parts:["いっしょに", "かえりましょう"],pattern:"inv-mashou",note:"かえります→かえりましょう"},
+    {jp:"ちょっとやすみましょう",romaji:"chotto yasumimashou",es:"descansemos un poco",en:"Let's rest a bit",parts:["ちょっと", "やすみましょう"],pattern:"inv-mashou",note:"やすみます→やすみましょう"},
+    {jp:"まどをあけましょうか",romaji:"mado o akemashou ka",es:"¿abro la ventana?",en:"Shall I open the window?",parts:["まど", "を", "あけましょうか"],pattern:"inv-mashou",note:"あけます→あけましょうか: con か ofrece ayuda"},
+    {jp:"ひるごはんをたべましょう",romaji:"hirugohan o tabemashou",es:"almorcemos",en:"Let's have lunch",parts:["ひるごはん", "を", "たべましょう"],pattern:"inv-mashou",note:"たべます→たべましょう"},
+    {jp:"これはあかいくるまです",romaji:"kore wa akai kuruma desu",es:"esto es un carro rojo",en:"This is a red car",parts:["これ", "は", "あかい", "くるま", "です"],pattern:"adj-noun",note:"あかい (adjetivo い) va pegado antes de くるま"},
+    {jp:"しずかなこうえんです",romaji:"shizuka na kouen desu",es:"es un parque tranquilo",en:"It's a quiet park",parts:["しずか", "な", "こうえん", "です"],pattern:"adj-noun",note:"しずか es adjetivo な: lleva な antes de la cosa"},
+    {jp:"あれはたかいやまです",romaji:"are wa takai yama desu",es:"aquella es una montaña alta",en:"That is a tall mountain",parts:["あれ", "は", "たかい", "やま", "です"],pattern:"adj-noun",note:"たかい + やま"},
+    {jp:"きれいなへやです",romaji:"kirei na heya desu",es:"es un cuarto bonito",en:"It's a nice room",parts:["きれい", "な", "へや", "です"],pattern:"adj-noun",note:"きれい termina en い pero es adjetivo な: きれいなへや"},
+    {jp:"このほんはおもしろいです",romaji:"kono hon wa omoshiroi desu",es:"este libro es interesante",en:"This book is interesting",parts:["この", "ほん", "は", "おもしろい", "です"],pattern:"demo-kono",note:"この + cosa = este (cerca de mí)"},
+    {jp:"そのかばんはたかいです",romaji:"sono kaban wa takai desu",es:"ese bolso es caro",en:"That bag is expensive",parts:["その", "かばん", "は", "たかい", "です"],pattern:"demo-kono",note:"その = ese (cerca de vos)"},
+    {jp:"あのひとはせんせいです",romaji:"ano hito wa sensei desu",es:"aquella persona es profesora",en:"That person is a teacher",parts:["あの", "ひと", "は", "せんせい", "です"],pattern:"demo-kono",note:"あの = aquel (lejos de los dos)"},
+    {jp:"わたしもがくせいです",romaji:"watashi mo gakusei desu",es:"yo también soy estudiante",en:"I'm a student too",parts:["わたし", "も", "がくせい", "です"],pattern:"part-mo",note:"も reemplaza a は: «yo también»"},
+    {jp:"これもおいしいです",romaji:"kore mo oishii desu",es:"esto también está rico",en:"This is tasty too",parts:["これ", "も", "おいしい", "です"],pattern:"part-mo",note:"これも = esto también"},
+    {jp:"なにもありません",romaji:"nani mo arimasen",es:"no hay nada",en:"There's nothing",parts:["なに", "も", "ありません"],pattern:"part-mo",note:"なに + も + negativo = nada"},
+    {jp:"でんしゃはバスよりはやいです",romaji:"densha wa basu yori hayai desu",es:"el tren es más rápido que el bus",en:"The train is faster than the bus",parts:["でんしゃ", "は", "バス", "より", "はやい", "です"],pattern:"cmp-yori",note:"バスより = «que el bus»"},
+    {jp:"きょうはきのうよりさむいです",romaji:"kyou wa kinou yori samui desu",es:"hoy hace más frío que ayer",en:"Today is colder than yesterday",parts:["きょう", "は", "きのう", "より", "さむい", "です"],pattern:"cmp-yori",note:"きのうより = «que ayer»"},
+    {jp:"ねこはいぬよりちいさいです",romaji:"neko wa inu yori chiisai desu",es:"el gato es más pequeño que el perro",en:"The cat is smaller than the dog",parts:["ねこ", "は", "いぬ", "より", "ちいさい", "です"],pattern:"cmp-yori",note:"いぬより = «que el perro»"},
+    {jp:"あたらしいくるまがほしいです",romaji:"atarashii kuruma ga hoshii desu",es:"quiero un carro nuevo",en:"I want a new car",parts:["あたらしい", "くるま", "が", "ほしい", "です"],pattern:"hoshii",note:"が + ほしい: querer una cosa"},
+    {jp:"みずがほしいです",romaji:"mizu ga hoshii desu",es:"quiero agua",en:"I want water",parts:["みず", "が", "ほしい", "です"],pattern:"hoshii",note:"みずがほしい"},
+    {jp:"なにがほしいですか",romaji:"nani ga hoshii desu ka",es:"¿qué querés?",en:"What do you want?",parts:["なに", "が", "ほしい", "ですか"],pattern:"hoshii",note:"なにがほしいですか"},
+    {jp:"パンとみずをください",romaji:"pan to mizu o kudasai",es:"pan y agua, por favor",en:"Bread and water, please",parts:["パン", "と", "みず", "を", "ください"],pattern:"part-to",note:"と une la lista completa: pan y agua, nada más"},
+    {jp:"ともだちとえいがをみます",romaji:"tomodachi to eiga o mimasu",es:"veo una película con un amigo",en:"I watch a movie with a friend",parts:["ともだち", "と", "えいが", "を", "みます"],pattern:"part-to",note:"ともだちと = con un amigo"},
+    {jp:"いぬとねこがいます",romaji:"inu to neko ga imasu",es:"hay un perro y un gato",en:"There's a dog and a cat",parts:["いぬ", "と", "ねこ", "が", "います"],pattern:"part-to",note:"いぬとねこ = un perro y un gato"},
+    {jp:"りんごやバナナをかいました",romaji:"ringo ya banana o kaimashita",es:"compré manzanas, bananos y cosas así",en:"I bought apples, bananas and such",parts:["りんご", "や", "バナナ", "を", "かいました"],pattern:"part-ya",note:"や da ejemplos: hubo más cosas"},
+    {jp:"ほんやざっしがあります",romaji:"hon ya zasshi ga arimasu",es:"hay libros, revistas y otras cosas",en:"There are books, magazines and so on",parts:["ほん", "や", "ざっし", "が", "あります"],pattern:"part-ya",note:"ほんやざっし: algunos ejemplos"},
+    {jp:"にくやさかななどをたべます",romaji:"niku ya sakana nado o tabemasu",es:"como carne, pescado, etcétera",en:"I eat meat, fish and so on",parts:["にく", "や", "さかな", "など", "を", "たべます"],pattern:"part-ya",note:"など cierra con «etcétera»"},
+    {jp:"みずだけください",romaji:"mizu dake kudasai",es:"solo agua, por favor",en:"Just water, please",parts:["みず", "だけ", "ください"],pattern:"dake",note:"だけ = solo"},
+    {jp:"ひとつだけかいました",romaji:"hitotsu dake kaimashita",es:"compré solo uno",en:"I bought just one",parts:["ひとつ", "だけ", "かいました"],pattern:"dake",note:"ひとつだけ"},
+    {jp:"にほんごはすこしだけわかります",romaji:"nihongo wa sukoshi dake wakarimasu",es:"entiendo solo un poco de japonés",en:"I understand just a little Japanese",parts:["にほんご", "は", "すこし", "だけ", "わかります"],pattern:"dake",note:"すこしだけ = solo un poco"},
+    {jp:"しちじにおきます",romaji:"shichiji ni okimasu",es:"me levanto a las siete",en:"I get up at seven",parts:["しちじ", "に", "おきます"],pattern:"time-ni",note:"しちじに = a las siete"},
+    {jp:"にちようびにやすみます",romaji:"nichiyoubi ni yasumimasu",es:"descanso el domingo",en:"I rest on Sunday",parts:["にちようび", "に", "やすみます"],pattern:"time-ni",note:"にちようびに = el domingo"},
+    {jp:"くじにねます",romaji:"kuji ni nemasu",es:"me acuesto a las nueve",en:"I go to bed at nine",parts:["くじ", "に", "ねます"],pattern:"time-ni",note:"くじに = a las nueve"},
+    {jp:"ごはんをたべにいきます",romaji:"gohan o tabe ni ikimasu",es:"voy a comer",en:"I'm going to eat",parts:["ごはん", "を", "たべに", "いきます"],pattern:"purpose-ni",note:"たべます→たべ + に + いきます"},
+    {jp:"えいがをみにいきます",romaji:"eiga o mi ni ikimasu",es:"voy a ver una película",en:"I'm going to see a movie",parts:["えいが", "を", "みに", "いきます"],pattern:"purpose-ni",note:"みます→み + に + いきます"},
+    {jp:"にほんへあそびにきました",romaji:"nihon e asobi ni kimashita",es:"vine a Japón a pasear",en:"I came to Japan to have fun",parts:["にほん", "へ", "あそびに", "きました"],pattern:"purpose-ni",note:"あそびます→あそび + に + きました"},
+    {jp:"しちじごろおきます",romaji:"shichiji goro okimasu",es:"me levanto a eso de las siete",en:"I get up around seven",parts:["しちじ", "ごろ", "おきます"],pattern:"goro-gurai",note:"ごろ = a eso de (hora)"},
+    {jp:"いちじかんぐらいかかります",romaji:"ichijikan gurai kakarimasu",es:"tarda más o menos una hora",en:"It takes about an hour",parts:["いちじかん", "ぐらい", "かかります"],pattern:"goro-gurai",note:"ぐらい = más o menos (duración)"},
+    {jp:"じゅっぷんぐらいまってください",romaji:"juppun gurai matte kudasai",es:"esperá unos diez minutos, por favor",en:"Please wait about ten minutes",parts:["じゅっぷん", "ぐらい", "まって", "ください"],pattern:"goro-gurai",note:"じゅっぷんぐらい"},
+    {jp:"バスよりでんしゃのほうがはやいです",romaji:"basu yori densha no hou ga hayai desu",es:"el tren es más rápido que el bus",en:"The train is faster than the bus",parts:["バス", "より", "でんしゃ", "の", "ほう", "が", "はやい", "です"],pattern:"cmp-hou",note:"でんしゃのほうが = el tren es el que gana"},
+    {jp:"コーヒーのほうがすきです",romaji:"koohii no hou ga suki desu",es:"me gusta más el café",en:"I like coffee better",parts:["コーヒー", "の", "ほう", "が", "すき", "です"],pattern:"cmp-hou",note:"のほうがすき = me gusta más"},
+    {jp:"やまよりうみのほうがいいです",romaji:"yama yori umi no hou ga ii desu",es:"prefiero el mar a la montaña",en:"The sea is better than the mountains",parts:["やま", "より", "うみ", "の", "ほう", "が", "いい", "です"],pattern:"cmp-hou",note:"うみのほうがいい"},
+    {jp:"このみせでこれがいちばんやすいです",romaji:"kono mise de kore ga ichiban yasui desu",es:"en esta tienda esto es lo más barato",en:"This is the cheapest in this shop",parts:["この", "みせ", "で", "これ", "が", "いちばん", "やすい", "です"],pattern:"cmp-ichiban",note:"このみせで = en esta tienda (el grupo)"},
+    {jp:"なにがいちばんすきですか",romaji:"nani ga ichiban suki desu ka",es:"¿qué es lo que más te gusta?",en:"What do you like most?",parts:["なに", "が", "いちばん", "すき", "ですか"],pattern:"cmp-ichiban",note:"いちばんすき = lo que más gusta"},
+    {jp:"くだものでりんごがいちばんすきです",romaji:"kudamono de ringo ga ichiban suki desu",es:"de las frutas, la manzana es la que más me gusta",en:"Of fruits, I like apples best",parts:["くだもの", "で", "りんご", "が", "いちばん", "すき", "です"],pattern:"cmp-ichiban",note:"くだもので = entre las frutas"},
+    {jp:"くじからごじまでしごとです",romaji:"kuji kara goji made shigoto desu",es:"trabajo de nueve a cinco",en:"I work from nine to five",parts:["くじ", "から", "ごじ", "まで", "しごと", "です"],pattern:"kara-made",note:"から (desde) y まで (hasta)"},
+    {jp:"うちからえきまであるきます",romaji:"uchi kara eki made arukimasu",es:"camino de la casa a la estación",en:"I walk from home to the station",parts:["うち", "から", "えき", "まで", "あるきます"],pattern:"kara-made",note:"うちから・えきまで"},
+    {jp:"げつようびからきんようびまでがっこうです",romaji:"getsuyoubi kara kin'youbi made gakkou desu",es:"tengo clases de lunes a viernes",en:"I have school Monday to Friday",parts:["げつようび", "から", "きんようび", "まで", "がっこう", "です"],pattern:"kara-made",note:"げつようびから・きんようびまで"},
+    {jp:"たかいけどおいしい",romaji:"takai kedo oishii",es:"es caro pero rico",en:"It's pricey but tasty",parts:["たかい", "けど", "おいしい"],pattern:"conj-kedo",note:"けど = pero (casual)"},
+    {jp:"にほんごはむずかしいですがおもしろいです",romaji:"nihongo wa muzukashii desu ga omoshiroi desu",es:"el japonés es difícil pero interesante",en:"Japanese is hard but interesting",parts:["にほんご", "は", "むずかしい", "ですが", "おもしろい", "です"],pattern:"conj-kedo",note:"ですが = pero (cortés)"},
+    {jp:"いきたいけどじかんがない",romaji:"ikitai kedo jikan ga nai",es:"quiero ir pero no tengo tiempo",en:"I want to go but I have no time",parts:["いきたい", "けど", "じかん", "が", "ない"],pattern:"conj-kedo",note:"いきたい + けど + じかんがない"},
+    {jp:"にくはあまりたべません",romaji:"niku wa amari tabemasen",es:"no como mucha carne",en:"I don't eat much meat",parts:["にく", "は", "あまり", "たべません"],pattern:"amari-nai",note:"あまり + negativo = no mucho"},
+    {jp:"このほんはあまりおもしろくないです",romaji:"kono hon wa amari omoshirokunai desu",es:"este libro no es muy interesante",en:"This book isn't very interesting",parts:["この", "ほん", "は", "あまり", "おもしろくない", "です"],pattern:"amari-nai",note:"あまり + おもしろくない"},
+    {jp:"ぜんぜんわかりません",romaji:"zenzen wakarimasen",es:"no entiendo nada",en:"I don't understand at all",parts:["ぜんぜん", "わかりません"],pattern:"amari-nai",note:"ぜんぜん + negativo = para nada"},
+    {jp:"ここでたばこをすわないでください",romaji:"koko de tabako o suwanaide kudasai",es:"por favor no fume aquí",en:"Please don't smoke here",parts:["ここ", "で", "たばこ", "を", "すわないで", "ください"],pattern:"req-naide",note:"すう→すわない→すわないでください"},
+    {jp:"しゃしんをとらないでください",romaji:"shashin o toranaide kudasai",es:"por favor no tome fotos",en:"Please don't take photos",parts:["しゃしん", "を", "とらないで", "ください"],pattern:"req-naide",note:"とる→とらない→とらないでください"},
+    {jp:"わすれないでください",romaji:"wasurenaide kudasai",es:"no te olvides, por favor",en:"Please don't forget",parts:["わすれないで", "ください"],pattern:"req-naide",note:"わすれる→わすれない→わすれないでください"},
+    {jp:"このみせはやすくておいしいです",romaji:"kono mise wa yasukute oishii desu",es:"esta tienda es barata y rica",en:"This place is cheap and tasty",parts:["この", "みせ", "は", "やすくて", "おいしい", "です"],pattern:"adj-te",note:"やすい→やすくて"},
+    {jp:"へやはひろくてあかるいです",romaji:"heya wa hirokute akarui desu",es:"el cuarto es amplio y luminoso",en:"The room is spacious and bright",parts:["へや", "は", "ひろくて", "あかるい", "です"],pattern:"adj-te",note:"ひろい→ひろくて"},
+    {jp:"こうえんはしずかできれいです",romaji:"kouen wa shizuka de kirei desu",es:"el parque es tranquilo y bonito",en:"The park is quiet and pretty",parts:["こうえん", "は", "しずかで", "きれい", "です"],pattern:"adj-te",note:"しずか (な) → しずかで"},
+    {jp:"もうたべました",romaji:"mou tabemashita",es:"ya comí",en:"I already ate",parts:["もう", "たべました"],pattern:"mou-mada",note:"もう + pasado = ya"},
+    {jp:"まだたべていません",romaji:"mada tabete imasen",es:"todavía no comí",en:"I haven't eaten yet",parts:["まだ", "たべていません"],pattern:"mou-mada",note:"まだ + ～ていません = todavía no"},
+    {jp:"しゅくだいはまだです",romaji:"shukudai wa mada desu",es:"la tarea, todavía no",en:"I haven't done my homework yet",parts:["しゅくだい", "は", "まだ", "です"],pattern:"mou-mada",note:"まだです = todavía no (respuesta corta)"},
+    {jp:"さむくなりました",romaji:"samuku narimashita",es:"se puso frío",en:"It got cold",parts:["さむく", "なりました"],pattern:"naru",note:"さむい→さむく + なりました"},
+    {jp:"へやがきれいになりました",romaji:"heya ga kirei ni narimashita",es:"el cuarto quedó limpio",en:"The room got clean",parts:["へや", "が", "きれい", "に", "なりました"],pattern:"naru",note:"きれい (な) + に + なりました"},
+    {jp:"そらがくらくなりました",romaji:"sora ga kuraku narimashita",es:"el cielo se oscureció",en:"The sky got dark",parts:["そら", "が", "くらく", "なりました"],pattern:"naru",note:"くらい→くらく + なりました"},
+    {jp:"なつやすみににほんへいくつもりです",romaji:"natsuyasumi ni nihon e iku tsumori desu",es:"pienso ir a Japón en las vacaciones de verano",en:"I plan to go to Japan this summer break",parts:["なつやすみ", "に", "にほん", "へ", "いく", "つもり", "です"],pattern:"tsumori",note:"いく + つもりです"},
+    {jp:"あしたはやすむつもりです",romaji:"ashita wa yasumu tsumori desu",es:"mañana pienso descansar",en:"I plan to rest tomorrow",parts:["あした", "は", "やすむ", "つもり", "です"],pattern:"tsumori",note:"やすむ + つもりです"},
+    {jp:"きょうはべんきょうするつもりです",romaji:"kyou wa benkyou suru tsumori desu",es:"hoy pienso estudiar",en:"I plan to study today",parts:["きょう", "は", "べんきょうする", "つもり", "です"],pattern:"tsumori",note:"べんきょうする + つもりです"},
+    {jp:"こどものときよくあそびました",romaji:"kodomo no toki yoku asobimashita",es:"de niño jugaba mucho",en:"I played a lot as a kid",parts:["こども", "の", "とき", "よく", "あそびました"],pattern:"toki",note:"こども + の + とき"},
+    {jp:"ねるときでんきをけします",romaji:"neru toki denki o keshimasu",es:"cuando me acuesto apago la luz",en:"I turn off the light when I go to bed",parts:["ねる", "とき", "でんき", "を", "けします"],pattern:"toki",note:"ねる + とき"},
+    {jp:"さむいときコーヒーをのみます",romaji:"samui toki koohii o nomimasu",es:"cuando hace frío tomo café",en:"I drink coffee when it's cold",parts:["さむい", "とき", "コーヒー", "を", "のみます"],pattern:"toki",note:"さむい + とき"},
+    {jp:"ねるまえにほんをよみます",romaji:"neru mae ni hon o yomimasu",es:"antes de dormir leo un libro",en:"I read before going to bed",parts:["ねる", "まえに", "ほん", "を", "よみます"],pattern:"mae-ato",note:"ねる + まえに"},
+    {jp:"ごはんをたべるまえにてをあらいます",romaji:"gohan o taberu mae ni te o araimasu",es:"antes de comer me lavo las manos",en:"I wash my hands before eating",parts:["ごはん", "を", "たべる", "まえに", "て", "を", "あらいます"],pattern:"mae-ato",note:"たべる + まえに"},
+    {jp:"しごとのあとでビールをのみます",romaji:"shigoto no ato de biiru o nomimasu",es:"después del trabajo tomo cerveza",en:"I drink beer after work",parts:["しごと", "の", "あとで", "ビール", "を", "のみます"],pattern:"mae-ato",note:"しごと + の + あとで"},
+    {jp:"しゅくだいをしたあとであそびます",romaji:"shukudai o shita ato de asobimasu",es:"después de hacer la tarea juego",en:"I play after doing my homework",parts:["しゅくだい", "を", "した", "あとで", "あそびます"],pattern:"mae-ato",note:"した + あとで"},
     /* ===== Frases construibles por patrón (para entender la estructura) =====
        Todas composicionales, con vocabulario legible temprano. Cada bloque
        drilla UN patrón con variantes para que se vea el molde repetido. */
@@ -4206,6 +4328,37 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     {jp:"よっつ",romaji:"yottsu",es:"cuatro (cosas)",en:"four (things)",emoji:""},
     {jp:"いつつ",romaji:"itsutsu",es:"cinco (cosas)",en:"five (things)",emoji:""}
   ];
+  /* Horas, minutos, pisos y algunas piezas que usan las frases, la escucha y la lectura del examen.
+     にじ (las dos) no entra: el pool ya tiene にじ = arcoíris y las claves son únicas por kana. */
+  var N5_WORDS4=[
+    {jp:"いちじ",romaji:"ichiji",es:"la una",en:"one o'clock"},
+    {jp:"さんじ",romaji:"sanji",es:"las tres",en:"three o'clock"},
+    {jp:"よじ",romaji:"yoji",es:"las cuatro",en:"four o'clock"},
+    {jp:"ごじ",romaji:"goji",es:"las cinco",en:"five o'clock"},
+    {jp:"ろくじ",romaji:"rokuji",es:"las seis",en:"six o'clock"},
+    {jp:"しちじ",romaji:"shichiji",es:"las siete",en:"seven o'clock"},
+    {jp:"はちじ",romaji:"hachiji",es:"las ocho",en:"eight o'clock"},
+    {jp:"くじ",romaji:"kuji",es:"las nueve",en:"nine o'clock"},
+    {jp:"じゅうじ",romaji:"juuji",es:"las diez",en:"ten o'clock"},
+    {jp:"じゅういちじ",romaji:"juuichiji",es:"las once",en:"eleven o'clock"},
+    {jp:"じゅうにじ",romaji:"juuniji",es:"las doce",en:"twelve o'clock"},
+    {jp:"ごふん",romaji:"gofun",es:"cinco minutos",en:"five minutes"},
+    {jp:"じゅっぷん",romaji:"juppun",es:"diez minutos",en:"ten minutes"},
+    {jp:"じゅうごふん",romaji:"juugofun",es:"quince minutos",en:"fifteen minutes"},
+    {jp:"さんじゅっぷん",romaji:"sanjuppun",es:"treinta minutos",en:"thirty minutes"},
+    {jp:"なんぷん",romaji:"nanpun",es:"cuántos minutos",en:"how many minutes"},
+    {jp:"いちじかん",romaji:"ichijikan",es:"una hora (de duración)",en:"one hour (duration)"},
+    {jp:"にじかん",romaji:"nijikan",es:"dos horas (de duración)",en:"two hours (duration)"},
+    {jp:"なんにん",romaji:"nannin",es:"cuántas personas",en:"how many people"},
+    {jp:"いっしょに",romaji:"issho ni",es:"juntos",en:"together"},
+    {jp:"ビール",romaji:"biiru",es:"cerveza",en:"beer"},
+    {jp:"そうじ",romaji:"souji",es:"limpieza",en:"cleaning"},
+    {jp:"いっかい",romaji:"ikkai",es:"primer piso",en:"first floor"},
+    {jp:"にかい",romaji:"nikai",es:"segundo piso",en:"second floor"},
+    {jp:"さんがい",romaji:"sangai",es:"tercer piso",en:"third floor"},
+    {jp:"なんがい",romaji:"nangai",es:"qué piso",en:"which floor"},
+    {jp:"はなび",romaji:"hanabi",es:"fuegos artificiales",en:"fireworks"}
+  ];
   var N5_WORDS3=[
     /* colores y adjetivos de color */
     {jp:"あおい",romaji:"aoi",es:"azul",en:"blue",emoji:"🔵"},
@@ -4547,7 +4700,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     {jp:"もういちど",romaji:"mou ichido",es:"otra vez / una vez más",en:"once more",emoji:"🔁"},
     {jp:"ラジオ",romaji:"rajio",es:"radio",en:"radio",emoji:"📻"}
   ];
-  var WORD_POOL=(function(){ var seen={},out=[]; EXTRA_WORDS.forEach(function(o){ if(!seen[o.jp]){seen[o.jp]=1;out.push({jp:o.jp,romaji:o.romaji,es:o.es,en:o.en,emoji:(EMOJI[o.jp]||"")});} }); for(var k in WORDS){ WORDS[k].forEach(function(o){ if(!seen[o.w]){ seen[o.w]=1; out.push({jp:o.w,romaji:o.r,en:o.m,es:(MEANINGS_ES[o.m]||o.m),emoji:(EMOJI[o.w]||"")}); } }); } MORE_WORDS.forEach(function(o){ if(!seen[o.jp]){ seen[o.jp]=1; out.push({jp:o.jp,romaji:o.romaji,es:o.es,en:o.en,emoji:(EMOJI[o.jp]||"")}); } }); N5_WORDS.forEach(function(o){ if(!seen[o.jp]){ seen[o.jp]=1; out.push({jp:o.jp,romaji:o.romaji,es:o.es,en:o.en,emoji:(o.emoji||EMOJI[o.jp]||"")}); } }); N5_WORDS2.forEach(function(o){ if(!seen[o.jp]){ seen[o.jp]=1; out.push({jp:o.jp,romaji:o.romaji,es:o.es,en:o.en,emoji:(o.emoji||EMOJI[o.jp]||"")}); } }); N5_WORDS3.forEach(function(o){ if(!seen[o.jp]){ seen[o.jp]=1; out.push({jp:o.jp,romaji:o.romaji,es:o.es,en:o.en,emoji:(o.emoji||EMOJI[o.jp]||"")}); } }); return out; })();
+  var WORD_POOL=(function(){ var seen={},out=[]; EXTRA_WORDS.forEach(function(o){ if(!seen[o.jp]){seen[o.jp]=1;out.push({jp:o.jp,romaji:o.romaji,es:o.es,en:o.en,emoji:(EMOJI[o.jp]||"")});} }); for(var k in WORDS){ WORDS[k].forEach(function(o){ if(!seen[o.w]){ seen[o.w]=1; out.push({jp:o.w,romaji:o.r,en:o.m,es:(MEANINGS_ES[o.m]||o.m),emoji:(EMOJI[o.w]||"")}); } }); } MORE_WORDS.forEach(function(o){ if(!seen[o.jp]){ seen[o.jp]=1; out.push({jp:o.jp,romaji:o.romaji,es:o.es,en:o.en,emoji:(EMOJI[o.jp]||"")}); } }); N5_WORDS.forEach(function(o){ if(!seen[o.jp]){ seen[o.jp]=1; out.push({jp:o.jp,romaji:o.romaji,es:o.es,en:o.en,emoji:(o.emoji||EMOJI[o.jp]||"")}); } }); N5_WORDS2.forEach(function(o){ if(!seen[o.jp]){ seen[o.jp]=1; out.push({jp:o.jp,romaji:o.romaji,es:o.es,en:o.en,emoji:(o.emoji||EMOJI[o.jp]||"")}); } }); N5_WORDS3.forEach(function(o){ if(!seen[o.jp]){ seen[o.jp]=1; out.push({jp:o.jp,romaji:o.romaji,es:o.es,en:o.en,emoji:(o.emoji||EMOJI[o.jp]||"")}); } }); N5_WORDS4.forEach(function(o){ if(!seen[o.jp]){ seen[o.jp]=1; out.push({jp:o.jp,romaji:o.romaji,es:o.es,en:o.en,emoji:(o.emoji||EMOJI[o.jp]||"")}); } }); return out; })();
   /* índice jp -> entrada de WORD_POOL, para lookups puntuales (ej. desglose de
      bloques en "armá la frase") sin recorrer las 1300+ entradas cada vez */
   var WORD_BY_JP=(function(){ var m={}; WORD_POOL.forEach(function(o){ m[o.jp]=o; }); return m; })();
@@ -4561,8 +4714,8 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
      queda cerca de 0 hasta que exista el motor del Stage 6 = techo honesto.
      No agrega estado persistido: todo se deriva del SRS que ya existe. */
   var N5_READINGS=new Set(["あう","あお","あおい","あか","あかい","あかるい","あき","あく","あける","あげる","あさ","あさごはん","あさって","あし","あした","あそこ","あそぶ","あたたかい","あたま","あたらしい","あちら","あつい","あっち","あと","あなた","あに","あね","あの","アパート","あびる","あぶない","あまい","あまり","あめ","あらう","ある","あるく","あれ","いい","よい","いいえ","いう","いえ","いかが","いく","いくつ","いくら","いけ","いしゃ","いす","いそがしい","いたい","いち","いちにち","いちばん","いつ","いつか","いっしょ","いつつ","いつも","いぬ","いま","いみ","いもうと","いや","いりぐち","いる","いれる","いろ","いろいろ","うえ","うしろ","うすい","うた","うたう","うまれる","うみ","うる","うるさい","うわぎ","え","えいが","えいがかん","えいご","ええ","えき","エレベーター","えんぴつ","おいしい","おおい","おおきい","おおきな","おおぜい","おかあさん","おかし","おかね","おきる","おく","おくさん","おさけ","おさら","おじいさん","おしえる","おじさん","おす","おそい","おちゃ","おてあらい","おとうさん","おとうと","おとこ","おとこのこ","おととい","おととし","おとな","おなか","おなじ","おにいさん","おねえさん","おばあさん","おばさん","おふろ","おべんとう","おぼえる","おまわりさん","おもい","おもしろい","およぐ","おりる","おわる","おんがく","おんな","おんなのこ","がいこく","がいこくじん","かいしゃ","かいだん","かいもの","かう","かえす","かえる","かかる","かぎ","かく","がくせい","かける","かさ","かす","かぜ","かぞく","かた","がっこう","カップ","かてい","かど","かばん","かびん","かみ","カメラ","かようび","からい","からだ","かりる","かるい","カレー","カレンダー","かわ","かわいい","かんじ","き","きいろ","きいろい","きえる","きく","きた","ギター","きたない","きっさてん","きって","きっぷ","きのう","きゅう","く","ぎゅうにく","ぎゅうにゅう","きょう","きょうしつ","きょうだい","きょねん","きらい","きる","きれい","キロ","キログラム","キロメートル","ぎんこう","きんようび","くすり","ください","くだもの","くち","くつ","くつした","くに","くもり","くもる","くらい","クラス","グラム","くる","くるま","くろ","くろい","けいかん","けさ","けす","けっこう","けっこん","げつようび","げんかん","げんき","ご","こうえん","こうさてん","こうちゃ","こうばん","こえ","コート","コーヒー","ここ","ごご","ここのか","ここのつ","ごぜん","こたえる","こちら","こっち","コップ","ことし","ことば","こども","この","ごはん","コピーする","こまる","これ","こんげつ","こんしゅう","こんな","こんばん","さあ","さいふ","さかな","さき","さく","さくぶん","さす","ざっし","さとう","さむい","さらいねん","さん","さんぽする","し","よん","しお","しかし","じかん","しごと","じしょ","しずか","した","しち","なな","しつもん","じてんしゃ","じどうしゃ","しぬ","じびき","じぶん","しまる","しめる","じゃ","じゃあ","しゃしん","シャツ","シャワー","じゅう とお","じゅぎょう","しゅくだい","じょうず","じょうぶ","しょうゆ","しょくどう","しる","しろ","しろい","しんぶん","すいようび","すう","スカート","すき","すくない","すぐに","すこし","すずしい","ストーブ","スプーン","スポーツ","ズボン","すむ","スリッパ","する","すわる","せ","せいと","セーター","せっけん","せびろ","せまい","ゼロ","せん","せんげつ","せんしゅう","せんせい","せんたく","ぜんぶ","そうじする","そうして","そして","そこ","そちら","そっち","そと","その","そば","そら","それ","それから","それでは","だいがく","たいしかん","だいじょうぶ","だいすき","たいせつ","だいどころ","たいへん","たかい","たくさん","タクシー","だす","たつ","たて","たてもの","たのしい","たのむ","たばこ","たぶん","たべもの","たべる","たまご","だれ","だれか","たんじょうび","だんだん","ちいさい","ちいさな","ちかい","ちがう","ちかく","ちかてつ","ちず","ちゃいろ","ちゃわん","ちょうど","ちょっと","ついたち","つかう","つかれる","つぎ","つく","つくえ","つくる","つける","つとめる","つまらない","つめたい","つよい","て","テープ","テーブル","テープレコーダー","でかける","てがみ","できる","でぐち","テスト","では","デパート","でも","でる","テレビ","てんき","でんき","でんしゃ","でんわ","と","ドア","トイレ","どう","どうして","どうぞ","どうぶつ","どうも","とおい","とおか","ときどき","とけい","どこ","ところ","とし","としょかん","どちら","どっち","とても","どなた","となり","どの","とぶ","とまる","ともだち","どようび","とり","とりにく","とる","どれ","ナイフ","なか","ながい","なく","なくす","なぜ","なつ","なつやすみ","など","ななつ","なのか","なまえ","ならう","ならぶ","ならべる","なる","なん","なに","に","にぎやか","にく","にし","にちようび","にもつ","ニュース","にわ","ぬぐ","ぬるい","ネクタイ","ねこ","ねる","ノート","のぼる","のみもの","のむ","のる","は","パーティー","はい","はいざら","はいる","はがき","はく","はこ","はし","はじまる","はじめ","はじめて","はしる","バス","バター","はたち","はたらく","はち","はつか","はな","はなし","はなす","はやい","はる","はれ","はれる","はん","ばん","パン","ハンカチ","ばんごう","ばんごはん","はんぶん","ひがし","ひく","ひくい","ひこうき","ひだり","ひと","ひとつ","ひとつき","ひとり","ひま","ひゃく","びょういん","びょうき","ひる","ひるごはん","ひろい","フィルム","ふうとう","プール","フォーク","ふく","ふたつ","ぶたにく","ふたり","ふつか","ふとい","ふゆ","ふる","ふるい","ふろ","ぶんしょう","ページ","へた","ベッド","ペット","へや","へん","ペン","べんきょうする","べんり","ぼうし","ボールペン","ほか","ポケット","ほしい","ポスト","ほそい","ボタン","ホテル","ほん","ほんだな","ほんとう","まいあさ","まいげつ","まいつき","まいしゅう","まいにち","まいねん","まいとし","まいばん","まえ","まがる","まずい","また","まだ","まち","まつ","まっすぐ","マッチ","まど","まるい","まん","まんねんひつ","みがく","みぎ","みじかい","みず","みせ","みせる","みち","みっか","みっつ","みどり","みなさん","みなみ","みみ","みる","みんな","むいか","むこう","むずかしい","むっつ","むら","め","メートル","めがね","もう","もういちど","もくようび","もつ","もっと","もの","もん","もんだい","やおや","やさい","やさしい","やすい","やすみ","やすむ","やっつ","やま","やる","ゆうがた","ゆうはん","ゆうびんきょく","ゆうべ","ゆうめい","ゆき","ゆく","ゆっくりと","ようか","ようふく","よく","よこ","よっか","よっつ","よぶ","よむ","よる","よわい","らいげつ","らいしゅう","らいねん","ラジオ","ラジカセ","ラジオカセット","りっぱ","りゅうがくせい","りょうしん","りょうり","りょこう","れい","れいぞうこ","レコード","レストラン","れんしゅうする","ろうか","ろく","ワイシャツ","わかい","わかる","わすれる","わたくし","わたし","わたす","わたる","わるい","より","ほう"]);
-  var N5_KANJI=new Set("日一国人年大十二本中長出三時行見月後前生五間上東四今金九入学高円子外八六下来気小七山話女北午百書先名川千水半男西電校語土木聞食車何南万毎白天母火右読友左休父雨".split(""));
-  var N5_VOCAB_TOTAL=665, N5_KANJI_TOTAL=79, N5_GRAMMAR_TOTAL=80;
+  var N5_KANJI=new Set("日一国人年大十二本中長出三時行見月後前生五間上東四今金九入学高円子外八六下来気小七山話女北午百書先名川千水半男西電校語土木聞食車何南万毎白天母火右読友左休父雨会社分新立手目言多安道口少空足店古買週花駅飲魚耳".split(""));  /* 79 de la lista vieja + 24 de la lista de 103 que usan los materiales desde 2010 */
+  var N5_VOCAB_TOTAL=665, N5_KANJI_TOTAL=N5_KANJI.size, N5_GRAMMAR_TOTAL=80;
   var N5_W={kana:0.15,vocab:0.30,kanji:0.20,gram:0.35};
   var _n5WordSet=null;
   function n5WordSet(){ if(_n5WordSet)return _n5WordSet; var m={};
@@ -6925,6 +7078,8 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
      KANJI_UNLOCK_AT. wordFormHTML() enruta la forma correcta en cada render; wordReadable()
      NO cambia: el kana manda, así nunca frenás tu lectura esperando un kanji. */
   var KANJI_WORDS={  /* kana -> forma con kanji. 397 formas: 20 semillas verificadas + JMdict common (eng) con desambiguación por sentido + correcciones curadas. */
+    /* ampliación N5 de 103 kanji, horas y minutos */
+    'はなび':'花火','あう':'会う','かいしゃ':'会社','いう':'言う','おおい':'多い','すくない':'少ない','らいしゅう':'来週','せんしゅう':'先週','まいしゅう':'毎週','こんしゅう':'今週','いりぐち':'入口','かいもの':'買い物','いちじ':'一時','さんじ':'三時','よじ':'四時','ごじ':'五時','ろくじ':'六時','しちじ':'七時','はちじ':'八時','くじ':'九時','じゅうじ':'十時','じゅういちじ':'十一時','じゅうにじ':'十二時','ごふん':'五分','じゅっぷん':'十分','じゅうごふん':'十五分','さんじゅっぷん':'三十分','なんぷん':'何分','いちじかん':'一時間','にじかん':'二時間','なんにん':'何人',
     'あお':'青','あか':'赤','あかるい':'明るい','あき':'秋','あける':'開ける','あさ':'朝',
     'あし':'足','あした':'明日','あそぶ':'遊ぶ','あたたかい':'暖かい','あたま':'頭','あたらしい':'新しい',
     'あに':'兄','あね':'姉','あぶない':'危ない','あまい':'甘い','あめ':'雨','あるく':'歩く',
@@ -6972,7 +7127,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     'ならう':'習う','なん':'何','なんじ':'何時','に':'二','にがい':'苦い','にぎやか':'賑やか',
     'にく':'肉','にげる':'逃げる','にし':'西','にちようび':'日曜日','にほん':'日本','にほんご':'日本語',
     'にわ':'庭','ぬの':'布','ぬま':'沼','ぬる':'塗る','ねこ':'猫','ねる':'寝る',
-    'のぼる':'上る','のみもの':'飲物','のむ':'飲む','のり':'海苔','のる':'乗る','は':'歯',
+    'のぼる':'上る','のみもの':'飲み物','のむ':'飲む','のり':'海苔','のる':'乗る','は':'歯',
     'はいる':'入る','はしる':'走る','はたらく':'働く','はち':'八','はっぱ':'葉っぱ','はなす':'話す',
     'はは':'母','はやい':'早い','はる':'春','はれ':'晴れ','ばくだん':'爆弾','ばしょ':'場所',
     'ばん':'晩','ばんごはん':'晩御飯','ひ':'日','ひがし':'東','ひくい':'低い','ひげ':'髭',
@@ -7060,12 +7215,12 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     '秋':[9,4,635,'シュウ','あき,とき','otoño','autumn'],
     '開':[12,4,59,'カイ','ひら.く,ひら.き,-びら.き,ひら.ける,あ.く','abrir','open, unfold, unseal'],
     '朝':[12,4,248,'チョウ','あさ','mañana','morning, dynasty, regime'],
-    '足':[7,4,343,'ソク','あし,た.りる,た.る,た.す','pie, pierna','leg, foot, be sufficient'],
+    '足':[7,5,343,'ソク','あし,た.りる,た.る,た.す','pie, pierna','leg, foot, be sufficient'],
     '日':[4,5,1,'ニチ,ジツ','ひ,-び,-か','día, sol','day, sun, Japan'],
     '遊':[12,3,941,'ユウ,ユ','あそ.ぶ,あそ.ばす','jugar','play'],
     '暖':[13,1,1371,'ダン,ノン','あたた.か,あたた.かい,あたた.まる,あたた.める','calidez','warmth'],
     '頭':[16,3,433,'トウ,ズ,ト','あたま,かしら,-がしら,かぶり','cabeza','head'],
-    '新':[13,4,51,'シン','あたら.しい,あら.た,あら-,にい-','nuevo','new'],
+    '新':[13,5,51,'シン','あたら.しい,あら.た,あら-,にい-','nuevo','new'],
     '兄':[5,4,1219,'ケイ,キョウ','あに','hermano mayor','elder brother, big brother'],
     '姉':[8,4,1473,'シ','あね,はは','hermana mayor','elder sister'],
     '危':[6,3,606,'キ','あぶ.ない,あや.うい,あや.ぶむ','peligro','dangerous, fear, uneasy'],
@@ -7102,7 +7257,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     '画':[8,4,199,'ガ,カク,エ,カイ','えが.く,かく.する,かぎ.る,はかりごと,はか.る','trazo, imagen','brush-stroke, picture'],
     '英':[8,4,430,'エイ','はなぶさ','inglés, Inglaterra','England, english, hero'],
     '語':[14,5,301,'ゴ','かた.る,かた.らう','palabra, idioma','word, speech, language'],
-    '駅':[14,4,724,'エキ','','estación','station'],
+    '駅':[14,5,724,'エキ','','estación','station'],
     '老':[6,3,803,'ロウ','お.いる,ふ.ける','anciano, envejecer','old man, old age, grow old'],
     '選':[15,3,57,'セン','えら.ぶ','elegir','elect, select, choose'],
     '円':[4,5,69,'エン','まる.い,まる,まど,まど.か,まろ.やか','círculo, yen','circle, yen, round'],
@@ -7112,7 +7267,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     '味':[8,4,442,'ミ','あじ,あじ.わう','sabor','flavor, taste'],
     '大':[3,5,7,'ダイ,タイ','おお-,おお.きい,-おお.いに','grande','large, big'],
     '母':[5,5,570,'ボ','はは,も','madre','mother'],
-    '会':[6,4,4,'カイ,エ','あ.う,あ.わせる,あつ.まる','reunión, encontrar','meeting, meet, party'],
+    '会':[6,5,4,'カイ,エ','あ.う,あ.わせる,あつ.まる','reunión, encontrar','meeting, meet, party'],
     '計':[9,4,228,'ケイ','はか.る,はか.らう','medir, plan','plot, plan, scheme'],
     '菓':[11,2,1719,'カ','','dulces','candy, cakes, fruit'],
     '金':[8,5,53,'キン,コン,ゴン','かね,かな-,-がね','oro, dinero','gold'],
@@ -7136,11 +7291,11 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     '降':[10,3,596,'コウ,ゴ','お.りる,お.ろす,ふ.る,ふ.り,くだ.る','caer, bajar','descend, precipitate, fall'],
     '楽':[13,4,373,'ガク,ラク,ゴウ','たの.しい,たの.しむ,この.む','música, disfrutar','music, comfort, ease'],
     '女':[3,5,151,'ジョ,ニョ,ニョウ','おんな,め','mujer','woman, female'],
-    '社':[7,4,21,'シャ','やしろ','empresa, santuario','company, firm, office'],
+    '社':[7,5,21,'シャ','やしろ','empresa, santuario','company, firm, office'],
     '員':[10,4,54,'イン','','miembro, empleado','employee, member, number'],
     '回':[6,3,50,'カイ,エ','まわ.る,-まわ.る,-まわ.り,まわ.す,-まわ.す','vez, girar','-times, round, game'],
     '復':[12,2,438,'フク','また','volver, restaurar','restore, return to, revert'],
-    '買':[12,4,520,'バイ','か.う','comprar','buy'],
+    '買':[12,5,520,'バイ','か.う','comprar','buy'],
     '顔':[18,3,676,'ガン','かお','cara','face, expression'],
     '鍵':[17,0,2029,'ケン','かぎ','llave','key'],
     '書':[10,5,169,'ショ','か.く,-が.き,-がき','escribir','write'],
@@ -7153,7 +7308,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     '壁':[16,1,1037,'ヘキ','かべ','pared','wall, lining (stomach), fence'],
     '火':[4,5,574,'カ','ひ,-び,ほ-','fuego','fire'],
     '曜':[18,4,940,'ヨウ','','día de la semana','weekday'],
-    '空':[8,4,304,'クウ','そら,あ.く,あ.き,あ.ける,から','cielo, vacío','empty, sky, void'],
+    '空':[8,5,304,'クウ','そら,あ.く,あ.き,あ.ける,から','cielo, vacío','empty, sky, void'],
     '辛':[7,2,1607,'シン','から.い,つら.い,-づら.い,かのと','picante, duro','spicy, bitter, hot'],
     '体':[7,4,88,'タイ,テイ','からだ,かたち','cuerpo','body, substance, object'],
     '軽':[12,2,790,'ケイ,キョウ,キン','かる.い,かろ.やか,かろ.んじる','ligero','lightly, trifling, unimportant'],
@@ -7184,7 +7339,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     '草':[9,3,967,'ソウ','くさ,くさ-,-ぐさ','hierba','grass, weeds, herbs'],
     '果':[8,3,258,'カ','は.たす,はた.す,-は.たす,は.てる,-は.てる','fruto, resultado','fruit, reward, carry out'],
     '物':[8,4,215,'ブツ,モツ','もの,もの-','cosa','thing, object, matter'],
-    '口':[3,4,284,'コウ,ク','くち','boca','mouth'],
+    '口':[3,5,284,'コウ,ク','くち','boca','mouth'],
     '靴':[13,3,1561,'カ','くつ','zapatos','shoes'],
     '下':[3,5,97,'カ,ゲ','した,しも,もと,さ.げる,さ.がる','abajo, bajar','below, down, descend'],
     '首':[9,3,98,'シュ','くび','cuello','neck'],
@@ -7212,7 +7367,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     '交':[6,3,178,'コウ','まじ.わる,まじ.える,ま.じる,まじ.る,ま.ざる','cruzar, mezclar','mingle, mixing, association'],
     '番':[12,3,348,'バン','つが.い','turno, número','turn, number in a series'],
     '声':[7,3,388,'セイ,ショウ','こえ,こわ-','voz','voice'],
-    '言':[7,4,83,'ゲン,ゴン','い.う,こと','decir','say, word'],
+    '言':[7,5,83,'ゲン,ゴン','い.う,こと','decir','say, word'],
     '葉':[12,3,414,'ヨウ','は','hoja','leaf, plane, lobe'],
     '供':[8,3,313,'キョウ,ク,クウ,グ','そな.える,とも,-ども','ofrecer, acompañar','submit, offer, present'],
     '米':[6,3,61,'ベイ,マイ,メエトル','こめ,よね','arroz','rice, Usa, metre'],
@@ -7221,7 +7376,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     '飯':[12,4,1046,'ハン','めし','comida, arroz cocido','meal, boiled rice'],
     '財':[10,3,494,'ザイ,サイ,ゾク','たから','riqueza','property, money, wealth'],
     '布':[5,2,877,'フ','ぬの','tela','linen, cloth, spread'],
-    '魚':[11,4,1208,'ギョ','うお,さかな,-ざかな','pez','fish'],
+    '魚':[11,5,1208,'ギョ','うお,さかな,-ざかな','pez','fish'],
     '桜':[10,1,1237,'オウ,ヨウ','さくら','cerezo','cherry'],
     '鮭':[17,0,2477,'カイ,ケイ','さけ,しゃけ,ふぐ','salmón','salmon'],
     '寂':[11,1,1599,'ジャク,セキ','さび,さび.しい,さび.れる,さみ.しい','soledad','loneliness, quietly, mellow'],
@@ -7255,7 +7410,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     '水':[4,5,223,'スイ','みず,みず-','agua','water'],
     '好':[6,3,423,'コウ','この.む,す.く,よ.い,い.い','gustar','fond, pleasing, like something'],
     '直':[8,3,246,'チョク,ジキ,ジカ','ただ.ちに,なお.す,-なお.す,なお.る,なお.き','recto, arreglar','straightaway, honesty, frankness'],
-    '少':[4,4,287,'ショウ','すく.ない,すこ.し','poco','few, little'],
+    '少':[4,5,287,'ショウ','すく.ない,すこ.し','poco','few, little'],
     '寿':[7,0,1245,'ジュ,ス,シュウ','ことぶき,ことぶ.く,ことほ.ぐ','longevidad','longevity, congratulations, one\'s natural life'],
     '司':[5,1,759,'シ','つかさど.る','dirigir, oficial','director, official, govt office'],
     '涼':[11,2,1783,'リョウ','すず.しい,すず.む,すず.やか,うす.い,ひや.す','fresco','refreshing, nice and cool'],
@@ -7285,12 +7440,12 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     '高':[10,5,65,'コウ','たか.い,たか,-だか,たか.まる,たか.める','alto, caro','tall, high, expensive'],
     '竹':[6,2,593,'チク','たけ','bambú','bamboo'],
     '戦':[13,3,78,'セン','いくさ,たたか.う,おのの.く,そよ.ぐ,わなな.く','guerra, batalla','war, battle, match'],
-    '立':[5,4,58,'リツ,リュウ,リットル','た.つ,-た.つ,た.ち-,た.てる,-た.てる','pararse, erigir','stand up, rise, set up'],
+    '立':[5,5,58,'リツ,リュウ,リットル','た.つ,-た.つ,た.ち-,た.てる,-た.てる','pararse, erigir','stand up, rise, set up'],
     '盾':[9,1,1476,'ジュン','たて','escudo','shield, escutcheon, pretext'],
     '建':[9,4,300,'ケン,コン','た.てる,た.て,-だ.て,た.つ','construir','build'],
     '旅':[10,4,783,'リョ','たび','viaje','trip, travel'],
-    '多':[6,4,139,'タ','おお.い,まさ.に,まさ.る','mucho','many, frequent, much'],
-    '分':[4,0,24,'ブン,フン,ブ','わ.ける,わ.け,わ.かれる,わ.かる,わ.かつ','parte, minuto','part, minute of time, segment'],
+    '多':[6,5,139,'タ','おお.い,まさ.に,まさ.る','mucho','many, frequent, much'],
+    '分':[4,5,24,'ブン,フン,ブ','わ.ける,わ.け,わ.かれる,わ.かる,わ.かつ','parte, minuto','part, minute of time, segment'],
     '食':[9,5,328,'ショク,ジキ','く.う,く.らう,た.べる,は.む','comer, comida','eat, food'],
     '卵':[7,2,1342,'ラン','たまご','huevo','egg, ovum, spawn'],
     '台':[5,4,262,'ダイ,タイ','うてな,われ,つかさ','soporte, base','pedestal, a stand'],
@@ -7306,7 +7461,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     '作':[7,4,103,'サク,サ','つく.る,つく.り,-づく.り','hacer, crear','make, production, prepare'],
     '冷':[7,3,667,'レイ','つめ.たい,ひ.える,ひ.や,ひ.ややか,ひ.やす','frío','cool, cold (beer, person), chill'],
     '強':[11,4,112,'キョウ,ゴウ','つよ.い,つよ.まる,つよ.める,し.いる,こわ.い','fuerte','strong'],
-    '手':[4,4,60,'シュ,ズ','て,て-,-て,た-','mano','hand'],
+    '手':[4,5,60,'シュ,ズ','て,て-,-て,た-','mano','hand'],
     '紙':[10,4,559,'シ','かみ','papel','paper'],
     '天':[4,5,512,'テン','あまつ,あめ,あま-','cielo','heavens, sky, imperial'],
     '出':[5,5,13,'シュツ,スイ','で.る,-で,だ.す,-だ.す,い.でる','salir','exit, leave, go out'],
@@ -7324,7 +7479,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     '達':[12,3,500,'タツ,ダ','-たち','alcanzar, llegar','accomplished, reach, arrive'],
     '虎':[8,1,1653,'コ','とら','tigre','tiger, drunkard'],
     '鳥':[11,4,1043,'チョウ','とり','pájaro','bird, chicken'],
-    '道':[12,4,207,'ドウ,トウ','みち,いう','camino','road-way, street, district'],
+    '道':[12,5,207,'ドウ,トウ','みち,いう','camino','road-way, street, district'],
     '毒':[8,2,1419,'ドク','','veneno','poison, virus, venom'],
     '何':[7,5,340,'カ','なに,なん,なに-,なん-','qué','what'],
     '処':[5,3,547,'ショ','ところ,-こ,お.る','lugar, tratar','dispose, manage, deal with'],
@@ -7382,7 +7537,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     '塗':[13,2,1414,'ト','ぬ.る,ぬ.り,まみ.れる','pintar, untar','paint, plaster, daub'],
     '猫':[11,3,1702,'ビョウ','ねこ','gato','cat'],
     '寝':[13,3,1034,'シン','ね.る,ね.かす,い.ぬ,みたまや,や.める','dormir','lie down, sleep, rest'],
-    '飲':[12,4,969,'イン,オン','の.む,-の.み','beber','drink, smoke, take'],
+    '飲':[12,5,969,'イン,オン','の.む,-の.み','beber','drink, smoke, take'],
     '苔':[8,0,0,'タイ','こけ,こけら','musgo','moss, lichen'],
     '乗':[9,3,377,'ジョウ,ショウ','の.る,-の.り,の.せる','subir, montar','ride, power, multiplication'],
     '歯':[12,3,1106,'シ','よわい,は,よわ.い,よわい.する','diente','tooth, cog'],
@@ -7410,7 +7565,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     '服':[8,4,873,'フク','','ropa','clothing, admit, obey'],
     '船':[11,3,713,'セン','ふね,ふな-','barco','ship, boat'],
     '冬':[5,4,1090,'トウ','ふゆ','invierno','winter'],
-    '古':[5,4,509,'コ','ふる.い,ふる-,-ふる.す','viejo','old'],
+    '古':[5,5,509,'コ','ふる.い,ふる-,-ふる.す','viejo','old'],
     '豚':[11,1,1864,'トン','ぶた','cerdo','pork, pig'],
     '平':[5,3,128,'ヘイ,ビョウ,ヒョウ','たい.ら,-だいら,ひら,ひら-','plano, paz','even, flat, peace'],
     '和':[8,3,124,'ワ,オ,カ','やわ.らぐ,やわ.らげる,なご.む,なご.やか,あ.える','armonía, estilo japonés','harmony, japanese style, peace'],
@@ -7435,22 +7590,22 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     '万':[3,5,375,'マン,バン','よろず','diez mil','ten thousand, 10,000'],
     '右':[5,5,602,'ウ,ユウ','みぎ','derecha','right'],
     '短':[12,2,689,'タン','みじか.い','corto','short, brevity, fault'],
-    '店':[8,4,378,'テン','みせ,たな','tienda','store, shop'],
+    '店':[8,5,378,'テン','みせ,たな','tienda','store, shop'],
     '噌':[14,0,0,'ソウ,ショウ,ソ','かまびす.しい','miso','boisterous'],
     '緑':[14,2,1180,'リョク,ロク','みどり','verde','green'],
-    '耳':[6,3,1328,'ジ','みみ','oreja','ear'],
+    '耳':[6,5,1328,'ジ','みみ','oreja','ear'],
     '見':[7,5,22,'ケン','み.る,み.える,み.せる','ver','see, hopes, chances'],
     '虫':[6,2,1351,'チュウ,キ','むし','insecto','insect, bug, temper'],
     '息':[10,3,882,'ソク','いき','aliento','breath, respiration, son'],
     '村':[7,2,253,'ソン','むら','aldea','village, town'],
     '紫':[12,1,1516,'シ','むらさき','morado','purple, violet'],
-    '目':[5,4,76,'モク,ボク','め,-め,ま-','ojo','eye, class, look'],
+    '目':[5,5,76,'モク,ボク','め,-め,ま-','ojo','eye, class, look'],
     '眼':[11,1,1527,'ガン,ゲン','まなこ,め','ojo, globo ocular','eyeball'],
     '鏡':[19,1,1506,'キョウ,ケイ','かがみ','espejo','mirror, speculum, barrel-head'],
     '森':[12,2,609,'シン','もり','bosque','forest, woods'],
     '野':[11,4,120,'ヤ,ショ','の,の-','campo','plains, field, rustic'],
     '菜':[11,2,1327,'サイ','な','verdura','vegetable, side dish, greens'],
-    '安':[6,4,144,'アン','やす.い,やす.まる,やす,やす.らか','barato, tranquilo','relax, cheap, low'],
+    '安':[6,5,144,'アン','やす.い,やす.まる,やす,やす.らか','barato, tranquilo','relax, cheap, low'],
     '郵':[11,2,917,'ユウ','','correo','mail, stagecoach stop'],
     '局':[7,3,286,'キョク','つぼね','oficina','bureau, board, office'],
     '有':[6,4,282,'ユウ,ウ','あ.る','tener, existir','possess, have, exist'],
@@ -7542,9 +7697,9 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     '答':[12,4,486,'トウ','こた.える,こた.え','respuesta','solution, answer'],
     '注':[8,4,497,'チュウ','そそ.ぐ,さ.す,つ.ぐ','verter, prestar atención','pour, irrigate, shed (tears)'],
     '帰':[10,4,504,'キ','かえ.る,かえ.す,おく.る,とつ.ぐ','volver a casa','homecoming, arrive at, lead to'],
-    '週':[11,4,540,'シュウ','','semana','week'],
+    '週':[11,5,540,'シュウ','','semana','week'],
     '室':[9,4,550,'シツ','むろ','cuarto','room, apartment, chamber'],
-    '花':[7,4,578,'カ,ケ','はな','flor','flower'],
+    '花':[7,5,578,'カ,ケ','はな','flor','flower'],
     '洋':[9,4,763,'ヨウ','','océano, occidental','ocean, sea, foreign'],
     '夕':[3,4,924,'セキ','ゆう','atardecer','evening'],
     '借':[10,4,932,'シャク','か.りる','pedir prestado','borrow, rent'],
@@ -8543,6 +8698,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     N5_WORDS.forEach(function(o){ push(o.jp,o.romaji,o.en,o.es); });
     N5_WORDS2.forEach(function(o){ push(o.jp,o.romaji,o.en,o.es); });
     N5_WORDS3.forEach(function(o){ push(o.jp,o.romaji,o.en,o.es); });
+    N5_WORDS4.forEach(function(o){ push(o.jp,o.romaji,o.en,o.es); });
     YOON_EX.forEach(function(o){ push(o.jp,o.romaji,o.en,o.es); });
     return IDX;
   })();
@@ -8647,7 +8803,11 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     'よ':{read:'yo',                 fn:'al final: te aviso / enfatizo (info nueva para quien escucha)'},
     'ね':{read:'ne',                 fn:'al final: ¿no? / ¿verdad?: buscás confirmación'},
     'ぞ':{read:'zo',                 fn:'al final: énfasis fuerte (masculino, informal)'},
-    'と':{read:'to',                 fn:'con / y (también marca una cita: «que…»)'}
+    'と':{read:'to',                 fn:'con / y (también marca una cita: «que…»)'},
+    "も":{read:"mo", fn:"también: reemplaza a は o が"},
+    "や":{read:"ya", fn:"y (da ejemplos, la lista sigue)"},
+    "まで":{read:"made", fn:"hasta: el final en tiempo o espacio"},
+    "より":{read:"yori", fn:"que…: con qué se compara"}
   };
   var PATTERNS=[
     {id:'cop-da',    order:1,  needs:[],           intro:['は','だ'], mold:'｛tema｝は｛qué es｝だ',   gloss:'«X es Y»: decir qué es algo (casual)'},
@@ -8706,12 +8866,40 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     {id:'conn-tari',    order:26.5,needs:['v-past-u','v-past'],  intro:['たり'], mold:'｛verbo-た｝り｛verbo-た｝りする', gloss:'«hacer cosas como V1 y V2»: lista acciones de ejemplo (no todas): forma た + り, repetido, cerrando con する'},
     {id:'give-ageru',   order:42,  needs:['obj-wo','loc-ni'],    intro:['あげる'], mold:'｛alguien｝に｛cosa｝をあげる', gloss:'«darle X a alguien»: あげる es dar (yo a otro, o entre terceros)'},
     {id:'give-kureru',  order:43,  needs:['give-ageru'],         intro:['くれる'], mold:'｛alguien｝が｛cosa｝をくれる', gloss:'«alguien me da X»: くれる es cuando la dirección es HACIA mí/nosotros'},
+    /* ===== N5 que faltaban (sesión 2026-11-08): forma ます, invitar, comparar, tiempo, partículas ===== */
+    {id:"v-masu",order:4.5,needs:["obj-wo"],intro:[],mold:"｛cosa｝を｛verbo-ます｝",gloss:"la forma cortés de todos los días: ～ます (afirmativo) y ～ません (negativo). Verbos る: quitá る y poné ます (たべる→たべます). Verbos う: la última sílaba pasa a la fila い + ます (のむ→のみます, かう→かいます). する→します, くる→きます"},
+    {id:"v-mashita",order:4.6,needs:["v-masu"],intro:[],mold:"｛cosa｝を｛verbo-ました｝",gloss:"pasado cortés: ～ます→～ました (hice) y ～ません→～ませんでした (no hice). Sale directo de la forma ます, sin cambios de sonido: のみます→のみました"},
+    {id:"inv-masenka",order:4.7,needs:["v-masu"],intro:[],mold:"｛verbo-ませんか｝",gloss:"«¿y si V?» / «¿querés V?»: invitar con la forma negativa en pregunta, ～ませんか. Suena amable porque deja lugar a decir que no"},
+    {id:"inv-mashou",order:4.8,needs:["inv-masenka"],intro:[],mold:"｛verbo-ましょう｝",gloss:"«V-emos» / «vamos a V»: ～ましょう propone hacer algo juntos. Con か (～ましょうか) ofrece ayuda: «¿abro la ventana?»"},
+    {id:"adj-noun",order:2.2,needs:["cop-desu"],intro:["な"],mold:"｛adjetivo｝｛cosa｝",gloss:"el adjetivo va ANTES de la cosa. Adjetivos い se pegan tal cual (あかいくるま); adjetivos な llevan な en el medio (しずかなへや)"},
+    {id:"demo-kono",order:2.3,needs:["cop-desu"],intro:["この", "その", "あの"],mold:"この／その／あの｛cosa｝",gloss:"この = este (cerca de mí) · その = ese (cerca de vos) · あの = aquel (lejos de los dos). Siempre van pegados a una cosa: このほん. Solos se dicen これ・それ・あれ"},
+    {id:"part-mo",order:3.7,needs:["cop-desu"],intro:["も"],mold:"｛X｝も｛…｝",gloss:"«X también»: も reemplaza a は o が. Con negativo y una palabra de pregunta significa «nada / nadie»: なにもありません"},
+    {id:"cmp-yori",order:7.5,needs:["like-suki"],intro:["より"],mold:"｛A｝は｛B｝より｛adjetivo｝",gloss:"«A es más adj que B»: より marca con qué se compara. El japonés no tiene «más»: より alcanza"},
+    {id:"hoshii",order:8.5,needs:["want-tai"],intro:["ほしい"],mold:"｛cosa｝がほしい",gloss:"«quiero X» cuando es una COSA: が + ほしい. Para querer HACER algo se usa ～たい"},
+    {id:"part-to",order:9.5,needs:["req-kudasai"],intro:["と"],mold:"｛A｝と｛B｝",gloss:"«A y B» (la lista completa) o «con alguien»: ともだちと = con un amigo"},
+    {id:"part-ya",order:9.6,needs:["part-to"],intro:["や", "など"],mold:"｛A｝や｛B｝など",gloss:"«A, B y cosas así»: や da ejemplos sin cerrar la lista (と la cierra). など al final = «etcétera»"},
+    {id:"dake",order:9.7,needs:["req-kudasai", "v-mashita"],intro:["だけ"],mold:"｛X｝だけ",gloss:"«solo X»: だけ va pegado a lo que limita"},
+    {id:"time-ni",order:13.5,needs:["loc-ni", "v-masu"],intro:[],mold:"｛hora／día｝に｛verbo｝",gloss:"に también marca CUÁNDO: しちじに (a las siete), にちようびに (el domingo). Con palabras relativas como きょう o あした no va に"},
+    {id:"purpose-ni",order:13.6,needs:["loc-ni", "dir-e"],intro:[],mold:"｛verbo-raíz ます｝にいく",gloss:"«ir a V»: la raíz de la forma ます (たべます→たべ) + に + いく/くる. ごはんをたべにいく = ir a comer"},
+    {id:"goro-gurai",order:13.7,needs:["time-ni"],intro:["ごろ", "ぐらい"],mold:"｛hora｝ごろ · ｛cantidad｝ぐらい",gloss:"aproximar: ごろ = «a eso de» (con horas y fechas), ぐらい = «más o menos» (con cantidades y duración)"},
+    {id:"cmp-hou",order:14.5,needs:["cmp-yori", "poss-no"],intro:["ほう"],mold:"｛A｝のほうが｛adjetivo｝",gloss:"«A es más adj»: のほうが marca al ganador de la comparación. Muchas veces va con より: BよりAのほうが…"},
+    {id:"cmp-ichiban",order:14.6,needs:["cmp-hou", "means-de"],intro:["いちばん"],mold:"｛grupo｝で｛X｝がいちばん｛adjetivo｝",gloss:"«el más adj»: いちばん = «número uno». で marca el grupo donde se compara"},
+    {id:"kara-made",order:16.2,needs:["q-from"],intro:["まで"],mold:"｛A｝から｛B｝まで",gloss:"«desde A hasta B»: から marca el inicio y まで el final, en tiempo o en espacio"},
+    {id:"conj-kedo",order:16.6,needs:["conn-kara-cause"],intro:["けど", "ですが"],mold:"｛frase｝けど／が｛frase｝",gloss:"«pero»: けど (casual) o が (más formal, ですが) une dos frases que se contraponen"},
+    {id:"amari-nai",order:18.5,needs:["v-neg", "adj-ineg", "v-masu"],intro:["あまり", "ぜんぜん"],mold:"あまり／ぜんぜん＋negativo",gloss:"あまり + negativo = «no mucho»; ぜんぜん + negativo = «para nada». El verbo o adjetivo SIEMPRE va en negativo"},
+    {id:"req-naide",order:19.6,needs:["v-te", "v-neg"],intro:[],mold:"｛verbo-ない｝でください",gloss:"«por favor no V»: la forma ない + でください. のむ→のまない→のまないでください"},
+    {id:"adj-te",order:19.7,needs:["v-te", "adj-ineg"],intro:[],mold:"｛adjetivo-て｝｛adjetivo｝",gloss:"unir adjetivos («y»): い→くて (やすい→やすくて); los な usan で (しずか→しずかで)"},
+    {id:"mou-mada",order:20.5,needs:["v-teiru", "v-mashita"],intro:["もう", "まだ"],mold:"もう～ました · まだ～ていません",gloss:"もう = «ya» (pasó); まだ = «todavía» (no pasó). «Todavía no lo comí» = まだたべていません, con ～ていません"},
+    {id:"naru",order:21.5,needs:["adj-ineg", "loc-ni", "v-mashita"],intro:[],mold:"｛adjetivo-く｝なる · ｛cosa｝になる",gloss:"«volverse / ponerse»: adjetivos い: い→く + なる (さむい→さむくなる); sustantivos y adjetivos な: + に + なる (きれいになる)"},
+    {id:"tsumori",order:21.7,needs:["v-koto-dekiru"],intro:["つもり"],mold:"｛verbo｝つもりです",gloss:"«pienso V / tengo la intención de V»: verbo en forma de diccionario + つもりです"},
+    {id:"toki",order:22.5,needs:["v-past-u", "poss-no"],intro:["とき"],mold:"｛frase｝とき",gloss:"«cuando ~»: とき va tras un verbo o adjetivo en forma plana, o tras sustantivo + の (こどものとき)"},
+    {id:"mae-ato",order:22.6,needs:["toki"],intro:["まえに", "あとで"],mold:"｛verbo｝まえに · ｛verbo-た｝あとで",gloss:"«antes de V» = verbo de diccionario + まえに; «después de V» = verbo en た + あとで. Con sustantivos: のまえに / のあとで"},
     {id:'give-morau',   order:44,  needs:['give-ageru'],         intro:['もらう'], mold:'｛alguien｝に｛cosa｝をもらう', gloss:'«recibir X de alguien»: もらう es recibir (に marca de quién)'}
   ];
   var PATTERN_BY_ID=(function(){ var m={}; PATTERNS.forEach(function(p){m[p.id]=p;}); return m; })();
 
   /* Distractores de partícula confundible (espeja CONFUSE_GROUPS del kana). */
-  var PARTICLE_CONFUSE=[['は','が','を'],['へ','に','で'],['の','は','が'],['か','ね','よ','ぞ']];
+  var PARTICLE_CONFUSE=[['は','が','を'],['へ','に','で'],['の','は','が'],['か','ね','よ','ぞ'],['も','は','が'],['と','や','も'],['から','まで','より']];
   var PCONF=(function(){ var out={}; PARTICLE_CONFUSE.forEach(function(g){ g.forEach(function(p){ out[p]=out[p]||{}; g.forEach(function(o){ if(o!==p)out[p][o]=1; }); }); }); return out; })();
 
   /* =========================================================================
@@ -8766,7 +8954,34 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     'ようになる':{es:'llegar a…',en:'come to…'},
     'おもう':{es:'pensar / creer',en:'to think'},
     'くれる':{es:'darme (alguien a mí)',en:'to give (to me)'},
-    'もらう':{es:'recibir',en:'to receive'}
+    'もらう':{es:'recibir',en:'to receive'},
+    "も":{es:"también",en:"too / also"},
+    "や":{es:"y (ejemplos)",en:"and (examples)"},
+    "など":{es:"etcétera",en:"and so on"},
+    "より":{es:"que… (comparar)",en:"than\u2026"},
+    "ほう":{es:"el lado de… (el que gana)",en:"the side of\u2026 (winner)"},
+    "いちばん":{es:"el más…",en:"the most\u2026"},
+    "まで":{es:"hasta",en:"until / up to"},
+    "だけ":{es:"solo",en:"only"},
+    "とき":{es:"cuando…",en:"when\u2026"},
+    "まえに":{es:"antes de…",en:"before\u2026"},
+    "あとで":{es:"después de…",en:"after\u2026"},
+    "な":{es:"une adjetivo な y cosa",en:"links a na-adjective"},
+    "けど":{es:"pero (casual)",en:"but (casual)"},
+    "ですが":{es:"es…, pero (cortés)",en:"is\u2026, but (polite)"},
+    "つもり":{es:"intención: pienso…",en:"intention: I plan to\u2026"},
+    "ごろ":{es:"a eso de (hora)",en:"around (time)"},
+    "ぐらい":{es:"más o menos",en:"about"},
+    "あまり":{es:"no mucho (con negativo)",en:"not much (with negative)"},
+    "ぜんぜん":{es:"para nada (con negativo)",en:"not at all (with negative)"},
+    "もう":{es:"ya",en:"already"},
+    "まだ":{es:"todavía",en:"still / not yet"},
+    "ほしい":{es:"quiero (una cosa)",en:"want (a thing)"},
+    "この":{es:"este…",en:"this\u2026"},
+    "その":{es:"ese…",en:"that\u2026"},
+    "あの":{es:"aquel…",en:"that\u2026 over there"},
+    "ます":{es:"cortés",en:"polite"},
+    "ない":{es:"no hay / no (negativo)",en:"there isn't / not"}
   };
   /* Cuántas veces vio esta partícula colocada en "armá la frase" -> opacidad
      del chip. Reusa el mismo umbral que kanaArtOpacity (0-1 completo, 2 al
@@ -8796,7 +9011,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
      た/て/ない en plano (alcance acotado a propósito, mismo patrón se puede
      extender después con más finales si hace falta). */
   function deinflectMasu(w){
-    var endings=[['ませんでした','pastNeg'],['ました','past'],['ません','neg'],['ます','pres']];
+    var endings=[['ませんでした','pastNeg'],['ましょうか','mashouka'],['ましょう','mashou'],['ませんか','inv'],['ました','past'],['ません','neg'],['ます','pres']];
     for(var i=0;i<endings.length;i++){
       var suf=endings[i][0];
       if(w.length>suf.length && w.slice(-suf.length)===suf){
@@ -8816,7 +9031,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     ba:{es:'condicional ～ば',en:'conditional ～ば'},pot:{es:'potencial',en:'potential'},vol:{es:'vamos a…',en:'let\'s…'},
     tai:{es:'querer…',en:'want to…'},teiru:{es:'en curso',en:'ongoing'},tekara:{es:'después de…',en:'after…'},tearu:{es:'estado resultante',en:'resulting state'},
     nakereba:{es:'tiene que…',en:'must…'},nakutemo:{es:'no hace falta…',en:'no need to…'},nagara:{es:'mientras…',en:'while…'},tari:{es:'lista de acciones',en:'list of actions'},
-    koto:{es:'poder…',en:'can…'},younini:{es:'llegar a…',en:'come to…'},aneg:{es:'negativo',en:'negative'},apast:{es:'pasado',en:'past'},anegpast:{es:'pasado negativo',en:'past neg.'}};
+    koto:{es:'poder…',en:'can…'},younini:{es:'llegar a…',en:'come to…'},aneg:{es:'negativo',en:'negative'},apast:{es:'pasado',en:'past'},anegpast:{es:'pasado negativo',en:'past neg.'},inv:{es:'¿y si…? (invitar)',en:'shall we…?'},mashou:{es:'hagamos…',en:'let\'s…'},mashouka:{es:'¿te ayudo a…?',en:'shall I…?'},purpose:{es:'(ir) a…',en:'(go) to…'},naide:{es:'sin… / no…',en:'without… / don\'t'},kute:{es:'…y',en:'…and'},adv:{es:'(se vuelve)…',en:'(becomes)…'},notyet:{es:'todavía no…',en:'not yet…'}};
   /* Desinflexion plana (た/て/ない/たら/ば/たい/potencial/volitivo + compuestos). Cada candidato se valida
      contra WORD_BY_JP: si la base no existe en el vocabulario, no se inventa nada. */
   var _GODAN_ROWS={'う':['わ','い','え','お'],'く':['か','き','け','こ'],'ぐ':['が','ぎ','げ','ご'],'す':['さ','し','せ','そ'],'つ':['た','ち','て','と'],'ぬ':['な','に','ね','の'],'ぶ':['ば','び','べ','ぼ'],'む':['ま','み','め','も'],'る':['ら','り','れ','ろ']};
@@ -8828,6 +9043,13 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   function _dictHit(c){ if(c.indexOf('しる')>=0&&WORD_BY_JP['する']&&c.indexOf('する')<0) c=['する'].concat(c); for(var i=0;i<c.length;i++){ if(WORD_BY_JP[c[i]]) return c[i]; } return null; }
   function deinflectPlain(w){
     var hit, r;
+    /* formas de los patrones N5 agregados: ～ていません, ～ないで, ～に (propósito), ～くて, ～く, ～で (adjetivo な) */
+    if(w.length>5 && w.slice(-5)==='ていません'){ var tb=w.slice(0,-5); hit=_dictHit([tb+'る'].concat(_teBases(tb+'て',_TE_END))); if(hit) return {base:hit,kind:'notyet'}; }
+    if(w.length>3 && w.slice(-3)==='ないで'){ var nb=w.slice(0,-3); hit=_dictHit([nb+'る'].concat(_godanBases(nb,0))); if(hit) return {base:hit,kind:'naide'}; }
+    if(w.length>2 && w.slice(-2)==='くて' && WORD_BY_JP[w.slice(0,-2)+'い']) return {base:w.slice(0,-2)+'い',kind:'kute'};
+    if(w.length>2 && w.slice(-1)==='く' && WORD_BY_JP[w.slice(0,-1)+'い']) return {base:w.slice(0,-1)+'い',kind:'adv'};
+    if(w.length>2 && w.slice(-1)==='で' && WORD_BY_JP[w.slice(0,-1)]) return {base:w.slice(0,-1),kind:'kute'};
+    if(w.length>=2 && w.slice(-1)==='に'){ var pb=w.slice(0,-1); hit=_dictHit([pb+'る'].concat(_godanBases(pb,1))); if(hit && !WORD_BY_JP[w]) return {base:hit,kind:'purpose'}; }
     if(w==='いった'&&WORD_BY_JP['いく']) return {base:'いく',kind:'plainPast'};
     if(w==='いって'&&WORD_BY_JP['いく']) return {base:'いく',kind:'te'};
     var comp=[['ことができる','koto',0],['ようになる','younini',0],['なければならない','nakereba',1],['なくてもよい','nakutemo',1],['ている','teiru',2],['てから','tekara',2],['でから','tekara',2],['てある','tearu',2],['ながら','nagara',3]];
@@ -9528,6 +9750,8 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     /* puente: lectura y escritura de palabras con kanji, como el examen; nunca dos seguidas */
     if(kanjiOn() && wsess.cur!=="puente" && wsess.cur!=="taller" && Math.random()<WORDS_BRIDGE_PROB && tallerReadAvail()){
       wsess.cur="puente"; drillEl.classList.add("hidden"); bridgeBurst(2); return; }
+    /* escucha o lectura tipo examen: de vez en cuando una, si hay algo listo o vencido */
+    if(wsess.cur!=="prep" && readingEra() && Math.random()<WORDS_PREP_PROB){ if(tsess)tsess.q=null; drillEl.classList.add("hidden"); if(prepWeave()){ wsess.cur="prep"; return; } }
     /* taller de kanji: rafaga corta, nunca dos seguidas */
     if(kanjiOn() && wsess.cur!=="taller" && tallerHasWork() && Math.random()<WORDS_TALLER_PROB){
       wsess.cur="taller"; drillEl.classList.add("hidden"); tallerDailyBurst(); return; }
@@ -9917,10 +10141,132 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       "A beach tent with a ten sign on top. Down south it's always hot and prices go up.","M"],
     ["万","k","diez mil","ten thousand","","solo",[],
       "Un escorpión con la cola levantada. Antes eran tan comunes que diez mil era el número para muchísimos. Como los Pidgey.",
-      "A scorpion with its tail raised. They used to be so common that ten thousand meant a huge amount. Like Pidgeys.","E"]
+      "A scorpion with its tail raised. They used to be so common that ten thousand meant a huge amount. Like Pidgeys.","E"],
+    /* ===== Ampliación a la lista N5 de 103 kanji (la que usan los materiales de examen desde 2010).
+       口, 目, 耳 y 言 ya estaban como piezas: al entrar a N5_KANJI pasan solos a ser kanji. ===== */
+    ["古","k","viejo","old","🏚️","tb",["十","口"],
+      "Diez bocas contaron la misma historia, una tras otra. Para cuando llega a la décima, la historia ya es vieja. Como el meme que te mandan tus tíos.",
+      "Ten mouths told the same story, one after another. By the tenth it is old news. Like the meme your uncle sends you.","M"],
+    ["手","k","mano","hand","✋","solo",[],
+      "Una mano abierta: los trazos de arriba son los dedos y el palo que baja es la muñeca. Cinco dedos, cero botones de pausa.",
+      "An open hand: the top strokes are the fingers and the stick going down is the wrist. Five fingers, zero pause buttons.","E"],
+    ["立","k","pararse","stand","🧍","solo",[],
+      "Una persona parada con los pies bien plantados en el piso, la raya de abajo. Así se queda el NPC que te bloquea la puerta.",
+      "A person standing with feet planted on the floor, the bottom line. That's the NPC blocking the door.","E"],
+    ["少","k","poco","few","🤏","tb",["小","ノ"],
+      "Lo pequeño 小 ya era poco, y encima pasa un tobogán ノ que se lleva un pedazo. Queda poquito. Como las vidas en el último nivel.",
+      "Small 小 was already little, and then a slide ノ carries a piece away. Barely anything left. Like your lives on the last level.","M"],
+    ["多","k","mucho","many","➕","tb",["夕","夕"],
+      "Dos atardeceres 夕 uno encima del otro. Si te tocan dos tardes seguidas jugando, es mucho. Tu mamá opina lo mismo.",
+      "Two sunsets 夕 stacked up. Two evenings in a row of gaming is a lot. Your mom agrees.","M"],
+    ["刀","p","espada","sword","🗡️","solo",[],
+      "Una espada de un solo filo, curva, vista de lado. Parece la katakana カ sin el bracito: es que la espada no necesita ayuda.",
+      "A single-edged curved sword seen from the side. It looks like katakana カ without the little arm: the sword needs no help.","E"],
+    ["分","k","parte / minuto","part / minute","⏱️","tb",["八","刀"],
+      "Una espada 刀 que corta algo y lo abre en dos 八. Dividir. Y los minutos son la hora cortada en pedacitos.",
+      "A sword 刀 cutting something open into two 八. Divide. And minutes are the hour chopped into little pieces.","E"],
+    ["云","p","nube que habla","talking cloud","💬","solo",[],
+      "Una nubecita con un remolino abajo. En el taller es la nube que habla: el globo de diálogo de los kanji.",
+      "A little cloud with a swirl underneath. In the workshop it's the talking cloud: the speech bubble of kanji.","M"],
+    ["会","k","reunirse","meet","👥","tb",["人","云"],
+      "Bajo el techo 人 se juntan nubes que hablan 云. Una reunión donde todos hablan a la vez y nadie apaga el micrófono.",
+      "Under the roof 人 the talking clouds 云 gather. A meeting where everyone talks at once and nobody mutes their mic.","M"],
+    ["礻","p","altar","altar","⛩️","solo",[],
+      "Es 示, el altar, cuando se para a la izquierda de otra pieza: se encoge y queda como una mesita con su ofrenda.",
+      "It's 示, the altar, when it stands on the left of another part: it shrinks into a little table with its offering.","E"],
+    ["社","k","empresa / santuario","company / shrine","🏢","lr",["礻","土"],
+      "Un altar 礻 junto a la tierra 土: el santuario del pueblo. La empresa japonesa es el santuario moderno: ahí se ofrecen horas extra.",
+      "An altar 礻 next to the earth 土: the village shrine. The Japanese company is the modern shrine: you offer it overtime.","E"],
+    ["亲","p","árbol parado","standing tree","🌲","tb",["立","木"],
+      "Alguien parado 立 encima de un árbol 木. No preguntes cómo subió. En el taller es la mitad izquierda de 新.",
+      "Someone standing 立 on top of a tree 木. Don't ask how they got up there. In the workshop it's the left half of 新.","M"],
+    ["斤","p","hacha","axe","🪓","solo",[],
+      "Un hacha con su mango largo, lista para cortar. El arma inicial de todo juego de supervivencia.",
+      "An axe with a long handle, ready to chop. The starter weapon of every survival game.","E"],
+    ["新","k","nuevo","new","✨","lr",["亲","斤"],
+      "Junto al árbol 亲 alguien levanta un hacha 斤 y corta madera. La madera recién cortada es nueva. Huele a parche del día uno.",
+      "Next to the tree 亲 someone raises an axe 斤 and chops wood. Freshly cut wood is new. It smells like a day one patch.","E"],
+    ["宀","p","techo","roof","🏠","solo",[],
+      "Un techo con chimenea. Todo lo que cae debajo queda adentro de una casa.",
+      "A roof with a chimney. Anything underneath ends up inside a house.","E"],
+    ["安","k","tranquilo / barato","calm / cheap","🛋️","tb",["宀","女"],
+      "Una mujer 女 bajo techo 宀: tranquila, a salvo, en pijama. Y barato, porque no salió a gastar en la tienda.",
+      "A woman 女 under a roof 宀: calm, safe, in pajamas. And cheap, because she didn't go out shopping.","M"],
+    ["穴","p","agujero","hole","🕳️","tb",["宀","八"],
+      "Un techo 宀 con dos patas abiertas 八 debajo: la entrada de una cueva. Adentro seguro hay un cofre.",
+      "A roof 宀 with two legs spread 八 underneath: a cave entrance. There's surely a chest inside.","E"],
+    ["空","k","cielo / vacío","sky / empty","☁️","tb",["穴","工"],
+      "El obrero 工 cavó un agujero 穴 tan profundo que salió del otro lado. Arriba no queda nada: vacío, puro cielo.",
+      "The worker 工 dug a hole 穴 so deep he came out the other side. Nothing left above: empty, pure sky.","M"],
+    ["足","k","pie / pierna","foot / leg","🦶","solo",[],
+      "Arriba la rodilla, cuadrada como una boca, y abajo el pie dando un paso. La pierna completa, lista para el speedrun.",
+      "The knee on top, square like a mouth, and the foot taking a step below. A whole leg, ready for the speedrun.","E"],
+    ["广","p","galpón","shed","🛖","solo",[],
+      "Un techo inclinado apoyado en una sola pared: un galpón abierto, como los puestos del mercado.",
+      "A slanted roof leaning on a single wall: an open shed, like a market stall.","E"],
+    ["占","p","adivina","fortune teller","🔮","tb",["卜","口"],
+      "La varita 卜 sobre una boca 口: alguien leyendo la suerte en voz alta. Siempre te sale que vas a encontrar una espada legendaria.",
+      "The wand 卜 over a mouth 口: someone reading fortunes out loud. You always get a legendary sword.","M"],
+    ["店","k","tienda","shop","🏪","enc",["广","占"],
+      "Bajo el galpón 广 una adivina 占 puso su puesto. Ahora vende pociones y es la tienda del pueblo.",
+      "Under the shed 广 a fortune teller 占 set up her stall. Now she sells potions and it's the village shop.","M"],
+    ["罒","p","red","net","🥅","solo",[],
+      "Una red tendida, con sus cuadritos. Es 目 acostado, por eso a veces le dicen el ojo que atrapa.",
+      "A net stretched out, with its little squares. It's 目 lying down, so some call it the catching eye.","E"],
+    ["貝","p","concha","shell","🐚","tb",["目","八"],
+      "Una concha abierta con sus dos patitas 八. En la China antigua las conchas eran dinero: los primeros rupias.",
+      "An open shell with its two little legs 八. In ancient China shells were money: the original rupees.","E"],
+    ["買","k","comprar","buy","🛒","tb",["罒","貝"],
+      "Con una red 罒 atrapás conchas 貝, que eran el dinero. Atrapar dinero para cambiarlo por cosas: comprar.",
+      "With a net 罒 you catch shells 貝, which were money. Catching money to trade for things: buying.","E"],
+    ["辶","p","camino","road","🛤️","solo",[],
+      "Un sendero que serpentea abajo a la izquierda y lleva encima a otra pieza, como un tapete rodante.",
+      "A path winding along the bottom left, carrying another part on top like a conveyor belt.","E"],
+    ["周","p","vuelta","lap","🔄","solo",[],
+      "Un recinto con algo adentro, visto como el contorno de un circuito. En el taller es una vuelta completa.",
+      "An enclosure with something inside, read as the outline of a track. In the workshop it's one full lap.","M"],
+    ["週","k","semana","week","📅","enc",["辶","周"],
+      "Dar una vuelta 周 completa por el camino 辶 y volver al mismo lunes. Una semana. Y el lunes siempre vuelve.",
+      "Run one full lap 周 down the road 辶 and land on the same Monday. A week. And Monday always comes back.","M"],
+    ["首","p","cabeza / cuello","head / neck","🗿","solo",[],
+      "Una cabeza con dos pelitos parados arriba y un ojo grande. Mira fijo, como estatua de jefe.",
+      "A head with two hairs sticking up and a big eye. It stares like a boss statue.","E"],
+    ["道","k","camino","road","🛣️","enc",["辶","首"],
+      "Una cabeza 首 que avanza por el camino 辶. El camino es por donde va tu cabeza. Profundo. O no.",
+      "A head 首 moving along the road 辶. The road is wherever your head goes. Deep. Or not.","E"],
+    ["艹","p","hierba","grass","🌱","solo",[],
+      "Dos brotes de hierba saliendo del suelo. Siempre se pone arriba, como un sombrerito verde.",
+      "Two sprouts of grass poking out. It always sits on top, like a little green hat.","E"],
+    ["匕","p","cuchara","spoon","🥄","solo",[],
+      "Una cuchara vieja, o alguien agachado. En el taller es la cuchara.",
+      "An old spoon, or someone crouching. In the workshop it's the spoon.","E"],
+    ["化","p","cambiar","change","🔁","lr",["亻","匕"],
+      "Una persona 亻 parada y otra agachada 匕: la misma persona antes y después de transformarse. Fase dos del jefe.",
+      "A person 亻 standing and another crouching 匕: the same person before and after transforming. Boss phase two.","M"],
+    ["花","k","flor","flower","🌸","tb",["艹","化"],
+      "La hierba 艹 que cambia 化: brota, se transforma y se vuelve flor. Evolución sin piedra.",
+      "Grass 艹 that changes 化: it sprouts, transforms and becomes a flower. Evolution without a stone.","E"],
+    ["馬","p","caballo","horse","🐎","solo",[],
+      "Un caballo de lado: crin arriba y cuatro patas abajo. Sí, son los cuatro puntitos.",
+      "A horse seen from the side: mane on top, four legs below. Yes, those are the four dots.","E"],
+    ["尺","p","regla","ruler","📏","solo",[],
+      "Una medida antigua: una mano abierta midiendo la distancia de un palmo.",
+      "An old unit of length: an open hand measuring a span.","E"],
+    ["駅","k","estación","station","🚉","lr",["馬","尺"],
+      "Cada cierta medida 尺 del camino cambiabas de caballo 馬. Esos puntos de relevo hoy son estaciones de tren. El viaje rápido de antes.",
+      "Every set distance 尺 down the road you swapped horses 馬. Those relay points are train stations now. Old school fast travel.","E"],
+    ["欠","p","bostezo","yawn","🥱","solo",[],
+      "Una persona con la boca bien abierta. Bostezo, o alguien a punto de tragarse algo.",
+      "A person with their mouth wide open. A yawn, or someone about to gulp something down.","E"],
+    ["飲","k","beber","drink","🥤","lr",["食","欠"],
+      "Comida 食 al lado de alguien con la boca abierta 欠: beber de un trago. Al pegarse a la izquierda, 食 se pone flaquito.",
+      "Food 食 next to someone with mouth wide open 欠: drinking it in one gulp. On the left, 食 slims down.","E"],
+    ["魚","k","pez","fish","🐟","solo",[],
+      "Un pez parado de cabeza: arriba la cabeza, al medio las escamas y abajo la cola en forma de cuatro puntos. Ideal para el minijuego de pesca.",
+      "A fish standing on its head: head on top, scales in the middle, tail as four dots below. Perfect for the fishing minigame.","E"]
   ];
   /* glifos parecidos: alimentan las trampas del banco */
-  var TALLER_SIMILAR=["日目白田口","土士工王玉","人入八大亻","木本来休","夕名多","刀力刂","彳亻行","千午十","一二三","又友右左ナ","山出","月円","上下","門間聞","言語話読","小少","子学","気气","父交","丷ツ八"];
+  var TALLER_SIMILAR=["日目白田口","土士工王玉","人入八大亻","木本来休","夕名多","刀力刂","彳亻行","千午十","一二三","又友右左ナ","山出","月円","上下","門間聞","言語話読","小少","子学","気气","父交","丷ツ八","古右","会今","少小","多夕名","空穴工","買貝見","道週","飲食","社土","安女","分八刀","立六","店占","花化","魚角","手毛"];
   /* ================= TALLER DE KANJI: MOTOR =================
      Minijuego de producción: ves el significado (clave + emoji) y armás el kanji
      con piezas, cada una en su casilla. Va en orden de construcción, no de frecuencia:
@@ -11361,7 +11707,9 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       build:  {ok:mix.canBuild,  reason:"Learn a few characters first."},
       words:  {ok:readableIdx(WORD_POOL).length>0, reason:"learn more kana first"},
       phrases:{ok:(typeof PHRASES!=='undefined')&&readableIdx(PHRASES).length>0, reason:"learn more kana first"},
-      kanji:  {ok:kanjiOn() && tallerHasWork(), reason:kanjiOn()?"nothing due in the workshop right now":"activate kanji first"}
+      kanji:  {ok:kanjiOn() && tallerHasWork(), reason:kanjiOn()?"nothing due in the workshop right now":"activate kanji first"},
+      listen: {ok:prepHasWork('l'), reason:(getLang()==="es"?"nada listo todavía: aprendé más palabras":"nothing ready yet: learn more words")},
+      read:   {ok:prepHasWork('r'), reason:(getLang()==="es"?"nada listo todavía: aprendé más palabras":"nothing ready yet: learn more words")}
     };
   }
   function customDefaults(){
@@ -11388,7 +11736,9 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
        cxToggle("build",t("Build the word"),a.build)+
        cxToggle("words",t("Words"),a.words)+
        cxToggle("phrases",t("Phrases"),a.phrases)+
-       cxToggle("kanji",(lang==="es"?"Taller de kanji":"Kanji workshop"),a.kanji)+'</div>';
+       cxToggle("kanji",(lang==="es"?"Taller de kanji":"Kanji workshop"),a.kanji)+
+       cxToggle("listen",(lang==="es"?"Escucha tipo examen":"Exam-style listening"),a.listen)+
+       cxToggle("read",(lang==="es"?"Lectura tipo examen":"Exam-style reading"),a.read)+'</div>';
     if(customCfg.drill){
       h+='<div class="ex-sep">'+t("Kana script")+'</div><div class="opt-row">'+
          cxSeg("hira","Hiragana",k.scope.hira)+cxSeg("hdak","+ ゛(あ)",k.scope.hdak)+cxSeg("hyoon","+ ゃ(あ)",k.scope.hyoon)+
@@ -11433,7 +11783,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   }
   function startCustom(){
     var a=customActs();
-    var types=["drill","match","build","words","phrases","kanji"].filter(function(ty){ return customCfg[ty]&&a[ty]&&a[ty].ok; });
+    var types=["drill","match","build","words","phrases","kanji","listen","read"].filter(function(ty){ return customCfg[ty]&&a[ty]&&a[ty].ok; });
     if(!types.length)return;
     ensureKana();
     csess={active:true,cur:null,last:null,types:types,useAim:!!(customCfg.useAim&&aimedGame())};
@@ -11467,6 +11817,9 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       drillEl.classList.add("hidden");
       if(!rsess || rsess.pool!==WORD_POOL){ startQuiz(WORD_POOL, ensureWords(), true); }
       else { buildReadingQ(); readingEl.classList.remove("hidden"); renderReading(); }
+    }else if(type==="listen"||type==="read"){
+      drillEl.classList.add("hidden"); var _pk=type==="listen"?'l':'r', _pi=prepNext(_pk);
+      if(_pi) prepStartItem(_pk,_pi,'custom',false); else customEnd();
     }else if(type==="kanji"){
       drillEl.classList.add("hidden");
       tallerDailyBurst();
@@ -11549,7 +11902,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   }
 
   function bindMain(){
-    app.querySelectorAll("[data-fn]").forEach(function(b){var fn=b.getAttribute("data-fn");b.addEventListener("click",function(){if(fn==="startDrill")startDrill();else if(fn==="startGap")startGapDrill();else if(fn==="startDaily")startDaily();else if(fn==="startWords")startWords();else if(fn==="startPhrases")startPhrases();else if(fn==="startBuild")startBuild();else if(fn==="startMatch")startMatch();else if(fn==="openCustom")openCustom();else if(fn==="startKanji")startTaller();else if(fn==="startTaller")startTaller();else if(fn==="activateKanji")activateKanji();else if(fn==="activatePhrases")activatePhrases();else if(fn==="startPlacement")startPlacement();else if(fn==="toggleGames")toggleGames();else if(fn==="toggleRoad")toggleRoad();else if(fn==="toggleRes")toggleRes();else if(fn==="openOnboard")openOnboard();});});
+    app.querySelectorAll("[data-fn]").forEach(function(b){var fn=b.getAttribute("data-fn");b.addEventListener("click",function(){if(fn==="startDrill")startDrill();else if(fn==="startGap")startGapDrill();else if(fn==="startDaily")startDaily();else if(fn==="startWords")startWords();else if(fn==="startPhrases")startPhrases();else if(fn==="startBuild")startBuild();else if(fn==="startMatch")startMatch();else if(fn==="openCustom")openCustom();else if(fn==="startKanji")startTaller();else if(fn==="startTaller")startTaller();else if(fn==="activateKanji")activateKanji();else if(fn==="activatePhrases")activatePhrases();else if(fn==="startPlacement")startPlacement();else if(fn==="toggleGames")toggleGames();else if(fn==="toggleRoad")toggleRoad();else if(fn==="toggleRes")toggleRes();else if(fn==="openOnboard")openOnboard();else if(fn==="openPrep")openPrepHub();});});
 
     var wd=app.querySelector(".wotd[data-say]"); if(wd)wd.addEventListener("click",function(){speak(wd.getAttribute("data-say"));});
     app.querySelectorAll("[data-aim]").forEach(function(b){ b.addEventListener("click",function(){ setAim(b.getAttribute("data-aim")); }); });
@@ -11636,6 +11989,546 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   var _rk=document.getElementById("resetKana"); if(_rk)_rk.addEventListener("click",function(){ resetSection(["kana"],"kana"); });
   var _rw=document.getElementById("resetWords"); if(_rw)_rw.addEventListener("click",function(){ resetSection(["words"],"palabras"); });
   var _rp=document.getElementById("resetPhrases"); if(_rp)_rp.addEventListener("click",function(){ resetSection(["phrases","patterns"],"frases y gramática"); });
+
+  /* ================= PREPARACIÓN N5: DATOS =================
+     Diálogos y textos propios, escritos solo con vocabulario y gramática de N5,
+     con el formato de las secciones del examen. Nada copiado de exámenes reales.
+     Los textos van en kana con espacios entre bloques, igual que el JLPT N5;
+     al mostrarlos, cada palabra que ya ves con kanji se dibuja con su forma
+     (furigana incluido) según la etapa del puente. Para agregar contenido basta
+     sumar un objeto: el motor calcula solo qué tan listo está cada usuario. */
+  /* tipos de escucha (como el examen): task = 課題理解 (qué va a hacer), point = ポイント理解
+     (un dato puntual, la pregunta va antes), utter = 発話表現 (qué decir), quick = 即時応答 (respuesta rápida) */
+  var LISTEN_ITEMS=[
+    {id:'l-task-super',type:'task',
+     setup:{jp:'おとこの ひとと おんなの ひとが はなして います。',es:'Un hombre y una mujer están hablando.'},
+     q:{jp:'おとこの ひとは なにを かいますか。',es:'¿Qué va a comprar el hombre?'},
+     lines:[['F','スーパーへ いきますか。','¿Vas al súper?'],['M','はい。なにか いりますか。','Sí. ¿Necesitás algo?'],
+       ['F','ぎゅうにゅうを かって ください。それから、たまごも おねがいします。','Comprá leche, por favor. Y también huevos.'],
+       ['M','パンは？','¿Y pan?'],['F','パンは まだ ありますから、いいです。','Todavía hay pan, así que no hace falta.']],
+     opts:[{jp:'ぎゅうにゅうと たまご',es:'leche y huevos'},{jp:'ぎゅうにゅうと パン',es:'leche y pan'},{jp:'たまごと パン',es:'huevos y pan'},{jp:'ぎゅうにゅうと たまごと パン',es:'leche, huevos y pan'}],a:0,
+     why:{es:'Pide leche y huevos; el pan todavía hay, así que いいです acá significa «no hace falta».',en:'She asks for milk and eggs; there is still bread, so いいです means "no need".'}},
+    {id:'l-task-school',type:'task',
+     setup:{jp:'がっこうで せんせいが はなして います。',es:'En la escuela habla la profesora.'},
+     q:{jp:'がくせいは あした なんじに がっこうへ きますか。',es:'¿A qué hora vienen mañana los estudiantes a la escuela?'},
+     lines:[['F','あしたは えきの まえで あつまります。じかんは くじはんです。','Mañana nos reunimos frente a la estación. La hora es nueve y media.'],
+       ['F','でも、その まえに がっこうで しゃしんを とりますから、はちじはんに がっこうへ きて ください。','Pero antes vamos a tomar fotos en la escuela, así que vengan a la escuela a las ocho y media.']],
+     opts:[{jp:'くじ',es:'las nueve'},{jp:'くじはん',es:'las nueve y media'},{jp:'はちじ',es:'las ocho'},{jp:'はちじはん',es:'las ocho y media'}],a:3,
+     why:{es:'くじはん es la reunión en la estación; a la escuela vienen antes, a las はちじはん. El examen siempre mete dos horas para ver si escuchás cuál es cuál.',en:'くじはん is the station meeting; they come to school earlier, at はちじはん.'}},
+    {id:'l-task-clean',type:'task',
+     setup:{jp:'うちで おかあさんと おとこの こが はなして います。',es:'En casa hablan una mamá y un niño.'},
+     q:{jp:'おとこの こは まず なにを しますか。',es:'¿Qué hace primero el niño?'},
+     lines:[['F','ごはんの まえに へやを そうじして ください。','Antes de comer, limpiá tu cuarto.'],['M','いま、しゅくだいを して います。','Ahora estoy haciendo la tarea.'],
+       ['F','じゃあ、しゅくだいの あとで いいですよ。でも、ごはんの まえに そうじして くださいね。','Entonces después de la tarea está bien. Pero limpiá antes de comer, ¿sí?'],['M','はい、わかりました。','Sí, entendido.']],
+     opts:[{jp:'しゅくだいを します',es:'hace la tarea'},{jp:'へやを そうじします',es:'limpia el cuarto'},{jp:'ごはんを たべます',es:'come'},{jp:'かいものに いきます',es:'va de compras'}],a:0,
+     why:{es:'Ya está haciendo la tarea y la mamá le dice que limpie después (しゅくだいの あとで). Primero termina la tarea.',en:'He is already doing homework; he cleans after it.'}},
+    {id:'l-task-bag',type:'task',
+     setup:{jp:'みせで おんなの ひとと みせの ひとが はなして います。',es:'En una tienda hablan una mujer y el vendedor.'},
+     q:{jp:'おんなの ひとは どの かばんを かいますか。',es:'¿Qué bolso compra la mujer?'},
+     lines:[['F','すみません、その あかい かばんは いくらですか。','Disculpe, ¿cuánto cuesta ese bolso rojo?'],['M','これは さんぜんえんです。','Este cuesta tres mil yenes.'],
+       ['F','ちょっと たかいですね。もう すこし やすいのは ありますか。','Es un poco caro. ¿Tiene algo un poco más barato?'],['M','この しろい かばんは せんごひゃくえんです。','Este bolso blanco cuesta mil quinientos yenes.'],['F','じゃあ、それを ください。','Entonces deme ese.']],
+     opts:[{jp:'あかい かばん、さんぜんえん',es:'el rojo, 3000 yenes'},{jp:'しろい かばん、せんごひゃくえん',es:'el blanco, 1500 yenes'},{jp:'あかい かばん、せんごひゃくえん',es:'el rojo, 1500 yenes'},{jp:'しろい かばん、さんぜんえん',es:'el blanco, 3000 yenes'}],a:1,
+     why:{es:'El rojo le pareció caro; compra el blanco de せんごひゃくえん.',en:'The red one was too expensive; she buys the white one.'}},
+    {id:'l-task-taxi',type:'task',
+     setup:{jp:'えきの まえで おとこの ひとと おんなの ひとが はなして います。',es:'Frente a la estación hablan un hombre y una mujer.'},
+     q:{jp:'ふたりは なにで こうえんへ いきますか。',es:'¿En qué van los dos al parque?'},
+     lines:[['M','こうえんまで あるきますか。','¿Caminamos hasta el parque?'],['F','とおいですよ。バスで いきましょう。','Está lejos. Vamos en bus.'],
+       ['M','バスは さっき いきましたよ。つぎは にじゅっぷん あとです。','El bus se acaba de ir. El siguiente es en veinte minutos.'],['F','じゃあ、タクシーで いきましょう。','Entonces vamos en taxi.']],
+     opts:[{jp:'あるいて',es:'caminando'},{jp:'バスで',es:'en bus'},{jp:'タクシーで',es:'en taxi'},{jp:'でんしゃで',es:'en tren'}],a:2,
+     why:{es:'Caminar queda lejos y el bus tarda veinte minutos: al final dice タクシーで いきましょう.',en:'Walking is too far and the bus is 20 minutes away, so they take a taxi.'}},
+    {id:'l-task-movie',type:'task',
+     setup:{jp:'おとこの ひとと おんなの ひとが でんわで はなして います。',es:'Un hombre y una mujer hablan por teléfono.'},
+     q:{jp:'ふたりは いつ えいがを みますか。',es:'¿Cuándo ven la película?'},
+     lines:[['M','こんしゅうの どようび、えいがを みませんか。','¿Vemos una película este sábado?'],['F','どようびは しごとが あります。にちようびは どうですか。','El sábado trabajo. ¿Qué tal el domingo?'],
+       ['M','にちようびは ちょっと…。らいしゅうの どようびは？','El domingo no me va muy bien... ¿Y el sábado de la semana que viene?'],['F','いいですよ。','Dale.']],
+     opts:[{jp:'こんしゅうの どようび',es:'este sábado'},{jp:'こんしゅうの にちようび',es:'este domingo'},{jp:'らいしゅうの どようび',es:'el sábado de la semana que viene'},{jp:'らいしゅうの にちようび',es:'el domingo de la semana que viene'}],a:2,
+     why:{es:'ちょっと… a medias es un «no» educado. Quedan en らいしゅうの どようび.',en:'ちょっと… trailing off is a polite "no". They settle on next Saturday.'}},
+    {id:'l-point-absent',type:'point',
+     setup:{jp:'おんなの ひとと おとこの ひとが はなして います。',es:'Una mujer y un hombre están hablando.'},
+     q:{jp:'おとこの ひとは どうして きのう がっこうを やすみましたか。',es:'¿Por qué el hombre faltó ayer a la escuela?'},
+     lines:[['F','きのう、どうして やすみましたか。かぜですか。','¿Por qué faltaste ayer? ¿Gripe?'],['M','いいえ、かぜじゃ ありません。あたまも いたくなかったです。','No, no era gripe. Tampoco me dolía la cabeza.'],
+       ['M','いぬが びょうきでしたから、いぬの びょういんへ いきました。','Mi perro estaba enfermo, así que fui al veterinario.']],
+     opts:[{jp:'かぜでしたから',es:'porque tenía gripe'},{jp:'あたまが いたかったですから',es:'porque le dolía la cabeza'},{jp:'いぬが びょうきでしたから',es:'porque su perro estaba enfermo'},{jp:'しごとが ありましたから',es:'porque tenía trabajo'}],a:2,
+     why:{es:'Niega la gripe y el dolor de cabeza; la razón va con から: いぬが びょうきでしたから.',en:'He denies the cold and the headache; the reason comes with から.'}},
+    {id:'l-point-drink',type:'point',
+     setup:{jp:'おとこの ひとと おんなの ひとが はなして います。',es:'Un hombre y una mujer están hablando.'},
+     q:{jp:'おんなの ひとは いま まいあさ なにを のみますか。',es:'¿Qué toma ahora la mujer todas las mañanas?'},
+     lines:[['M','まいあさ コーヒーを のみますか。','¿Tomás café todas las mañanas?'],['F','まえは コーヒーでしたが、いまは おちゃを のみます。','Antes era café, pero ahora tomo té.'],['F','ぎゅうにゅうは のみません。','Leche no tomo.']],
+     opts:[{jp:'コーヒー',es:'café'},{jp:'おちゃ',es:'té'},{jp:'ぎゅうにゅう',es:'leche'},{jp:'みず',es:'agua'}],a:1,
+     why:{es:'まえは (antes) era café; いまは (ahora) es おちゃ. Ojo a まえ e いま: el examen ama esos cambios.',en:'まえは coffee, いまは tea.'}},
+    {id:'l-point-room',type:'point',
+     setup:{jp:'おんなの ひとと おとこの ひとが はなして います。',es:'Una mujer y un hombre están hablando.'},
+     q:{jp:'おとこの ひとの へやは どこですか。',es:'¿Dónde está el cuarto del hombre?'},
+     lines:[['F','たなかさんの へやは なんがいですか。','Tanaka, ¿en qué piso está tu cuarto?'],['M','さんがいです。エレベーターの よこの へやです。','En el tercero. Es el cuarto al lado del ascensor.'],
+       ['F','まどが おおきい へやですね。','El que tiene la ventana grande, ¿verdad?'],['M','はい、そうです。','Sí, ese.']],
+     opts:[{jp:'にかいの エレベーターの よこ',es:'segundo piso, al lado del ascensor'},{jp:'さんがいの エレベーターの よこ',es:'tercer piso, al lado del ascensor'},{jp:'さんがいの かいだんの よこ',es:'tercer piso, al lado de las escaleras'},{jp:'にかいの かいだんの よこ',es:'segundo piso, al lado de las escaleras'}],a:1,
+     why:{es:'さんがい (tercer piso; ojo, se lee がい con dakuten) y エレベーターの よこ.',en:'Third floor (さんがい), next to the elevator.'}},
+    {id:'l-point-weather',type:'point',
+     setup:{jp:'おとこの ひとと おんなの ひとが はなして います。',es:'Un hombre y una mujer están hablando.'},
+     q:{jp:'きょうの ごごの てんきは どうですか。',es:'¿Cómo va a estar el tiempo hoy en la tarde?'},
+     lines:[['M','きょうは あさから あめが ふって いますね。','Hoy llueve desde la mañana, ¿verdad?'],['F','ええ。でも、ごごは はれますよ。','Sí. Pero en la tarde se despeja.'],['M','そうですか。あしたは？','¿Ah, sí? ¿Y mañana?'],['F','あしたは くもりです。','Mañana va a estar nublado.']],
+     opts:[{jp:'あめ',es:'lluvia'},{jp:'はれ',es:'despejado'},{jp:'くもり',es:'nublado'},{jp:'ゆき',es:'nieve'}],a:1,
+     why:{es:'La lluvia es de la mañana; ごごは はれます. くもり es de mañana (あした), otro día.',en:'Rain is this morning; the afternoon clears up. Cloudy is tomorrow.'}},
+    {id:'l-point-family',type:'point',
+     setup:{jp:'おんなの ひとと おとこの ひとが はなして います。',es:'Una mujer y un hombre están hablando.'},
+     q:{jp:'おとこの ひとは なんにん かぞくですか。',es:'¿Cuántos son en la familia del hombre?'},
+     lines:[['F','ごかぞくは なんにんですか。','¿Cuántos son en tu familia?'],['M','ちちと ははと あにが ふたり います。','Están mi papá, mi mamá y dos hermanos mayores.'],['M','それから、わたしです。','Y yo.']],
+     opts:[{jp:'さんにん',es:'tres'},{jp:'よにん',es:'cuatro'},{jp:'ごにん',es:'cinco'},{jp:'ろくにん',es:'seis'}],a:2,
+     why:{es:'ちち (1) + はは (1) + あにが ふたり (2) + わたし (1) = ごにん. Y ojo: 4 personas se dice よにん.',en:'Father, mother, two brothers and himself: five.'}},
+    {id:'l-point-party',type:'point',
+     setup:{jp:'おとこの ひとと おんなの ひとが はなして います。',es:'Un hombre y una mujer están hablando.'},
+     q:{jp:'パーティーは なんじからですか。',es:'¿A qué hora empieza la fiesta?'},
+     lines:[['M','パーティーは しちじからですか。','¿La fiesta es desde las siete?'],['F','いいえ、ろくじからです。','No, desde las seis.'],['F','でも、わたしは しごとが ありますから、しちじごろ いきます。','Pero yo trabajo, así que voy a eso de las siete.']],
+     opts:[{jp:'ろくじ',es:'las seis'},{jp:'しちじ',es:'las siete'},{jp:'ろくじはん',es:'las seis y media'},{jp:'はちじ',es:'las ocho'}],a:0,
+     why:{es:'La fiesta empieza a las ろくじ; しちじごろ es cuando llega ella.',en:'The party starts at six; seven is when she arrives.'}},
+    {id:'l-utter-pen',type:'utter',
+     setup:{jp:'ともだちの ペンを つかいたいです。なんと いいますか。',es:'Querés usar el lapicero de un amigo. ¿Qué decís?'},
+     q:{jp:'なんと いいますか。',es:'¿Qué decís?'},lines:[],
+     opts:[{jp:'ペンを かして ください。',es:'Prestame el lapicero, por favor.'},{jp:'ペンを かりて ください。',es:'Pedí prestado el lapicero, por favor.'},{jp:'ペンを あげます。',es:'Te doy el lapicero.'}],a:0,
+     why:{es:'かす = prestar (lo hace el otro); かりる = tomar prestado (lo hacés vos). Le pedís que te preste: かして ください.',en:'かす = lend (the other person does it); かりる = borrow.'}},
+    {id:'l-utter-morning',type:'utter',
+     setup:{jp:'あさ、がっこうで せんせいに あいました。なんと いいますか。',es:'En la mañana te encontrás a tu profesor en la escuela. ¿Qué decís?'},
+     q:{jp:'なんと いいますか。',es:'¿Qué decís?'},lines:[],
+     opts:[{jp:'おやすみなさい。',es:'Buenas noches (al irse a dormir).'},{jp:'おはようございます。',es:'Buenos días.'},{jp:'いただきます。',es:'Gracias por la comida (antes de comer).'}],a:1,
+     why:{es:'Es de mañana y a un profesor: おはようございます, la versión cortés.',en:'Morning, to a teacher: the polite おはようございます.'}},
+    {id:'l-utter-eat',type:'utter',
+     setup:{jp:'これから ごはんを たべます。なんと いいますか。',es:'Estás por empezar a comer. ¿Qué decís?'},
+     q:{jp:'なんと いいますか。',es:'¿Qué decís?'},lines:[],
+     opts:[{jp:'ごちそうさまでした。',es:'Gracias por la comida (al terminar).'},{jp:'いただきます。',es:'Gracias por la comida (al empezar).'},{jp:'いってきます。',es:'Ya vuelvo (al salir de casa).'}],a:1,
+     why:{es:'いただきます va ANTES de comer; ごちそうさまでした va al terminar.',en:'いただきます before eating; ごちそうさまでした after.'}},
+    {id:'l-utter-leave',type:'utter',
+     setup:{jp:'あさ、うちを でます。かぞくに なんと いいますか。',es:'En la mañana salís de tu casa. ¿Qué le decís a tu familia?'},
+     q:{jp:'なんと いいますか。',es:'¿Qué decís?'},lines:[],
+     opts:[{jp:'ただいま。',es:'Ya llegué (al volver).'},{jp:'いってきます。',es:'Ya me voy (y vuelvo).'},{jp:'おかえりなさい。',es:'Bienvenido (a quien vuelve).'}],a:1,
+     why:{es:'El que sale dice いってきます; el que se queda responde いってらっしゃい. ただいま es al volver.',en:'The one leaving says いってきます.'}},
+    {id:'l-utter-way',type:'utter',
+     setup:{jp:'えきへ いきたいですが、みちが わかりません。なんと いいますか。',es:'Querés ir a la estación pero no sabés el camino. ¿Qué decís?'},
+     q:{jp:'なんと いいますか。',es:'¿Qué decís?'},lines:[],
+     opts:[{jp:'すみません、えきは どこですか。',es:'Disculpe, ¿dónde está la estación?'},{jp:'えきへ いきましょう。',es:'Vamos a la estación.'},{jp:'えきは あそこです。',es:'La estación está allá.'}],a:0,
+     why:{es:'Preguntás a un desconocido: すみません + どこですか.',en:'Asking a stranger: すみません + どこですか.'}},
+    {id:'l-utter-visit',type:'utter',
+     setup:{jp:'ともだちの うちに はいります。なんと いいますか。',es:'Entrás a la casa de un amigo. ¿Qué decís?'},
+     q:{jp:'なんと いいますか。',es:'¿Qué decís?'},lines:[],
+     opts:[{jp:'おじゃまします。',es:'Con permiso (al entrar a casa ajena).'},{jp:'おかえりなさい。',es:'Bienvenido (a quien vuelve a su casa).'},{jp:'いってらっしゃい。',es:'Que te vaya bien (a quien sale).'}],a:0,
+     why:{es:'おじゃまします literalmente es «voy a molestar»: se dice al entrar a una casa ajena.',en:'おじゃまします is said when entering someone else\'s home.'}},
+    {id:'l-quick-name',type:'quick',setup:{jp:'',es:''},q:{jp:'',es:'Elegí la respuesta que va.'},
+     lines:[['F','おなまえは？','¿Su nombre?']],
+     opts:[{jp:'やまだです。',es:'Soy Yamada.'},{jp:'げんきです。',es:'Estoy bien.'},{jp:'にほんです。',es:'Es Japón.'}],a:0,
+     why:{es:'Te preguntan el nombre: respondés el apellido + です.',en:'They ask your name.'}},
+    {id:'l-quick-where',type:'quick',setup:{jp:'',es:''},q:{jp:'',es:'Elegí la respuesta que va.'},
+     lines:[['M','きのう どこへ いきましたか。','¿A dónde fuiste ayer?']],
+     opts:[{jp:'デパートへ いきました。',es:'Fui a la tienda por departamentos.'},{jp:'デパートへ いきます。',es:'Voy a la tienda.'},{jp:'デパートで かいます。',es:'Compro en la tienda.'}],a:0,
+     why:{es:'きのう pide pasado: いきました.',en:'きのう needs the past tense.'}},
+    {id:'l-quick-coffee',type:'quick',setup:{jp:'',es:''},q:{jp:'',es:'Elegí la respuesta que va.'},
+     lines:[['F','コーヒー、もう いっぱい いかがですか。','¿Otra taza de café?']],
+     opts:[{jp:'はい、いただきます。',es:'Sí, con gusto.'},{jp:'はい、どうぞ。',es:'Sí, adelante (ofreciendo).'},{jp:'いいえ、いただきます。',es:'No, con gusto (no tiene sentido).'}],a:0,
+     why:{es:'Te ofrecen: aceptás con いただきます. どうぞ es lo que dice quien ofrece.',en:'Accept an offer with いただきます.'}},
+    {id:'l-quick-umbrella',type:'quick',setup:{jp:'',es:''},q:{jp:'',es:'Elegí la respuesta que va.'},
+     lines:[['M','これ、あなたの かさですか。','¿Este es tu paraguas?']],
+     opts:[{jp:'いいえ、ちがいます。',es:'No, no es.'},{jp:'いいえ、そうです。',es:'No, sí es (contradictorio).'},{jp:'はい、ちがいます。',es:'Sí, no es (contradictorio).'}],a:0,
+     why:{es:'いいえ va con ちがいます; はい va con そうです.',en:'いいえ pairs with ちがいます.'}},
+    {id:'l-quick-home',type:'quick',setup:{jp:'',es:''},q:{jp:'',es:'Elegí la respuesta que va.'},
+     lines:[['F','いっしょに かえりませんか。','¿Volvemos juntos?']],
+     opts:[{jp:'ええ、かえりましょう。',es:'Sí, volvamos.'},{jp:'ええ、かえりました。',es:'Sí, volví.'},{jp:'いいえ、かえります。',es:'No, vuelvo.'}],a:0,
+     why:{es:'A una invitación con ～ませんか se acepta con ～ましょう.',en:'Accept a ～ませんか invitation with ～ましょう.'}},
+    {id:'l-quick-homework',type:'quick',setup:{jp:'',es:''},q:{jp:'',es:'Elegí la respuesta que va.'},
+     lines:[['M','しゅくだいは もう おわりましたか。','¿Ya terminaste la tarea?']],
+     opts:[{jp:'いいえ、まだです。',es:'No, todavía no.'},{jp:'はい、まだです。',es:'Sí, todavía no.'},{jp:'いいえ、もうです。',es:'No, ya (no existe).'}],a:0,
+     why:{es:'もう…か (¿ya…?) se responde «todavía no» con いいえ、まだです.',en:'"Not yet" is いいえ、まだです.'}},
+    {id:'l-quick-genki',type:'quick',setup:{jp:'',es:''},q:{jp:'',es:'Elegí la respuesta que va.'},
+     lines:[['F','おげんきですか。','¿Cómo estás?']],
+     opts:[{jp:'はい、げんきです。',es:'Sí, estoy bien.'},{jp:'はい、おげんきです。',es:'Sí, estoy bien (con お, no se usa para uno mismo).'},{jp:'いいえ、どういたしまして。',es:'No, de nada.'}],a:0,
+     why:{es:'La お de おげんき es cortesía hacia el otro; de vos mismo decís げんきです.',en:'The honorific お is for the other person, not yourself.'}}
+  ];
+  /* lectura: short = 短文 (unos 80 caracteres), mid = 中文 (unos 250), info = 情報検索 (horarios, avisos) */
+  var READ_ITEMS=[
+    {id:'r-memo',type:'short',
+     text:'たなかさん\nあしたの かいぎは じゅうじからです。かいぎの まえに この てがみを よんで ください。かいぎの あとで いっしょに ひるごはんを たべましょう。\nやまだ',
+     es:'Tanaka: La reunión de mañana es desde las diez. Antes de la reunión, leé esta carta, por favor. Después de la reunión almorcemos juntos. Yamada',
+     qs:[{q:{jp:'たなかさんは かいぎの まえに なにを しますか。',es:'¿Qué hace Tanaka antes de la reunión?'},
+       opts:[{jp:'てがみを よみます',es:'lee la carta'},{jp:'ひるごはんを たべます',es:'almuerza'},{jp:'てがみを かきます',es:'escribe una carta'},{jp:'やまださんに でんわします',es:'llama a Yamada'}],a:0,
+       why:{es:'かいぎの まえに = antes de la reunión: leer la carta. El almuerzo es かいぎの あとで, después.',en:'Before the meeting: read the letter. Lunch is after.'}}]},
+    {id:'r-sunday',type:'short',
+     text:'わたしは まいにち しちじに おきます。あさごはんは パンと たまごです。きのうは にちようびでしたから、くじまで ねました。それから ともだちと こうえんへ いきました。',
+     es:'Todos los días me levanto a las siete. Desayuno pan y huevo. Ayer era domingo, así que dormí hasta las nueve. Después fui al parque con un amigo.',
+     qs:[{q:{jp:'きのう、この ひとは なんじに おきましたか。',es:'Ayer, ¿a qué hora se levantó esta persona?'},
+       opts:[{jp:'しちじ',es:'a las siete'},{jp:'くじ',es:'a las nueve'},{jp:'はちじ',es:'a las ocho'},{jp:'じゅうじ',es:'a las diez'}],a:1,
+       why:{es:'まいにち (todos los días) son las siete, pero きのう era domingo y durmió hasta las くじ.',en:'Every day at seven, but yesterday was Sunday: nine.'}}]},
+    {id:'r-library',type:'short',
+     text:'としょかんの おしらせ\nらいしゅうの げつようびは としょかんが やすみです。ほんを かえしたい ひとは、いりぐちの はこに いれて ください。',
+     es:'Aviso de la biblioteca. El lunes de la semana que viene la biblioteca cierra. Quien quiera devolver libros, por favor póngalos en la caja de la entrada.',
+     qs:[{q:{jp:'らいしゅうの げつようびに ほんを かえしたいです。どう しますか。',es:'Querés devolver un libro el lunes que viene. ¿Qué hacés?'},
+       opts:[{jp:'としょかんの ひとに わたします',es:'se lo doy al bibliotecario'},{jp:'いりぐちの はこに いれます',es:'lo pongo en la caja de la entrada'},{jp:'かようびに かえします',es:'lo devuelvo el martes'},{jp:'かえしません',es:'no lo devuelvo'}],a:1,
+       why:{es:'Ese día está cerrado (やすみ), por eso piden いりぐちの はこに いれて ください.',en:'It is closed that day; use the box at the entrance.'}}]},
+    {id:'r-tennis',type:'short',
+     text:'リンさんへ\nきょうは あめですから、テニスは やめましょう。こんしゅうの どようびは どうですか。へんじを ください。\nキム',
+     es:'Para Lin: Hoy llueve, así que dejemos el tenis. ¿Qué tal el sábado de esta semana? Contestame, por favor. Kim',
+     qs:[{q:{jp:'キムさんは どうして テニスを やめますか。',es:'¿Por qué Kim cancela el tenis?'},
+       opts:[{jp:'あめですから',es:'porque llueve'},{jp:'どようびですから',es:'porque es sábado'},{jp:'いそがしいですから',es:'porque está ocupado'},{jp:'テニスが きらいですから',es:'porque no le gusta el tenis'}],a:0,
+       why:{es:'La razón va antes de から: あめですから.',en:'The reason comes before から.'}}]},
+    {id:'r-room',type:'short',
+     text:'わたしの へやは あまり ひろくないです。でも、まどが おおきくて あかるいです。へやには つくえと いすと ベッドが あります。テレビは ありません。',
+     es:'Mi cuarto no es muy amplio. Pero la ventana es grande y es luminoso. En el cuarto hay un escritorio, una silla y una cama. No hay tele.',
+     qs:[{q:{jp:'へやに ない ものは どれですか。',es:'¿Qué cosa NO hay en el cuarto?'},
+       opts:[{jp:'つくえ',es:'escritorio'},{jp:'いす',es:'silla'},{jp:'ベッド',es:'cama'},{jp:'テレビ',es:'tele'}],a:3,
+       why:{es:'La pregunta pide lo que NO hay (ない もの): テレビは ありません.',en:'The question asks what is NOT there.'}}]},
+    {id:'r-student',type:'mid',
+     text:'わたしは コスタリカから きました。いま、とうきょうの にほんごがっこうで べんきょうして います。がっこうは くじから じゅうにじまでです。ごごは レストランで アルバイトを します。\nしゅうまつは ともだちと いろいろな ところへ いきます。せんしゅうは やまへ いきました。とても さむかったですが、やまの うえは とても きれいでした。\nらいげつ、ははが にほんへ きます。いっしょに きょうとへ いく つもりです。',
+     es:'Vengo de Costa Rica. Ahora estudio en una escuela de japonés en Tokio. Las clases son de nueve a doce. En la tarde trabajo medio tiempo en un restaurante. Los fines de semana voy a varios lugares con amigos. La semana pasada fui a la montaña. Hacía mucho frío, pero arriba en la montaña era muy bonito. El mes que viene mi mamá viene a Japón. Pienso ir con ella a Kioto.',
+     qs:[{q:{jp:'この ひとは ごご なにを しますか。',es:'¿Qué hace esta persona en la tarde?'},
+       opts:[{jp:'にほんごを べんきょうします',es:'estudia japonés'},{jp:'アルバイトを します',es:'trabaja medio tiempo'},{jp:'やまへ いきます',es:'va a la montaña'},{jp:'ともだちと あそびます',es:'sale con amigos'}],a:1,
+       why:{es:'La escuela es de mañana (くじから じゅうにじまで); ごごは アルバイト.',en:'School is in the morning; afternoons are the part-time job.'}},
+      {q:{jp:'らいげつ この ひとは なにを しますか。',es:'¿Qué va a hacer el mes que viene?'},
+       opts:[{jp:'コスタリカへ かえります',es:'vuelve a Costa Rica'},{jp:'ははと きょうとへ いきます',es:'va a Kioto con su mamá'},{jp:'やまへ いきます',es:'va a la montaña'},{jp:'とうきょうへ いきます',es:'va a Tokio'}],a:1,
+       why:{es:'らいげつ ははが きます + いっしょに きょうとへ いく つもりです.',en:'Next month, mom comes and they plan to go to Kyoto.'}}]},
+    {id:'r-birthday',type:'mid',
+     text:'きのうは ははの たんじょうびでした。わたしは あねと デパートへ プレゼントを かいに いきました。ははは はなが すきですから、はなを かいたかったです。でも、はなは とても たかかったです。\nそれで、あねが「ははは よく おちゃを のみますから、きれいな カップは どうですか」と いいました。わたしたちは あおい カップを ふたつ かいました。\nははは「ありがとう。とても うれしいです」と いいました。',
+     es:'Ayer fue el cumpleaños de mi mamá. Fui con mi hermana mayor a la tienda a comprar un regalo. A mi mamá le gustan las flores, así que quería comprar flores. Pero las flores estaban muy caras. Entonces mi hermana dijo: «Mamá toma mucho té, ¿qué tal unas tazas bonitas?». Compramos dos tazas azules. Mamá dijo: «Gracias. Estoy muy contenta».',
+     qs:[{q:{jp:'ふたりは どうして はなを かいませんでしたか。',es:'¿Por qué no compraron flores?'},
+       opts:[{jp:'ははは はなが きらいですから',es:'porque a mamá no le gustan'},{jp:'はなは たかかったですから',es:'porque eran caras'},{jp:'みせに はなが ありませんでしたから',es:'porque no había flores'},{jp:'あねが だめと いいましたから',es:'porque la hermana dijo que no'}],a:1,
+       why:{es:'でも、はなは とても たかかったです: eran caras.',en:'The flowers were very expensive.'}},
+      {q:{jp:'ふたりは なにを かいましたか。',es:'¿Qué compraron?'},
+       opts:[{jp:'はな',es:'flores'},{jp:'おちゃ',es:'té'},{jp:'あおい カップを ひとつ',es:'una taza azul'},{jp:'あおい カップを ふたつ',es:'dos tazas azules'}],a:3,
+       why:{es:'あおい カップを ふたつ: el té es lo que toma la mamá, no lo que compraron.',en:'Two blue cups; tea is what mom drinks.'}}]},
+    {id:'r-pool',type:'info',
+     text:'さくら プール\nじかん：ごぜん くじ ～ ごご はちじ\nやすみ：もくようび\nおかね：おとな ろっぴゃくえん、こども さんびゃくえん\n※ ごご ごじから しちじまでは おとなだけです。',
+     es:'Piscina Sakura. Horario: 9:00 a 20:00. Cierra: jueves. Precio: adultos 600 yenes, niños 300 yenes. De 17:00 a 19:00, solo adultos.',
+     qs:[{q:{jp:'おとなが ひとりと こどもが ひとり いきます。ぜんぶで いくらですか。',es:'Van un adulto y un niño. ¿Cuánto es en total?'},
+       opts:[{jp:'ろっぴゃくえん',es:'600 yenes'},{jp:'きゅうひゃくえん',es:'900 yenes'},{jp:'せんにひゃくえん',es:'1200 yenes'},{jp:'さんびゃくえん',es:'300 yenes'}],a:1,
+       why:{es:'ろっぴゃく (600) + さんびゃく (300) = きゅうひゃくえん (900).',en:'600 + 300 = 900 yen.'}},
+      {q:{jp:'こどもが プールに いけない のは いつですか。',es:'¿Cuándo NO puede ir un niño a la piscina?'},
+       opts:[{jp:'げつようびの ごご よじ',es:'lunes a las 16:00'},{jp:'かようびの ごご ろくじ',es:'martes a las 18:00'},{jp:'すいようびの ごご しちじはん',es:'miércoles a las 19:30'},{jp:'きんようびの ごぜん じゅうじ',es:'viernes a las 10:00'}],a:1,
+       why:{es:'De ごじ a しちじ es おとなだけ: ろくじ cae adentro. El jueves cierra, pero no está entre las opciones.',en:'5 to 7 pm is adults only; 6 pm falls inside.'}}]},
+    {id:'r-menu',type:'info',
+     text:'レストラン はな ランチ メニュー（じゅういちじ ～ にじ）\nA カレー ななひゃくえん\nB ラーメン ろっぴゃくごじゅうえん\nC さかなの ごはん はっぴゃくえん\nのみもの：コーヒー、こうちゃ ひゃくごじゅうえん（ランチと いっしょなら ひゃくえん）',
+     es:'Restaurante Hana, menú de almuerzo (11:00 a 14:00). A curry 700 yenes. B ramen 650 yenes. C arroz con pescado 800 yenes. Bebidas: café o té 150 yenes (100 yenes con un almuerzo).',
+     qs:[{q:{jp:'ひるに ラーメンを たべて、コーヒーを のみます。いくらですか。',es:'Al mediodía comés ramen y tomás café. ¿Cuánto es?'},
+       opts:[{jp:'ろっぴゃくごじゅうえん',es:'650 yenes'},{jp:'ななひゃくごじゅうえん',es:'750 yenes'},{jp:'はっぴゃくえん',es:'800 yenes'},{jp:'はっぴゃくごじゅうえん',es:'850 yenes'}],a:1,
+       why:{es:'Ramen 650 + café con almuerzo 100 = 750. La trampa es sumar el café a 150 (800).',en:'650 + 100 (with lunch) = 750.'}}]}
+  ];
+  /* 言い換え類義: la frase que dice lo mismo con otras palabras */
+  var PARA_ITEMS=[
+    {jp:'この へやは くらいです。',es:'Este cuarto es oscuro.',opts:['この へやは あかるくないです。','この へやは ひろくないです。','この へやは しずかじゃないです。','この へやは きれいじゃないです。'],a:0},
+    {jp:'この みせは やすいです。',es:'Esta tienda es barata.',opts:['この みせは たかくないです。','この みせは あたらしくないです。','この みせは ひろくないです。','この みせは ちかくないです。'],a:0},
+    {jp:'きのうは やすみでした。',es:'Ayer fue día libre.',opts:['きのうは しごとが ありませんでした。','きのうは いそがしかったです。','きのうは しごとでした。','きのうは びょうきでした。'],a:0},
+    {jp:'わたしは にくが きらいです。',es:'No me gusta la carne.',opts:['わたしは にくが すきじゃないです。','わたしは にくを よく たべます。','わたしは にくが すきです。','わたしは にくが たかいです。'],a:0},
+    {jp:'この ほんは つまらないです。',es:'Este libro es aburrido.',opts:['この ほんは おもしろくないです。','この ほんは むずかしくないです。','この ほんは ながくないです。','この ほんは たかくないです。'],a:0},
+    {jp:'へやを そうじしました。',es:'Limpié el cuarto.',opts:['へやを きれいに しました。','へやを ひろく しました。','へやに いました。','へやを でました。'],a:0},
+    {jp:'あねは がっこうで おしえて います。',es:'Mi hermana mayor enseña en una escuela.',opts:['あねは せんせいです。','あねは がくせいです。','あねは いしゃです。','あねは がっこうが すきです。'],a:0},
+    {jp:'いっしょに えいがを みませんか。',es:'¿Vemos una película juntos?',opts:['いっしょに えいがを みましょう。','いっしょに えいがを みました。','いっしょに えいがを みません。','ひとりで えいがを みます。'],a:0},
+    {jp:'まいあさ さんぽを します。',es:'Salgo a caminar todas las mañanas.',opts:['あさは いつも さんぽを します。','あさは ときどき さんぽを します。','あさは さんぽを しません。','よるは いつも さんぽを します。'],a:0},
+    {jp:'えきは ここから ちかいです。',es:'La estación está cerca de aquí.',opts:['えきは ここから とおくないです。','えきは ここから とおいです。','えきは ここに あります。','えきは おおきくないです。'],a:0}
+  ];
+  /* ================= PREPARACIÓN N5: MOTOR =================
+     Tres cosas que el resto de la app no entrenaba: escuchar conversaciones, leer
+     textos cortos y medirse con un simulacro del examen. Escucha y lectura tienen
+     un repaso simple por ítem (cajas 0-4); el simulacro arma las preguntas en el
+     momento con el contenido de toda la app y estima el puntaje con las reglas de
+     aprobación del JLPT N5. Nada de esto toca las cajas de palabras ni de kanji. */
+  var PREP_IVL=[0,1,3,7,21], PREP_READY=0.6, WORDS_PREP_PROB=0.06;
+  var PREP_KIND_LABEL={task:{jp:'課題理解',es:'Qué va a hacer',en:'Task'},point:{jp:'ポイント理解',es:'Un dato puntual',en:'Key point'},
+    utter:{jp:'発話表現',es:'Qué decir',en:'What to say'},quick:{jp:'即時応答',es:'Respuesta rápida',en:'Quick reply'},
+    short:{jp:'短文',es:'Texto corto',en:'Short text'},mid:{jp:'中文',es:'Texto mediano',en:'Mid-length text'},info:{jp:'情報検索',es:'Buscar el dato',en:'Find the info'}};
+  function ensurePrep(){ if(!state.exercises)state.exercises={}; var p=state.exercises.prep||(state.exercises.prep={});
+    if(!p.l)p.l={}; if(!p.r)p.r={}; if(!p.mock)p.mock=[]; if(!p.daily)p.daily={}; return p; }
+  function prepAddDays(d,n){ var x=new Date(Date.parse(d+'T12:00:00')+n*86400000); return x.toISOString().slice(0,10); }
+  function prepRec(kind,id){ var p=ensurePrep()[kind]; return p[id]||(p[id]={box:0,due:null,seen:0,last:null}); }
+  /* un movimiento por ítem y día, igual que el resto de la app */
+  function prepMove(kind,id,ok){ var r=prepRec(kind,id), td=today(), P=ensurePrep(); r.seen++;
+    if(r.last!==td){ r.box=ok?Math.min(4,r.box+1):Math.max(0,r.box-1); r.last=td; r.due=prepAddDays(td, ok?PREP_IVL[r.box]:1); }
+    P.daily[td]=(P.daily[td]||0)+1; }
+
+  /* ---- palabras de un texto: bloques separados por espacio; se busca la palabra al
+     inicio de cada bloque y, si no, se desconjuga el bloque. Sirve para medir qué tan
+     listo está el usuario y para dibujar con kanji lo que ya ve con kanji. ---- */
+  var PREP_STOP={'から':1,'まで':1,'より':1,'など':1,'だけ':1,'ごろ':1,'ぐらい':1,'この':1,'その':1,'あの':1,'これ':1,'それ':1,'あれ':1,'です':1,'でした':1,'じゃ':1,'では':1,'でも':1,'それから':1,'じゃあ':1};
+  var PREP_TAIL=['から','まで','より','だけ','など','ごろ','ぐらい','です','でした','じゃ','は','が','を','に','で','へ','と','の','も','や','か','よ','ね'];
+  function prepSegBlock(b){ /* devuelve [{t,w}] para un bloque sin espacios */
+    var out=[], i=0, L, c, rest, okNext;
+    for(L=Math.min(10,b.length);L>=2;L--){ c=b.substr(0,L);
+      if(WORD_BY_JP[c] && !PREP_STOP[c]){ rest=b.slice(L);
+        okNext=!rest || PREP_TAIL.some(function(tl){ return rest.indexOf(tl)===0; }) || /^[、。？！」「…]/.test(rest);
+        if(okNext){ out.push({t:c,w:WORD_BY_JP[c]}); if(rest)out.push({t:rest,w:null}); return out; } } }
+    return [{t:b,w:null}]; }
+  function prepWordsOf(text){ var seen={}, out=[];
+    String(text||'').split(/[\s\n]+/).forEach(function(b){ b=b.replace(/[、。？！「」…：（）()～※]/g,''); if(!b)return;
+      var seg=prepSegBlock(b), hit=seg[0].w?seg[0].t:null;
+      if(!hit){ var bb=b; PREP_TAIL.concat(['ませんか','ましょう']).forEach(function(tl){ if(bb.length>tl.length+1&&bb.slice(-tl.length)===tl&&!WORD_BY_JP[bb])bb=bb.slice(0,-tl.length); });
+        var d=deinflectMasu(bb)||deinflectPlain(bb)||deinflectMasu(b)||deinflectPlain(b); if(d&&d.base)hit=d.base; }
+      if(hit&&!seen[hit]){ seen[hit]=1; out.push(hit); } });
+    return out; }
+  function prepItemText(it){ var s=[it.setup&&it.setup.jp, it.q&&it.q.jp, it.text];
+    (it.lines||[]).forEach(function(l){ s.push(l[1]); }); (it.opts||[]).forEach(function(o){ s.push(o.jp); });
+    (it.qs||[]).forEach(function(q){ s.push(q.q.jp); q.opts.forEach(function(o){ s.push(o.jp); }); }); return s.join(' '); }
+  var PREP_WCACHE={};
+  function prepReadiness(it){ var ws=PREP_WCACHE[it.id]||(PREP_WCACHE[it.id]=prepWordsOf(prepItemText(it))), b=ensureWords().box, k=0;
+    ws.forEach(function(w){ if((b[w]||0)>=1)k++; }); return ws.length?k/ws.length:1; }
+  function prepReady(it){ return readingEra() && prepReadiness(it)>=PREP_READY; }
+  function prepTextHTML(text){ return String(text||'').split('\n').map(function(line){
+      return line.split(' ').map(function(b){ if(!b)return '';
+        return prepSegBlock(b).map(function(x){ if(x.w && wordKanjiStage(x.w)!=='kana') return wordFormHTML(x.w); return tlEsc(x.t); }).join(''); }).join(' '); }).join('<br>'); }
+
+  /* ---- qué toca: vencidos primero, después nuevos listos; los no listos esperan ---- */
+  function prepPool(kind){ return kind==='l'?LISTEN_ITEMS:READ_ITEMS; }
+  function prepNext(kind,exclude){ var td=today(), P=ensurePrep()[kind], due=[], fresh=[];
+    prepPool(kind).forEach(function(it){ if(exclude&&exclude===it.id)return; var r=P[it.id];
+      if(r&&r.seen){ if(r.due&&r.due<=td&&r.last!==td) due.push(it); }
+      else if(prepReady(it)) fresh.push(it); });
+    if(due.length) return due[Math.floor(Math.random()*due.length)];
+    if(fresh.length){ fresh.sort(function(a,b){ return prepReadiness(b)-prepReadiness(a); }); return fresh[0]; }
+    return null; }
+  function prepCounts(kind){ var td=today(), P=ensurePrep()[kind], c={ready:0,due:0,total:prepPool(kind).length,solid:0};
+    prepPool(kind).forEach(function(it){ var r=P[it.id]; if(r&&r.seen){ if(r.box>=3)c.solid++; if(r.due&&r.due<=td&&r.last!==td)c.due++; } else if(prepReady(it))c.ready++; }); return c; }
+  function prepHasWork(kind){ return !!prepNext(kind); }
+
+  /* ---- audio: varias voces con la síntesis del sistema. Si el navegador no avisa el
+     final de una línea (pasa en iOS y en pruebas), un tope de tiempo pasa a la siguiente. ---- */
+  var prepAudioTok=0;
+  function prepSay(text,spk,onEnd){ var done=false, fin=function(){ if(done)return; done=true; if(onEnd)onEnd(); };
+    try{ if(!window.speechSynthesis){ setTimeout(fin,0); return; }
+      var u=new SpeechSynthesisUtterance(String(text).replace(/\s+/g,'')); u.lang='ja-JP'; u.rate=.85; u.pitch=spk==='M'?0.8:(spk==='F'?1.25:1);
+      var vs=window.speechSynthesis.getVoices().filter(function(v){ return /ja(-|_)?JP/i.test(v.lang); });
+      if(vs.length) u.voice=(spk==='M'&&vs.length>1)?vs[1]:vs[0];
+      u.onend=fin; u.onerror=fin; setTimeout(fin,1200+String(text).length*230);
+      window.speechSynthesis.speak(u); }catch(e){ setTimeout(fin,0); } }
+  function prepPlay(seq,onDone){ var tok=++prepAudioTok, i=0;
+    try{ window.speechSynthesis&&window.speechSynthesis.cancel(); }catch(e){}
+    (function next(){ if(tok!==prepAudioTok)return; if(i>=seq.length){ if(onDone)onDone(); return; }
+      var s=seq[i++]; if(!s.jp){ next(); return; } prepSay(s.jp,s.s,function(){ setTimeout(next,s.gap||380); }); })(); }
+  function prepStop(){ prepAudioTok++; try{ window.speechSynthesis&&window.speechSynthesis.cancel(); }catch(e){} }
+  var PREP_NUM=['いちばん','にばん','さんばん','よんばん'];
+  function prepDialogSeq(it){ var seq=[];
+    if(it.type==='quick'){ it.lines.forEach(function(l){ seq.push({s:l[0],jp:l[1]}); }); return seq; }
+    if(it.setup.jp) seq.push({s:'N',jp:it.setup.jp});
+    if(it.type!=='utter') seq.push({s:'N',jp:it.q.jp,gap:700});
+    it.lines.forEach(function(l){ seq.push({s:l[0],jp:l[1]}); });
+    if(it.type==='task'||it.type==='point') seq.push({s:'N',jp:it.q.jp});
+    return seq; }
+  function prepFullSeq(it){ if(it.type==='utter') return [{s:'N',jp:it.setup.jp,gap:700}].concat(prepOptSeq(it)); if(it.type==='quick') return prepDialogSeq(it).concat(prepOptSeq(it)); return prepDialogSeq(it); }
+  function prepOptSeq(it,only){ var seq=[]; it.opts.forEach(function(o,i){ if(only!=null&&only!==i)return; seq.push({s:'N',jp:PREP_NUM[i],gap:200}); seq.push({s:it.type==='quick'?(it.lines[0][0]==='M'?'F':'M'):'N',jp:o.jp}); }); return seq; }
+
+  /* ---- sesión ---- */
+  var prs=null;
+  function prepHead(title){ var s=prs||{}; return '<div class="d-sticky"><div class="d-head"><div class="d-head-l"><button class="d-close" id="prClose">✕ '+t("Close")+'</button></div>'+
+    (s.mode==='mock'?(s.stage!=='q'?'':'<div class="d-stats"><div class="d-stat"><div class="n">'+Math.min(s.mi+1,s.mq.length)+'/'+s.mq.length+'</div><div class="l">'+(getLang()==='es'?'Pregunta':'Question')+'</div></div></div>')
+      :'<div class="d-stats"><div class="d-stat"><div class="n">'+(s.done||0)+'</div><div class="l">'+t("Done")+'</div></div><div class="d-stat wrong"><div class="n">'+(s.wrong||0)+'</div><div class="l">'+t("Wrong")+'</div></div><div class="d-stat right"><div class="n">'+(s.correct||0)+'</div><div class="l">'+t("Correct")+'</div></div></div>')+
+    '</div></div>'; }
+  function openPrepHub(){ prepStop(); prs={mode:'hub',done:0,correct:0,wrong:0,from:'hub'}; renderPrep(); readingEl.classList.remove('hidden'); }
+  function prepClose(){ prepStop(); var from=prs&&prs.from; prs=null;
+    if(from==='daily'&&wsess){ wordsEnd(); return; } if(from==='custom'&&csess){ customEnd(); return; }
+    readingEl.classList.add('hidden'); render(); }
+  function prepAfter(){ prepStop(); var from=prs&&prs.from;
+    if(from==='daily'){ prs=null; if(wsess){ wordsAfterUnit(); return; } }
+    if(from==='custom'){ prs=null; if(csess){ customAfterUnit(); return; } }
+    if(prs&&prs.chain){ var k=prs.kind, nx=prepNext(k,prs.item&&prs.item.id); if(nx){ prepStartItem(k,nx,prs.from,true); return; } }
+    openPrepHub(); }
+  function prepStartItem(kind,it,from,chain){ var keep=prs&&prs.chain&&chain?prs:null;
+    prs={mode:kind==='l'?'listen':'read',kind:kind,item:it,qi:0,answered:false,picked:-1,showEs:false,showTr:false,from:from||'hub',chain:!!chain,
+      done:keep?keep.done:0,correct:keep?keep.correct:0,wrong:keep?keep.wrong:0,okAll:true};
+    if(it.opts) prs.order=shuffle(it.opts.map(function(o,i){return i;}));
+    else prs.order=shuffle(it.qs[0].opts.map(function(o,i){return i;}));
+    renderPrep(); readingEl.classList.remove('hidden');
+    if(kind==='l') setTimeout(function(){ if(prs&&prs.item===it&&!prs.answered) prepPlay(prepFullSeq(it)); },300); }
+  function startPrepKind(kind,from){ var it=prepNext(kind); if(!it){ openPrepHub(); return; } prepStartItem(kind,it,from||'hub',true); }
+  function prepWeave(){ var opts=[]; if(prepHasWork('l'))opts.push('l'); if(prepHasWork('r'))opts.push('r'); if(!opts.length)return false;
+    var k=opts[Math.floor(Math.random()*opts.length)]; prepStartItem(k,prepNext(k),'daily',false); return true; }
+
+  function prepAnswer(i){ if(!prs||prs.answered)return; i=+i; prs.answered=true; prs.picked=i;
+    var it=prs.item, ok, q=prs.kind==='r'?it.qs[prs.qi]:it; ok=i===q.a;
+    prs.done++; if(ok)prs.correct++; else { prs.wrong++; prs.okAll=false; }
+    var last=prs.kind==='l' || prs.qi>=it.qs.length-1;
+    if(last){ prepMove(prs.kind,it.id,prs.okAll); }
+    stampDay(); Persistence.save(state); prepStop(); renderPrep(); }
+  function prepNextQ(){ var it=prs.item;
+    if(prs.kind==='r' && prs.qi<it.qs.length-1){ prs.qi++; prs.answered=false; prs.picked=-1; prs.showEs=false; prs.order=shuffle(it.qs[prs.qi].opts.map(function(o,i){return i;})); renderPrep(); return; }
+    prepAfter(); }
+
+  function prepOptsHTML(q,order,answered,picked,hideText,isJp){ var es=getLang()==='es', h='<div class="ropts pr-opts">';
+    order.forEach(function(oi,pos){ var o=q.opts[oi], cls='ropt pr-opt'+(isJp?' jp':''), already=false;
+      if(answered){ if(oi===q.a)cls+=' correct'; else if(oi===picked)cls+=' bad'; else cls+=' dim'; }
+      var label=hideText&&!answered?((es?'Opción ':'Option ')+(pos+1)):prepTextHTML(o.jp);
+      h+='<div class="pr-row">'+(hideText?'<button class="pr-play" data-play="'+oi+'" aria-label="play"><i class=ico-spk></i> '+(pos+1)+'</button>':'')+
+        '<button class="'+cls+'" data-i="'+oi+'">'+label+(answered?'<span class="pr-oes">'+tlEsc(es?o.es:(o.en||o.es))+'</span>':'')+'</button></div>'; });
+    return h+'</div>'; }
+  function prepTranscriptHTML(it){ var es=getLang()==='es';
+    if(!it.lines||!it.lines.length) return '';
+    return '<div class="pr-tr"><div class="rq-parts-label">'+(es?'Lo que se dijo':'Transcript')+'</div>'+it.lines.map(function(l){
+      var who=l[0]==='M'?(es?'Él':'He'):(l[0]==='F'?(es?'Ella':'She'):'');
+      return '<div class="pr-line"><span class="pr-who">'+who+'</span><span class="pr-jp">'+prepTextHTML(l[1])+'</span><span class="pr-es">'+tlEsc(l[2]||'')+'</span></div>'; }).join('')+'</div>'; }
+
+  function renderPrep(){ if(!prs)return; var es=getLang()==='es', h=prepHead(), it=prs.item;
+    if(prs.mode==='hub'){ var cl=prepCounts('l'), cr=prepCounts('r'), last=ensurePrep().mock.slice(-1)[0];
+      h+='<div class="rq-prompt teach-word"><div class="rq-kind">'+(es?'Preparación N5':'N5 prep')+'</div><div class="rq-jp mincho" style="font-size:52px;line-height:1.1">試</div>'+
+        '<div class="br-intro"><p>'+(es?'El examen tiene tres partes: vocabulario y kanji, gramática y lectura, y escucha. La escucha vale un tercio y tiene su propio mínimo, así que hay que entrenarla aparte.':'The exam has three parts: vocabulary and kanji, grammar and reading, and listening. Listening is a third of the score and has its own minimum, so it needs its own practice.')+'</p></div></div>';
+      function card(id,title,sub,btn,ok){ return '<div class="pr-card"><div class="pr-card-t">'+title+'</div><div class="pr-card-s">'+sub+'</div><button class="d-next pr-go" id="'+id+'"'+(ok?'':' disabled')+'>'+btn+'</button></div>'; }
+      h+=card('prGoL',(es?'Escucha':'Listening')+' <span class="mincho">聴解</span>',
+        (es?(cl.due+' para repasar · '+cl.ready+' nuevas listas · '+cl.solid+' de '+cl.total+' firmes'):(cl.due+' due · '+cl.ready+' new ready · '+cl.solid+' of '+cl.total+' solid'))+
+        (cl.due+cl.ready?'':'<br>'+(es?'Las demás esperan a que conozcas más palabras.':'The rest wait until you know more words.')),es?'Escuchar →':'Listen →',cl.due+cl.ready>0);
+      h+=card('prGoR',(es?'Lectura':'Reading')+' <span class="mincho">読解</span>',
+        (es?(cr.due+' para repasar · '+cr.ready+' nuevas listas · '+cr.solid+' de '+cr.total+' firmes'):(cr.due+' due · '+cr.ready+' new ready · '+cr.solid+' of '+cr.total+' solid'))+
+        (cr.due+cr.ready?'':'<br>'+(es?'Las demás esperan a que conozcas más palabras.':'The rest wait until you know more words.')),es?'Leer →':'Read →',cr.due+cr.ready>0);
+      h+=card('prGoM',(es?'Simulacro':'Mock exam')+' <span class="mincho">模試</span>',
+        (es?'Unas 45 preguntas con las cuatro secciones, sin ayuda hasta el final. Calcula si hoy aprobarías con las reglas del examen.':'About 45 questions across the four sections, no help until the end. Estimates whether you would pass today.')+
+        (last?'<br>'+(es?'Último: ':'Last: ')+last.d+' · '+last.tot+'/180 · '+(last.pass?(es?'aprobado':'pass'):(es?'no aprobado':'fail')):''),es?'Empezar simulacro →':'Start mock →',true);
+      readingInner.innerHTML=h; bindPrep(); return; }
+    if(prs.mode==='mock'){ renderMock(h); return; }
+    var kl=PREP_KIND_LABEL[it.type]||{};
+    h+='<div class="rq-prompt"><div class="rq-kind">'+(prs.kind==='l'?(es?'Escucha':'Listening'):(es?'Lectura':'Reading'))+' · <span class="mincho">'+kl.jp+'</span> · '+(es?kl.es:kl.en)+'</div>';
+    if(prs.kind==='l'){
+      var hide=it.type==='utter'||it.type==='quick';
+      if(it.type==='utter') h+='<div class="pr-q">'+prepTextHTML(it.setup.jp)+'</div>';
+      else if(it.type!=='quick') h+='<div class="pr-q">'+prepTextHTML(it.q.jp)+'</div>';
+      h+='<div class="pr-qes'+(prs.showEs||prs.answered?' show':'')+'">'+tlEsc(it.type==='utter'?it.setup.es:it.q.es)+'</div>';
+      if(!prs.answered&&it.type!=='quick') h+='<button class="bw-toggle" id="prEs">'+(prs.showEs?'☑':'☐')+' '+(es?'Ver la pregunta en español':'Show question in English')+'</button>';
+      h+='<div class="d-actions pr-audio"><button class="d-spk-word" id="prPlay"><i class=ico-spk></i> <span>'+(es?'Escuchar de nuevo':'Play again')+'</span></button></div></div>';
+      h+=prepOptsHTML(it,prs.order,prs.answered,prs.picked,hide,true);
+      if(prs.answered){ var okL=prs.picked===it.a;
+        h+='<div class="rq-fb"><div class="rq-msg '+(okL?'ok':'no')+'">'+t(okL?"Correct!":"It was")+'</div>'+
+          (!okL?'<div class="rq-ans">'+prepTextHTML(it.opts[it.a].jp)+' · <span class="mean">'+tlEsc(it.opts[it.a].es)+'</span></div>':'')+
+          '<div class="br-why">'+tlEsc(es?it.why.es:it.why.en)+'</div>'+prepTranscriptHTML(it)+'</div>'+
+          '<div class="d-actions"><button class="d-next" id="prNext">'+t("Next →")+'</button></div>'; }
+      readingInner.innerHTML=h; bindPrep(); if(prs.answered) collapseNoiseOpts(prs); return; }
+    /* lectura */
+    var q=it.qs[prs.qi];
+    h+='<div class="pr-text">'+prepTextHTML(it.text)+'</div>';
+    if(prs.answered) h+='<button class="bw-toggle" id="prTr">'+(prs.showTr?'☑':'☐')+' '+(es?'Ver el texto en español':'Show text in English')+'</button>'+(prs.showTr?'<div class="pr-es-text">'+tlEsc(it.es)+'</div>':'');
+    h+='<div class="pr-q">'+(it.qs.length>1?'<span class="pr-qn">'+(prs.qi+1)+'/'+it.qs.length+'</span> ':'')+prepTextHTML(q.q.jp)+'</div>'+
+      '<div class="pr-qes'+(prs.showEs||prs.answered?' show':'')+'">'+tlEsc(q.q.es)+'</div>';
+    if(!prs.answered) h+='<button class="bw-toggle" id="prEs">'+(prs.showEs?'☑':'☐')+' '+(es?'Ver la pregunta en español':'Show question in English')+'</button>';
+    h+='</div>'+prepOptsHTML(q,prs.order,prs.answered,prs.picked,false,true);
+    if(prs.answered){ var okR=prs.picked===q.a;
+      h+='<div class="rq-fb"><div class="rq-msg '+(okR?'ok':'no')+'">'+t(okR?"Correct!":"It was")+'</div><div class="br-why">'+tlEsc(es?q.why.es:q.why.en)+'</div></div>'+
+        '<div class="d-actions"><button class="d-next" id="prNext">'+t("Next →")+'</button></div>'; }
+    readingInner.innerHTML=h; bindPrep(); if(prs.answered) collapseNoiseOpts(prs); }
+
+  function bindPrep(){ var $=function(id){return document.getElementById(id);};
+    if($('prClose'))$('prClose').addEventListener('click',prepClose);
+    if($('prGoL'))$('prGoL').addEventListener('click',function(){ startPrepKind('l','hub'); });
+    if($('prGoR'))$('prGoR').addEventListener('click',function(){ startPrepKind('r','hub'); });
+    if($('prGoM'))$('prGoM').addEventListener('click',startMock);
+    if($('prEs'))$('prEs').addEventListener('click',function(){ prs.showEs=!prs.showEs; renderPrep(); });
+    if($('prTr'))$('prTr').addEventListener('click',function(){ prs.showTr=!prs.showTr; renderPrep(); });
+    if($('prNext'))$('prNext').addEventListener('click',function(){ if(prs.mode==='mock')mockNext(); else prepNextQ(); });
+    if($('prPlay'))$('prPlay').addEventListener('click',function(){ var it=prs.mode==='mock'?prs.mq[prs.mi].item:prs.item;
+      prepPlay(prepFullSeq(it)); });
+    readingInner.querySelectorAll('[data-play]').forEach(function(b){ b.addEventListener('click',function(){ var it=prs.mode==='mock'?prs.mq[prs.mi].item:prs.item; prepPlay(prepOptSeq(it,+b.getAttribute('data-play'))); }); });
+    if(!prs.answered||prs.mode==='mock') readingInner.querySelectorAll('.pr-opt[data-i]').forEach(function(b){ b.addEventListener('click',function(){ if(prs.mode==='mock')mockAnswer(+b.getAttribute('data-i')); else prepAnswer(b.getAttribute('data-i')); }); });
+    readingInner.querySelectorAll('[data-mstart]').forEach(function(b){ b.addEventListener('click',mockBegin); });
+    if($('prHub'))$('prHub').addEventListener('click',openPrepHub);
+  }
+
+  /* ================= SIMULACRO =================
+     Preguntas armadas en el momento con el contenido de la app, en el orden y con
+     los tipos del examen. Sin corrección hasta el final, como el día de la prueba. */
+  var MOCK_PLAN={kread:6,kwrite:5,ctx:5,para:3,gram:6,order:3,rshort:2,rmid:1,rinfo:1,ltask:2,lpoint:2,lutter:2,lquick:3};
+  var MOCK_SEC={kread:'moji',kwrite:'moji',ctx:'moji',para:'moji',gram:'bunpo',order:'bunpo',read:'dokkai',listen:'chokai'};
+  var MOCK_SEC_LABEL={moji:{jp:'文字・語彙',es:'Kanji y vocabulario',en:'Kanji and vocabulary'},bunpo:{jp:'文法',es:'Gramática',en:'Grammar'},dokkai:{jp:'読解',es:'Lectura',en:'Reading'},chokai:{jp:'聴解',es:'Escucha',en:'Listening'}};
+  var GRAM_CONF=[['は','が','を','に','で','へ','と','も'],['より','まで','から','だけ','ごろ','ぐらい'],['とき','まえに','あとで'],['けど','から','ので','と'],['この','その','あの'],['もう','まだ','よく','すこし'],['あまり','ぜんぜん','とても']];
+  var GRAM_NOT_WITH={'へ':['に'],'に':['へ'],'は':['が'],'が':['は'],'から':['けど']};
+  function mockN5Words(){ return WORD_POOL.filter(function(w){ var kf=kanjiForm(w); if(!kf)return false; var nk=0;
+    for(var i=0;i<kf.length;i++){ var c=kf.charAt(i); if(isKanjiChar(c)){ nk++; if(!N5_KANJI.has(c))return false; } } return nk>0 && !!bridgeSegs(w); }); }
+  function mockBuild(){ var Q=[], used={}, es=getLang()==='es';
+    function pick(arr,n,f){ var a=shuffle(arr.filter(f||function(){return true;})), out=[]; for(var i=0;i<a.length&&out.length<n;i++){ out.push(a[i]); } return out; }
+    var kw=mockN5Words();
+    pick(kw,MOCK_PLAN.kread).forEach(function(w){ used[w.jp]=1; Q.push({k:'kread',sec:'moji',w:w,opts:bridgeReadOpts(w)}); });
+    pick(kw,MOCK_PLAN.kwrite,function(w){ return !used[w.jp]; }).forEach(function(w){ used[w.jp]=1; Q.push({k:'kwrite',sec:'moji',w:w,opts:bridgeWriteOpts(w)}); });
+    /* vocabulario en contexto: se borra un sustantivo de una frase; las trampas son otros sustantivos de las frases */
+    var nouns={}; PHRASES.forEach(function(p){ if(!p.parts)return; p.parts.forEach(function(x,i){ var nx=p.parts[i+1]; if(WORD_BY_JP[x]&&x.length>=2&&PARTICLES[nx]&&!PREP_STOP[x]&&!BLOCK_GLOSS[x]&&['なに','なん','だれ','どこ','いつ','どれ','どの','どちら','いくら','わたし','あなた'].indexOf(x)<0) nouns[x]=1; }); });
+    var nounList=Object.keys(nouns);
+    pick(PHRASES,MOCK_PLAN.ctx,function(p){ return p.parts&&p.parts.length>=3&&p.pattern&&p.parts.some(function(x){return nouns[x];}); }).forEach(function(p){
+      var idxs=[]; p.parts.forEach(function(x,i){ if(nouns[x])idxs.push(i); }); var si=idxs[Math.floor(Math.random()*idxs.length)], ans=p.parts[si];
+      var d=shuffle(nounList.filter(function(x){ return x!==ans && p.parts.indexOf(x)<0 && Math.abs(x.length-ans.length)<=2; })).slice(0,3);
+      Q.push({k:'ctx',sec:'moji',p:p,slot:si,opts:shuffle([{jp:ans,ok:true}].concat(d.map(function(x){return {jp:x};})))}); });
+    pick(PARA_ITEMS,MOCK_PLAN.para).forEach(function(it){ var o=it.opts.map(function(x,i){ return {jp:x,ok:i===it.a}; }); Q.push({k:'para',sec:'moji',it:it,opts:shuffle(o)}); });
+    /* gramática: hueco en una pieza gramatical; las opciones salen de su grupo */
+    var gramToks={}; GRAM_CONF.forEach(function(g){ g.forEach(function(x){ gramToks[x]=g; }); });
+    pick(PHRASES,MOCK_PLAN.gram,function(p){ return p.parts&&p.pattern&&p.parts.some(function(x){ return gramToks[x]; }); }).forEach(function(p){
+      var idxs=[]; p.parts.forEach(function(x,i){ if(gramToks[x])idxs.push(i); }); var si=idxs[Math.floor(Math.random()*idxs.length)], ans=p.parts[si];
+      var bad=GRAM_NOT_WITH[ans]||[], d=shuffle(gramToks[ans].filter(function(x){ return x!==ans && bad.indexOf(x)<0; })).slice(0,3);
+      Q.push({k:'gram',sec:'bunpo',p:p,slot:si,opts:shuffle([{jp:ans,ok:true}].concat(d.map(function(x){return {jp:x};})))}); });
+    /* ordenar (★): cuatro piezas seguidas, ¿cuál va en la estrella? */
+    pick(PHRASES,MOCK_PLAN.order,function(p){ if(!p.parts||p.parts.length<5||!p.pattern)return false; var u={}; return p.parts.every(function(x){ if(u[x])return false; u[x]=1; return true; }); }).forEach(function(p){
+      var st=Math.floor(Math.random()*(p.parts.length-3)), blk=p.parts.slice(st,st+4), star=st+2;
+      Q.push({k:'order',sec:'bunpo',p:p,st:st,star:star,opts:shuffle(blk.map(function(x,i){ return {jp:x,ok:st+i===star}; }))}); });
+    /* lectura y escucha: ítems enteros del banco */
+    function addRead(type,n){ pick(READ_ITEMS,n,function(it){ return it.type===type; }).forEach(function(it){ it.qs.forEach(function(q,qi){ Q.push({k:'read',sec:'dokkai',item:it,qi:qi,order:shuffle(q.opts.map(function(o,i){return i;}))}); }); }); }
+    addRead('short',MOCK_PLAN.rshort); addRead('mid',MOCK_PLAN.rmid); addRead('info',MOCK_PLAN.rinfo);
+    [['task',MOCK_PLAN.ltask],['point',MOCK_PLAN.lpoint],['utter',MOCK_PLAN.lutter],['quick',MOCK_PLAN.lquick]].forEach(function(x){
+      pick(LISTEN_ITEMS,x[1],function(it){ return it.type===x[0]; }).forEach(function(it){ Q.push({k:'listen',sec:'chokai',item:it,order:shuffle(it.opts.map(function(o,i){return i;}))}); }); });
+    return Q; }
+  function startMock(){ prepStop(); prs={mode:'mock',stage:'intro',mq:[],mi:0,picks:[],from:prs?prs.from:'hub',t0:null}; renderPrep(); readingEl.classList.remove('hidden'); }
+  function mockBegin(){ prs.mq=mockBuild(); prs.mi=0; prs.picks=[]; prs.stage='q'; prs.t0=Date.now(); prs.answered=false; renderPrep(); mockAutoplay(); }
+  function mockAutoplay(){ var q=prs&&prs.mq[prs.mi]; if(q&&q.k==='listen'){ var it=q.item; setTimeout(function(){ if(prs&&prs.mode==='mock'&&prs.mq[prs.mi]===q) prepPlay(prepFullSeq(it)); },300); } }
+  function mockAnswer(i){ if(!prs||prs.stage!=='q')return; prs.picks[prs.mi]=i; prs.answered=true; renderPrep(); }
+  function mockNext(){ prepStop(); if(prs.mi<prs.mq.length-1){ prs.mi++; prs.answered=false; renderPrep(); mockAutoplay(); readingEl.scrollTop=0; return; } mockFinish(); }
+  function mockIsOk(q,pick){ if(pick==null)return false; if(q.k==='read')return pick===q.item.qs[q.qi].a; if(q.k==='listen')return pick===q.item.a; return !!(q.opts[pick]&&q.opts[pick].ok); }
+  function mockFinish(){ var sec={moji:[0,0],bunpo:[0,0],dokkai:[0,0],chokai:[0,0]};
+    prs.mq.forEach(function(q,i){ var s=sec[q.sec]; s[1]++; if(mockIsOk(q,prs.picks[i]))s[0]++; });
+    var aC=sec.moji[0]+sec.bunpo[0]+sec.dokkai[0], aT=sec.moji[1]+sec.bunpo[1]+sec.dokkai[1];
+    var A=aT?Math.round(120*aC/aT):0, B=sec.chokai[1]?Math.round(60*sec.chokai[0]/sec.chokai[1]):0, tot=A+B;
+    var pass=A>=38&&B>=19&&tot>=80, mins=Math.round((Date.now()-(prs.t0||Date.now()))/60000);
+    var rec={d:today(),A:A,B:B,tot:tot,pass:pass,mins:mins,sec:sec}; ensurePrep().mock.push(rec); if(ensurePrep().mock.length>30)ensurePrep().mock.shift();
+    prs.stage='end'; prs.result=rec; Persistence.save(state); renderPrep(); }
+  function mockPromptHTML(q){ var es=getLang()==='es', h='';
+    function sentence(p,slot,fill){ return p.parts.map(function(x,i){ return i===slot?'<span class="pt-hole">'+(fill||'（　）')+'</span>':tlEsc(x); }).join(''); }
+    if(q.k==='kread') h='<div class="rq-kind">'+(es?'¿Cómo se lee?':'How is it read?')+'</div><div class="rq-jp mincho">'+kanjiForm(q.w)+'</div>';
+    else if(q.k==='kwrite') h='<div class="rq-kind">'+(es?'¿Cómo se escribe?':'How is it written?')+'</div><div class="rq-jp">'+q.w.jp+'</div><div class="rq-mean">'+tlEsc(es?q.w.es:q.w.en)+'</div>';
+    else if(q.k==='ctx') h='<div class="rq-kind">'+(es?'¿Qué palabra va?':'Which word fits?')+'</div><div class="pt-cloze mincho">'+sentence(q.p,q.slot)+'</div><div class="pt-clmean">'+tlEsc(es?q.p.es:q.p.en)+'</div>';
+    else if(q.k==='para') h='<div class="rq-kind">'+(es?'¿Cuál dice lo mismo?':'Which means the same?')+'</div><div class="pr-q">'+prepTextHTML(q.it.jp)+'</div>';
+    else if(q.k==='gram') h='<div class="rq-kind">'+(es?'¿Qué va en el hueco?':'What goes in the gap?')+'</div><div class="pt-cloze mincho">'+sentence(q.p,q.slot)+'</div><div class="pt-clmean">'+tlEsc(es?q.p.es:q.p.en)+'</div>';
+    else if(q.k==='order'){ var parts=q.p.parts.map(function(x,i){ if(i<q.st||i>q.st+3)return tlEsc(x); return i===q.star?'<span class="pr-star">★</span>':'<span class="pr-gap">＿＿</span>'; });
+      h='<div class="rq-kind">'+(es?'Ordená las piezas: ¿cuál va en la ★?':'Order the pieces: which goes on the ★?')+'</div><div class="pt-cloze mincho">'+parts.join(' ')+'</div><div class="pt-clmean">'+tlEsc(es?q.p.es:q.p.en)+'</div>'; }
+    else if(q.k==='read'){ var it=q.item, rq=it.qs[q.qi]; h='<div class="rq-kind">'+(es?'Lectura':'Reading')+' · <span class="mincho">'+PREP_KIND_LABEL[it.type].jp+'</span></div><div class="pr-text">'+prepTextHTML(it.text)+'</div><div class="pr-q">'+prepTextHTML(rq.q.jp)+'</div>'; }
+    else if(q.k==='listen'){ var li=q.item; h='<div class="rq-kind">'+(es?'Escucha':'Listening')+' · <span class="mincho">'+PREP_KIND_LABEL[li.type].jp+'</span></div>'+
+      (li.type==='utter'?'<div class="pr-q">'+prepTextHTML(li.setup.jp)+'</div>':(li.type!=='quick'?'<div class="pr-q">'+prepTextHTML(li.q.jp)+'</div>':''))+
+      '<div class="d-actions pr-audio"><button class="d-spk-word" id="prPlay"><i class=ico-spk></i> <span>'+(es?'Escuchar de nuevo':'Play again')+'</span></button></div>'; }
+    return h; }
+  function mockOptsHTML(q,pick){ var h='<div class="ropts pr-opts">', es=getLang()==='es';
+    if(q.k==='read'||q.k==='listen'){ var src=q.k==='read'?q.item.qs[q.qi]:q.item, hide=q.k==='listen'&&(q.item.type==='utter'||q.item.type==='quick');
+      q.order.forEach(function(oi,pos){ h+='<div class="pr-row">'+(hide?'<button class="pr-play" data-play="'+oi+'"><i class=ico-spk></i> '+(pos+1)+'</button>':'')+
+        '<button class="ropt pr-opt jp'+(pick===oi?' pr-picked':'')+'" data-i="'+oi+'">'+(hide?(es?'Opción ':'Option ')+(pos+1):prepTextHTML(src.opts[oi].jp))+'</button></div>'; });
+      return h+'</div>'; }
+    var mincho=(q.k==='kwrite'||q.k==='order'||q.k==='gram'||q.k==='ctx');
+    q.opts.forEach(function(o,i){ h+='<div class="pr-row"><button class="ropt pr-opt jp'+(mincho?' mincho':'')+(pick===i?' pr-picked':'')+'" data-i="'+i+'">'+(q.k==='para'?prepTextHTML(o.jp):tlEsc(o.jp))+'</button></div>'; });
+    return h+'</div>'; }
+  function mockCorrectText(q){ if(q.k==='read'){ var rq=q.item.qs[q.qi]; return rq.opts[rq.a].jp; } if(q.k==='listen') return q.item.opts[q.item.a].jp;
+    for(var i=0;i<q.opts.length;i++) if(q.opts[i].ok) return (q.k==='kread'||q.k==='kwrite')?q.opts[i].jp:q.opts[i].jp; return ''; }
+  function mockPickText(q,pick){ if(pick==null)return getLang()==='es'?'(nada)':'(none)'; if(q.k==='read')return q.item.qs[q.qi].opts[pick].jp; if(q.k==='listen')return q.item.opts[pick].jp; return q.opts[pick]?q.opts[pick].jp:''; }
+  function mockWhy(q,pick){ var es=getLang()==='es';
+    if(q.k==='read'){ var w=q.item.qs[q.qi].why; return es?w.es:w.en; } if(q.k==='listen') return es?q.item.why.es:q.item.why.en;
+    var o=q.opts[pick]; if(o&&o.why) return es?o.why.es:o.why.en;
+    if(q.k==='kread'||q.k==='kwrite') return (es?'Se escribe ':'Written ')+kanjiForm(q.w)+(es?' y se lee ':' and read ')+q.w.jp+' ('+(es?q.w.es:q.w.en)+').';
+    if(q.k==='para') return (es?'La frase dice: ':'The sentence says: ')+q.it.es;
+    if(q.k==='ctx'||q.k==='gram'||q.k==='order') return q.p.jp+' · '+(es?q.p.es:q.p.en)+(q.p.note?' · '+q.p.note:'');
+    return ''; }
+  function renderMock(h){ var es=getLang()==='es';
+    if(prs.stage==='intro'){
+      h+='<div class="rq-prompt teach-word"><div class="rq-kind">'+(es?'Simulacro N5':'N5 mock exam')+'</div><div class="rq-jp mincho" style="font-size:52px;line-height:1.1">模試</div><div class="br-intro">'+
+        (es?'<p>Son unas 45 preguntas en el orden del examen: kanji y vocabulario, gramática, lectura y escucha. No vas a ver si acertaste hasta el final.</p><p>El JLPT real usa puntaje escalado, así que esto es una estimación con sus reglas de aprobación: 80 de 180 en total, con al menos 38 de 120 en la primera parte y 19 de 60 en escucha.</p><p>Para la escucha usá audífonos o subí el volumen. Cada audio se puede repetir, cosa que el examen real no deja: tenelo en cuenta.</p>'
+          :'<p>About 45 questions in exam order: kanji and vocabulary, grammar, reading and listening. You will not see results until the end.</p><p>The real JLPT uses scaled scores, so this is an estimate with its pass rules: 80 of 180 overall, with at least 38 of 120 in the first part and 19 of 60 in listening.</p><p>Use headphones for listening. Audio can be replayed here, which the real exam does not allow.</p>')+
+        '</div></div><div class="d-actions"><button class="d-next" data-mstart="1">'+(es?'Empezar →':'Start →')+'</button></div>';
+      readingInner.innerHTML=h; bindPrep(); return; }
+    if(prs.stage==='end'){ var r=prs.result, S=r.sec;
+      h+='<div class="rq-prompt teach-word"><div class="rq-kind">'+(es?'Resultado estimado':'Estimated result')+'</div>'+
+        '<div class="rq-jp" style="font-size:44px">'+r.tot+'<span style="font-size:18px"> / 180</span></div>'+
+        '<div class="rq-msg '+(r.pass?'ok':'no')+'">'+(r.pass?(es?'Hoy aprobarías':'You would pass today'):(es?'Hoy todavía no':'Not yet today'))+'</div>'+
+        '<div class="pr-score"><div><b>'+r.A+'</b>/120 · '+(es?'kanji, vocabulario, gramática y lectura (mínimo 38)':'kanji, vocab, grammar and reading (min 38)')+'</div><div><b>'+r.B+'</b>/60 · '+(es?'escucha (mínimo 19)':'listening (min 19)')+'</div></div>'+
+        '<div class="pr-secs">'+['moji','bunpo','dokkai','chokai'].map(function(k){ var L=MOCK_SEC_LABEL[k]; return '<div class="pr-sec"><span class="mincho">'+L.jp+'</span> '+(es?L.es:L.en)+': <b>'+S[k][0]+'/'+S[k][1]+'</b></div>'; }).join('')+'</div>'+
+        '<div class="br-intro"><p>'+(r.pass?(es?'Ojo: es una estimación con preguntas de la app. Repetilo en unos días para ver si se sostiene.':'This is an estimate from app content. Repeat it in a few days to see if it holds.')
+          :(es?'Mirá abajo qué sección pesa más en lo que falló: ahí está lo que conviene reforzar primero.':'Check below which section had the most misses: that is what to reinforce first.'))+'</p></div></div>';
+      var wrong=[]; prs.mq.forEach(function(q,i){ if(!mockIsOk(q,prs.picks[i])) wrong.push(i); });
+      if(wrong.length){ h+='<div class="pr-tr"><div class="rq-parts-label">'+(es?'Lo que falló':'What you missed')+' ('+wrong.length+')</div>';
+        wrong.forEach(function(i){ var q=prs.mq[i], L=MOCK_SEC_LABEL[q.sec];
+          h+='<div class="pr-rev"><div class="pr-rev-h"><span class="mincho">'+L.jp+'</span> · '+(i+1)+'</div>'+
+            '<div class="pr-rev-l">'+(es?'Correcta: ':'Correct: ')+'<b class="mincho">'+tlEsc(mockCorrectText(q))+'</b> · '+(es?'elegiste: ':'you chose: ')+'<span class="mincho">'+tlEsc(mockPickText(q,prs.picks[i]))+'</span></div>'+
+            '<div class="br-why">'+tlEsc(mockWhy(q,prs.picks[i]))+'</div></div>'; });
+        h+='</div>'; }
+      h+='<div class="d-actions"><button class="d-next" id="prHub">'+(es?'Listo':'Done')+'</button></div>';
+      readingInner.innerHTML=h; bindPrep(); return; }
+    var q=prs.mq[prs.mi], L=MOCK_SEC_LABEL[q.sec], pick=prs.picks[prs.mi];
+    h+='<div class="pr-sechead"><span class="mincho">'+L.jp+'</span> · '+(es?L.es:L.en)+'</div><div class="rq-prompt">'+mockPromptHTML(q)+'</div>'+mockOptsHTML(q,pick);
+    h+='<div class="d-actions"><button class="d-next" id="prNext"'+(pick==null?' disabled':'')+'>'+(prs.mi<prs.mq.length-1?t("Next →"):(es?'Terminar':'Finish'))+'</button></div>';
+    readingInner.innerHTML=h; bindPrep(); }
 
   (function boot(){
     var loaded=Persistence.boot();
