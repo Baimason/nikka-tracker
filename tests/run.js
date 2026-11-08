@@ -90,7 +90,27 @@ async function fuzz(b, start, clicks) {
     if (ev(`ensureKana().box['u']`) !== 2) p.push('kana: los primeros pasos (0 a 2) deben poder darse el mismo día');
     ev(`var k=ensureKanji(); k.rd['山']=0; delete k.rdDay['山']; bridgeCredit('山','rd',true); bridgeCredit('山','rd',true);`);
     if (ev(`ensureKanji().rd['山']`) !== 1) p.push('puente: un solo paso por día y dirección');
-    report('Reglas del repaso (kana y kanji)', p); }
+    /* palabras: lo dominado sale cuando le toca y lo que ya se movió hoy casi no sale */
+    ev(`var _w=ensureWords(); rsess={pool:WORD_POOL,box:_w.box,ex:_w}; _w.lastMove=_w.lastMove||{};
+      ['あさ','いぬ','ねこ'].forEach(function(j){ _w.box[j]=5; _w.lastMove[j]=today(); }); _w.box['やま']=1; _w.lastMove['やま']='2000-01-01';`);
+    const picks = ev(`(function(){ var idx=['あさ','いぬ','ねこ','やま'].map(function(j){ return WORD_POOL.findIndex(function(w){return w.jp===j;}); }), c=0; for(var i=0;i<400;i++){ if(WORD_POOL[weightedPick(WORD_POOL,ensureWords().box,idx,[])].jp==='やま')c++; } return c; })()`);
+    if (picks < 300) p.push('palabras: una palabra en aprendizaje debería salir mucho más que las dominadas y repasadas hoy (' + picks + '/400)');
+    /* entrada adaptable: con buena precisión el tope se abre, con mala se cierra */
+    ev(`var _w2=ensureWords(); _w2.acc={}; _w2.acc[today()]={n:40,c:38};`);
+    if (!(ev('readLearnPool()') > 12)) p.push('entrada de palabras: con 95% de aciertos el tope debería abrirse');
+    ev(`ensureWords().acc[today()]={n:40,c:24};`);
+    if (!(ev('readLearnPool()') < 12)) p.push('entrada de palabras: con 60% de aciertos el tope debería cerrarse');
+    report('Reglas del repaso (kana, kanji y palabras)', p); }
+
+  /* audio: la partícula は suena wa y へ suena e, sin tocar lo que se ve */
+  { const ev = fresh.ev; const p = [];
+    const cases = [['がっこう|へ|いきます', 'がっこうえいきます'], ['わたし|は|がくせい|です', 'わたしわがくせいです']];
+    cases.forEach(([parts, want]) => { const ph = ev(`(function(){ var pp=${JSON.stringify(parts)}.split('|'); return PHRASES.filter(function(x){ return x.parts&&x.parts.join('|')===pp.join('|'); })[0]||null; })()`);
+      if (ph) { const got = ev('ttsText(' + JSON.stringify(ph.jp) + ')'); if (got !== want) p.push('audio de ' + ph.jp + ': ' + got); } });
+    if (ev('ttsText("はは")') !== 'はは') p.push('audio: una palabra suelta no se toca (はは)');
+    if (ev('ttsText("わたしは まいにち がっこうへ いきます。")') !== 'わたしわ まいにち がっこうえ いきます。') p.push('audio: partículas en textos con espacios');
+    PHRASES_LEN_CHECK: { const bad = ev(`PHRASES.filter(function(x){ return ttsText(x.jp).length!==x.jp.length; }).map(function(x){return x.jp;}).slice(0,5).join(' ')`); if (bad) p.push('el audio cambia el largo (rompe el barrido): ' + bad); }
+    report('Audio: partículas は y へ', p); }
 
   /* 6. guardado: el código de respaldo ida y vuelta y la migración idempotente */
   { const ev = fresh.ev; const p = [];
@@ -101,6 +121,9 @@ async function fuzz(b, start, clicks) {
     if (!idem) p.push('migrate() cambia el estado si se corre dos veces');
     const mk = ev(`(function(){ var k=ensureKanji(); var a=JSON.stringify(k.rd); migrateKanjiBridge(); return a===JSON.stringify(k.rd); })()`);
     if (!mk) p.push('la migración del puente no es idempotente');
+    ev(`state.lastBackup='2026-01-01';`);
+    const lb = ev(`(function(){ var m=migrate(JSON.parse(JSON.stringify(state))); var g=mergeStates(m, emptyState()); return m.lastBackup+'|'+g.lastBackup; })()`);
+    if (lb !== '2026-01-01|2026-01-01') p.push('lastBackup se pierde en migrate o mergeStates: ' + lb);
     report('Respaldo y migraciones', p); }
 
   /* 7. simulacro */

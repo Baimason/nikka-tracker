@@ -853,6 +853,12 @@
   .dp-close{position:absolute;top:8px;right:10px;background:none;border:none;font-size:18px;color:var(--ink-soft);cursor:pointer}
   @media (prefers-reduced-motion:reduce){#dictPop{transition:none}}
 
+  /* ---- Recordatorio de respaldo ---- */
+  .bk-nudge{border:1px solid var(--shu);border-radius:12px;padding:14px 16px;margin:14px 0;background:var(--card)}
+  .bk-t{font-weight:700;font-size:15px}
+  .bk-s{font-size:13px;color:var(--ink-soft);margin:4px 0 10px;line-height:1.45}
+  .bk-b{display:flex;gap:10px;flex-wrap:wrap}
+
   /* ---- Engranaje en las cabeceras de práctica ---- */
   .d-head-l{display:flex;align-items:center;gap:10px}
   .d-gear{background:none;border:none;font:inherit;font-size:17px;color:var(--ink-soft);
@@ -1633,12 +1639,12 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   function nowISO(){return new Date().toISOString();}
   function parse(s){return new Date(s+"T00:00:00");}
   function daysBetween(a,b){return Math.round((parse(b)-parse(a))/86400000);}
-  function emptyState(){return {schema:SCHEMA,lang:detectLang(),font:"mincho",theme:"light",sweep:false,sweepMs:260,startDate:today(),days:{},exercises:{},aim:null,aimLvl:1,travelMode:false,onboardSeen:false,meta:{updatedAt:nowISO()}};}
+  function emptyState(){return {schema:SCHEMA,lang:detectLang(),font:"mincho",theme:"light",sweep:false,sweepMs:260,startDate:today(),days:{},exercises:{},aim:null,aimLvl:1,travelMode:false,onboardSeen:false,lastBackup:null,meta:{updatedAt:nowISO()}};}
   function migrate(s){
     if(!s||typeof s!=="object") return null;
     return {schema:SCHEMA,lang:s.lang,font:s.font||"mincho",theme:s.theme||"light",startDate:s.startDate||today(),aim:(s.aim||null),aimLvl:(s.aimLvl===2?2:1),
       phrasesOn:!!s.phrasesOn,kanjiOn:!!s.kanjiOn,travelMode:!!s.travelMode,emoji:(s.emoji!==false),buildRomaji:(s.buildRomaji!==false),matchSpeak:(s.matchSpeak!==false),
-      onboardSeen:!!s.onboardSeen,
+      onboardSeen:!!s.onboardSeen,lastBackup:(typeof s.lastBackup==='string'?s.lastBackup:null),
       sweep:!!s.sweep,sweepMs:(s.sweepMs||260),
       days:(s.days&&typeof s.days==="object")?s.days:{},
       exercises:(s.exercises&&typeof s.exercises==="object")?s.exercises:{},
@@ -1656,7 +1662,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       aimLvl:(a.aim?(a.aimLvl||1):(b.aim?(b.aimLvl||1):1)),
       phrasesOn:!!(a.phrasesOn||b.phrasesOn),kanjiOn:!!(a.kanjiOn||b.kanjiOn),travelMode:!!(a.travelMode||b.travelMode),
       emoji:(a.emoji!==false||b.emoji!==false),buildRomaji:(a.buildRomaji!==false||b.buildRomaji!==false),matchSpeak:(a.matchSpeak!==false||b.matchSpeak!==false),
-      onboardSeen:!!(a.onboardSeen||b.onboardSeen),
+      onboardSeen:!!(a.onboardSeen||b.onboardSeen),lastBackup:((a.lastBackup||'')>(b.lastBackup||'')?a.lastBackup:b.lastBackup)||null,
       sweep:!!(a.sweep||b.sweep),sweepMs:(a.sweepMs||b.sweepMs||260),
       startDate:(daysBetween(a.startDate,b.startDate)<0?b.startDate:a.startDate),
       days:{},
@@ -2269,6 +2275,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     html+='<div class="phase"><span class="focus">'+focus+'</span>'+wordOfDayHTML()+'</div>';
     
     html+=todayCardHTML();
+    html+=backupNudgeHTML();
     html+=masteryCardHTML();
     html+=readingMasteryCardHTML();
     html+=gamesCardHTML();
@@ -2352,7 +2359,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   var SRS_IV=[0,1,2,4,7,14];   // days until next review, indexed by SRS box (0–5)
   function schedKey(sc,r){ return learnedKey(sc,r); }
   function getDue(sc,r){ var k=ensureKana(); return k.due[schedKey(sc,r)]||null; }
-  function setDue(sc,r,box){ var k=ensureKana(),iv=SRS_IV[Math.min(5,Math.max(0,box))]; var d=new Date(); d.setDate(d.getDate()+iv); k.due[schedKey(sc,r)]=fmt(d); }
+  function setDue(sc,r,box){ var k=ensureKana(),iv=SRS_IV[Math.min(5,Math.max(0,box))]; var d=new Date(Date.parse(today()+'T12:00:00')); d.setDate(d.getDate()+iv); k.due[schedKey(sc,r)]=fmt(d); }   /* desde today(), no del reloj: igual que el resto y simulable en las pruebas */
   function isDue(sc,r){ var d=getDue(sc,r); return !d || d<=today(); }   // unscheduled => treat as due
   function dueCount(){ var n=0; activePairs().forEach(function(p){ if(isLearned(p.script,p.romaji)&&isDue(p.script,p.romaji))n++; }); return n; }
 
@@ -2469,10 +2476,26 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     for(var i=0;i<cands.length;i++){x-=w[i];if(x<=0){pick=cands[i];break;}}
     setupQuiz(pick.romaji,pick.script);
   }
+  /* Lo que se le pasa a la voz: la partícula は se pronuncia «wa» y へ «e», pero en puro
+     kana algunas voces las leen «ha» y «he». En las frases se sabe qué pieza es partícula
+     (parts); en los textos con espacios, un bloque que termina en は/へ y no es una
+     palabra del vocabulario lleva la partícula al final. Solo cambia el audio, nunca lo
+     que se ve, y tiene el mismo largo, así que el barrido de moras sigue alineado. */
+  var _PH_TTS=null;
+  function ttsText(text){ text=String(text||'');
+    if(_PH_TTS===null){ _PH_TTS={}; try{ PHRASES.forEach(function(p){ if(!p.parts)return; var out=p.parts.map(function(x){
+        if(x==='は')return 'わ'; if(x==='へ')return 'え';
+        if(x.length>1 && /(では|には|とは|からは|までは|では|へは)$/.test(x) && !WORD_BY_JP[x]) return x.slice(0,-1)+(x.slice(-1)==='は'?'わ':'え');
+        return x; }).join(''); if(out!==p.jp)_PH_TTS[p.jp]=out; }); }catch(e){ _PH_TTS={}; } }
+    if(_PH_TTS[text]) return _PH_TTS[text];
+    if(!/[\s、。]/.test(text)) return text;   /* palabra suelta: tal cual */
+    return text.split(/(\s+|[、。？！「」『』…：]+)/).map(function(b){
+      if(b.length<2 || /^[\s、。？！「」『』…：]+$/.test(b) || (typeof WORD_BY_JP!=='undefined'&&WORD_BY_JP[b])) return b;
+      var last=b.slice(-1); if(last==='は') return b.slice(0,-1)+'わ'; if(last==='へ') return b.slice(0,-1)+'え'; return b; }).join(''); }
   function speak(text){
     try{
       if(!window.speechSynthesis)return;
-      var u=new SpeechSynthesisUtterance(text); u.lang="ja-JP"; u.rate=.8;
+      var u=new SpeechSynthesisUtterance(ttsText(text)); u.lang="ja-JP"; u.rate=.8;
       var vs=window.speechSynthesis.getVoices(); var jp=vs.filter(function(v){return /ja(-|_)?JP/i.test(v.lang);})[0];
       if(jp)u.voice=jp; window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
     }catch(e){}
@@ -2532,7 +2555,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     try{
       var synth=window.speechSynthesis;
       if(!synth){ runSweep(container); return; }
-      var u=new SpeechSynthesisUtterance(text); u.lang="ja-JP"; u.rate=.8;
+      var u=new SpeechSynthesisUtterance(ttsText(text)); u.lang="ja-JP"; u.rate=.8;
       var vs=synth.getVoices(); var jp=vs.filter(function(v){return /ja(-|_)?JP/i.test(v.lang);})[0];
       if(jp)u.voice=jp;
       var started=false, go=function(){ if(!started){ started=true; runSweep(container); } };
@@ -3138,8 +3161,26 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   function toggle(id){var t=today();if(!state.days[t])state.days[t]={};
     state.days[t][id]=!state.days[t][id];Persistence.save(state);render();}
   function flash(el,msg,cls){if(!el)return;el.textContent=msg;el.className="status "+(cls||"ok");}
+  /* Recordatorio de respaldo: todo el progreso vive en este navegador. Se marca la fecha
+     cada vez que copiás o descargás el código, y si pasó una semana (o nunca hubo y ya
+     llevás una semana usando la app), la tarjeta de hoy lo recuerda con un toque. */
+  var BACKUP_EVERY_DAYS=7;
+  function markBackup(){ state.lastBackup=today(); Persistence.save(state); }
+  function backupDaysAgo(){ return state.lastBackup?daysBetween(state.lastBackup,today()):null; }
+  function backupDue(){ var a=backupDaysAgo(); if(a===null) return Object.keys(state.days||{}).length>=BACKUP_EVERY_DAYS; return a>=BACKUP_EVERY_DAYS; }
+  function backupNudgeHTML(){ if(!backupDue())return ''; var es=getLang()==='es', a=backupDaysAgo();
+    return '<div class="bk-nudge"><div class="bk-t">'+(a===null?(es?'No hay registro de un respaldo reciente':'No recent backup on record'):(es?'Tu último respaldo fue hace '+a+' días':'Your last backup was '+a+' days ago'))+'</div>'+
+      '<div class="bk-s">'+(es?'Todo tu progreso vive solo en este navegador. Si se borran los datos o cambiás de teléfono, se pierde.':'All your progress lives only in this browser. If its data is cleared or you switch phones, it is gone.')+'</div>'+
+      '<div class="bk-b"><button class="btn" data-fn="backupCopy">'+(es?'Copiar código':'Copy code')+'</button><button class="btn alt" data-fn="backupDownload">'+(es?'Descargar archivo':'Download file')+'</button></div><div class="status ok" id="bkStatus"></div></div>'; }
+  function backupCopy(){ var st=document.getElementById('bkStatus'); var code=encodeState(state);
+    function done(){ markBackup(); if(st)st.textContent=getLang()==='es'?'Copiado. Pegalo en tus notas o mandátelo por mensaje.':'Copied. Paste it into your notes or message it to yourself.'; setTimeout(render,2200); }
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(code).then(done).catch(function(){ if(st)st.textContent=getLang()==='es'?'No pude copiar: usá Descargar archivo.':'Could not copy: use Download file.'; }); }
+    else if(st) st.textContent=getLang()==='es'?'No pude copiar: usá Descargar archivo.':'Could not copy: use Download file.'; }
+  function backupDownload(){ try{ var blob=new Blob([encodeState(state)],{type:'text/plain'}), a=document.createElement('a');
+      a.href=URL.createObjectURL(blob); a.download='nikka-respaldo-'+today()+'.nikka.txt'; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },1000);
+      markBackup(); setTimeout(render,300); }catch(e){} }
   function copyText(str,statusEl){
-    function ok(){flash(statusEl,t("Copied ✓"),"ok");}
+    function ok(){flash(statusEl,t("Copied ✓"),"ok"); markBackup();}
     function fb(){var ta=document.getElementById("exportBox");ta.focus();ta.select();ta.setSelectionRange(0,99999);
       try{document.execCommand("copy");ok();}catch(e){flash(statusEl,t("Select the text above and copy manually."),"err");}}
     if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(str).then(ok).catch(fb);}else fb();
@@ -6866,6 +6907,21 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   });
   var rsess=null;
   var READ_LEARN_POOL=12, WORD_PROMOTE_AT=3, WORD_LEECH_AT=3;
+  /* Entrada de palabras adaptable (sesión 2026-11-08). Con el tope fijo de 12 y la puerta
+     de recuerdo, con sus datos entraban casi cero palabras nuevas (155 dominadas en
+     septiembre, 2 en los primeros días de noviembre). Ahora el tope sigue a cómo te va:
+     acertando bien se abre (hasta 32), fallando se cierra (8). Las reglas para dominar una
+     palabra no cambian; solo deja de haber un número fijo que bloquea. Además hay un
+     máximo de palabras nuevas por día para que una buena racha no inunde la semana. */
+  var WORD_POOL_MIN=8, WORD_POOL_MAX=32, WORD_NEW_PER_DAY=12, WORD_ACC_MIN_N=15;
+  function wordRecentAcc(){ var w=ensureWords(), acc=w.acc||{}, n=0, c=0, td=today();
+    for(var i=0;i<4;i++){ var d=new Date(Date.parse(td+'T12:00:00')-i*86400000).toISOString().slice(0,10); if(acc[d]){ n+=acc[d].n; c+=acc[d].c; } }
+    return n>=WORD_ACC_MIN_N?c/n:null; }
+  function readLearnPool(){ var a=wordRecentAcc(); if(a===null) return READ_LEARN_POOL;
+    if(a<0.75) return WORD_POOL_MIN; if(a<0.85) return READ_LEARN_POOL;
+    return Math.round(READ_LEARN_POOL+(WORD_POOL_MAX-READ_LEARN_POOL)*Math.min(1,(a-0.85)/0.1)); }
+  function wordsNewToday(){ var w=ensureWords(); return (w.newOn&&w.newOn[today()])||0; }
+  function noteNewWord(){ var w=ensureWords(); if(!w.newOn)w.newOn={}; var td=today(); w.newOn[td]=(w.newOn[td]||0)+1; }
   var WORD_KEYSET=(function(){var m={};WORD_POOL.forEach(function(w){m[w.jp]=1;});return m;})();
   /* Ganchos de significado para vocabulario general (mismo campo morph que los
      ataques de Pokémon). p = piezas {jp,ro,es,en}; lit = la lectura literal o un
@@ -8828,7 +8884,16 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     var exArr=(exclude==null)?[]:(exclude.length!=null?exclude:[exclude]);
     var exSet={}; exArr.forEach(function(e){if(e!=null&&e>=0)exSet[e]=1;});
     var cand=idxs.filter(function(i){return !exSet[i];}); if(!cand.length)cand=idxs;
-    var w=cand.map(function(i){var b=Math.min(5,box[pool[i].jp]||0); return b>=4?1:(10-b*2);});
+    /* Repaso espaciado de verdad (sesión 2026-11-08): antes cada palabra dominada pesaba 1
+       siempre, así que con 235 dominadas más de la mitad de los repasos se iban a palabras
+       ya sabidas, y las que ya se movieron hoy (un paso por día) se repetían sin poder
+       avanzar. Ahora: lo que ya se movió hoy casi no sale; lo dominado sale cuando le toca
+       (caja 4 cada 5 días, caja 5 cada 14) y si no, casi nunca. */
+    var lm=(rsess&&rsess.ex&&rsess.ex.lastMove)||{}, td=today();
+    var w=cand.map(function(i){var jp=pool[i].jp, b=Math.min(5,box[jp]||0), last=lm[jp];
+      if(last===td) return 0.2;
+      if(b>=4){ var ivl=b>=5?14:5; return (!last||daysBetween(last,td)>=ivl)?4:0.1; }
+      return 10-b*2;});
     var sum=w.reduce(function(a,b){return a+b;},0),x=Math.random()*sum;
     for(var k=0;k<cand.length;k++){x-=w[k];if(x<=0)return cand[k];}
     return cand[cand.length-1];
@@ -9522,7 +9587,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     return false; }
   function lsPlay(slow){ var q=ptsess; if(!q||q.mode!=='listen') return; q.plays++;
     try{ var synth=window.speechSynthesis; if(!synth) return;
-      var u=new SpeechSynthesisUtterance(q.phrase.jp); u.lang='ja-JP'; u.rate=slow?.55:.8;
+      var u=new SpeechSynthesisUtterance(ttsText(q.phrase.jp)); u.lang='ja-JP'; u.rate=slow?.55:.8;
       var vs=synth.getVoices(), jp=vs.filter(function(v){return /ja(-|_)?JP/i.test(v.lang);})[0]; if(jp) u.voice=jp;
       synth.cancel(); synth.speak(u); }catch(e){} }
   function lsGloss(w,es){ var gl=BLOCK_GLOSS[w], wd=WORD_BY_JP[w], cj=CONJ_BY_JP[w];
@@ -9612,9 +9677,11 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
        seguidas). Sólo en la ruta de servir (skipRecent); la de disponibilidad
        (anyPhraseWork) sigue viéndola para no cortar la sesión. */
     if(skipRecent){ var fresh=cand.filter(function(p){ return gbRecent.indexOf(p.jp)<0; }); if(fresh.length){ cand=fresh; } else { return null; } }
-    cand.sort(function(a,b){ return (ord(a)-ord(b)) || (blt(a)-blt(b)); });
-    var bo=ord(cand[0]), bb=blt(cand[0]);
-    var top=cand.filter(function(p){ return ord(p)===bo && blt(p)===bb; });
+    var over=phrasesInFlight()>=PHRASE_MAX_INFLIGHT, pbx=function(p){ return ph.box[p.jp]||0; };
+    if(over) cand.sort(function(a,b){ return (pbx(b)-pbx(a)) || (blt(b)-blt(a)) || (ord(a)-ord(b)); });   /* pasado el tope: cerrar las más avanzadas */
+    else cand.sort(function(a,b){ return (ord(a)-ord(b)) || (blt(a)-blt(b)); });
+    var bo=ord(cand[0]), bb=blt(cand[0]), bx0=pbx(cand[0]);
+    var top=over?cand.filter(function(p){ return pbx(p)===bx0; }).slice(0,8):cand.filter(function(p){ return ord(p)===bo && blt(p)===bb; });
     return top[Math.floor(Math.random()*top.length)];
   }
   function phraseReadyIdxMature(pool){ var out=[]; for(var i=0;i<pool.length;i++) if(phraseReadyMature(pool[i])) out.push(i); return out; }
@@ -9755,6 +9822,9 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
          Moderate bias — enough to guarantee they show up, not enough to drown the rest. */
       if(aimS){ var aimDue=setIdx.filter(function(i){return aimS[pool[i].jp] && (box[pool[i].jp]||0)<4;});
         if(aimDue.length && Math.random()<aimReviewBias()) useIdx=aimDue; }
+      /* frases pasadas del tope: 7 de cada 10 veces se repasa una de las más avanzadas,
+         para cerrarlas en vez de seguir paseando por las 120 a medio camino */
+      if(pool===PHRASES && phrasesInFlight()>=PHRASE_MAX_INFLIGHT && Math.random()<0.7){ var adv=useIdx.filter(function(i){ var bx=box[pool[i].jp]||0; return bx>=2 && bx<4; }); if(adv.length) useIdx=adv; }
       var target=weightedPick(pool,box,useIdx,rsess.recent||[]);
       var _fr=rsess.forceRecall; if(_fr!=null){ rsess.forceRecall=null; target=_fr; }
       var distSrc=(readable.length>=6?readable:all).filter(function(i){return i!==target;});
@@ -9782,20 +9852,21 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       //    general pool is over its cap. Measured on the AIM's OWN in-flight, so an
       //    overflowed general pool can't starve it. AIM_RESERVE is a guaranteed floor,
       //    not a ceiling — the general step below may still add more aim words.
-      if(aimS){
+      var _dayFull=(pool===WORD_POOL && wordsNewToday()>=WORD_NEW_PER_DAY);
+      if(aimS && !_dayFull){
         var aimUnseen=unseen.filter(function(i){return aimS[pool[i].jp];});
         var aimInFlight=seenSet.filter(function(i){return aimS[pool[i].jp] && (box[pool[i].jp]||0)<WORD_PROMOTE_AT;}).length;
-        if(aimUnseen.length && aimInFlight<aimReserve()){
+        if(aimUnseen.length && aimInFlight<aimReserve()){ if(pool===WORD_POOL)noteNewWord();
           var ta=aimUnseen[Math.floor(Math.random()*aimUnseen.length)];
           rsess.q={target:ta,mode:"teach",relearn:false,opts:[],answered:false,picked:-1};
           setTimeout(function(){speak(pool[ta].jp);},250); return; }
       }
       // 3) introduce a general new word while fewer than LEARN_POOL are still being learned (box < PROMOTE)
       var inFlight=seenSet.filter(function(i){return (box[pool[i].jp]||0) < WORD_PROMOTE_AT;}).length;
-      var _cap=(pool===PHRASES)?2:READ_LEARN_POOL;   // frases de a poco, no en tanda de 12
+      var _cap=(pool===PHRASES)?2:readLearnPool();   // frases de a poco; palabras con tope adaptable
       var _phFull=(pool===PHRASES && phrasesInFlight()>=PHRASE_MAX_INFLIGHT);   /* mismo tope que el armado */
-      if(unseen.length && !_phFull && (inFlight < _cap || seenSet.length===0)){
-        var tn;
+      if(unseen.length && !_phFull && !_dayFull && (inFlight < _cap || seenSet.length===0)){
+        var tn; if(pool===WORD_POOL)noteNewWord();
         if(aimS){ var aimU=unseen.filter(function(i){return aimS[pool[i].jp];});
           if(aimU.length && Math.random()<aimBias()) tn=aimU[Math.floor(Math.random()*aimU.length)]; }
         if(tn===undefined) tn=unseen[Math.floor(Math.random()*unseen.length)];
@@ -9808,7 +9879,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   }
   function startQuiz(pool,ex,teach){ pbsess=null; pbRecent=[]; gbRecent=[]; rsess={pool:pool,box:ex.box,ex:ex,done:0,correct:0,wrong:0,q:null,teach:!!teach,newIntro:0}; buildReadingQ(); readingEl.classList.remove("hidden"); renderReading(); }
   function startWords(){ startWordsMix(); }
-  var wsess=null, WORDS_BUILD_PROB=0.35;
+  var wsess=null, WORDS_BUILD_PROB=0.2;
   function wordsGoalHTML(){ var reps=todayReps(),gpct=Math.min(100,reps),gtier=dayTier(reps);
     var _ag=aimedGame(), _aim=_ag?('<div class="d-aim">🎯 '+gamePick(_ag.name)+'</div>'):(aimIsN5()?('<div class="d-aim">🎯 '+(getLang()==='es'?'Prueba N5':'N5 exam')+'</div>'):'');
     return '<div class="d-goal">'+_aim+'<div class="lab"><span>'+t("Daily practice")+'</span><span>'+reps+(gtier>=0?' \u00b7 '+t(TIER_LABEL[gtier]):'')+'</span></div>'+
@@ -9822,14 +9893,21 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
      Un peldano por encima del nivel no se fuerza: se respeta el "Si, desbloquear". */
   var PHRASE_RECOG_SHARE=0.5;
   function phraseRecogDue(){ var b=ensurePhrases().box; return phraseReadyIdxMature(PHRASES).some(function(i){ return (b[PHRASES[i].jp]||0)<5; }); }
-  var WORDS_KANA_GAP_PROB=0.4, WORDS_KANA_DUE_PROB=0.1, WORDS_TALLER_PROB=0.15;
+  /* Reparto revisado (sesión 2026-11-08): midiendo un día simulado con sus datos, las
+     palabras recibían unas 12 repeticiones de ~80 (el kana y las ráfagas se comían el
+     resto) y el vocabulario es lo que más mueve la lectura. Bajan el kana y el armado
+     (que no sube la caja de la palabra salvo en modo recuerdo). */
+  var WORDS_KANA_GAP_PROB=0.25, WORDS_KANA_DUE_PROB=0.08, WORDS_TALLER_PROB=0.15;
+  /* Reparto del día: el kanji (taller y puente) recibe más tiempo cuando el objetivo es el
+     N5 o cuando es el pilar más flojo frente al vocabulario; con un juego apuntado queda igual. */
+  function kanjiShare(base){ var f=1; if(aimIsN5()) f+=0.6; if(n5KanjiPillar()<n5VocabPillar()*0.5) f+=0.4; return Math.min(0.35,base*f); }
   function wordsKanaGapRung(){ var g=firstKanaGap(), lvl=ensureKana().level||1; return (g && g<=lvl)?g:0; }
   /* Arreglo del kana que se caía (sesión 2026-11-08): con un hueco abierto en un peldaño,
      cada unidad de kana quedaba fijada a ese peldaño y el resto (con sus datos, 80
      katakana vencidos, algunos hace un mes) nunca se repasaba, así que se caía también.
      Ahora la mitad de las unidades atiende el hueco y la otra mitad repasa lo más
      vencido de cualquier silabario; y sin hueco, la cuota crece con la cantidad vencida. */
-  var WORDS_KANA_DUE_MAX=0.35, KANA_GAP_SHARE=0.5;
+  var WORDS_KANA_DUE_MAX=0.2, KANA_GAP_SHARE=0.5;
   function wordsKanaProb(){ if(wordsKanaGapRung())return WORDS_KANA_GAP_PROB; var d=dueCount(); return d>0?Math.min(WORDS_KANA_DUE_MAX,WORDS_KANA_DUE_PROB+d/200):0; }
   function mostOverdueKana(){ var best=null, bd=null, last=sess&&sess.q?sess.q.target:null;
     activePairs().forEach(function(p){ if(!isLearned(p.script,p.romaji)||!isDue(p.script,p.romaji)||p.romaji===last)return; var d=getDue(p.script,p.romaji)||'0000';
@@ -9906,12 +9984,12 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
     /* kana pendiente o vencido */
     if(Math.random()<wordsKanaProb()){ if(tsess)tsess.q=null; wsess.cur="kana"; wordsKanaUnit(); return; }
     /* puente: lectura y escritura de palabras con kanji, como el examen; nunca dos seguidas */
-    if(kanjiOn() && wsess.cur!=="puente" && wsess.cur!=="taller" && Math.random()<WORDS_BRIDGE_PROB && tallerReadAvail()){
+    if(kanjiOn() && wsess.cur!=="puente" && wsess.cur!=="taller" && Math.random()<kanjiShare(WORDS_BRIDGE_PROB) && tallerReadAvail()){
       wsess.cur="puente"; drillEl.classList.add("hidden"); bridgeBurst(2); return; }
     /* escucha o lectura tipo examen: de vez en cuando una, si hay algo listo o vencido */
     if(wsess.cur!=="prep" && readingEra() && Math.random()<(aimIsN5()?WORDS_PREP_PROB_N5:WORDS_PREP_PROB)){ if(tsess)tsess.q=null; drillEl.classList.add("hidden"); if(prepWeave()){ wsess.cur="prep"; return; } }
     /* taller de kanji: rafaga corta, nunca dos seguidas */
-    if(kanjiOn() && wsess.cur!=="taller" && tallerHasWork() && Math.random()<WORDS_TALLER_PROB){
+    if(kanjiOn() && wsess.cur!=="taller" && tallerHasWork() && Math.random()<kanjiShare(WORDS_TALLER_PROB)){
       wsess.cur="taller"; drillEl.classList.add("hidden"); tallerDailyBurst(); return; }
     if(tsess)tsess.q=null; drillEl.classList.add("hidden");
     var mix=wordsMix(); var type=(mix.canBuild&&Math.random()<mix.buildProb)?"build":"recog"; wsess.cur=type;
@@ -11249,6 +11327,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
        Sin esto, las frases escribian en la caja de palabras y el contador de frases
        nunca subia. Por defecto sigue siendo la de palabras (modo escribir palabra). */
     var ex=exTarget||ensureWords(), box=ex.box, cur=box[jp]||0, td=today();
+    if(!ex.acc)ex.acc={}; if(!ex.acc[td])ex.acc[td]={n:0,c:0}; ex.acc[td].n++; if(correct)ex.acc[td].c++;
     if(!ex.lastMove)ex.lastMove={}; if(!ex.up)ex.up={}; if(!ex.mas)ex.mas={}; if(!ex.leech)ex.leech={};
     if(ex.lastMove[jp]!==td){
       box[jp]=correct?Math.min(5,cur+1):Math.max(0,cur-1);
@@ -12070,7 +12149,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   }
 
   function bindMain(){
-    app.querySelectorAll("[data-fn]").forEach(function(b){var fn=b.getAttribute("data-fn");b.addEventListener("click",function(){if(fn==="startDrill")startDrill();else if(fn==="startGap")startGapDrill();else if(fn==="startDaily")startDaily();else if(fn==="startWords")startWords();else if(fn==="startPhrases")startPhrases();else if(fn==="startBuild")startBuild();else if(fn==="startMatch")startMatch();else if(fn==="openCustom")openCustom();else if(fn==="startKanji")startTaller();else if(fn==="startTaller")startTaller();else if(fn==="activateKanji")activateKanji();else if(fn==="activatePhrases")activatePhrases();else if(fn==="startPlacement")startPlacement();else if(fn==="toggleGames")toggleGames();else if(fn==="toggleRoad")toggleRoad();else if(fn==="toggleRes")toggleRes();else if(fn==="openOnboard")openOnboard();else if(fn==="openPrep")openPrepHub();});});
+    app.querySelectorAll("[data-fn]").forEach(function(b){var fn=b.getAttribute("data-fn");b.addEventListener("click",function(){if(fn==="startDrill")startDrill();else if(fn==="startGap")startGapDrill();else if(fn==="startDaily")startDaily();else if(fn==="startWords")startWords();else if(fn==="startPhrases")startPhrases();else if(fn==="startBuild")startBuild();else if(fn==="startMatch")startMatch();else if(fn==="openCustom")openCustom();else if(fn==="startKanji")startTaller();else if(fn==="startTaller")startTaller();else if(fn==="activateKanji")activateKanji();else if(fn==="activatePhrases")activatePhrases();else if(fn==="startPlacement")startPlacement();else if(fn==="toggleGames")toggleGames();else if(fn==="toggleRoad")toggleRoad();else if(fn==="toggleRes")toggleRes();else if(fn==="openOnboard")openOnboard();else if(fn==="openPrep")openPrepHub();else if(fn==="backupCopy")backupCopy();else if(fn==="backupDownload")backupDownload();});});
 
     var wd=app.querySelector(".wotd[data-say]"); if(wd)wd.addEventListener("click",function(){speak(wd.getAttribute("data-say"));});
     app.querySelectorAll("[data-aim]").forEach(function(b){ b.addEventListener("click",function(){ setAim(b.getAttribute("data-aim")); }); });
@@ -12602,7 +12681,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   var prepAudioTok=0;
   function prepSay(text,spk,onEnd){ var done=false, fin=function(){ if(done)return; done=true; if(onEnd)onEnd(); };
     try{ if(!window.speechSynthesis){ setTimeout(fin,0); return; }
-      var u=new SpeechSynthesisUtterance(String(text).replace(/\s+/g,'')); u.lang='ja-JP'; u.rate=.85; u.pitch=spk==='M'?0.8:(spk==='F'?1.25:1);
+      var u=new SpeechSynthesisUtterance(ttsText(String(text)).replace(/\s+/g,'')); u.lang='ja-JP'; u.rate=.85; u.pitch=spk==='M'?0.8:(spk==='F'?1.25:1);
       var vs=window.speechSynthesis.getVoices().filter(function(v){ return /ja(-|_)?JP/i.test(v.lang); });
       if(vs.length) u.voice=(spk==='M'&&vs.length>1)?vs[1]:vs[0];
       u.onend=fin; u.onerror=fin; setTimeout(fin,1200+String(text).length*230);
