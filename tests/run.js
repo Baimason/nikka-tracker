@@ -80,6 +80,28 @@ async function fuzz(b, start, clicks) {
       return out; })()`);
     report('Puente: cada pregunta tiene una sola correcta y opciones distintas', r); }
 
+  /* el puente solo evalúa kanji ya enseñados: el de afuera no cambia en ninguna trampa */
+  { const r = fresh.ev(`(function(){ var out=[], ws=WORD_POOL.filter(function(w){ var kf=kanjiForm(w); return kf && bridgeSegs(w) && kf.replace(/[^一-鿿]/g,'').length>=2; }).slice(0,300);
+      ws.forEach(function(w){ var seg=bridgeSegs(w), ks=seg.filter(function(x){return x.k;}).map(function(x){return x.k;}), tk=[ks[0]], kf=kanjiForm(w);
+        if(ks.length<2||ks[1]===ks[0])return;
+        bridgeWriteOpts(w,tk).forEach(function(o){ if(!o.ok && o.jp.indexOf(ks[1])<0) out.push('escritura cambia el kanji de afuera: '+kf+' -> '+o.jp); if(o.blame&&tk.indexOf(o.blame)<0) out.push('culpa a un kanji de afuera: '+kf); });
+        bridgeReadOpts(w,tk).forEach(function(o){ if(o.blame&&tk.indexOf(o.blame)<0) out.push('lectura culpa a un kanji de afuera: '+kf+' '+o.jp); });
+        if(bridgePromptHTML(w,tk).indexOf('<ruby>'+ks[1])<0) out.push('sin furigana en el kanji de afuera: '+kf); });
+      return out.slice(0,8); })()`);
+    report('Puente: el kanji todavía no enseñado lleva furigana y nunca es trampa', r); }
+
+  /* taller paso a paso: nada se enseña antes de dominar sus piezas; el puente espera a dominar la forma */
+  { const r = fresh.ev(`(function(){ var out=[], t=ensureTaller();
+      for(var round=0; round<6; round++){
+        tallerPlan(14,4,6).forEach(function(it){ if(it.mode!=='teach')return; var o=TALLER.by[it.g];
+          var bad=o.parts.filter(function(p){ return (t.box[p]||0)<TALLER_SOLID; }); if(bad.length) out.push('enseña '+o.g+' sin dominar '+bad.join(''));
+          t.seen[o.g]=today(); t.box[o.g]=1; });
+        Object.keys(t.seen).forEach(function(g){ t.box[g]=TALLER_SOLID; }); }
+      var w=WORD_POOL.filter(function(x){ return bridgeKanjiOf(x).tk.length; })[0];
+      if(w){ var ch=bridgeKanjiOf(w).tk[0]; t.box[ch]=1; if(bridgeKanjiOf(w).tk.indexOf(ch)>=0) out.push('el puente usa un kanji sin dominar: '+ch); }
+      state.exercises.taller={}; return out.slice(0,8); })()`);
+    report('Taller: piezas dominadas antes del kanji; el puente después de dominar la forma', r); }
+
   /* 5. reglas del repaso espaciado */
   { const ev = fresh.ev; const p = [];
     ev(`ensureKana().box['a']=5; ensureKana().lastMove={}; srsMark('hira','a',false);`);
