@@ -458,6 +458,14 @@
   .rq-part-comp{font-size:1.25em;color:var(--shu);line-height:1;flex-shrink:0}
   .rq-part-cn{font-weight:700;color:var(--ink);min-width:56px;flex-shrink:0}
   .rq-part-role{color:var(--ink-soft)}
+  .rq-sub{display:flex;flex-wrap:wrap;align-items:baseline;row-gap:2px;margin:0 0 4px 22px;font-size:12px;line-height:1.5;color:var(--ink-soft)}
+  .rq-sub>.rq-sub{flex-basis:100%;margin-left:14px;margin-bottom:0}
+  .rq-sub-eq{opacity:.7;margin-right:4px}
+  .rq-sub-p{white-space:nowrap}
+  .rq-sub-p .mincho{font-size:16px;color:var(--ink);margin-right:3px}
+  .rq-sub-plus{opacity:.55;margin:0 5px}
+  .cs-tag{font-size:10.5px;font-weight:700;letter-spacing:.04em;margin-left:5px;white-space:nowrap}
+  .cs-ok{color:var(--green)} .cs-learn{color:var(--ink-soft)} .cs-new{color:var(--shu);opacity:.85} .cs-out{color:var(--ink-faint)}
   .phrase-nudge{margin-top:8px;font-size:13px;line-height:1.4;font-weight:600;color:var(--shu);background:rgba(178,55,38,.08);border:1px solid var(--shu);border-radius:6px;padding:8px 10px}
   .phrase-nudge-btn{display:block;width:100%;font:inherit;font-weight:700;font-size:13px;color:var(--card);background:var(--shu);border:none;border-radius:4px;padding:9px 12px;margin-top:8px;cursor:pointer;text-align:center;-webkit-tap-highlight-color:transparent}
   .phrase-nudge-btn:active{transform:translateY(1px)}
@@ -8482,12 +8490,54 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
   /* Bloque de componentes de UN kanji (panel post-respuesta y ficha de la chuleta). */
   /* Kanji (o pieza) del taller: receta y la historia del taller, la del usuario primero.
      Así el panel dice lo mismo en el quiz, en la chuleta y en el taller. */
+  /* ===== Desglose recursivo de piezas =====
+     Cada pieza compuesta se sigue partiendo hasta llegar a piezas base, para que nunca
+     quede una pieza "de caja negra" (ej. 椅 = 木 + 奇, y 奇 = 大 + 可). Fuente, en orden:
+     la receta del taller, KANJI_PARTS y COMP_SPLIT (solo estructura, para piezas que no
+     tienen ficha propia). Cada pieza dice su estado en el taller. */
+  var COMP_SPLIT={'奇':'大可','哥':'可可','吾':'五口','召':'刀口','句':'勹口','旦':'日一','旨':'匕日','昜':'日勿','景':'日京','苗':'艹田','莫':'艹日大',
+    '付':'亻寸','此':'止匕','肙':'口月','志':'士心','完':'宀元','另':'口力','軍':'冖車','式':'弋工','市':'亠巾','反':'厂又','列':'歹刂','圣':'又土',
+    '支':'十又','殳':'几又','肖':'⺌月','采':'爫木','它':'宀匕','兌':'八兄','竟':'音儿','包':'勹己','束':'木口','圭':'土土','里':'田土','太':'大丶'};
+  var COMP_NAMES={'奇':['extraño','strange'],'哥':['canto','song'],'吾':['yo','I'],'召':['llamar','summon'],'句':['frase','phrase'],'勹':['envoltura','wrap'],
+    '旦':['amanecer','dawn'],'旨':['sabroso','tasty'],'昜':['sol que sube','rising sun'],'勿':['bandera','flag'],'景':['paisaje','scenery'],'苗':['brote','sprout'],
+    '莫':['ocaso','dusk'],'付':['pegar','attach'],'寸':['pulgada','inch'],'此':['esto','this'],'肙':['gusano','worm'],'志':['voluntad','will'],'完':['completo','complete'],
+    '另':['aparte','separate'],'軍':['ejército','army'],'式':['ceremonia','ceremony'],'弋':['estaca','stake'],'市':['mercado','market'],'反':['contra','against'],
+    '厂':['acantilado','cliff'],'列':['fila','row'],'歹':['hueso','bone'],'圣':['mano en la tierra','hand on earth'],'支':['rama','branch'],'殳':['lanza','spear'],
+    '几':['mesita','small table'],'肖':['parecido','likeness'],'⺌':['chispitas','sparks'],'采':['recoger','pick'],'爫':['garra','claw'],'它':['serpiente','snake'],
+    '兌':['cambio','exchange'],'竟':['al final','in the end'],'包':['envolver','wrap'],'己':['uno mismo','oneself'],'束':['manojo','bundle'],'圭':['tableta','tablet'],
+    '里':['aldea','village'],'太':['gordo','fat'],'丶':['punto','dot']};
+  function compGlyphOf(p){ return (p.rad&&RADICALS[p.rad])?RADICALS[p.rad].glyph:(p.glyph||''); }
+  function compChildren(g){ var o=(typeof TALLER!=='undefined'&&TALLER)?TALLER.by[g]:null;
+    if(o) return o.parts.slice();
+    var kp=KANJI_PARTS[g]; if(kp) return kp.map(compGlyphOf).filter(Boolean);
+    return COMP_SPLIT[g]?Array.from(COMP_SPLIT[g]):[]; }
+  function compName(g){ var es=getLang()==='es', o=TALLER.by[g], n='';
+    if(o) n=es?o.es:o.en;
+    else if(COMP_NAMES[g]) n=COMP_NAMES[g][es?0:1];
+    else if(RADICAL_BY_GLYPH[g]) n=RADICAL_BY_GLYPH[g].name;
+    else if(PRIMITIVE_NOTES[g]) n=PRIMITIVE_NOTES[g].name;
+    else if(KANJI_DB[g]) n=bridgeMeaning(g,es);
+    return n; }
+  /* estado en el taller: dominada, en práctica, todavía no, o fuera del taller (más allá del N5) */
+  function compStateTag(g){ var es=getLang()==='es', o=TALLER.by[g];
+    if(!o) return '<span class="cs-tag cs-out">'+(es?'fuera del N5':'beyond N5')+'</span>';
+    var t=ensureTaller(), b=t.box[g]||0;
+    if(b>=TALLER_SOLID) return '<span class="cs-tag cs-ok">'+(es?'ya la armás':'you build it')+'</span>';
+    if(t.seen[g]) return '<span class="cs-tag cs-learn">'+(es?'en práctica':'practicing')+'</span>';
+    return '<span class="cs-tag cs-new">'+(es?'todavía no':'not yet')+'</span>'; }
+  function compSubHTML(g,depth,path){ path=path||{}; if(depth>5||path[g])return '';
+    if(TALLER.by[g] && (ensureTaller().box[g]||0)>=TALLER_SOLID)return '';   /* la que ya armás no hace falta abrirla */
+    var ch=compChildren(g); if(!ch.length)return '';
+    var p2=Object.assign({},path); p2[g]=1;
+    return '<div class="rq-sub"><span class="rq-sub-eq mincho">'+g+' =</span>'+ch.map(function(c){
+        var n=compName(c); return '<span class="rq-sub-p"><span class="mincho">'+c+'</span>'+tlEsc(n)+compStateTag(c)+'</span>'; }).join('<span class="rq-sub-plus">+</span>')+
+      ch.map(function(c){ return compSubHTML(c,depth+1,p2); }).join('')+'</div>'; }
   function tallerBlockHTML(o){ var es=getLang()==='es', st=tallerStory(o);
     var lbl=st.own?(es?'Tu historia':'Your story'):(o.kind==='E'?(es?'Así se dibujaba':'How it was drawn'):(es?'Truco de memoria':'Memory trick'));
     var h='<div class="rq-part-kanji"><span class="rq-part-head mincho">'+o.g+'</span><div class="rq-part-rows">';
     var rows=o.parts.length?o.parts:[];
     rows.forEach(function(p){ var po=TALLER.by[p];
-      h+='<div class="rq-part-row"><span class="rq-part-comp mincho">'+p+'</span><span class="rq-part-cn">'+tlEsc(po?(es?po.es:po.en):'')+'</span></div>'; });
+      h+='<div class="rq-part-row"><span class="rq-part-comp mincho">'+p+'</span><span class="rq-part-cn">'+tlEsc(po?(es?po.es:po.en):'')+compStateTag(p)+'</span></div>'+compSubHTML(p,1,(function(x){x[o.g]=1;return x;})({})); });
     if(!rows.length) h+='<div class="rq-part-row"><span class="rq-part-cn">'+tlEsc(es?o.es:o.en)+'</span><span class="rq-part-role">'+(es?'pieza base, no se arma con otras':'base part, not built from others')+'</span></div>';
     h+='<div class="rq-part-story'+(st.own?' own':'')+'"><span class="rq-part-slbl">'+lbl+'</span>'+tlEsc(st.txt)+'</div>';
     return h+'</div></div>'; }
@@ -8515,7 +8565,7 @@ n:{en:"ん looks just like a handwritten lowercase n.",es:"ん es igualita a una
       var n=p.rad&&RADICALS[p.rad]?RADICALS[p.rad].name:(p.name||'');
       /* si la pieza también está en el taller, se nombra igual que allá */
       var tp=(typeof TALLER!=='undefined'&&TALLER)?TALLER.by[g]:null; if(tp){ var es0=getLang()==='es'; n=(es0?tp.es:tp.en); n=n.charAt(0).toUpperCase()+n.slice(1); }
-      bh+='<div class="rq-part-row"><span class="rq-part-comp mincho">'+g+'</span><span class="rq-part-cn">'+n+'</span><span class="rq-part-role">'+p.role+'</span></div>';
+      bh+='<div class="rq-part-row"><span class="rq-part-comp mincho">'+g+'</span><span class="rq-part-cn">'+n+compStateTag(g)+'</span><span class="rq-part-role">'+p.role+'</span></div>'+compSubHTML(g,1,(function(x){x[ch]=1;return x;})({}));
     });
     return bh+'</div></div>';
   }

@@ -102,6 +102,13 @@ async function fuzz(b, start, clicks) {
       state.exercises.taller={}; return out.slice(0,8); })()`);
     report('Taller: piezas dominadas antes del kanji; el puente después de dominar la forma', r); }
 
+  /* desglose recursivo: todo kanji del vocabulario se puede abrir sin errores y las piezas de COMP_SPLIT tienen nombre */
+  { const r = fresh.ev(`(function(){ var out=[];
+      Object.keys(COMP_SPLIT).forEach(function(g){ if(!compName(g)) out.push('sin nombre: '+g); Array.from(COMP_SPLIT[g]).forEach(function(c){ if(!compName(c)) out.push('pieza sin nombre: '+c+' en '+g); }); });
+      Object.keys(KANJI_WORDS).forEach(function(jp){ try{ kanjiPartsHTML(jp); }catch(e){ out.push(jp+': '+e.message); } });
+      return out.slice(0,8); })()`);
+    report('Componentes: el desglose baja hasta piezas base y todas tienen nombre', r); }
+
   /* 5. reglas del repaso espaciado */
   { const ev = fresh.ev; const p = [];
     ev(`ensureKana().box['a']=5; ensureKana().lastMove={}; srsMark('hira','a',false);`);
